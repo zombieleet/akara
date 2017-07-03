@@ -26,7 +26,7 @@ gulp.task("eslint", () => {
 gulp.task("pug", () => {
     return gulp.src("src/renderer/pug/*.pug")
         .pipe(pug())
-        .on("error", error => console.bind.log(error))
+        .on("error", error => console.log(error))
         .pipe(gulp.dest("./app/renderer/html/"))
         .on("finish", () => {
             console.log("done");

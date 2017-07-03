@@ -1,6 +1,11 @@
 @import "reset.scss";
+@import "akara_dropdown";
 @import "akara_title_bar";
+@import "akara_load_section";
 
 body {
     background-color: black;
+    overflow: hidden;
+    -webkit-app-region: no-drag;
+    -webkit-user-select: none;
 }

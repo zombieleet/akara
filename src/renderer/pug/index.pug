@@ -8,11 +8,36 @@ html
      link(rel="stylesheet", href="../libs/font-awesome.min.css")
    body
       header(class="akara-title-bar")
+         button(class="fa fa-2x fa-ellipsis-v akara-menu-toggle") 
+            div(class="akara-dropdown" hidden)
+
+                ul(class="akara-dropdown-item")
+
+                   li(class="akara-dropdown-list") Open
+                   li(class="akara-dropdown-list") Save 
+                   li(class="akara-dropdown-list") Load Playlist
+                   li(class="akara-dropdown-list screenshot") Screenshot
+                   li(class="akara-dropdown-list akara-drop-media") Media Elements
+                       ul(class="akara-media-element" hidden)
+                           li(class="akara-dropdown-list") Play
+                           li(class="akara-dropdown-list") Pause
+                           li(class="akara-dropdown-list") Mute
+                           li(class="akara-dropdown-list") Stop
+                           li(class="akara-dropdown-list") Speed
+                   li(class="akara-dropdown-list") Load Subtitle
+                   li(class="akara-dropdown-list") Youtube
+                   li(class="akara-dropdown-list") Vimeo
+                   li(class="akara-dropdown-list") Spotify
+                   li(class="akara-dropdown-list") Media Link
+                   li(class="akara-dropdown-list") Settings
+
          div(class="akara-title") AKARA MEDIA PLAYER
          div(class="akara-window-state")
             ul(class="akara-window-sate-buttons")
                li(class="fa fa-window-minimize akara-min")
                li(class="fa fa-window-maximize akara-max")
                li(class="fa fa-window-close akara-close")
+      include list_loaded.pug
       script(src="../js/akara_statebuttons.js")
-
+      script(src="../js/menu.js")
+      script(src="../js/dropdown.js")

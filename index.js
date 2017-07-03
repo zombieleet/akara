@@ -16,8 +16,6 @@ require("electron-reload")(__dirname, {
 });
 
 
-
-
 const createWindow = () => {
     
     let mainWindow;
