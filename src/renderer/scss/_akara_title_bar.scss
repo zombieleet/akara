@@ -1,7 +1,18 @@
 
 .akara-title-bar {
-
     .akara-title {
+        color: white;
+        text-align: center;
+        width: 83.555%;
+        float: left;
+
+        font: {
+            //weight: bolder;
+            size: 18px;
+        }
+        border-bottom: 2px solid white;
+        padding: 12px;
+
     }
 
     .akara-window-state {
