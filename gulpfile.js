@@ -63,8 +63,6 @@ gulp.task("watch", () => {
 
     gulp.watch("./src/renderer/img", [ "imagemin" ]);
 
-    gulp.watch("./test.js", [ "log" ]);
-
 });
 
 
