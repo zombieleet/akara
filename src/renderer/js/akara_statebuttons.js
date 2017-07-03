@@ -19,6 +19,16 @@
     akaraClose.addEventListener("click", () => {
         ipc.send("window-close");
     });
+
+    ipc.on("window-is-max", () => {
+        akaraMax.classList.remove("fa-window-maximize");
+        akaraMax.classList.add("fa-window-restore");
+    });
+
+    ipc.on("window-is-not-max", () => {
+        akaraMax.classList.remove("fa-window-restore");
+        akaraMax.classList.add("fa-window-maximize");
+    });
     
 })(require("electron"));
 
