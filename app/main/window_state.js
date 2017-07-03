@@ -7,9 +7,13 @@ const handleWinState = win => {
     
     ipc.on("window-maximize", event => {
         
-        if ( win.isMaximized() ) return win.unmaximize();
-        
-        return win.maximize();
+        if ( win.isMaximized() ) {
+            win.unmaximize();
+            event.sender.send("window-is-not-max");
+        } else {
+            win.maximize();
+            event.sender.send("window-is-max");
+        }
         
     });
     
