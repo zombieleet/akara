@@ -47,32 +47,209 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
-.akara-title-bar .akara-title {
-  color: white;
-  text-align: center;
-  width: 83.555%;
-  float: left;
-  font-size: 18px;
-  border-bottom: 2px solid white;
-  padding: 12px; }
+.akara-media-element {
+  position: absolute;
+  left: 200px;
+  top: 223.555px;
+  width: 200px;
+  background: white;
+  color: black; }
 
-.akara-title-bar .akara-window-state {
-  float: right; }
-  .akara-title-bar .akara-window-state > ul {
-    margin-top: 7px; }
-    .akara-title-bar .akara-window-state > ul > li {
-      display: inline;
-      color: white;
-      padding: 5px;
-      margin-left: 8px;
-      border-radius: 50%;
-      cursor: pointer; }
-    .akara-title-bar .akara-window-state > ul > li:last-of-type {
-      transition: .3s color; }
-      .akara-title-bar .akara-window-state > ul > li:last-of-type:hover {
-        color: darkred; }
+.akara-dropdown {
+  position: absolute;
+  text-align: left;
+  height: 0;
+  width: 200px;
+  background: white;
+  color: black;
+  left: 10px;
+  top: 30px;
+  border: 1px solid white;
+  font-size: 20px; }
+  .akara-dropdown ul .screenshot {
+    border-top: 2px solid black;
+    border-bottom: 2px solid black; }
+  .akara-dropdown ul li {
+    visibility: hidden;
+    padding: 10px;
+    transition: .3s; }
+    .akara-dropdown ul li:hover {
+      background-color: darkgrey; }
+  .akara-dropdown ul li:nth-of-type(1) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(2) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(3) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(4) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(5) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(6) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(7) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(8) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(9) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(10) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(11) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(12) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(13) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(14) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+  .akara-dropdown ul li:nth-of-type(15) {
+    animation-name: dropdown-anim;
+    animation-duration: .3s;
+    animation-fill-mode: forwards;
+    animation-direction: normal;
+    animation-delay: .2s; }
+
+[data-anim-height="anim-height"] {
+  animation-name: height-anim;
+  animation-timing-function: ease-in;
+  animation-duration: .285s;
+  animation-direction: normal;
+  animation-fill-mode: forwards; }
+
+@keyframes height-anim {
+  0% {
+    height: 10px; }
+  100% {
+    height: 630px; } }
+
+@keyframes dropdown-anim {
+  0% {
+    margin-top: 10px;
+    visibility: visible; }
+  20% {
+    margin-top: 14px; }
+  40% {
+    margin-top: 16px; }
+  80% {
+    margin-top: 18px; }
+  100% {
+    margin-top: 15px;
+    visibility: visible; } }
+
+.akara-title-bar {
+  height: 50px;
+  border-bottom: 2px solid white; }
+  .akara-title-bar .akara-menu-toggle {
+    color: white;
+    float: left;
+    margin: 1px auto auto 20px;
+    background-color: black;
+    cursor: pointer;
+    border-radius: 100%;
+    padding: 5px 13px; }
+  .akara-title-bar .akara-title {
+    color: white;
+    text-align: center;
+    width: 70%;
+    float: left;
+    /*display: flex;
+        justify-content: center;*/
+    -webkit-app-region: drag;
+    margin: auto;
+    font-size: 18px;
+    padding: 12px; }
+  .akara-title-bar .akara-window-state {
+    float: right; }
+    .akara-title-bar .akara-window-state > ul {
+      margin-top: 7px; }
+      .akara-title-bar .akara-window-state > ul > li {
+        display: inline;
+        color: white;
+        padding: 5px;
+        margin-left: 8px;
+        border-radius: 50%;
+        cursor: pointer; }
+      .akara-title-bar .akara-window-state > ul > li:last-of-type {
+        transition: .3s color; }
+        .akara-title-bar .akara-window-state > ul > li:last-of-type:hover {
+          color: darkred; }
+
+.akara-load {
+  clear: both;
+  float: right;
+  color: white;
+  width: 200px;
+  height: 1000px; }
+  .akara-load .akara-loaded-dragger {
+    float: left;
+    height: 1000px;
+    border: 1px solid white;
+    cursor: ew-resize; }
+  .akara-load .akara-loaded {
+    width: 200px;
+    height: 1000px; }
 
 body {
-  background-color: black; }
+  background-color: black;
+  overflow: hidden;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: none; }
 
 /*# sourceMappingURL=maps/main.css.map */
