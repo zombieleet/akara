@@ -47,6 +47,15 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
+.akara-title-bar .akara-title {
+  color: white;
+  text-align: center;
+  width: 83.555%;
+  float: left;
+  font-size: 18px;
+  border-bottom: 2px solid white;
+  padding: 12px; }
+
 .akara-title-bar .akara-window-state {
   float: right; }
   .akara-title-bar .akara-window-state > ul {
