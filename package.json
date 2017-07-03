@@ -1,0 +1,46 @@
+{
+  "name": "akara",
+  "description": "akara is an adavance media player",
+  "author": "Victory Osikwemhe",
+  "scripts": {
+    "start": "electron .",
+    "test": "jasmine test/*",
+    "lint": "eslint *",
+    "lintfix": "eslint --fix"
+  },
+  "dependencies": {
+    "electron": "^1.6.11",
+    "gulp": "^3.9.1",
+    "pug": "^2.0.0-rc.2"
+  },
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zombieleet/akara.git"
+  },
+  "keywords": [
+    "akara",
+    "media",
+    "video",
+    "audio",
+    "advance"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zombieleet/akara/issues"
+  },
+  "homepage": "https://github.com/zombieleet/akara#readme",
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "^4.1.1",
+    "gulp-eslint": "^4.0.0",
+    "gulp-if": "^2.0.2",
+    "gulp-pug": "^3.3.0",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.0",
+    "istanbul": "^0.4.5",
+    "jasmine": "^2.6.0",
+    "spectron": "^3.7.2"
+  }
+}
