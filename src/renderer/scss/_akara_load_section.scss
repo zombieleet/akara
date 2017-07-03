@@ -1,0 +1,25 @@
+$akara-loader-width: 200px;
+$akara-loader-height: 1000px;
+
+.akara-load {
+    clear: both;
+    float: right;
+    
+    color: white;
+
+    width: $akara-loader-width;
+    height: $akara-loader-height;
+
+    .akara-loaded-dragger {
+        float: left;
+        height: 1000px;
+        border: 1px solid white;
+        cursor: ew-resize;
+    }
+
+    .akara-loaded {
+        width: $akara-loader-width;
+        height: $akara-loader-height;
+    }
+    
+}
