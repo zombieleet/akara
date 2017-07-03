@@ -4,6 +4,14 @@ const { ipcMain: ipc, BrowserWindow } = require("electron");
 console.log("done");
 
 const handleWinState = win => {
+
+    win.on("maximize", () => {
+        win.webContents.send("window-is-max");
+    });
+
+    win.on("unmaximize", () => {
+        win.webContents.send("window-is-not-max");
+    });
     
     ipc.on("window-maximize", event => {
         
