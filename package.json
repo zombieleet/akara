@@ -33,9 +33,11 @@
   "homepage": "https://github.com/zombieleet/akara#readme",
   "devDependencies": {
     "babel-eslint": "^7.2.3",
+    "electron-reload": "^1.2.1",
     "eslint": "^4.1.1",
     "gulp-eslint": "^4.0.0",
     "gulp-if": "^2.0.2",
+    "gulp-imagemin": "^3.3.0",
     "gulp-pug": "^3.3.0",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.0",
