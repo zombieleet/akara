@@ -230,25 +230,28 @@ table {
         .akara-title-bar .akara-window-state > ul > li:last-of-type:hover {
           color: darkred; }
 
-.akara-load {
+.akara-media {
   clear: both;
-  float: right;
-  color: white;
-  width: 200px;
-  height: 1000px; }
-  .akara-load .akara-loaded-dragger {
-    float: left;
-    height: 1000px;
-    border: 1px solid white;
-    cursor: ew-resize; }
-  .akara-load .akara-loaded {
-    width: 200px;
-    height: 1000px; }
+  border: 2px solid red;
+  width: 100%;
+  height: 100%; }
+  .akara-media .akara-media-cover {
+    width: 80%;
+    height: inherit;
+    border: 2px solid green; }
+    .akara-media .akara-media-cover video {
+      width: 100%;
+      height: inherit;
+      margin-top: -1.5%; }
+
+.akara-loaded-dragger {
+  cursor: ew-resize; }
 
 body {
   background-color: black;
   overflow: hidden;
   -webkit-app-region: no-drag;
-  -webkit-user-select: none; }
+  -webkit-user-select: none;
+  height: 100vh; }
 
 /*# sourceMappingURL=maps/main.css.map */
