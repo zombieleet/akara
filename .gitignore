@@ -1,4 +1,5 @@
 node_modules/
-app/renderer/css/maps/*
+*.css.*
 app/renderer/html/*.html
 !app/renderer/html/index.html
+*.mp4
