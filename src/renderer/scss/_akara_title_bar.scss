@@ -22,16 +22,17 @@
     .akara-title {
         color: white;
         text-align: center;
-        width: 70%;
+        width: 85%;
         float: left;
 
-        /*display: flex;
-        justify-content: center;*/
+        position: absolute;
 
-        // enable dragging
-        -webkit-app-region:drag;
+        left: 6%;
+
         
-        margin: auto;
+        -webkit-app-region:drag;
+
+        
         
         font: {
             //weight: bolder;

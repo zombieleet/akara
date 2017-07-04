@@ -207,12 +207,11 @@ table {
   .akara-title-bar .akara-title {
     color: white;
     text-align: center;
-    width: 70%;
+    width: 85%;
     float: left;
-    /*display: flex;
-        justify-content: center;*/
+    position: absolute;
+    left: 6%;
     -webkit-app-region: drag;
-    margin: auto;
     font-size: 18px;
     padding: 12px; }
   .akara-title-bar .akara-window-state {
