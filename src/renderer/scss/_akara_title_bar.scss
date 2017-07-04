@@ -5,16 +5,20 @@
     
     .akara-menu-toggle {
         
-        color: white;
+        color: black;
         float: left;
 
-        margin: 1px auto auto 20px;
+        font-size: 20px;
+        
+        margin: 16px auto auto 20px;
 
-        background-color: black;
+        background-color: white;
+        
         cursor: pointer;
+        
         border-radius: 100%;
-
-
+        box-shadow: 0px 0px 5px 2px darken(#fff,50%);
+        
         padding: 5px 13px;
 
         
@@ -31,7 +35,6 @@
 
         
         -webkit-app-region:drag;
-
         
         
         font: {
@@ -44,6 +47,7 @@
     
     .akara-window-state {
         float: right;
+
         > ul {
             margin-top: 7px;
             > li {
@@ -54,8 +58,6 @@
 
                 margin-left: 8px;
                 border-radius: 50%;
-                
-                
                 
                 cursor: pointer;
             }
