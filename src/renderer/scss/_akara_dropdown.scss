@@ -26,7 +26,6 @@ $drop-down-pos: absolute;
     
 
     background: $drop-down-back-color;
-
     color: $drop-down-color;
     
     
@@ -43,7 +42,6 @@ $drop-down-pos: absolute;
     
     ul {
 
-
         .screenshot {
             
             border-top: 2px solid black;
@@ -51,7 +49,7 @@ $drop-down-pos: absolute;
         }
         
         li {
-            
+
             visibility: hidden;
             
             //margin-left: 20px;
@@ -67,6 +65,7 @@ $drop-down-pos: absolute;
 
         @for $i from 1 through 15 {
             li:nth-of-type(#{$i}) {
+
                 animation-name: dropdown-anim;
                 animation-duration: .3s;
                 animation-fill-mode: forwards;
@@ -104,14 +103,14 @@ $drop-down-pos: absolute;
     }
 
     20% {
-        margin-top: 14px;
+        margin-top: 11px;
     }
 
     40% {
-        margin-top: 16px;
+        margin-top: 12px;
     }
     80% {
-        margin-top: 18px;
+        margin-top: 13px;
     }
     100% {
         margin-top: 15px;
