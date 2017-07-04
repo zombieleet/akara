@@ -1,2 +1,4 @@
 node_modules/
 app/renderer/css/maps/*
+app/renderer/html/*.html
+!app/renderer/html/index.html
