@@ -1,3 +1,6 @@
+.akara-media .akara-load .akara-loaded > li:hover, [data-clicked="true"] {
+  background: #3e3e3e; }
+
 *:focus {
   outline: none; }
 

@@ -1,7 +1,6 @@
 
 const { ipcMain: ipc, BrowserWindow } = require("electron");
 
-console.log("done");
 
 const handleWinState = win => {
 
