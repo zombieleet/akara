@@ -244,8 +244,7 @@ table {
     height: inherit; }
     .akara-media .akara-media-cover video {
       width: 100%;
-      height: inherit;
-      margin-top: -2.5%; }
+      height: inherit; }
   .akara-media .akara-load {
     float: left;
     width: 30%;
