@@ -238,34 +238,68 @@ table {
 .akara-media {
   clear: both;
   width: 100%;
-  height: 100%; }
+  height: 100%;
+  color: #cccccc; }
   .akara-media .akara-media-cover {
-    float: left;
-    width: 80%;
+    float: right;
+    width: 70%;
     height: inherit; }
     .akara-media .akara-media-cover video {
       width: 100%;
       height: inherit;
-      margin-top: -2.5%;
-      margin-left: 6%; }
+      margin-top: -2.5%; }
   .akara-media .akara-load {
-    float: right;
-    width: 10%;
+    float: left;
+    width: 30%;
     margin-right: -8px;
     height: inherit;
-    border-left: 2px solid #1a1a1a; }
+    background: #252525; }
     .akara-media .akara-load .akara-loaded-dragger {
       height: inherit;
       cursor: ew-resize;
-      float: left;
+      float: right;
       border: 2px solid #1a1a1a;
       resize: both; }
+    .akara-media .akara-load .akara-loaded {
+      overflow-y: auto;
+      height: inherit;
+      margin-top: 20px;
+      margin-right: 6px; }
+      .akara-media .akara-load .akara-loaded > li {
+        padding: 5px;
+        width: inherit;
+        cursor: pointer;
+        font-size: 1.2em;
+        font-family: DejaVau;
+        margin-top: 4px;
+        white-space: nowrap;
+        transition: .2s ease-in-out; }
+      .akara-media .akara-load .akara-loaded li:last-of-type {
+        margin-bottom: 70px; }
+
+[data-dbclicked="true"] span {
+  margin-left: 12px; }
+
+::-webkit-scrollbar {
+  width: 7px;
+  cursor: pointer; }
+
+::-webkit-scrollbar-track {
+  background: #4b4b4b; }
+
+::-webkit-scrollbar-thumb {
+  background-color: #4b4b4b;
+  border-radius: 50%; }
+
+::-webkit-scrollbar-button {
+  background-color: #666666; }
 
 body {
-  background-color: black;
+  background: #181818;
   overflow: hidden;
   -webkit-app-region: no-drag;
   -webkit-user-select: none;
-  height: 100vh; }
+  height: 100vh;
+  font-family: monospace; }
 
 /*# sourceMappingURL=maps/main.css.map */
