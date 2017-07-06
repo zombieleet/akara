@@ -198,36 +198,34 @@ table {
 
 .akara-title-bar {
   height: 50px;
-  border-bottom: 2px solid white; }
+  border-bottom: 2px solid white;
+  -webkit-app-region: drag; }
   .akara-title-bar .akara-menu-toggle {
     color: black;
     float: left;
     font-size: 20px;
-    margin: 16px auto auto 20px;
+    margin: 5px auto auto 20px;
     background-color: white;
     cursor: pointer;
     border-radius: 100%;
     box-shadow: 0px 0px 5px 2px gray;
-    padding: 5px 13px; }
+    padding: 5px 13px;
+    -webkit-app-region: no-drag; }
   .akara-title-bar .akara-title {
     color: white;
-    text-align: center;
-    width: 85%;
     float: left;
-    position: absolute;
-    left: 6%;
-    -webkit-app-region: drag;
     font-size: 18px;
     padding: 12px; }
   .akara-title-bar .akara-window-state {
-    float: right; }
+    float: right;
+    -webkit-app-region: no-drag; }
     .akara-title-bar .akara-window-state > ul {
       margin-top: 7px; }
       .akara-title-bar .akara-window-state > ul > li {
         display: inline;
         color: white;
         padding: 5px;
-        margin-left: 8px;
+        margin-left: 20px;
         border-radius: 50%;
         cursor: pointer; }
       .akara-title-bar .akara-window-state > ul > li:last-of-type {

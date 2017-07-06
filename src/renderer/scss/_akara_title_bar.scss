@@ -2,7 +2,7 @@
 .akara-title-bar {
     height: 50px;
     border-bottom: 2px solid white;
-    
+    -webkit-app-region: drag;
     .akara-menu-toggle {
         
         color: black;
@@ -10,7 +10,7 @@
 
         font-size: 20px;
         
-        margin: 16px auto auto 20px;
+        margin: 5px auto auto 20px;
 
         background-color: white;
         
@@ -21,21 +21,17 @@
         
         padding: 5px 13px;
 
+        -webkit-app-region: no-drag;
+
         
     }
     .akara-title {
+        
         color: white;
-        text-align: center;
-        width: 85%;
+        
         float: left;
 
-        position: absolute;
-
-        left: 6%;
-
-        
-        -webkit-app-region:drag;
-        
+        //margin-top: 8px;
         
         font: {
             //weight: bolder;
@@ -47,7 +43,7 @@
     
     .akara-window-state {
         float: right;
-
+        -webkit-app-region: no-drag;
         > ul {
             margin-top: 7px;
             > li {
@@ -56,7 +52,7 @@
 
                 padding: 5px;
 
-                margin-left: 8px;
+                margin-left: 20px;
                 border-radius: 50%;
                 
                 cursor: pointer;
