@@ -8,13 +8,18 @@ html
      link(rel="stylesheet", href="../libs/font-awesome.min.css")
    body
       header(class="akara-title-bar")
-         span(class="fa fa-ellipsis-v akara-menu-toggle") 
+         span(class="fa fa-ellipsis-v akara-menu-toggle")
             div(class="akara-dropdown" hidden)
 
                 ul(class="akara-dropdown-item")
 
-                   li(class="akara-dropdown-list" data-drop="addMedia") Add
-                   li(class="akara-dropdown-list" data-drop="saveMedia") Save 
+                   li(class="akara-dropdown-list akara-drop-add") Add
+                       ul(class="akara-add-media" hidden)
+                          li(class="fa-file akara-dropdown-list" data-drop="addMediaFile") 
+                              span Add Files
+                          li(class="fa-folder akara-dropdown-list" data-drop="addMediaFolder") 
+                              span Add Folder
+                   li(class="akara-dropdown-list" data-drop="saveMedia") Save
                    li(class="akara-dropdown-list" data-drop="loadPlist") Load Playlist
                    li(class="akara-dropdown-list screenshot" data-drop="screenshot") Screenshot
                    li(class="akara-dropdown-list akara-drop-media") Media Elements
