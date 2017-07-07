@@ -1,6 +1,17 @@
 .akara-media .akara-load .akara-loaded > li:hover, [data-clicked="true"] {
   background: #3e3e3e; }
 
+.akara-media-element, .akara-add-media, .akara-dropdown {
+  position: absolute;
+  left: 200px;
+  top: 204px;
+  width: 200px;
+  background: white;
+  color: black; }
+
+.akara-add-media > li > span {
+  margin-left: 10px; }
+
 *:focus {
   outline: none; }
 
@@ -50,30 +61,19 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
-.akara-media-element {
-  position: absolute;
-  left: 200px;
-  top: 223.555px;
-  width: 200px;
-  background: white;
-  color: black; }
+.akara-add-media {
+  top: 0; }
 
 .akara-dropdown {
-  position: absolute;
   text-align: left;
   height: 0;
-  width: 200px;
-  background: white;
-  color: black;
   left: 10px;
   top: 30px;
   border: 1px solid white;
   font-size: 20px; }
-  .akara-dropdown ul .screenshot {
-    border-top: 2px solid black;
-    border-bottom: 2px solid black; }
   .akara-dropdown ul li {
     visibility: hidden;
+    font-size: 1rem;
     padding: 10px;
     transition: .3s; }
     .akara-dropdown ul li:hover {
