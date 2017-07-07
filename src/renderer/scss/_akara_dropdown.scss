@@ -1,32 +1,21 @@
-$drop-down-width: 200px;
-$drop-down-back-color: white;
-$drop-down-color: black;
-$drop-down-pos: absolute;
 
 .akara-media-element {
-    
-    position: $drop-down-pos;
-    left: 200px;
-    top: 223.555px;
-
-    width: $drop-down-width;
-
-    background: $drop-down-back-color;
-    color: $drop-down-color;
+    @extend %hovered_menu_item_unhide;
 }
+
+.akara-add-media {
+    @extend %hovered_menu_item_unhide;
+    top: 0;
+    @extend %move_droped_span
+}
+
+
 .akara-dropdown {
-    
-    position: $drop-down-pos;
+    @extend %hovered_menu_item_unhide; 
     
     text-align: left;
 
     height: 0;
-
-    width: $drop-down-width;
-    
-
-    background: $drop-down-back-color;
-    color: $drop-down-color;
     
     
     left: 10px;
@@ -42,17 +31,12 @@ $drop-down-pos: absolute;
     
     ul {
         //position: absolute;
-        .screenshot {
-            
-            border-top: 2px solid black;
-            border-bottom: 2px solid black;
-        }
         
         li {
 
             visibility: hidden;
-            
-            //margin-left: 20px;
+
+            font-size: 1rem;
             
             padding: 10px;
             
