@@ -2,9 +2,15 @@
     
     "use strict";
     
-    let mediaElDropP = o.querySelector(".akara-drop-media");
-    let dropedEl = mediaElDropP.querySelector(".akara-media-element");
+    let mediaDropedEl = o.querySelector(".akara-drop-media");
+    let dropedMediaEl = mediaDropedEl.querySelector(".akara-media-element");
+
+    
+    let addDropedEl = o.querySelector(".akara-drop-add");
+    let dropedAddEl = addDropedEl.querySelector(".akara-add-media");
+    
     let dropdownP = o.querySelector(".akara-dropdown");
+    
     let isShown = false;
     
     function isVisible(el) {
@@ -25,14 +31,19 @@
     });
    
     
-    mediaElDropP.addEventListener("mouseover", event => {
-        dropedEl.removeAttribute("hidden");
+    mediaDropedEl.addEventListener("mouseover", event => {
+        dropedMediaEl.removeAttribute("hidden");
     });
 
-    mediaElDropP.addEventListener("mouseout", event => {
-        dropedEl.setAttribute("hidden", true);
+    mediaDropedEl.addEventListener("mouseout", event => {
+        dropedMediaEl.setAttribute("hidden", true);
     });
 
-    
-    
+    addDropedEl.addEventListener("mouseover", event => {
+        dropedAddEl.removeAttribute("hidden");
+    });
+
+    addDropedEl.addEventListener("mouseout", event => {
+        dropedAddEl.setAttribute("hidden", true);
+    });
 })(document.querySelector(".akara-menu-toggle"));
