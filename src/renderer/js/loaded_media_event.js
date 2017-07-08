@@ -1,6 +1,7 @@
 ; ( ({ ipcRenderer: ipc },ul) => {
     
     const { addMediaCb } = require("../js/dropdown_callbacks.js");
+    const video = document.querySelector("video");
     
     const removeType = (pNode,...types) => {
 
@@ -49,19 +50,23 @@
 
             removeType(target.parentNode,"data-dbclicked","data-now-playing");
 
+            
+            
             target.setAttribute("data-dbclicked", "true");
             target.setAttribute("data-now-playing", "true");
 
+            
             target.classList.add("fa");
             target.classList.add("fa-play-circle");
+
+            video.src = target.getAttribute("data-full-path");
+
+            video.addEventListener("loadstart", event => console.log("loading") );
 
         }
 
     });
 
-    ul.addEventListener("drop", event => {
-        console.log("huhdrop");
-    });
 
     ipc.on("media-droped-files", (event, mediaPaths) => {
         addMediaCb(mediaPaths);

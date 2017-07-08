@@ -11,6 +11,9 @@
     
     let dropdownP = o.querySelector(".akara-dropdown");
     
+    let dropdownPItem = dropdownP.querySelector(".akara-dropdown-item");
+    
+    
     let isShown = false;
     
     function isVisible(el) {
@@ -29,21 +32,24 @@
         }
         
     });
-   
     
-    mediaDropedEl.addEventListener("mouseover", event => {
-        dropedMediaEl.removeAttribute("hidden");
-    });
+    function initSubMenuListeners() {
+        
+        Array.from(dropdownPItem.children, el => {
+            
+            if ( ! el.getAttribute("data-drop") ) {
+                
+                el.addEventListener("mouseover", event => {
+                    el.querySelector("ul").removeAttribute("hidden");
+                });
+                
+                el.addEventListener("mouseout", event => {
+                    el.querySelector("ul").setAttribute("hidden", true);
+                });
+            }
+        });        
+    }
 
-    mediaDropedEl.addEventListener("mouseout", event => {
-        dropedMediaEl.setAttribute("hidden", true);
-    });
-
-    addDropedEl.addEventListener("mouseover", event => {
-        dropedAddEl.removeAttribute("hidden");
-    });
-
-    addDropedEl.addEventListener("mouseout", event => {
-        dropedAddEl.setAttribute("hidden", true);
-    });
+    initSubMenuListeners();
+    
 })(document.querySelector(".akara-menu-toggle"));

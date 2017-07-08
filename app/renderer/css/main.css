@@ -1,7 +1,10 @@
 .akara-media .akara-load .akara-loaded > li:hover, [data-clicked="true"] {
   background: #3e3e3e; }
 
-.akara-media-element, .akara-add-media, .akara-dropdown {
+.akara-media-element,
+.akara-add-media,
+.akara-subtitle,
+.akara-internet-media, .akara-dropdown {
   position: absolute;
   left: 200px;
   top: 204px;
@@ -9,8 +12,23 @@
   background: white;
   color: black; }
 
-.akara-add-media > li > span {
-  margin-left: 10px; }
+.akara-media-element > li,
+.akara-add-media > li,
+.akara-subtitle > li,
+.akara-internet-media > li, .akara-dropdown ul > li {
+  display: block;
+  width: inherit; }
+  .akara-media-element > li > span,
+  .akara-add-media > li > span,
+  .akara-subtitle > li > span,
+  .akara-internet-media > li > span, .akara-dropdown ul > li > span {
+    margin-left: 10px; }
+
+.akara-media-element > li,
+.akara-add-media > li,
+.akara-subtitle > li,
+.akara-internet-media > li {
+  width: 180px !important; }
 
 *:focus {
   outline: none; }
@@ -63,6 +81,12 @@ table {
 
 .akara-add-media {
   top: 0; }
+
+.akara-subtitle {
+  top: 255px; }
+
+.akara-internet-media {
+  top: 306px; }
 
 .akara-dropdown {
   text-align: left;

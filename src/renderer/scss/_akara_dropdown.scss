@@ -1,14 +1,24 @@
 
-.akara-media-element {
+.akara-media-element,
+.akara-add-media,
+.akara-subtitle,
+.akara-internet-media {
     @extend %hovered_menu_item_unhide;
+    @extend %move_droped_span;
+    @extend %submenu_default_li_width;
 }
 
 .akara-add-media {
-    @extend %hovered_menu_item_unhide;
-    top: 0;
-    @extend %move_droped_span
+    top: $drop-down-top-pos - $drop-down-top-pos;
 }
 
+.akara-subtitle {
+    top: $drop-down-top-pos + 51px;
+}
+
+.akara-internet-media {
+    top: $drop-down-top-pos + 102px;
+}
 
 .akara-dropdown {
     @extend %hovered_menu_item_unhide; 
@@ -31,9 +41,10 @@
     
     ul {
         //position: absolute;
+        @extend %move_droped_span;
         
         li {
-
+            
             visibility: hidden;
 
             font-size: 1rem;
@@ -41,6 +52,8 @@
             padding: 10px;
             
             transition: .3s;
+
+            //width: inherit;
             
             &:hover {
                 background-color: darkgrey;
