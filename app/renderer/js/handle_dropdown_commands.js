@@ -2,9 +2,11 @@ const {remote: { dialog, app , require: _require }} = require("electron");
 const { video, controls } = require("../js/video_control.js");
 const { addMediaCb } = require("../js/dropdown_callbacks.js");
 
-const { play, pause, mute, unmute } = controls;
+const { play, pause, mute, unmute, next, previous } = controls;
 
 const { iterateDir } = _require("./utils.js"); // get utils from the main process folder
+
+const { prevNext  } = require("../js/util.js");
 
 const addMediaFile = () => {
 
@@ -79,12 +81,26 @@ const _stop = function () {
     return __spitError();
 };
 
+const _next = () => {
+    
+    if ( __videoAttribute(video) ) return controls.next();
+    return __spitError();
+};
+
+const _previous = () => {
+    
+    if ( __videoAttribute(video) ) return controls.previous();
+    return __spitError();
+};
+
 const HandleDroped = () => ({ addMediaFile,
     addMediaFolder ,
     _play,
     _pause,
     _mute,
     _unmute,
-    _stop});
+    _stop,
+    _next,
+    _previous});
 
 module.exports = HandleDroped;
