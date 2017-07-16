@@ -1,9 +1,10 @@
 ; ( ({remote: { dialog, app , require: _require }}) => {
           
     const dropDownAkaraItem = document.querySelector(".akara-dropdown-item"),
+          HandleDroped = require("../js/handle_dropdown_commands.js"),
           
           { addMediaCb } = require("../js/dropdown_callbacks.js"),
-          
+
           { iterateDir } = _require("./utils.js"); // get utils from the main process folder
     
     
