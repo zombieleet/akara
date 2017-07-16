@@ -5,9 +5,9 @@ const videoListMenu = [
     {
         label: "Remove",
         click(menuItem,{ webContents },event) {
-            
+
             webContents.send("remove-target-hit");
-            
+
         },
         accelearation: "CtrlOrCommand+r"
     },

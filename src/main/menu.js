@@ -5,9 +5,9 @@ const videoListMenu = [
     {
         label: "Remove",
         click(menuItem,{ webContents },event) {
-            
+
             webContents.send("remove-target-hit");
-            
+
         },
         accelearation: "CtrlOrCommand+r"
     },
@@ -20,41 +20,48 @@ const videoListMenu = [
     },
     {
         label: "Play",
-        click() {
+        click(menuItem,{ webContents },event) {
+            webContents.send("play-hit-target");
         },
         accelearation: "Alt+p"
     },
     {
         label: "Pause",
-        click() {
+        click(menuItem,{ webContents },event) {
+            webContents.send("pause-hit-target");
         },
         accelearation: "Alt+o"
     },
     {
-        label: "Stop",
-        click() {
-        },
-        accelearation: "Alt+s"
-    },
-    {
-        label: "Previous",
-        click() {
-        },
-        accelearation: "p"
-    },
-    {
-        label: "Next",
-        click() {
-        },
-        accelearation: "n"
+        type: "separator"
     },
     {
         label: "Repeat",
-        click() {
+        click(menuItem,{ webContents },event) {
+            webContents.send("repeat-hit-target");
+        }
+    },
+    {
+        label: "No Repeat",
+        click(menuItem,{ webContents },event) {
+            webContents.send("no-repeat-hit-target");
+        }
+    },
+    {
+        label: "Repeat All",
+        click(menuIte, { webContents }, event) {
         }
     },
     {
         type: "separator"
+    },
+    {
+        label: "Shuffle",
+        click(menuItem, { webContents }, event) {
+        }
+    },
+    {
+        type: "sepeartor"
     },
     {
         label: "Share",
