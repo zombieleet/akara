@@ -1,5 +1,6 @@
 const { ipcRenderer: ipc } = require("electron");
-//const { basename, dirname } = require("path");
+const url = require("url");
+const { video, controls: { play } } = require("../js/video_control.js");
 
 const createEl = ({path: abs_path, _path: rel_path}) => {
 
