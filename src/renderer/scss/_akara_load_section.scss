@@ -3,7 +3,7 @@ $akara-media-height: 100%;
 $akara-media-cover-width: 70%;
 $akara-media-element-height: 100%;
 
-$akara-load-width: 100% - $akara-media-cover-width;
+$akara-load-width: 20% ;//- $akara-media-cover-width;
 
 .akara-media {
 
@@ -21,18 +21,13 @@ $akara-load-width: 100% - $akara-media-cover-width;
 
         float: right;
 
-        width: $akara-media-cover-width;
-        height: inherit;
-        //border: 2px solid green;
+        width: 80%;
 
+        height: 100%;
+        
         video {
-            
             width: 100%;
-            height: inherit;
-            
-            //margin-top: -2.5%;
-
-            //margin-left: 6%;
+            height: 79.88%;
         }
     }
 
@@ -41,7 +36,6 @@ $akara-load-width: 100% - $akara-media-cover-width;
     .akara-load {
 
         float: left;
-
 
         width: $akara-load-width;
 
