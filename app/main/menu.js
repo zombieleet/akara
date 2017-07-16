@@ -61,7 +61,7 @@ const videoListMenu = [
         }
     },
     {
-        type: "sepeartor"
+        type: "separator"
     },
     {
         label: "Share",
