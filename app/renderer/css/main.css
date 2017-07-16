@@ -264,14 +264,14 @@ table {
   color: #cccccc; }
   .akara-media .akara-media-cover {
     float: right;
-    width: 70%;
-    height: inherit; }
+    width: 80%;
+    height: 100%; }
     .akara-media .akara-media-cover video {
       width: 100%;
-      height: inherit; }
+      height: 79.88%; }
   .akara-media .akara-load {
     float: left;
-    width: 30%;
+    width: 20%;
     margin-right: -8px;
     height: inherit;
     background: #252525; }
@@ -300,6 +300,63 @@ table {
 
 [data-dbclicked="true"] span {
   margin-left: 12px; }
+
+.akara-control {
+  position: fixed;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: #181818; }
+
+.akara-time {
+  width: 100%; }
+  .akara-time .akara-time-length {
+    background: darkgrey;
+    height: 12px;
+    cursor: pointer;
+    width: inherit; }
+    .akara-time .akara-time-length .akara-time-current {
+      width: 0;
+      background: #323232;
+      height: inherit; }
+
+.akara-media-control-left {
+  float: left; }
+
+.akara-media-control-right {
+  float: right; }
+
+.akara-media-control-left,
+.akara-media-control-right {
+  width: percent(50% 40); }
+  .akara-media-control-left li,
+  .akara-media-control-right li {
+    cursor: pointer;
+    margin: 15px;
+    cursor: pointer;
+    border-width: 12px;
+    padding: 20px;
+    border-radius: 50%;
+    box-shadow: 5px 5px 20px #000 inset;
+    transition: .2s box-shadow ease-in-out; }
+    .akara-media-control-left li:hover,
+    .akara-media-control-right li:hover {
+      box-shadow: 5px 5px 20px #262626 inset; }
+
+.akara-update-cur-time {
+  display: block;
+  margin: 15px auto auto 20px; }
+
+.akara-display {
+  display: none !important; }
+
+[data-hover="true"] {
+  position: absolute;
+  border-radius: 10%;
+  background: #4b4b4b;
+  padding: 3px; }
+  [data-hover="true"] span {
+    color: white; }
 
 ::-webkit-scrollbar {
   width: 7px;
