@@ -9,7 +9,7 @@
     "lintfix": "eslint --fix"
   },
   "dependencies": {
-    "electron": "^1.7.4",
+    "electron": "^1.6.11",
     "gulp": "^3.9.1",
     "mime": "^1.3.6",
     "pug": "^2.0.0-rc.2"
