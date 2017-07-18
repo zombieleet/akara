@@ -11,6 +11,14 @@ div(class="akara-control")
          li(class="fa fa-stop" data-fire="stop")
          li(class="fa fa-backward" data-fire="previous")
          li(class="fa fa-forward" data-fire="next")
+         li(class="fa fa-volume-up" data-fire="volume")
+         li(class="akara-volume")
+             - for ( let i = 0; i <= 10 ; i++ ) {
+                 - if ( i <= 6 )
+                      span(class="volume-incr" data-volume-controler=( i / 10 ) data-volume-set="true")
+                 - else
+                      span(class="volume-incr" data-volume-controler=( i / 10 ))
+             - }
       ul(class="akara-media-control-right")
          li(class="fa fa-cc" data-fire="subtitle")
          li(class="fa fa-repeat" data-fire="repeat")
