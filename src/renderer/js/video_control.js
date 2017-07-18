@@ -11,7 +11,8 @@ const videoEmit = new EventEmitter();
 
 const video = document.querySelector("video"),
       controlElements = document.querySelector(".akara-control-element"),
-      jumpToSeekElement = document.querySelector(".akara-time");
+      jumpToSeekElement = document.querySelector(".akara-time"),
+      akaraVolume = document.querySelector(".akara-volume");
       //jumpToSeekElement = document.querySelector(".akara-control");
 
 
@@ -20,14 +21,14 @@ const controls = {
 
     play() { return  video.play(); },
     pause()  { return video.pause(); },
-    
+
     stop() {
-        
+
         video.currentTime = 0;
         this.pause();
-        
+
         video.__status = undefined;
-        
+
         return ;
     },
     mute() {
@@ -38,6 +39,8 @@ const controls = {
         _mute.textContent = _mute.textContent.replace("Mute", " Unmute");
 
         video.muted = true;
+
+        videoEmit.emit("low_volume", true);
 
         return _mute.setAttribute("data-drop", "_unmute");
 
@@ -50,6 +53,8 @@ const controls = {
 
         video.muted = false;
 
+        videoEmit.emit("high_volume", true);
+
         return _unmute.setAttribute("data-drop", "_mute");
 
     },
@@ -58,6 +63,13 @@ const controls = {
     },
     previous() {
         videoEmit.emit("go-to-previous");
+    },
+    volume() {
+
+        if ( video.muted )
+            return this.unmute();
+
+        return this.mute();
     },
     getCurrentTime() { return video.currentTime; },
     duration() { return video.duration; }
@@ -221,6 +233,11 @@ const videoPlayEvent = () => {
     return play.classList.add("akara-display");
 };
 
+const videoLoadedEvent = () => {
+    const currentVolumeSet = document.querySelectorAll("[data-volume-set=true]");
+    video.volume = currentVolumeSet[currentVolumeSet.length - 1].getAttribute("data-volume-controler");
+};
+
 const clickedMoveToEvent = event => {
 
     const target = event.target;
@@ -255,17 +272,117 @@ const mouseMoveShowCurrentTimeEvent = event => {
 const mouseDownDragEvent = event => event.target.classList.contains("akara-time-current") ?
           jumpToSeekElement.addEventListener("mousemove", moveToDragedPos) : false;
 
+
+const __removeRedMute = () => {
+
+    const changeVolumeIcon = document.querySelector("[data-fire=volume]");
+
+    if ( changeVolumeIcon.hasAttribute("style") ) {
+        changeVolumeIcon.removeAttribute("style");
+        controls.unmute();
+    }
+    return ;
+};
+
+const handleVolumeWheelChange = event => {
+    const scrollPos = event.wheelDeltaY,
+          decimalVol = scrollPos / 100,
+          volumeElements = Array.prototype.slice.call(document.querySelectorAll("[data-volume-set=true]"));
+
+    let popedValue;
+
+    /*
+
+     BAD IMPLEMENTATION OF SCROLLING TO CHANGE VOLUME;
+
+     let value;
+
+     if ( ( Math.sign(decimalVol) === -1 ) && ( value = Math.pow(decimalVol, 2) / 2 ) <= 0.09 ) {
+
+        video.volume = Number(value.toExponential().replace(/-\d+$/,"-2")).toFixed(2);
+        console.log(event.srcElement,event);
+
+     }*/
+
+    __removeRedMute();
+    
+    if ( (Math.sign(decimalVol) === -1 )
+         && ( popedValue = volumeElements.pop() )
+         && ( volumeElements.length >= 1 ) )
+    {
+
+        popedValue.removeAttribute("data-volume-set");
+        video.volume = volumeElements[volumeElements.length - 1].getAttribute("data-volume-controler");
+    }
+
+
+    if ( Math.sign(decimalVol) === 1 ) {
+
+        const nextElementFromArray = volumeElements[volumeElements.length - 1].nextElementSibling;
+
+        if ( nextElementFromArray ) {
+            nextElementFromArray.setAttribute("data-volume-set", "true");
+            video.volume = nextElementFromArray.getAttribute("data-volume-controler");
+        }
+    }
+    // to enable the showing of fa-volume-down
+    if ( video.volume <= 0.3 )  return videoEmit.emit("low_volume");
+
+    return videoEmit.emit("high_volume");
+
+};
+
+const handleVolumeChange = event => {
+
+    const target = event.target;
+
+    let isChanged = 0;
+
+    if ( target.nodeName.toLowerCase() !== "span" ) return false;
+
+    target.setAttribute("data-volume-set", "true");
+
+    video.volume = target.getAttribute("data-volume-controler");
+    
+    __removeRedMute();
+
+    let _NextTarget = target.nextElementSibling;
+
+    let _PrevTarget = target.previousElementSibling;
+
+    while ( _NextTarget ) {
+        _NextTarget.removeAttribute("data-volume-set");
+        _NextTarget = _NextTarget.nextElementSibling;
+    }
+
+    while ( _PrevTarget ) {
+        _PrevTarget.setAttribute("data-volume-set", "true");
+        _PrevTarget = _PrevTarget.previousElementSibling;
+    }
+
+    if ( video.volume <= 0.3 ) {
+        videoEmit.emit("low_volume");
+        return true;
+    }
+
+    videoEmit.emit("high_volume");
+
+    return true;
+};
+
 function initVideoEvents() {
 
     controlElements.addEventListener("click", fireControlButtonEvent);
 
     video.addEventListener("timeupdate", updateTimeIndicator);
-    
+
     video.addEventListener("ended", () => videoEmit.emit("ended"));
 
     video.addEventListener("pause", videoPauseEvent );
 
     video.addEventListener("play", videoPlayEvent );
+
+    video.addEventListener("loadstart", videoLoadedEvent);
 
     jumpToSeekElement.addEventListener("click", clickedMoveToEvent);
 
@@ -276,7 +393,28 @@ function initVideoEvents() {
     jumpToSeekElement.addEventListener("mousedown", mouseDownDragEvent);
 
     jumpToSeekElement.addEventListener("mouseup", () =>
-                                  jumpToSeekElement.removeEventListener("mousemove", moveToDragedPos));
+                                       jumpToSeekElement.removeEventListener("mousemove", moveToDragedPos));
+
+    akaraVolume.addEventListener("click", handleVolumeChange);
+    akaraVolume.addEventListener("mousewheel", handleVolumeWheelChange);
+
+    let changeVolumeIcon = document.querySelector("[data-fire=volume]");
+
+    videoEmit.on("low_volume", type => {
+
+        if ( type ) changeVolumeIcon.setAttribute("style", "color: red");
+
+        changeVolumeIcon.classList.remove("fa-volume-up");
+        changeVolumeIcon.classList.add("fa-volume-down");
+    });
+
+    videoEmit.on("high_volume", type => {
+
+        if ( type ) changeVolumeIcon.removeAttribute("style");
+
+        changeVolumeIcon.classList.remove("fa-volume-down");
+        changeVolumeIcon.classList.add("fa-volume-up");
+    });
 
 }
 
