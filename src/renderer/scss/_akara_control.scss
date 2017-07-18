@@ -1,3 +1,4 @@
+$volume-color: white;
 
 .akara-control {
 
@@ -44,13 +45,17 @@
 .akara-media-control-left,
 .akara-media-control-right {
 
-    width: percent(50% ( 20 + 20 ) );
-
-    li {
+    width: percent(50 ( 20 + 20 ) );
+    
+    li.akara-volume {
+        display: inline-block;
+    }
+    
+    li.fa {
 
         cursor: pointer;
 
-        margin: 15px;
+        margin: 10px;
 
         cursor: pointer;
 
@@ -89,4 +94,44 @@
     span {
         color: white;
     }
+}
+
+
+
+
+.volume-incr {
+   
+
+    border-top: {
+        right-radius: 10%;
+        left-radius: 10%;
+    }
+    //margin-left: 8px;
+    
+    padding: 1px;
+    background: lighten(black,20%);//$volume-color;
+
+
+    padding-right: 12px;
+
+    cursor: pointer;
+
+}
+
+
+$cur-pad-top: 1;
+@for $i from 1 through 11 {
+    .volume-incr:nth-of-type(#{$i}) {
+        
+        @if $i == 1 {
+            margin-left: -5px;
+        }
+        padding-top: $cur-pad-top + px;
+        
+        $cur-pad-top: $cur-pad-top + 3;
+    }
+}
+
+[data-volume-set="true"] {
+    background: #fff;
 }
