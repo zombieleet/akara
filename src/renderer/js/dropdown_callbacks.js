@@ -1,4 +1,3 @@
-
 const { remote: { dialog } } = require("electron");
 const { basename } = require("path");
 const { createEl, validateMime } = require("../js/util.js");
@@ -15,11 +14,12 @@ const addMediaCb = paths => {
 
     paths.forEach( async (path) => {
 
-        path = await validateMime(path);
+        let ppath = await validateMime(path);
         
-        if ( ! path )
+        if ( ! ppath )
             return dialog.showErrorBox("Invalid Media type",
-                                       `Unable to Convert ${basename(path)} to a media file`);
+                                       `Cannot Play ${basename(path)}`);
+        path = ppath;
 
         let _path = basename(path);
         
