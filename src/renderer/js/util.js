@@ -30,6 +30,8 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
         pathname: abs_path
     }));
 
+    child.classList.add("playlist");
+
 
     childchild.textContent = rel_path;
 
@@ -85,13 +87,15 @@ const removeTarget = (target,video) => {
         let _target = target.nextElementSibling || target.parentNode.firstElementChild;
 
         if ( _target.parentNode.childElementCount === 1 ) {
+
             video.src = "";
-            video.removeAttribute("src");
 
             const play = document.querySelector("[data-fire=play]");
             const pause = document.querySelector("[data-fire=pause]");
             pause.classList.add("akara-display");
             play.classList.remove("akara-display");
+
+            document.querySelector(".akara-title").textContent = "Akara Media Player";
 
         } else {
             video.src = _target.getAttribute("data-full-path");
@@ -264,6 +268,16 @@ const Convert = _path => new Promise((resolve,reject) => {
     
 });
 
+const playOnDrop = () => {
+    
+    const firstVideoList = document.querySelector(".playlist");
+    console.log(firstVideoList);
+    if ( ! video.getAttribute("src") ) {
+        setupPlaying(firstVideoList);
+    }
+    
+};
+
 module.exports = {
     createEl,
     removeTarget,
@@ -273,5 +287,6 @@ module.exports = {
     disableMenuItem,
     setupPlaying,
     prevNext,
-    validateMime
+    validateMime,
+    playOnDrop
 };

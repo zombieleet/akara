@@ -1,11 +1,10 @@
 const { remote: { dialog } } = require("electron");
 const { basename } = require("path");
-const { createEl, validateMime } = require("../js/util.js");
+const { createEl, validateMime, playOnDrop } = require("../js/util.js");
 
 const addMediaCb = paths => {
 
     let mediaPathParent = document.querySelector(".akara-loaded");
-    let video = document.querySelector("video");
 
     if ( ! paths ) {
         mediaPathParent = undefined;
@@ -25,7 +24,9 @@ const addMediaCb = paths => {
         
         const createdElement = createEl({path,_path});
         
-        return mediaPathParent.appendChild(createdElement);
+        mediaPathParent.appendChild(createdElement);
+        
+        return playOnDrop();
     });
 };
 

@@ -1,6 +1,6 @@
 $volume-color: white;
 
-.akara-control {
+.akara-control,.cover-on-error-src {
 
     position: fixed;
     right: 0;
@@ -10,6 +10,18 @@ $volume-color: white;
     background: darken($global-color,20%);
 }
 
+.cover-on-error-src {
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    top:0;
+
+
+    background: $global-color;
+
+    opacity: .75;
+}
 
 .akara-time {
 
