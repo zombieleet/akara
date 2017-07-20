@@ -2,7 +2,13 @@
 
     const { addMediaCb } = require("../js/dropdown_callbacks.js");
 
-    const { removeTarget,removeType,setCurrentPlaying,removeClass, disableMenuItem, setupPlaying, prevNext } = require("../js/util.js");
+    const { removeTarget,
+            removeType,
+            setCurrentPlaying,
+            removeClass,
+            disableMenuItem,
+            setupPlaying,
+            prevNext } = require("../js/util.js");
 
     const { videoListMenu } = _require("./menu.js");
 

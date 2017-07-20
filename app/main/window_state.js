@@ -1,6 +1,9 @@
 
 const { ipcMain: ipc, BrowserWindow } = require("electron");
 
+const { CONVERTED_MEDIA }  = require("./constants.js");
+
+const { existsSync, rmdirSync } = require("fs");
 
 const handleWinState = win => {
 
@@ -10,6 +13,12 @@ const handleWinState = win => {
 
     win.on("unmaximize", () => {
         win.webContents.send("window-is-not-max");
+    });
+
+    win.on("close", () => {
+        win = undefined;
+        if ( existsSync(CONVERTED_MEDIA ) )
+            rmdirSync(CONVERTED_MEDIA);
     });
     
     ipc.on("window-maximize", event => {

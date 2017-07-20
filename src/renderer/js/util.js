@@ -1,6 +1,20 @@
-const { ipcRenderer: ipc } = require("electron");
+const { remote:
+        { require: _require },
+        ipcRenderer: ipc } = require("electron");
+const { CONVERTED_MEDIA } = _require("./constants.js");
+const { Magic, MAGIC_MIME_TYPE: _GET_MIME }  = require("mmmagic");
 const url = require("url");
+const { spawn } = require("child_process");
+const { mkdirSync , existsSync } = require("fs");
+const { join,
+        basename,
+        parse } = require("path");
 const { video, controls: { play } } = require("../js/video_control.js");
+
+
+const magic = new Magic(_GET_MIME);
+
+let IsShownUnsupportedFormat;
 
 const createEl = ({path: abs_path, _path: rel_path}) => {
 
@@ -25,7 +39,7 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
 };
 
 const removeType = (pNode,...types) => {
-    
+
     Array.from(pNode.children, el => {
 
         types.forEach( type => el.hasAttribute(type)
@@ -163,6 +177,93 @@ const prevNext = moveTo => {
         return setupPlaying(target.previousElementSibling);
 };
 
+const createDir = () => mkdirSync(`${CONVERTED_MEDIA}`);
+
+const sendNotice = message =>  new Notification(message);
+
+const getMime = file => new Promise((resolve,reject) => {
+    
+    magic.detectFile(file, (err,data) => {
+        
+        if ( err) return reject(err);
+
+        return resolve(data);
+    });
+    
+});
+
+const validateMime = async (path) => {
+
+    const _getMime = await getMime(path);
+    
+    if ( ! /^audio|^video/.test(_getMime) )
+        
+        return undefined;
+
+    
+    const canPlay = video.canPlayType(_getMime);
+    
+    if ( /^maybe$|^probably$/.test(canPlay) )
+
+        return path;
+       
+
+    sendNotice("Unsupported Mime/Codec detected, this file will be converted in the background");
+    
+    let _fpath;
+        
+    try {
+        
+        _fpath = await Convert(path);
+        
+    } catch(ex) {
+        
+        _fpath = ex;
+    }
+    
+    if ( Error[Symbol.hasInstance](_fpath) )
+        path = undefined;
+    else
+        path = _fpath;
+
+
+    return path;
+
+};
+
+const Convert = _path => new Promise((resolve,reject) => {
+
+    let result;
+
+    // _fpath will contain the converted path
+    const _fpath = join(CONVERTED_MEDIA,parse(_path).name + ".mp4");    
+    
+    if ( ! existsSync(CONVERTED_MEDIA) )
+        createDir();
+
+    // if _fpath exists instead just resolve don't convert
+    if ( existsSync(_fpath) ) {
+        return resolve(_fpath);
+    }
+
+    const ffmpeg = spawn("ffmpeg", ["-i", _path , "-acodec", "libmp3lame", "-vcodec", "mpeg4", "-f", "mp4", _fpath]);
+
+
+    ffmpeg.stderr.on("data", data => {});
+    
+    ffmpeg.on("close", code => {
+        console.log(code);
+        console.log("awdfasdfasdfasdf");
+        if ( code >= 1 )
+            
+            reject(new Error(`Unable to Convert Video`));
+
+        resolve(_fpath);
+        
+    });
+    
+});
+
 module.exports = {
     createEl,
     removeTarget,
@@ -171,5 +272,6 @@ module.exports = {
     setCurrentPlaying,
     disableMenuItem,
     setupPlaying,
-    prevNext
+    prevNext,
+    validateMime
 };

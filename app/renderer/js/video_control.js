@@ -91,7 +91,7 @@ const updateTimeIndicator = () => {
     timeIndicator.setAttribute("style", `width: ${timeIndicatorWidth}px`);
 
     timeIndicator = undefined;
-
+    
     currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;
 
     return true;
@@ -227,8 +227,6 @@ const videoPlayEvent = () => {
     pause.classList.remove("akara-display");
 
     //setTimeout( notify.close().bind(notify), 5000);
-
-    console.log(notify);
 
     return play.classList.add("akara-display");
 };
@@ -373,7 +371,12 @@ const handleVolumeChange = event => {
 function initVideoEvents() {
 
     controlElements.addEventListener("click", fireControlButtonEvent);
-
+    
+    video.addEventListener("loadeddata", event => {
+        const currTimeUpdate = document.querySelector(".akara-update-cur-time");
+        currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;
+    });
+    
     video.addEventListener("timeupdate", updateTimeIndicator);
 
     video.addEventListener("ended", () => videoEmit.emit("ended"));
@@ -383,6 +386,10 @@ function initVideoEvents() {
     video.addEventListener("play", videoPlayEvent );
 
     video.addEventListener("loadstart", videoLoadedEvent);
+
+    video.addEventListener("error", event => {
+        dialog.showErrorBox("Unexpected Error",`Unexpected Error while playing ${basename(video.src)}`);
+    });
 
     jumpToSeekElement.addEventListener("click", clickedMoveToEvent);
 
