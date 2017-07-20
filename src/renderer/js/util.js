@@ -1,6 +1,25 @@
-const { ipcRenderer: ipc } = require("electron");
+const { remote:
+        { require: _require },
+        ipcRenderer: ipc } = require("electron");
+
+const { CONVERTED_MEDIA } = _require("./constants.js");
+
+const mime = require("mime");
+
 const url = require("url");
+
+const { execSync } = require("child_process");
+
+const { mkdirSync , existsSync } = require("fs");
+
+const { join,
+        basename,
+        parse } = require("path");
+
 const { video, controls: { play } } = require("../js/video_control.js");
+
+
+
 
 const createEl = ({path: abs_path, _path: rel_path}) => {
 
@@ -25,7 +44,7 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
 };
 
 const removeType = (pNode,...types) => {
-    
+
     Array.from(pNode.children, el => {
 
         types.forEach( type => el.hasAttribute(type)
@@ -163,6 +182,61 @@ const prevNext = moveTo => {
         return setupPlaying(target.previousElementSibling);
 };
 
+const createDir = () => mkdirSync(`${CONVERTED_MEDIA}`);
+
+
+const validateMime = async (path) => {
+    
+    if ( ! /^maybe$|^probably$/.test(video.canPlayType(mime.lookup(path)))  ) {
+        
+        let _fpath;
+        
+        try {
+            _fpath = await Convert(path);
+        } catch(ex) {
+            _fpath = ex;
+        }
+
+        if ( Error[Symbol.hasInstance](_fpath) )
+            path = undefined;
+        else
+            path = _fpath;
+    }
+
+    return path;
+};
+
+const Convert = _path => new Promise((resolve,reject) => {
+
+    let result;
+
+    // _fpath will contain the converted path
+    const _fpath = join(CONVERTED_MEDIA,parse(_path).name + ".mp4");
+    
+    
+    
+    if ( ! existsSync(CONVERTED_MEDIA) )
+        createDir();
+
+    // if _fpath exists instead just resolve don't convert
+    if ( existsSync(_fpath) ) {
+        return resolve(_fpath);
+    }
+
+    try {
+        execSync(`ffmpeg -i "${_path}" -acodec libmp3lame -vcodec mpeg4 -f mp4 "${_fpath}"`);
+        //execSync(`ffmpeg -i "${_path}" -acodec libmp3lame -vcodec mpeg4 mimetype=video/mpeg4 -f mp4  ${_fpath}`);
+    } catch(ex) {
+        console.log(ex);
+        result = ex;
+    }
+
+    if ( result )
+        reject(result);
+    
+    resolve(_fpath);
+});
+
 module.exports = {
     createEl,
     removeTarget,
@@ -171,5 +245,6 @@ module.exports = {
     setCurrentPlaying,
     disableMenuItem,
     setupPlaying,
-    prevNext
+    prevNext,
+    validateMime
 };

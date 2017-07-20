@@ -3,3 +3,4 @@ node_modules/
 app/renderer/html/*.html
 !app/renderer/html/index.html
 *.mp4
+converted_media/

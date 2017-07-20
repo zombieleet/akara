@@ -14,8 +14,7 @@ const addMediaFile = () => {
         title: "Choose media file",
         defaultPath: app.getPath("videos"),
         filters: [
-            {name: "Videos" , extensions: ["mp4","mkv","avi","ogg"]},
-            {name: "Audios", extensions: ["mp3"]}
+            {name: "Media" , extensions: ["mp4","flac","ogv","ogm","ogg","webm","wav","m4v","m4a","mp3","amr","avi","3gp","swf","wma"]},
         ],
         properties: ["openFile", "multiSelections"]
     },addMediaCb);

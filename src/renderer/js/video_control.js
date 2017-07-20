@@ -384,6 +384,10 @@ function initVideoEvents() {
 
     video.addEventListener("loadstart", videoLoadedEvent);
 
+    video.addEventListener("error", event => {
+        dialog.showErrorBox("Unexpected Error",`Unexpected Error while playing ${basename(video.src)}`);
+    });
+
     jumpToSeekElement.addEventListener("click", clickedMoveToEvent);
 
     jumpToSeekElement.addEventListener("mousemove", mouseMoveShowCurrentTimeEvent);

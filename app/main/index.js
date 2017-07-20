@@ -8,9 +8,9 @@ const { join } = require("path");
 
 const appPath = app.getAppPath();
 
+
 require("electron-reload")(appPath, {
     electron: join(appPath, "node_modules", ".bin", "electron")
-    //electron: join("/", "usr", "bin", "electron")
 });
 
 const createWindow = () => {
@@ -30,7 +30,10 @@ const createWindow = () => {
             backgroundColor: "#4B4B4B",
             frame: false,
             show: false,
-            centre: true
+            centre: true,
+            webPreferences: {
+                nodeIntegrationInWorker: true
+            }
         });
 
         mainWindow.loadURL(`file://${appPath}/app/renderer/html/index.html`);
