@@ -1,5 +1,5 @@
 const { remote:
-        { require: _require, dialog },
+        { require: _require },
 ipcRenderer: ipc } = require("electron");
 
 const { CONVERTED_MEDIA } = _require("./constants.js");
@@ -18,8 +18,6 @@ const { join,
 
 const { video, controls: { play } } = require("../js/video_control.js");
 
-
-const mediaPathParent = document.querySelector(".akara-loaded");
 
 const createEl = ({path: abs_path, _path: rel_path}) => {
 
@@ -185,27 +183,25 @@ const prevNext = moveTo => {
 const createDir = () => mkdirSync(`${CONVERTED_MEDIA}`);
 
 
-const validateMime = function * (path) {
+const validateMime = async (path) => {
     
-    if ( /^maybe$|^probably$/.test(video.canPlayType(mime.lookup(path)))  ) {
-        return (yield Promise.resolve(path));
+    if ( ! /^maybe$|^probably$/.test(video.canPlayType(mime.lookup(path)))  ) {
+        
+        let _fpath;
+        
+        try {
+            _fpath = await Convert(path);
+        } catch(ex) {
+            _fpath = ex;
+        }
+
+        if ( Error[Symbol.hasInstance](_fpath) )
+            path = undefined;
+        else
+            path = _fpath;
     }
 
-    let _fpath;
-    
-    try {
-        _fpath = Convert(path);
-    } catch(ex) {
-        _fpath = ex;
-    }
-
-    if ( Error[Symbol.hasInstance](_fpath) )
-        path = Promise.reject(undefined);
-    else
-        path = _fpath;
-    
-    
-    return (yield path);
+    return path;
 };
 
 const Convert = _path => new Promise((resolve,reject) => {
@@ -228,6 +224,7 @@ const Convert = _path => new Promise((resolve,reject) => {
     try {
         execSync(`ffmpeg -i "${_path}" -acodec libmp3lame -vcodec mpeg4 -f mp4 "${_fpath}"`);
     } catch(ex) {
+        console.log(ex);
         result = ex;
     }
 
@@ -236,21 +233,6 @@ const Convert = _path => new Promise((resolve,reject) => {
     
     resolve(_fpath);
 });
-
-const showMediaInApp = path => {
-    
-    if ( ! path )
-        
-        return dialog.showErrorBox("Invalid Media type",
-            `Unable to Convert ${basename(path)} to a media file`);
-
-    let _path = basename(path);
-    
-    const createdElement = createEl({path,_path});
-
-    
-    return mediaPathParent.appendChild(createdElement);    
-};
 
 module.exports = {
     createEl,
@@ -261,6 +243,5 @@ module.exports = {
     disableMenuItem,
     setupPlaying,
     prevNext,
-    validateMime,
-    showMediaInApp
+    validateMime
 };

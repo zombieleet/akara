@@ -1,29 +1,31 @@
 
 const { remote: { dialog } } = require("electron");
-const { validateMime, showMediaInApp } = require("../js/util.js");
+const { basename } = require("path");
+const { createEl, validateMime } = require("../js/util.js");
 
 const addMediaCb = paths => {
 
-    if ( ! paths ) return false;
-    
+    let mediaPathParent = document.querySelector(".akara-loaded");
+    let video = document.querySelector("video");
+
+    if ( ! paths ) {
+        mediaPathParent = undefined;
+        return ;
+    }
 
     paths.forEach( async (path) => {
+
+        path = await validateMime(path);
         
-        const gen = await validateMime(path);
+        if ( ! path )
+            return dialog.showErrorBox("Invalid Media type",
+                `Unable to Convert ${basename(path)} to a media file`);
 
-        let { value } = gen.next();
+        let _path = basename(path);
         
-
-        while ( value ) {
-
-            const path = await value;
-
-            showMediaInApp(path);
-            
-            require("child_process").execSync("echo hi ; sleep 2");
-            
-            ({value} = gen.next());
-        }
+        const createdElement = createEl({path,_path});
+        
+        return mediaPathParent.appendChild(createdElement);
     });
 };
 
