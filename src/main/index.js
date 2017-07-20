@@ -4,6 +4,7 @@ const { app,  BrowserWindow, globalShortcut } = require("electron");
 const trayMenu = require("./tray.js");
 const handleWinState = require("./window_state.js");
 const handleWebContents = require("./webcontent_state.js");
+/*const handleGlobalShortcut = require("./global_shortcut.js");*/
 const { join } = require("path");
 
 const appPath = app.getAppPath();
@@ -50,9 +51,13 @@ const createWindow = () => {
 
         handleWebContents(mainWindow);
         handleWinState(mainWindow);
-
-        globalShortcut.unregister("CtrlOrCommand+r");
+        /*handleGlobalShortcut(mainWindow);*/
     });
+
+    /*app.on("will-quit", () => {
+        globalShortcut.unRegisterAll();
+    });*/
+    
 };
 
 createWindow();

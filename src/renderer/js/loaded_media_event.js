@@ -15,21 +15,27 @@
     const {
         videoEmit,
         controls,
-        video,
-        initVideoEvents
+        video
     } = require("../js/video_control.js");
 
     const { play, pause, stop, getCurrentTime, duration } = controls;
-
+    
 
     let currentTarget;
 
-    initVideoEvents();
-
-
-
     const menu = new Menu();
 
+    
+    window.addEventListener("DOMContentLoaded", event =>  {
+        
+        const coverOnError = document.querySelector(".cover-on-error-src");
+
+        if ( video.getAttribute("src") )
+            
+            coverOnError.setAttribute("style", "display: none;");
+        
+    });
+    
 
     ul.addEventListener("click", event => {
 
@@ -85,7 +91,7 @@
         });
 
 
-        menu.popup(getCurrentWindow());
+        menu.popup(getCurrentWindow(), { async: true });
 
 
         currentTarget = target;
@@ -179,11 +185,14 @@
     ipc.on("no-repeat-all", () => {
         currentTarget.parentNode.removeAttribute("data-repeat");
     });
-
-    videoEmit.on("go-to-previous", () => prevNext("prev"));
+    
+    
     videoEmit.on("go-to-next", () => prevNext("next"));
+    videoEmit.on("go-to-previous", () => prevNext("prev"));
+
 
 })(
     require("electron"),
     document.querySelector(".akara-loaded")
 );
+

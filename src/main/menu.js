@@ -1,6 +1,28 @@
 const { nativeImage, ipcMain: ipc } = require("electron");
 const { join } = require("path");
 
+
+const share = {
+    label: "Share",
+    submenu: [
+        {
+            label: "Facebook",
+            click() { },
+            accelearation: "CtrlOrCommand+1"
+        },
+        {
+            label: "Twitter",
+            click() { },
+            accelearation: "CtrlOrCommand+2"
+        },
+        {
+            label: "Youtube",
+            click() { },
+            accelearation: "CtrlOrCommand+3"
+        }
+    ]
+};
+
 const videoListMenu = [
     {
         label: "Remove",
@@ -63,29 +85,130 @@ const videoListMenu = [
     {
         type: "separator"
     },
+    share
+];
+
+
+//const VideoContextMenu = Array.from(videoListMenu);
+
+const videoContextMenu = [
     {
-        label: "Share",
+        label: "Play",
+        click() { }
+    },
+    {
+        label: "Pause",
+        click() { }
+    },
+    {
+        label: "Stop",
+        click() { }
+    },
+    {
+        label: "Next",
+        click() {} ,
+        accelearation: "n"
+    },
+    {
+        label: "Previous",
+        click() { },
+        accelearation: "p"
+        
+    },
+    {
+        type: "separator"
+    },
+    {
+        label: "Repeat",
+        click() { }
+    },
+    {
+        type: "separator"
+    },
+    {
+        label: "Speed",
         submenu: [
             {
-                label: "Facebook",
+                label: "Normal",
                 click() { },
-                accelearation: "CtrlOrCommand+1"
+                accelearation: "CommandOrCtrl+n"
             },
             {
-                label: "Twitter",
+                label: "Fast",
                 click() { },
-                accelearation: "CtrlOrCommand+2"
+                accelearation: "CommandOrCtrl+f"
             },
             {
-                label: "Youtube",
+                label: "Very Fast",
                 click() { },
-                accelearation: "CtrlOrCommand+3"
+                accelearation: "CommandOrCtrl+Shift+V"
+            },
+            {
+                label: "Slow",
+                click() { },
+                accelearation: "Alt+s"
+            },
+            {
+                label: "Very Slow",
+                click() { },
+                accelearation: "Alt+Shift+V"
             }
         ]
-    }
+    },
+    {
+        type: "separator"
+    },
+    {
+        label: "Take Screenshot",
+        submenu: [
+            {
+                label: "Entire Screen",
+                click() { }
+            },
+            {
+                label: "Video Section",
+                click() { }
+            },
+            {
+                label: "Select Area",
+                click() { }
+            }
+        ]
+    },
+    {
+        type: "separator"
+    },    
+    {
+        label: "Media Info",
+        click() { },
+        accelearation: "CommandOrCtrl+M"
+    },
+    {
+        type: "separator"
+    },
+    {
+        label: "Subtitle",
+        submenu: [
+            {
+                label: "Load Subtitle",
+                click() { }
+            },
+            {
+                label: "Choose track",
+                submenu: [
+                ]
+            }
+        ]
+    },
+    {
+        label: "Open File Location",
+        click() { }
+    },
+    share
 ];
 
 
 module.exports = {
-    videoListMenu
+    videoListMenu,
+    videoContextMenu
 };

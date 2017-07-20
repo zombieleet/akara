@@ -304,12 +304,21 @@ table {
 [data-dbclicked="true"] span {
   margin-left: 12px; }
 
-.akara-control {
+.akara-control, .cover-on-error-src {
   position: fixed;
   right: 0;
   left: 0;
   bottom: 0;
   background: #181818; }
+
+.cover-on-error-src {
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  background: #4b4b4b;
+  opacity: .75; }
 
 .akara-time {
   width: 100%; }
