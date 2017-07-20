@@ -99,7 +99,7 @@ $akara-load-width: 20% ;//- $akara-media-cover-width;
 
 [data-clicked="true"] {
     @extend %loaded_media_hover_li;
-    //color:  !important;
+    width: 100% !important;
 }
 
 [data-dbclicked="true"] {
