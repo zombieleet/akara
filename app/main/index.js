@@ -9,7 +9,6 @@ const { join } = require("path");
 
 const appPath = app.getAppPath();
 
-
 require("electron-reload")(appPath, {
     electron: join(appPath, "node_modules", ".bin", "electron")
 });
@@ -48,16 +47,9 @@ const createWindow = () => {
             tray.destroy();
             app.quit();
         });
-
         handleWebContents(mainWindow);
         handleWinState(mainWindow);
         /*handleGlobalShortcut(mainWindow);*/
     });
-
-    /*app.on("will-quit", () => {
-        globalShortcut.unRegisterAll();
-    });*/
-    
 };
-
 createWindow();

@@ -1,6 +1,5 @@
-const { nativeImage, ipcMain: ipc } = require("electron");
+const { app, nativeImage, ipcMain: ipc } = require("electron");
 const { join } = require("path");
-
 
 const share = {
     label: "Share",
@@ -93,26 +92,62 @@ const videoListMenu = [
 
 const videoContextMenu = [
     {
+        label: "Add",
+        icon:nativeImage.createFromPath("./solid/add-circle-1.svg"),
+        submenu: [
+            {
+                label: "File",
+                click(menuItem, { webContents } , event) {
+                    webContents.send("video-open-file");
+                },
+                accelearator: "Alt+Shift+f"
+            },
+            {
+                label: "Folder",
+                click(menuItem, { webContents }, event ) {
+                    webContents.send("video-open-folder");
+                },
+                accelearator: "Alt+f"
+            },
+            {
+                label: "Stream",
+                click(menItem, { webContents }, event) {
+                    webContents.send("video-open-stream");
+                }
+            }
+        ]
+    },
+    {
         label: "Play",
-        click() { }
+        click(menuItem, { webContents }, event ) {
+            webContents.send("video-play");
+        }
     },
     {
         label: "Pause",
-        click() { }
+        click(menuItem, { webContents }, event) {
+            webContents.send("video-pause");
+        }
     },
     {
         label: "Stop",
-        click() { }
+        click(menuItem, { webContents }, event) {
+            webContents.send("video-stop");
+        }
     },
     {
         label: "Next",
-        click() {} ,
-        accelearation: "n"
+        click(menuItem, { webContents } ,event) {
+            webContents.send("video-next");
+        },
+        accelerator: "n"
     },
     {
         label: "Previous",
-        click() { },
-        accelearation: "p"
+        click(menuItem, { webContents } ,event ) {
+            webContents.send("video-previous");
+        },
+        accelerator: "p"
         
     },
     {
@@ -120,7 +155,16 @@ const videoContextMenu = [
     },
     {
         label: "Repeat",
-        click() { }
+        click(menuItem, { webContents }, event) {
+            webContents.send("video-repeat");
+        }
+    },
+    {
+        label: "No Repeat",
+        click(menuItem, { webContents }, event ) {
+            webContents.send("video-no-repeat");
+        },
+        visible: false
     },
     {
         type: "separator"
@@ -201,8 +245,13 @@ const videoContextMenu = [
         ]
     },
     {
+        type: "separator"
+    },
+    {
         label: "Open File Location",
-        click() { }
+        click(menuItem,{ webContents } ,event) {
+            webContents.send("video-open-external");
+        }
     },
     share
 ];

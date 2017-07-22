@@ -14,8 +14,6 @@ const { video, controls: { play } } = require("../js/video_control.js");
 
 const magic = new Magic(_GET_MIME);
 
-let IsShownUnsupportedFormat;
-
 const createEl = ({path: abs_path, _path: rel_path}) => {
 
     const child = document.createElement("li");
@@ -186,45 +184,45 @@ const createDir = () => mkdirSync(`${CONVERTED_MEDIA}`);
 const sendNotice = message =>  new Notification(message);
 
 const getMime = file => new Promise((resolve,reject) => {
-    
+
     magic.detectFile(file, (err,data) => {
-        
+
         if ( err) return reject(err);
 
         return resolve(data);
     });
-    
+
 });
 
 const validateMime = async (path) => {
 
     const _getMime = await getMime(path);
-    
+
     if ( ! /^audio|^video/.test(_getMime) )
-        
+
         return undefined;
 
-    
+
     const canPlay = video.canPlayType(_getMime);
-    
+
     if ( /^maybe$|^probably$/.test(canPlay) )
 
         return path;
-       
+
 
     sendNotice("Unsupported Mime/Codec detected, this file will be converted in the background");
-    
+
     let _fpath;
-        
+
     try {
-        
+
         _fpath = await Convert(path);
-        
+
     } catch(ex) {
-        
+
         _fpath = ex;
     }
-    
+
     if ( Error[Symbol.hasInstance](_fpath) )
         path = undefined;
     else
@@ -240,8 +238,8 @@ const Convert = _path => new Promise((resolve,reject) => {
     let result;
 
     // _fpath will contain the converted path
-    const _fpath = join(CONVERTED_MEDIA,parse(_path).name + ".mp4");    
-    
+    const _fpath = join(CONVERTED_MEDIA,parse(_path).name + ".mp4");
+
     if ( ! existsSync(CONVERTED_MEDIA) )
         createDir();
 
@@ -254,27 +252,47 @@ const Convert = _path => new Promise((resolve,reject) => {
 
 
     ffmpeg.stderr.on("data", data => {});
-    
+
     ffmpeg.on("close", code => {
         console.log(code);
         console.log("awdfasdfasdfasdf");
         if ( code >= 1 )
-            
+
             reject(new Error(`Unable to Convert Video`));
 
         resolve(_fpath);
-        
+
     });
-    
+
 });
 
 const playOnDrop = () => {
-    
+
     const firstVideoList = document.querySelector(".playlist");
     console.log(firstVideoList);
     if ( ! video.getAttribute("src") ) {
         setupPlaying(firstVideoList);
     }
+
+};
+
+
+const disableVideoMenuItem = menuInst => {
+
+    if  ( ! video.hasAttribute("src") && menuInst.label !== "Add" )
+        return(menuInst.enabled = false);
+
+    if ( menuInst.label === "Play" && ! video.paused )
+        return(menuInst.enabled = false);
+
+    if ( menuInst.label === "Pause" && video.paused )
+        return(menuInst.enabled = false);
+    
+    if ( menuInst.label === "Repeat" && video.hasAttribute("loop") )
+        return(menuInst.visible = false);
+    
+    if ( menuInst.label === "No Repeat" && video.hasAttribute("loop") )
+        return(menuInst.visible = true);
     
 };
 
@@ -288,5 +306,6 @@ module.exports = {
     setupPlaying,
     prevNext,
     validateMime,
-    playOnDrop
+    playOnDrop,
+    disableVideoMenuItem
 };

@@ -186,7 +186,6 @@
         currentTarget.parentNode.removeAttribute("data-repeat");
     });
     
-    
     videoEmit.on("go-to-next", () => prevNext("next"));
     videoEmit.on("go-to-previous", () => prevNext("prev"));
 
