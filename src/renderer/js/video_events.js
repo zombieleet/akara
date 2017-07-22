@@ -1,7 +1,18 @@
 const { video, controls, videoEmit } = require("../js/video_control.js");
+const { disableVideoMenuItem } = require("../js/util.js");
+
 const { parse } = require("url");
 const { basename } = require("path");
-const { remote: { dialog, require: _require, Menu, MenuItem, getCurrentWindow } } = require("electron");
+const { remote: { dialog, require: _require, Menu, MenuItem, getCurrentWindow, shell: { showItemInFolder } }, ipcRenderer: ipc } = require("electron");
+
+const { addMediaFile,
+        addMediaFolder,
+        _play,
+        _stop,
+        _pause,
+        _next,
+        _previous
+      } = require("../js/handle_dropdown_commands.js")();
 
 
 const { videoContextMenu } = _require("./menu.js");
@@ -16,7 +27,7 @@ const currTimeUpdate = document.querySelector(".akara-update-cur-time"),
 
 
 const menu = new Menu();
-let menuInstance ;
+let vidMenuInst ;
 
 const updateTimeIndicator = () => {
 
@@ -324,7 +335,6 @@ video.addEventListener("loadedmetadata", () => {
 
 video.addEventListener("error", event => {
 
-
     currTimeUpdate.textContent = "00:00 / 00:00";
     
     document.querySelector(".cover-on-error-src")
@@ -338,14 +348,16 @@ video.addEventListener("error", event => {
 
 
 video.addEventListener("contextmenu", event => {
-    console.log("adsfasdfsadf");
+    
     menu.clear();
     
     videoContextMenu.forEach( _menu => {
-        menuInstance = new MenuItem(_menu);
-        menu.append(menuInstance);
+        vidMenuInst = new MenuItem(_menu);
+        
+        disableVideoMenuItem(vidMenuInst);
+        
+        menu.append(vidMenuInst);
     });
-
     menu.popup(getCurrentWindow(), { async: true });
     
 });
@@ -380,4 +392,22 @@ videoEmit.on("high_volume", type => {
 
     changeVolumeIcon.classList.remove("fa-volume-down");
     changeVolumeIcon.classList.add("fa-volume-up");
+});
+console.log(_next, _previous);
+ipc.on("video-open-file", addMediaFile);
+ipc.on("video-open-folder", addMediaFolder);
+ipc.on("video-play", _play);
+ipc.on("video-pause", _pause);
+ipc.on("video-stop", _stop);
+ipc.on("video-next", _next);
+ipc.on("video-previous", _previous);
+ipc.on("video-repeat", () => {
+    video.setAttribute("loop", "true");
+});
+
+ipc.on("video-no-repeat", () => {
+    video.removeAttribute("loop");
+});
+ipc.on("video-open-external", () => {
+    showItemInFolder(video.getAttribute("src"));
 });
