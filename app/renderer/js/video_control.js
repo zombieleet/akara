@@ -64,8 +64,11 @@ const controls = {
         return this.mute();
     },
     getCurrentTime() { return video.currentTime; },
-    duration() { return video.duration; }
-
+    duration() { return video.duration; },
+    setPlaybackRate(rate) {
+        video.playbackRate = rate;
+        return rate;
+    }
 };
 
 module.exports = {

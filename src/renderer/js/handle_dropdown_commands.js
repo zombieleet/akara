@@ -2,7 +2,14 @@ const {remote: { dialog, app , require: _require }} = require("electron");
 const { video, controls } = require("../js/video_control.js");
 const { addMediaCb } = require("../js/dropdown_callbacks.js");
 
-const { play, pause, mute, unmute, next, previous } = controls;
+const { play,
+        pause,
+        mute,
+        unmute,
+        next,
+        previous,
+        setPlaybackRate
+      } = controls;
 
 const { iterateDir } = _require("./utils.js"); // get utils from the main process folder
 
@@ -55,8 +62,6 @@ const _pause = () => {
     if ( __videoAttribute(video) ) return pause();
 
     return __spitError();
-    
-
 };
 
 const _mute = () => {
@@ -91,6 +96,10 @@ const _previous = () => {
     if ( __videoAttribute(video) ) return controls.previous();
     return __spitError();
 };
+const _setPlaybackRate = (rate) => {
+    if ( __videoAttribute(video) ) return controls.setPlaybackRate(rate);
+    return __spitError();
+};
 
 const HandleDroped = () => ({ addMediaFile,
                               addMediaFolder ,
@@ -100,6 +109,7 @@ const HandleDroped = () => ({ addMediaFile,
                               _unmute,
                               _stop,
                               _next,
-                              _previous});
+                              _previous,
+                            _setPlaybackRate});
 
 module.exports = HandleDroped;
