@@ -49,7 +49,6 @@ const createWindow = () => {
         });
         handleWebContents(mainWindow);
         handleWinState(mainWindow);
-        /*handleGlobalShortcut(mainWindow);*/
     });
 };
 createWindow();

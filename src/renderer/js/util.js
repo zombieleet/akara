@@ -5,12 +5,13 @@ const { CONVERTED_MEDIA } = _require("./constants.js");
 const { Magic, MAGIC_MIME_TYPE: _GET_MIME }  = require("mmmagic");
 const url = require("url");
 const { spawn } = require("child_process");
-const { mkdirSync , existsSync } = require("fs");
+const { mkdirSync , existsSync, createReadStream } = require("fs");
 const { join,
         basename,
         parse } = require("path");
 const { video, controls: { play } } = require("../js/video_control.js");
 
+const detectLanguage = new (require("languagedetect"));
 
 const magic = new Magic(_GET_MIME);
 
@@ -287,13 +288,51 @@ const disableVideoMenuItem = menuInst => {
 
     if ( menuInst.label === "Pause" && video.paused )
         return(menuInst.enabled = false);
-    
+
     if ( menuInst.label === "Repeat" && video.hasAttribute("loop") )
         return(menuInst.visible = false);
-    
+
     if ( menuInst.label === "No Repeat" && video.hasAttribute("loop") )
         return(menuInst.visible = true);
-    
+
+
+    if ( menuInst.label === "Subtitle" && ! navigator.onLine) {
+        // optimize this code later
+        __MenuInst(menuInst, "Load Subtitle", "From Net").enabled = false;
+    }
+
+};
+
+
+const __MenuInst = ( menu, match, submatch) => {
+    let menuInst;
+    for ( let _items of menu.items || menu.submenu.items ) {
+
+        if ( _items.label === match && ! _items.__priv ) {
+            // match is not neccessary here,
+            //  since it's recurse function
+            return __MenuInst(_items,match,submatch);
+        }
+
+        if ( _items.label === submatch && _items.__priv ) {
+            menuInst = _items;
+            break;
+        }
+    }
+    return menuInst;
+};
+
+const langDetect = (file,cb) => {
+    const readStream = createReadStream(file);
+    let result;
+    readStream.on("data", data => {
+        console.log(data.toString());
+        result = detectLanguage.detect(data.toString().match(/[:alpha:].*/),2);
+        console.log(result);
+    }).on("end", () => {
+        const [ [ firstLang ] , [ secondLang ] ] = result;
+        return cb([firstLang, secondLang]);
+    })
 };
 
 module.exports = {
@@ -307,5 +346,7 @@ module.exports = {
     prevNext,
     validateMime,
     playOnDrop,
-    disableVideoMenuItem
+    disableVideoMenuItem,
+    __MenuInst,
+    langDetect
 };

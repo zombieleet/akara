@@ -1,9 +1,22 @@
 const { video, controls, videoEmit } = require("../js/video_control.js");
-const { disableVideoMenuItem } = require("../js/util.js");
+const {
+    disableVideoMenuItem,
+    __MenuInst,
+    langDetect
+} = require("../js/util.js");
+
 
 const { parse } = require("url");
 const { basename } = require("path");
-const { remote: { dialog, require: _require, Menu, MenuItem, getCurrentWindow, shell: { showItemInFolder } }, ipcRenderer: ipc } = require("electron");
+const { remote:
+        { dialog,
+            require: _require,
+            Menu,
+            MenuItem,
+            getCurrentWindow,
+            shell: { showItemInFolder }
+        }, ipcRenderer: ipc
+} = require("electron");
 
 const { addMediaFile,
     addMediaFolder,
@@ -11,7 +24,8 @@ const { addMediaFile,
     _stop,
     _pause,
     _next,
-    _previous
+    _previous,
+    _setPlaybackRate
 } = require("../js/handle_dropdown_commands.js")();
 
 
@@ -27,7 +41,6 @@ const currTimeUpdate = document.querySelector(".akara-update-cur-time"),
 
 
 const menu = new Menu();
-let vidMenuInst ;
 
 const updateTimeIndicator = () => {
 
@@ -41,7 +54,7 @@ const updateTimeIndicator = () => {
     timeIndicator.setAttribute("style", `width: ${timeIndicatorWidth}px`);
 
     timeIndicator = undefined;
-    
+
     currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;
 
     return true;
@@ -135,17 +148,6 @@ const videoPauseEvent = () => {
 
     play.classList.remove("akara-display");
 
-
-    // if stop is triggered vide.__status will be reset to undefined
-    /*video.__status = "paused";
-
-
-    if ( video.__status ) {
-        let notify = sendNotification("Paused", {
-            body: decodeURIComponent(basename(parse(video.src).path))
-        });
-    }*/
-
     return pause.classList.add("akara-display");
 };
 
@@ -184,13 +186,13 @@ const videoPlayEvent = () => {
 const videoLoadedEvent = () => {
     const currentVolumeSet = document.querySelectorAll("[data-volume-set=true]");
     const coverOnError = document.querySelector(".cover-on-error-src");
-    
+
     video.volume = currentVolumeSet[currentVolumeSet.length - 1].getAttribute("data-volume-controler");
 
-    
+
     if ( coverOnError )
         coverOnError.setAttribute("style", "display: none;");
-    
+
 };
 
 const clickedMoveToEvent = event => {
@@ -247,7 +249,7 @@ const handleVolumeWheelChange = event => {
     let popedValue;
 
     __removeRedMute();
-    
+
     if ( (Math.sign(decimalVol) === -1 )
          && ( popedValue = volumeElements.pop() )
          && ( volumeElements.length >= 1 ) )
@@ -285,7 +287,7 @@ const handleVolumeChange = event => {
     target.setAttribute("data-volume-set", "true");
 
     video.volume = target.getAttribute("data-volume-controler");
-    
+
     __removeRedMute();
 
     let _NextTarget = target.nextElementSibling;
@@ -313,6 +315,34 @@ const handleVolumeChange = event => {
 };
 
 
+const handleLoadedSubtitle = path => {
+
+    if ( ! path ) return ;
+
+    [ path ] = path;
+
+    const __tracks = video.querySelectorAll("track");
+    const track = document.createElement("track");
+    const subtitle = path;
+    let lang = "english" + Math.random(12);
+
+    track.setAttribute("src", subtitle);
+    track.setAttribute("label", lang);
+    track.setAttribute("srclang", lang);
+    track.setAttribute("kind", "subtitles");
+    track.setAttribute("id", __tracks.length++);
+
+    video.appendChild(track);
+
+    const { submenu } = videoContextMenu[16].submenu[1];
+
+    submenu.push({ label: lang});
+
+    Object.assign(videoContextMenu[16].submenu[1], {
+        submenu
+    });
+};
+
 controlElements.addEventListener("click", fireControlButtonEvent);
 
 video.addEventListener("loadeddata", event => {
@@ -330,36 +360,36 @@ video.addEventListener("play", videoPlayEvent );
 video.addEventListener("loadstart", videoLoadedEvent);
 
 video.addEventListener("loadedmetadata", () => {
-    currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;    
+    currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;
 });
 
 video.addEventListener("error", event => {
 
     currTimeUpdate.textContent = "00:00 / 00:00";
-    
+
     document.querySelector(".cover-on-error-src")
         .removeAttribute("style");
 
     video.removeAttribute("src");
-    
+
 });
 
 
 
 
 video.addEventListener("contextmenu", event => {
-    
+
+    let vidMenuInst ;
     menu.clear();
-    
+    console.log(videoContextMenu);
     videoContextMenu.forEach( _menu => {
         vidMenuInst = new MenuItem(_menu);
-        
+
         disableVideoMenuItem(vidMenuInst);
-        
+
         menu.append(vidMenuInst);
     });
     menu.popup(getCurrentWindow(), { async: true });
-    
 });
 
 
@@ -409,5 +439,32 @@ ipc.on("video-no-repeat", () => {
     video.removeAttribute("loop");
 });
 ipc.on("video-open-external", () => {
-    showItemInFolder(video.getAttribute("src"));
+    showItemInFolder(video.getAttribute("src").replace("file://",""));
+});
+
+ipc.on("normal-speed", () => {
+    _setPlaybackRate(1);
+});
+
+ipc.on("fast-speed", () => {
+    //   DONT HARDCODE THIS
+    // configuration value should specify this value
+    _setPlaybackRate(12);
+});
+
+ipc.on("very-fast-speed", () => {
+    _setPlaybackRate(25);
+});
+
+ipc.on("slow-speed", () => {
+    _setPlaybackRate(0.7);
+});
+
+ipc.on("very-slow-speed", () => {
+    _setPlaybackRate(0.2);
+});
+
+ipc.on("load-sub-computer", (event,val) => {
+    console.log(val);
+    handleLoadedSubtitle(val);
 });

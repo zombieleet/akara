@@ -1,6 +1,5 @@
 
-const { dialog , app } = require("electron");
-
+const { dialog , app, Menu } = require("electron");
 const { checkType, iterateDir } = require("./utils.js");
 
 

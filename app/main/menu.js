@@ -1,4 +1,4 @@
-const { app, nativeImage, ipcMain: ipc } = require("electron");
+const { app, nativeImage, dialog } = require("electron");
 const { join } = require("path");
 
 const share = {
@@ -148,7 +148,7 @@ const videoContextMenu = [
             webContents.send("video-previous");
         },
         accelerator: "p"
-        
+
     },
     {
         type: "separator"
@@ -174,28 +174,38 @@ const videoContextMenu = [
         submenu: [
             {
                 label: "Normal",
-                click() { },
+                click(menuItem, { webContents }, event) {
+                    webContents.send("normal-speed");
+                },
                 accelearation: "CommandOrCtrl+n"
             },
             {
                 label: "Fast",
-                click() { },
+                click(menuItem, { webContents }, event) {
+                    webContents.send("fast-speed");
+                },
                 accelearation: "CommandOrCtrl+f"
             },
             {
                 label: "Very Fast",
-                click() { },
+                click(menuItem, { webContents }, event) {
+                    webContents.send("very-fast-speed");
+                },
                 accelearation: "CommandOrCtrl+Shift+V"
             },
             {
                 label: "Slow",
-                click() { },
-                accelearation: "Alt+s"
+                click(menuItem, { webContents }, event) {
+                    webContents.send("slow-speed");
+                },
+                accelearator: "Alt+s"
             },
             {
                 label: "Very Slow",
-                click() { },
-                accelearation: "Alt+Shift+V"
+                click(menuItem, { webContents }, event) {
+                    webContents.send("very-slow-speed");
+                },
+                accelearator: "Alt+Shift+V"
             }
         ]
     },
@@ -221,7 +231,7 @@ const videoContextMenu = [
     },
     {
         type: "separator"
-    },    
+    },
     {
         label: "Media Info",
         click() { },
@@ -235,12 +245,38 @@ const videoContextMenu = [
         submenu: [
             {
                 label: "Load Subtitle",
-                click() { }
+                submenu: [
+                    {
+                        label: "From Computer",
+                        click(menuItem, { webContents }, event) {
+                            const val = dialog.showOpenDialog({
+                                title: "Select Subtitle",
+                                property: [ "openFile" ],
+                                filters: [
+                                    {
+                                        name: "Subtitle File",
+                                        extensions: [
+                                            "srt",
+                                            "webvvt"
+                                        ]
+                                    }
+                                ]
+                            });
+                            webContents.send("load-sub-computer", val);
+                        }
+                    },
+                    {
+                        label: "From Net",
+                        __priv: true,
+                        click(menuItem, { webContents }, event ) {
+                            webContents.send("load-sub-internet");
+                        }
+                    }
+                ]
             },
             {
-                label: "Choose track",
-                submenu: [
-                ]
+                label: "Choose Subtitle",
+                submenu: []
             }
         ]
     },
@@ -252,6 +288,9 @@ const videoContextMenu = [
         click(menuItem,{ webContents } ,event) {
             webContents.send("video-open-external");
         }
+    },
+    {
+        type: "separator"
     },
     share
 ];
