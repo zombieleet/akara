@@ -87,9 +87,7 @@ const removeHoverTime = () => {
         isOverExists.remove();
         isOverExists = undefined;
     }
-
     return ;
-
 };
 
 const getHumanTime = result => `${(result/60).toFixed(2)}`.replace(/\./, ":");
@@ -346,11 +344,75 @@ const handleLoadedSubtitle = path => {
     });
 };
 
+const MouseHoverOnVideo = () => {
+    if ( ! document.webkitIsFullScreen ) return false;
+    return akaraControl.removeAttribute("hidden");
+};
+
+const MouseNotHoverVideo = () => {
+
+    if ( ! document.webkitIsFullScreen ) return false;
+
+    setTimeout( () => {
+        akaraControl.setAttribute("hidden", "true");
+    },3000);
+
+    akaraControl.animate({
+        opacity: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0]
+    },3000);
+
+};
+
 controlElements.addEventListener("click", fireControlButtonEvent);
 
 video.addEventListener("loadeddata", event => {
+
     currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;
 });
+video.addEventListener("mouseover", MouseHoverOnVideo);
+
+video.addEventListener("mouseout", MouseNotHoverVideo);
+
+video.addEventListener("timeupdate", updateTimeIndicator);
+
+video.addEventListener("ended", () => videoEmit.emit("ended"));
+
+video.addEventListener("pause", videoPauseEvent );
+
+video.addEventListener("play", videoPlayEvent );
+
+video.addEventListener("loadstart", videoLoadedEvent);
+
+video.addEventListener("loadedmetadata", () => {
+    currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;
+
+    const submenu = videoContextMenu[16].submenu;
+
+    // no need to remove if no subtitle was added in previous videox
+    if ( submenu ) {
+
+        Object.assign(videoContextMenu[16].submenu[1],{
+            submenu: []
+        });
+        Array.from(document.querySelectorAll("track"), el => {
+            el.remove();
+        });
+    }
+
+});
+video.addEventListener("dblclick", () => {
+    
+    if ( ! video.hasAttribute("src") ) return false;
+        
+    if ( document.webkitIsFullScreen )
+        return _leavefullscreen();
+    else
+        return _enterfullscreen();
+
+});
+video.addEventListener("mouseover", MouseHoverOnVideo);
+
+video.addEventListener("mouseout", MouseNotHoverVideo);
 
 video.addEventListener("timeupdate", updateTimeIndicator);
 
@@ -426,7 +488,7 @@ videoEmit.on("high_volume", type => {
     changeVolumeIcon.classList.remove("fa-volume-down");
     changeVolumeIcon.classList.add("fa-volume-up");
 });
-console.log(_next, _previous);
+
 ipc.on("video-open-file", addMediaFile);
 ipc.on("video-open-folder", addMediaFolder);
 ipc.on("video-play", _play);

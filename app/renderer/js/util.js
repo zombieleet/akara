@@ -315,8 +315,15 @@ const disableVideoMenuItem = menuInst => {
 
     if ( menuInst.label === "Subtitle" && ! navigator.onLine) {
         // optimize this code later
-        __MenuInst(menuInst, "Load Subtitle", "From Net").enabled = false;
+        return(__MenuInst(menuInst, "Load Subtitle", "From Net").enabled = false);
     }
+
+    if ( menuInst.label === "Enter FullScreen" && win.isFullScreen() ) {
+        return(menuInst.visible = false);
+    }
+
+    if ( menuInst.label === "Leave FullScreen" && win.isFullScreen() )
+        return(menuInst.visible = true);
 
 };
 

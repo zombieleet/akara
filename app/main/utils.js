@@ -1,5 +1,6 @@
 const fs = require("fs");
 const { basename, join } = require("path");
+const { videoContextMenu } = require("electron");
 
 const checkType = path => {
 

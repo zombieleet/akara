@@ -117,6 +117,15 @@ const _setPlaybackRate = (rate) => {
     return __spitError();
 };
 
+const _enterfullscreen = () => {
+    if ( __videoAttribute(video) ) return controls.enterfullscreen();
+    return __spitError();
+};
+const _leavefullscreen = () => {
+    if ( __videoAttribute(video) ) return controls.leavefullscreen();
+    return __spitError();
+};
+
 const HandleDroped = () => ({ addMediaFile,
     addMediaFolder ,
     _play,

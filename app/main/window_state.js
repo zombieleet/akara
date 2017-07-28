@@ -1,6 +1,5 @@
 
 const { ipcMain: ipc, BrowserWindow } = require("electron");
-
 const { CONVERTED_MEDIA }  = require("./constants.js");
 
 const { existsSync, rmdirSync } = require("fs");

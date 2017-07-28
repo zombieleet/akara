@@ -235,7 +235,25 @@ const videoContextMenu = [
     {
         label: "Media Info",
         click() { },
-        accelearation: "CommandOrCtrl+M"
+        accelearator: "CommandOrCtrl+M"
+    },
+    {
+        type: "separator"
+    },
+    {
+        label: "Enter FullScreen",
+        // this kind of fullscreen is not dope
+        //role: "togglefullscreen"
+        click(menuItem, { webContents }, event) {
+            webContents.send("enter-video-fullscreen");
+        }
+    },
+    {
+        label: "Leave FullScreen",
+        click(menuItem, { webContents }, event ) {
+            webContents.send("leave-video-fullscreen");
+        },
+        visible: false
     },
     {
         type: "separator"

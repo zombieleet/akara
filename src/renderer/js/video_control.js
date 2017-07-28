@@ -11,8 +11,12 @@ const video = document.querySelector("video");
 
 const controls = {
 
-    play() { return  video.play(); },
-    pause()  { return video.pause(); },
+    play() {
+        return  video.play();
+    },
+    pause()  {
+        return video.pause();
+    },
 
     stop() {
 
@@ -63,8 +67,36 @@ const controls = {
 
         return this.mute();
     },
-    getCurrentTime() { return video.currentTime; },
-    duration() { return video.duration; },
+    enterfullscreen() {
+        
+        const changeIcon = document.querySelector(".fa-expand");
+        
+        changeIcon.classList.add("fa-arrows-alt");
+        changeIcon.classList.remove("fa-expand");
+        changeIcon.setAttribute("data-fire","leavefullscreen");
+
+        video.setAttribute("style", "height: 100%");
+        
+        return document.querySelector(".akara-media").webkitRequestFullScreen();
+    },
+    leavefullscreen() {
+        
+        const changeIcon = document.querySelector(".fa-arrows-alt");
+        
+        changeIcon.classList.add("fa-expand");
+        changeIcon.classList.remove("fa-arrows-alt");
+        changeIcon.setAttribute("data-fire","enterfullscreen");
+
+        video.removeAttribute("style");
+        document.querySelector(".akara-control").removeAttribute("hidden");
+        return document.webkitCancelFullScreen();
+    },
+    getCurrentTime() {
+        return video.currentTime;
+    },
+    duration() {
+        return video.duration;
+    },
     setPlaybackRate(rate) {
         video.playbackRate = rate;
         return rate;
