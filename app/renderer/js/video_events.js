@@ -30,22 +30,39 @@ const { addMediaFile,
     _pause,
     _next,
     _previous,
-    _setPlaybackRate
+    _setPlaybackRate,
+    _enterfullscreen,
+    _leavefullscreen
 } = require("../js/handle_dropdown_commands.js")();
 
 
 const { videoContextMenu } = _require("./menu.js");
 
 const currTimeUpdate = document.querySelector(".akara-update-cur-time"),
-    controlElements = document.querySelector(".akara-control-element"),
     jumpToSeekElement = document.querySelector(".akara-time"),
     akaraVolume = document.querySelector(".akara-volume"),
-    changeVolumeIcon = document.querySelector("[data-fire=volume]");
+    changeVolumeIcon = document.querySelector("[data-fire=volume]"),
+    akaraControl = document.querySelector(".akara-control"),
+    controlElements = akaraControl.querySelector(".akara-control-element");
 
 
 
 
 const menu = new Menu();
+
+// the first window, this had to be hadcoded
+const win = BrowserWindow.fromId(1);
+
+const textTracks = video.textTracks;
+
+
+(() => {
+    for ( let j = 0; j < textTracks.lenght; j++ ) {
+        textTracks[j].addEventListener("cuechange", (e) => {
+            console.log(e.activeCues);
+        });
+    }
+})();
 
 const updateTimeIndicator = () => {
 
@@ -337,7 +354,14 @@ const handleLoadedSubtitle = path => {
 
     const { submenu } = videoContextMenu[16].submenu[1];
 
-    submenu.push({ label: lang});
+    submenu.push({
+        label: lang,
+        click(menuItem) {
+            videoEmit.emit("subtitle-asked-for",menuItem);
+        },
+        accelerator: `CommandOrCtrl+${track.getAttribute("id")}`,
+        type: "radio"
+    });
 
     Object.assign(videoContextMenu[16].submenu[1], {
         submenu
@@ -367,23 +391,6 @@ controlElements.addEventListener("click", fireControlButtonEvent);
 
 video.addEventListener("loadeddata", event => {
 
-    currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;
-});
-video.addEventListener("mouseover", MouseHoverOnVideo);
-
-video.addEventListener("mouseout", MouseNotHoverVideo);
-
-video.addEventListener("timeupdate", updateTimeIndicator);
-
-video.addEventListener("ended", () => videoEmit.emit("ended"));
-
-video.addEventListener("pause", videoPauseEvent );
-
-video.addEventListener("play", videoPlayEvent );
-
-video.addEventListener("loadstart", videoLoadedEvent);
-
-video.addEventListener("loadedmetadata", () => {
     currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;
 
     const submenu = videoContextMenu[16].submenu;
@@ -517,19 +524,26 @@ ipc.on("fast-speed", () => {
     _setPlaybackRate(12);
 });
 
-ipc.on("very-fast-speed", () => {
-    _setPlaybackRate(25);
+ipc.on("very-fast-speed", () => _setPlaybackRate(25));
+
+ipc.on("slow-speed", () => _setPlaybackRate(0.7));
+
+ipc.on("very-slow-speed", () => _setPlaybackRate(0.2));
+
+ipc.on("load-sub-computer", (event,val) => handleLoadedSubtitle(val));
+
+videoEmit.on("subtitle-asked-for", mItem => {
+
+    const { length: _textTrackLength } = textTracks;
+
+    for ( let i = 0; i < _textTrackLength; i++ ) {
+        if ( mItem.label === textTracks[i].label ) {
+            textTracks[i].mode = "showing";
+            continue;
+        }
+        textTracks[i].mode = "disabled";
+    }
 });
 
-ipc.on("slow-speed", () => {
-    _setPlaybackRate(0.7);
-});
-
-ipc.on("very-slow-speed", () => {
-    _setPlaybackRate(0.2);
-});
-
-ipc.on("load-sub-computer", (event,val) => {
-    console.log(val);
-    handleLoadedSubtitle(val);
-});
+ipc.on("enter-video-fullscreen", _enterfullscreen);
+ipc.on("leave-video-fullscreen", _leavefullscreen);
