@@ -1,10 +1,12 @@
-const { video, controls, videoEmit } = require("../js/video_control.js");
+const { video,
+    controls,
+    videoEmit
+} = require("../js/video_control.js");
 const {
     disableVideoMenuItem,
     __MenuInst,
     langDetect
 } = require("../js/util.js");
-
 
 const { parse } = require("url");
 const { basename } = require("path");
@@ -14,7 +16,10 @@ const { remote:
             Menu,
             MenuItem,
             getCurrentWindow,
-            shell: { showItemInFolder }
+            BrowserWindow,
+            shell: {
+                showItemInFolder
+            }
         }, ipcRenderer: ipc
 } = require("electron");
 
@@ -109,10 +114,8 @@ const createHoverTime = ({event,result}) => {
 
     hoverTimeIndication.textContent = hoveredLocationTime;
 
-
     let left = event.clientX - event.target.getBoundingClientRect().left,
         top = event.clientY - event.target.getBoundingClientRect().top;
-
 
     hoverIndication.setAttribute("style", `left: ${left - 15}px; top: ${top - 25}px`);
 

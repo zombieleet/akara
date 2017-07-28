@@ -8,7 +8,9 @@ const { play,
     unmute,
     next,
     previous,
-    setPlaybackRate
+    setPlaybackRate,
+    enterfullscreen,
+    leavefullscreen
 } = controls;
 
 const { iterateDir } = _require("./utils.js"); // get utils from the main process folder
@@ -21,7 +23,21 @@ const addMediaFile = () => {
         title: "Choose media file",
         defaultPath: app.getPath("videos"),
         filters: [
-            {name: "Media" , extensions: ["mp4","flac","ogv","ogm","ogg","webm","wav","m4v","m4a","mp3","amr","avi","3gp","swf","wma"]},
+            {name: "Media" , extensions: ["mp4",
+                "flac",
+                "ogv",
+                "ogm",
+                "ogg",
+                "webm",
+                "wav",
+                "m4v",
+                "m4a",
+                "mp3",
+                "amr",
+                "avi",
+                "3gp",
+                "swf",
+                "wma"]},
         ],
         properties: ["openFile", "multiSelections"]
     },addMediaCb);
@@ -110,6 +126,9 @@ const HandleDroped = () => ({ addMediaFile,
     _stop,
     _next,
     _previous,
-    _setPlaybackRate});
+    _setPlaybackRate,
+    _enterfullscreen,
+    _leavefullscreen
+});
 
 module.exports = HandleDroped;

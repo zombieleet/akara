@@ -1,10 +1,12 @@
-const { video, controls, videoEmit } = require("../js/video_control.js");
+const { video,
+        controls,
+        videoEmit
+      } = require("../js/video_control.js");
 const {
     disableVideoMenuItem,
     __MenuInst,
     langDetect
 } = require("../js/util.js");
-
 
 const { parse } = require("url");
 const { basename } = require("path");
@@ -14,7 +16,10 @@ const { remote:
           Menu,
           MenuItem,
           getCurrentWindow,
-          shell: { showItemInFolder }
+          BrowserWindow,
+          shell: {
+              showItemInFolder
+          }
         }, ipcRenderer: ipc
       } = require("electron");
 
@@ -25,22 +30,39 @@ const { addMediaFile,
         _pause,
         _next,
         _previous,
-        _setPlaybackRate
+        _setPlaybackRate,
+        _enterfullscreen,
+        _leavefullscreen
       } = require("../js/handle_dropdown_commands.js")();
 
 
 const { videoContextMenu } = _require("./menu.js");
 
 const currTimeUpdate = document.querySelector(".akara-update-cur-time"),
-      controlElements = document.querySelector(".akara-control-element"),
       jumpToSeekElement = document.querySelector(".akara-time"),
       akaraVolume = document.querySelector(".akara-volume"),
-      changeVolumeIcon = document.querySelector("[data-fire=volume]");
+      changeVolumeIcon = document.querySelector("[data-fire=volume]"),
+      akaraControl = document.querySelector(".akara-control"),
+      controlElements = akaraControl.querySelector(".akara-control-element");
 
 
 
 
 const menu = new Menu();
+
+// the first window, this had to be hadcoded
+const win = BrowserWindow.fromId(1);
+
+const textTracks = video.textTracks;
+
+
+(() => {
+    for ( let j = 0; j < textTracks.lenght; j++ ) {
+        textTracks[j].addEventListener("cuechange", (e) => {
+            console.log(e.activeCues);;
+        });
+    }
+})();
 
 const updateTimeIndicator = () => {
 
@@ -82,9 +104,7 @@ const removeHoverTime = () => {
         isOverExists.remove();
         isOverExists = undefined;
     }
-
     return ;
-
 };
 
 const getHumanTime = result => `${(result/60).toFixed(2)}`.replace(/\./, ":");
@@ -109,10 +129,8 @@ const createHoverTime = ({event,result}) => {
 
     hoverTimeIndication.textContent = hoveredLocationTime;
 
-
     let left = event.clientX - event.target.getBoundingClientRect().left,
         top = event.clientY - event.target.getBoundingClientRect().top;
-
 
     hoverIndication.setAttribute("style", `left: ${left - 15}px; top: ${top - 25}px`);
 
@@ -336,18 +354,72 @@ const handleLoadedSubtitle = path => {
 
     const { submenu } = videoContextMenu[16].submenu[1];
 
-    submenu.push({ label: lang});
+    submenu.push({
+        label: lang,
+        click(menuItem) {
+            videoEmit.emit("subtitle-asked-for",menuItem);
+        },
+        accelerator: `CommandOrCtrl+${track.getAttribute("id")}`,
+        type: "radio"
+    });
 
     Object.assign(videoContextMenu[16].submenu[1], {
         submenu
     });
 };
 
+const MouseHoverOnVideo = () => {
+    if ( ! document.webkitIsFullScreen ) return false;
+    return akaraControl.removeAttribute("hidden");
+};
+
+const MouseNotHoverVideo = () => {
+
+    if ( ! document.webkitIsFullScreen ) return false;
+
+    setTimeout( () => {
+        akaraControl.setAttribute("hidden", "true");
+    },3000);
+
+    akaraControl.animate({
+        opacity: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0]
+    },3000);
+
+};
+
 controlElements.addEventListener("click", fireControlButtonEvent);
 
 video.addEventListener("loadeddata", event => {
+
     currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;
+
+    const submenu = videoContextMenu[16].submenu;
+
+    // no need to remove if no subtitle was added in previous videox
+    if ( submenu ) {
+
+        Object.assign(videoContextMenu[16].submenu[1],{
+            submenu: []
+        });
+        Array.from(document.querySelectorAll("track"), el => {
+            el.remove();
+        });
+    }
+
 });
+video.addEventListener("dblclick", () => {
+    
+    if ( ! video.hasAttribute("src") ) return false;
+        
+    if ( document.webkitIsFullScreen )
+        return _leavefullscreen();
+    else
+        return _enterfullscreen();
+
+});
+video.addEventListener("mouseover", MouseHoverOnVideo);
+
+video.addEventListener("mouseout", MouseNotHoverVideo);
 
 video.addEventListener("timeupdate", updateTimeIndicator);
 
@@ -423,7 +495,7 @@ videoEmit.on("high_volume", type => {
     changeVolumeIcon.classList.remove("fa-volume-down");
     changeVolumeIcon.classList.add("fa-volume-up");
 });
-console.log(_next, _previous);
+
 ipc.on("video-open-file", addMediaFile);
 ipc.on("video-open-folder", addMediaFolder);
 ipc.on("video-play", _play);
@@ -452,19 +524,26 @@ ipc.on("fast-speed", () => {
     _setPlaybackRate(12);
 });
 
-ipc.on("very-fast-speed", () => {
-    _setPlaybackRate(25);
+ipc.on("very-fast-speed", () => _setPlaybackRate(25));
+
+ipc.on("slow-speed", () => _setPlaybackRate(0.7));
+
+ipc.on("very-slow-speed", () => _setPlaybackRate(0.2));
+
+ipc.on("load-sub-computer", (event,val) => handleLoadedSubtitle(val));
+
+videoEmit.on("subtitle-asked-for", mItem => {
+
+    const { length: _textTrackLength } = textTracks;
+
+    for ( let i = 0; i < _textTrackLength; i++ ) {
+        if ( mItem.label === textTracks[i].label ) {
+            textTracks[i].mode = "showing";
+            continue;
+        }
+        textTracks[i].mode = "disabled";
+    }
 });
 
-ipc.on("slow-speed", () => {
-    _setPlaybackRate(0.7);
-});
-
-ipc.on("very-slow-speed", () => {
-    _setPlaybackRate(0.2);
-});
-
-ipc.on("load-sub-computer", (event,val) => {
-    console.log(val);
-    handleLoadedSubtitle(val);
-});
+ipc.on("enter-video-fullscreen", _enterfullscreen);
+ipc.on("leave-video-fullscreen", _leavefullscreen);

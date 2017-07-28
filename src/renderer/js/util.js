@@ -1,19 +1,36 @@
 const { remote:
-        { require: _require },
-        ipcRenderer: ipc } = require("electron");
+        {
+            require: _require,
+            BrowserWindow
+        },
+        ipcRenderer: ipc
+      } = require("electron");
 const { CONVERTED_MEDIA } = _require("./constants.js");
-const { Magic, MAGIC_MIME_TYPE: _GET_MIME }  = require("mmmagic");
+
+const { Magic,
+        MAGIC_MIME_TYPE: _GET_MIME
+      }  = require("mmmagic");
 const url = require("url");
 const { spawn } = require("child_process");
-const { mkdirSync , existsSync, createReadStream } = require("fs");
+
+const { mkdirSync ,
+        existsSync,
+        createReadStream } = require("fs");
+
 const { join,
         basename,
         parse } = require("path");
-const { video, controls: { play } } = require("../js/video_control.js");
+const { video,
+        controls: {
+            play
+        }
+      } = require("../js/video_control.js");
 
 const detectLanguage = new (require("languagedetect"));
 
 const magic = new Magic(_GET_MIME);
+// get the main window only
+const win = BrowserWindow.fromId(1);
 
 const createEl = ({path: abs_path, _path: rel_path}) => {
 
@@ -298,8 +315,15 @@ const disableVideoMenuItem = menuInst => {
 
     if ( menuInst.label === "Subtitle" && ! navigator.onLine) {
         // optimize this code later
-        __MenuInst(menuInst, "Load Subtitle", "From Net").enabled = false;
+        return(__MenuInst(menuInst, "Load Subtitle", "From Net").enabled = false);
     }
+
+    if ( menuInst.label === "Enter FullScreen" && win.isFullScreen() ) {
+        return(menuInst.visible = false);
+    }
+
+    if ( menuInst.label === "Leave FullScreen" && win.isFullScreen() )
+        return(menuInst.visible = true);
 
 };
 

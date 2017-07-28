@@ -1,6 +1,9 @@
 "use strict";
 
-const { app,  BrowserWindow, globalShortcut } = require("electron");
+const { app,
+    BrowserWindow,
+    globalShortcut
+} = require("electron");
 const trayMenu = require("./tray.js");
 const handleWinState = require("./window_state.js");
 const handleWebContents = require("./webcontent_state.js");
