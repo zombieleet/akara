@@ -241,24 +241,6 @@ const videoContextMenu = [
         type: "separator"
     },
     {
-        label: "Enter FullScreen",
-        // this kind of fullscreen is not dope
-        //role: "togglefullscreen"
-        click(menuItem, { webContents }, event) {
-            webContents.send("enter-video-fullscreen");
-        }
-    },
-    {
-        label: "Leave FullScreen",
-        click(menuItem, { webContents }, event ) {
-            webContents.send("leave-video-fullscreen");
-        },
-        visible: false
-    },
-    {
-        type: "separator"
-    },
-    {
         label: "Subtitle",
         submenu: [
             {
@@ -297,6 +279,24 @@ const videoContextMenu = [
                 submenu: []
             }
         ]
+    },
+    {
+        type: "separator"
+    },
+    {
+        label: "Enter FullScreen",
+        // this kind of fullscreen is not dope
+        //role: "togglefullscreen"
+        click(menuItem, { webContents }, event) {
+            webContents.send("enter-video-fullscreen");
+        }
+    },
+    {
+        label: "Leave FullScreen",
+        click(menuItem, { webContents }, event ) {
+            webContents.send("leave-video-fullscreen");
+        },
+        visible: false
     },
     {
         type: "separator"

@@ -1,6 +1,7 @@
 "use strict";
 
-const { app,
+const {
+    app,
     BrowserWindow,
     globalShortcut
 } = require("electron");
@@ -55,4 +56,3 @@ const createWindow = () => {
     });
 };
 createWindow();
-
