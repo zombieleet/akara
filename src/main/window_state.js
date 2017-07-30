@@ -1,9 +1,17 @@
 
-const { ipcMain: ipc, BrowserWindow } = require("electron");
-const { CONVERTED_MEDIA }  = require("./constants.js");
-
-const { existsSync, rmdirSync } = require("fs");
-
+const {
+    ipcMain: ipc,
+    BrowserWindow,
+    app
+} = require("electron");
+const {
+    existsSync,
+    rmdir,
+    readdir
+} = require("fs");
+const {
+    removeConvMedia
+} = require("./utils.js");
 const handleWinState = win => {
 
     win.on("maximize", () => {
@@ -16,30 +24,9 @@ const handleWinState = win => {
 
     win.on("close", () => {
         win = undefined;
-        if ( existsSync(CONVERTED_MEDIA ) )
-             rmdirSync(CONVERTED_MEDIA);
+        removeConvMedia();
+        app.quit();
     });
-
-    /*win.on("enter-html-full-screen", () => {
-        fullscreen({
-            remLabel: "Enter FullScreen",
-            useLabel: "Leave FullScreen",
-            click(menuItem, { webContents }, event ) {
-                webContents.send("leave-video-fullscreen");
-            }
-        });
-    });
-    
-    win.on("leave-html-full-screen", () => {
-        fullscreen({
-            remLabel: "Leave FullScreen",
-            useLabel: "Enter FullScreen",
-            click(menuItem, { webContents }, event) {
-                webContents.send("");
-            }
-        });
-    });*/
-    
     ipc.on("window-maximize", event => {
         
         if ( win.isMaximized() ) {
