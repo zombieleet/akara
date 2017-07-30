@@ -1,3 +1,4 @@
+"use strict";
 const {
     remote: {
         require: _require,
@@ -31,7 +32,7 @@ const {
 } = require("../js/video_control.js");
 
 const OS = new _OS("OSTestUserAgentTemp");
-const detectLanguage = new (require("languagedetect"));
+const { guessLanguage } = require("guesslanguage");
 
 const magic = new Magic(_GET_MIME);
 
@@ -257,9 +258,14 @@ const __MenuInst = ( menu, match, submatch) => {
     }
     return menuInst;
 };
-const langDetect = file => Array.isArray( file = detectLanguage.detect(
-    readFileSync(file).toString()
-)) && file.length > 0 ? file[0][0] : undefined;
+
+const langDetect = (file) => {
+    return new Promise((resolve,reject) => {
+        guessLanguage.name(readFileSync(file).toString(), info => {
+            resolve(info);
+        });
+    });
+};
 
 const checkValues = ({input,movie,series,season,episode}) => {
     if ( input.value.length === 0 ) {
@@ -305,31 +311,31 @@ const StyleResult = value => {
 let INTERVAL_COUNT = 0;
 
 const intervalId = (loaded) => {
-    
+
     const intId = setInterval( () => {
         console.log(INTERVAL_COUNT);
         if ( loaded.getAttribute("hidden") ) return clearInterval(intId);
-        
+
         if ( INTERVAL_COUNT === 30 ) {
-            
+
             loaded.innerHTML = "Connection is taking too long";
-            
+
         } else if ( INTERVAL_COUNT === 60 ) {
-            
+
             loaded.innerHTML = "Giving Up. Check Your Internet Speed";
-            
+
             clearInterval(intId);
-            
+
             INTERVAL_COUNT = 0;
-            
+
         } else {
-            
+
             INTERVAL_COUNT++;
-            
+
         }
-        
+
     },5000);
-    
+
     return intId;
 };
 const ErrorCheck = (err,loaded) => {
@@ -339,7 +345,7 @@ const ErrorCheck = (err,loaded) => {
         return true;
     }
     return false;
-}
+};
 
 module.exports = {
     createEl,
