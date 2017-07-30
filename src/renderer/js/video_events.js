@@ -36,6 +36,7 @@ const {
         }
     }, ipcRenderer: ipc
 } = require("electron");
+
 const {
     addMediaFile,
     addMediaFolder,
@@ -51,10 +52,10 @@ const {
 const {
     videoContextMenu
 } = _require("./menu.js");
-
 const {
     CONVERTED_MEDIA
 } = _require("./constants.js");
+
 
 const currTimeUpdate = document.querySelector(".akara-update-cur-time"),
       jumpToSeekElement = document.querySelector(".akara-time"),
@@ -294,20 +295,13 @@ const handleVolumeChange = event => {
     return true;
 };
 
-
-const handleLoadedSubtitle = (path,cb) => {
-
-    if ( ! path ) return ;
-
-    [ path ] = path;
-    console.log(path);
-    if ( /x-subrip$/.test(mime.lookup(path)) )
-        path = cb(path);
-    console.log(path,mime.lookup(path));
+const setUpTrackElement = (path,fileLang) => {
     const __tracks = video.querySelectorAll("track");
     const track = document.createElement("track");
     const subtitle = path;
-    const fileLang = langDetect(path);
+    
+    fileLang = fileLang || langDetect(path);
+    
     let lang = fileLang ? fileLang : `No Lang ${basename(path).substr(0, 7)}`;
 
     track.setAttribute("src", subtitle);
@@ -316,6 +310,19 @@ const handleLoadedSubtitle = (path,cb) => {
     track.setAttribute("kind", "subtitles");
     track.setAttribute("id", __tracks.length++);
     
+    return { track, lang };
+};
+const handleLoadSubtitleComputer = (path,cb) => {
+
+    if ( ! path ) return ;
+
+    [ path ] = path;
+    
+    if ( /x-subrip$/.test(mime.lookup(path)) )
+        path = cb(path);
+    
+    const { track, lang } = setUpTrackElement(path);
+   
     video.appendChild(track);
 
     const { submenu } = videoContextMenu[16].submenu[1];
@@ -443,13 +450,16 @@ ipc.on("very-fast-speed", () => _setPlaybackRate(25));
 ipc.on("slow-speed", () => _setPlaybackRate(0.7));
 ipc.on("very-slow-speed", () => _setPlaybackRate(0.2));
 
-ipc.on("load-sub-computer", (event,val) => handleLoadedSubtitle(val, path => {
+ipc.on("load-sub-computer", (event,val) => handleLoadSubtitleComputer(val, path => {
     const _path = join(CONVERTED_MEDIA,basename(path).replace(".srt", ".vtt"));
     createReadStream(path)
         .pipe(srt2vtt())
         .pipe(createWriteStream(_path));
     return _path;
 }));
+
+//ipc.on("load-sub-internet", );
+
 videoEmit.on("subtitle-asked-for", (mItem,id) => {
     const { length: _textTrackLength } = textTracks;
     const { submenu } = videoContextMenu[16].submenu[1];
