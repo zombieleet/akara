@@ -8,13 +8,16 @@ const {
 const trayMenu = require("./tray.js");
 const handleWinState = require("./window_state.js");
 const handleWebContents = require("./webcontent_state.js");
-/*const handleGlobalShortcut = require("./global_shortcut.js");*/
+const {
+    APP_PATH,
+    BACKGROUND_COLOR,
+    CONVERTED_MEDIA
+} = require("./constants.js");
 const { join } = require("path");
 
-const appPath = app.getAppPath();
 
-require("electron-reload")(appPath, {
-    electron: join(appPath, "node_modules", ".bin", "electron")
+require("electron-reload")(APP_PATH, {
+    electron: join(APP_PATH, "node_modules", ".bin", "electron")
 });
 
 const createWindow = () => {
@@ -23,7 +26,7 @@ const createWindow = () => {
 
     app.setName("Akara Media Player");
 
-    app.setVersion(require(`${appPath}/package.json`).version);
+    app.setVersion(require(`${APP_PATH}/package.json`).version);
 
     app.on("ready", () => {
 
@@ -31,16 +34,14 @@ const createWindow = () => {
         // the backgroundColor property
         // is modified in the stylesheet
         mainWindow = new BrowserWindow({
-            backgroundColor: "#4B4B4B",
+            backgroundColor: BACKGROUND_COLOR,
             frame: false,
             show: false,
             centre: true,
-            webPreferences: {
-                nodeIntegrationInWorker: true
-            }
+            useContentSize: true
         });
-
-        mainWindow.loadURL(`file://${appPath}/app/renderer/html/index.html`);
+        
+        mainWindow.loadURL(`file://${APP_PATH}/app/renderer/html/index.html`);
 
         mainWindow.on("ready-to-show", () => {
             mainWindow.show();
@@ -53,6 +54,8 @@ const createWindow = () => {
         });
         handleWebContents(mainWindow);
         handleWinState(mainWindow);
+    });
+    app.on("quit", () => {
     });
 };
 createWindow();
