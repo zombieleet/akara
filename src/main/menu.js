@@ -1,5 +1,6 @@
 const { app, nativeImage, dialog } = require("electron");
 const { join } = require("path");
+const { createSubTitleWindow } = require("./subtitles.js");
 
 const share = {
     label: "Share",
@@ -148,7 +149,6 @@ const videoContextMenu = [
             webContents.send("video-previous");
         },
         accelerator: "p"
-
     },
     {
         type: "separator"
@@ -268,8 +268,8 @@ const videoContextMenu = [
                     {
                         label: "From Net",
                         __priv: true,
-                        click(menuItem, { webContents }, event ) {
-                            webContents.send("load-sub-internet");
+                        click(menuItem, BrowserWindow , event ) {
+                            createSubTitleWindow(BrowserWindow);
                         }
                     }
                 ]
