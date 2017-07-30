@@ -1,7 +1,9 @@
 const fs = require("fs");
 const { basename, join } = require("path");
-const { videoContextMenu } = require("electron");
-
+const { dialog } = require("electron");
+const {
+    CONVERTED_MEDIA
+} = require("./constants.js");
 const checkType = path => {
 
     if ( fs.statSync(path).isFile() ) {
@@ -48,7 +50,25 @@ const iterateDir = () => {
 
 };
 
+const removeConvMedia = () => {
+    if ( ! fs.existsSync(CONVERTED_MEDIA ) ) return ;
+    
+    fs.readdir(CONVERTED_MEDIA, (err,fpath) => {
+        if ( err ) return dialog.showErrorBox(
+            "Error","Error while reading coverted media folder"
+        );
+        fpath.forEach( path => {
+            const fullPath = join(CONVERTED_MEDIA,path);
+            fs.unlink(fullPath,(err,fpath) => {
+                if ( err ) return dialog.showErrorBox(
+                    `Unable to delete ${path}`,`Cannot delete converted media ${path}`
+                );
+            });
+        });
+    });
+};
 module.exports = {
     checkType,
-    iterateDir
+    iterateDir,
+    removeConvMedia
 };
