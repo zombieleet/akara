@@ -10,6 +10,7 @@ const {
     Magic,
     MAGIC_MIME_TYPE: _GET_MIME
 } = require("mmmagic");
+const _OS = require("opensubtitles-api");
 const url = require("url");
 const { spawn } = require("child_process");
 const {
@@ -28,8 +29,12 @@ const {
         play
     }
 } = require("../js/video_control.js");
+
+const OS = new _OS("OSTestUserAgentTemp");
 const detectLanguage = new (require("languagedetect"));
+
 const magic = new Magic(_GET_MIME);
+
 // get the main window only
 const win = BrowserWindow.fromId(1);
 const createEl = ({path: abs_path, _path: rel_path}) => {
@@ -256,6 +261,86 @@ const langDetect = file => Array.isArray( file = detectLanguage.detect(
     readFileSync(file).toString()
 )) && file.length > 0 ? file[0][0] : undefined;
 
+const checkValues = ({input,movie,series,season,episode}) => {
+    if ( input.value.length === 0 ) {
+        return "TEXT_LENGTH_GREAT";
+    }
+    if ( series.checked ) {
+        if ( isNaN(season.value) || season.value.length === 0 ) {
+            return "SEASON_INVALID";
+        }
+        if ( isNaN(episode.value) || episode.value.length === 0 )  {
+            return "EPISODE_INVALID";
+        }
+        const query = input.value;
+        season = season.value;
+        episode = episode.value;
+        return { query, season, episode };
+    }
+    if ( input.value.length > 0 &&
+         ! series.checked && ! movie.checked ) {
+        return "SERIES_MOVIE_NO_CHECKED";
+    }
+    if ( movie.checked ) {
+        const query = input.value;
+        return { query };
+    }
+};
+
+const GetSubTitle = async (option) => {
+    console.log(option);
+    let value;
+    try {
+        value = await OS.search(option);
+    } catch(ex) {
+        value = ex;
+    }
+    return value;
+};
+
+const StyleResult = value => {
+    console.log(value);
+};
+
+let INTERVAL_COUNT = 0;
+
+const intervalId = (loaded) => {
+    
+    const intId = setInterval( () => {
+        console.log(INTERVAL_COUNT);
+        if ( loaded.getAttribute("hidden") ) return clearInterval(intId);
+        
+        if ( INTERVAL_COUNT === 30 ) {
+            
+            loaded.innerHTML = "Connection is taking too long";
+            
+        } else if ( INTERVAL_COUNT === 60 ) {
+            
+            loaded.innerHTML = "Giving Up. Check Your Internet Speed";
+            
+            clearInterval(intId);
+            
+            INTERVAL_COUNT = 0;
+            
+        } else {
+            
+            INTERVAL_COUNT++;
+            
+        }
+        
+    },5000);
+    
+    return intId;
+};
+const ErrorCheck = (err,loaded) => {
+    INTERVAL_COUNT = 0;
+    if ( Error[Symbol.hasInstance](err) ) {
+        loaded.innerHTML = "Cannot connect to subtitle server";
+        return true;
+    }
+    return false;
+};
+
 module.exports = {
     createEl,
     removeTarget,
@@ -270,5 +355,10 @@ module.exports = {
     disableVideoMenuItem,
     __MenuInst,
     langDetect,
-    getMime
+    getMime,
+    checkValues,
+    GetSubTitle,
+    StyleResult,
+    intervalId,
+    ErrorCheck
 };
