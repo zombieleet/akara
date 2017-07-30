@@ -40,7 +40,7 @@ const createWindow = () => {
             centre: true,
             useContentSize: true
         });
-        
+
         mainWindow.loadURL(`file://${APP_PATH}/app/renderer/html/index.html`);
 
         mainWindow.on("ready-to-show", () => {
