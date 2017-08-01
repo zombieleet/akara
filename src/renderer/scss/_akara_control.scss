@@ -74,7 +74,7 @@ $volume-color: white;
 
         border-width: 12px;
 
-        padding: 20px;
+        padding: 8px;
 
         border-radius: 50%;
 
@@ -119,13 +119,15 @@ $volume-color: white;
         right-radius: 10%;
         left-radius: 10%;
     }
-    //margin-left: 8px;
+
+    // work on this margin latter
+    margin-left: 1px;
     
     padding: 1px;
-    background: lighten(black,20%);//$volume-color;
+    background: lighten(black,20%);
 
 
-    padding-right: 12px;
+    padding-right: 9px;
 
     cursor: pointer;
 

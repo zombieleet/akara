@@ -171,7 +171,8 @@ table {
   left: 10px;
   top: 30px;
   border: 1px solid white;
-  font-size: 20px; }
+  font-size: 20px;
+  position: absolute; }
   .akara-dropdown ul li {
     visibility: hidden;
     font-size: 1rem;
@@ -315,11 +316,16 @@ table {
   .akara-title-bar .akara-title {
     color: white;
     float: left;
-    font-size: 18px;
-    padding: 12px; }
+    position: fixed;
+    left: 50px;
+    font-size: 1.5em;
+    padding-top: 12px;
+    padding-left: 12px; }
   .akara-title-bar .akara-window-state {
     float: right;
-    -webkit-app-region: no-drag; }
+    -webkit-app-region: no-drag;
+    position: fixed;
+    right: 0; }
     .akara-title-bar .akara-window-state > ul {
       margin-top: 7px; }
       .akara-title-bar .akara-window-state > ul > li {
@@ -427,7 +433,7 @@ table {
     margin: 10px;
     cursor: pointer;
     border-width: 12px;
-    padding: 20px;
+    padding: 8px;
     border-radius: 50%;
     box-shadow: 5px 5px 20px #000 inset;
     transition: .2s box-shadow ease-in-out; }
@@ -453,9 +459,10 @@ table {
 .volume-incr {
   border-top-right-radius: 10%;
   border-top-left-radius: 10%;
+  margin-left: 1px;
   padding: 1px;
   background: #333333;
-  padding-right: 12px;
+  padding-right: 9px;
   cursor: pointer; }
 
 .volume-incr:nth-of-type(1) {

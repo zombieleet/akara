@@ -27,23 +27,22 @@
     }
     .akara-title {
         
-        color: white;
-        
+        color: white;        
         float: left;
-
-        //margin-top: 8px;
-        
+        position: fixed;
+        left: 50px;
         font: {
-            //weight: bolder;
-            size: 18px;
+            size: 1.5em;
         }
-        padding: 12px;
-
+        padding-top: 12px;
+        padding-left: 12px;
     }
     
     .akara-window-state {
         float: right;
         -webkit-app-region: no-drag;
+        position: fixed;
+        right: 0;
         > ul {
             margin-top: 7px;
             > li {

@@ -75,7 +75,7 @@ const controls = {
         changeIcon.classList.remove("fa-expand");
         changeIcon.setAttribute("data-fire","leavefullscreen");
 
-        video.setAttribute("style", "height: 100%");
+        video.parentNode.setAttribute("style", "height: 100%; width: 100%;");
         
         return document.querySelector(".akara-media").webkitRequestFullScreen();
     },
@@ -86,8 +86,7 @@ const controls = {
         changeIcon.classList.add("fa-expand");
         changeIcon.classList.remove("fa-arrows-alt");
         changeIcon.setAttribute("data-fire","enterfullscreen");
-
-        video.removeAttribute("style");
+        video.parentNode.removeAttribute("style");
         document.querySelector(".akara-control").removeAttribute("hidden");
         return document.webkitCancelFullScreen();
     },
