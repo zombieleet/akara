@@ -1,6 +1,9 @@
-const { remote: { dialog } } = require("electron");
 const { basename } = require("path");
-const { createEl, validateMime, playOnDrop } = require("../js/util.js");
+const {
+    createEl,
+    validateMime,
+    playOnDrop
+} = require("../js/util.js");
 
 const addMediaCb = paths => {
 
@@ -11,15 +14,8 @@ const addMediaCb = paths => {
         return ;
     }
 
-    paths.forEach( async (path) => {
-
-        let ppath = await validateMime(path);
+    paths.forEach( path => {
         
-        if ( ! ppath )
-            return dialog.showErrorBox("Invalid Media type",
-                                       `Cannot Play ${basename(path)}`);
-        path = ppath;
-
         let _path = basename(path);
         
         const createdElement = createEl({path,_path});

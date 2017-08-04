@@ -37,7 +37,8 @@ const addMediaFile = () => {
                 "avi",
                 "3gp",
                 "swf",
-                "wma"]},
+                "wma",
+                "mkv"]},
         ],
         properties: ["openFile", "multiSelections"]
     },addMediaCb);

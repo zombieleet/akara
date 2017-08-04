@@ -12,7 +12,9 @@
         disableVideoMenuItem,
         __MenuInst,
         langDetect,
-        getMime
+        getMime,
+        validateMime,
+        setupPlaying
     } = require("../js/util.js");
     const {
         parse
@@ -71,6 +73,13 @@
     const win = BrowserWindow.fromId(1);
     const textTracks = video.textTracks;
 
+    const setTime = () => {
+        const curTm = getHumanTime(controls.getCurrentTime());
+        const durTm = getHumanTime(controls.duration());
+
+        return `${curTm} / ${durTm}`;
+    };
+
     const updateTimeIndicator = () => {
         let timeIndicator = document.querySelector(".akara-time-current");
         const currTimeUpdate = document.querySelector(".akara-update-cur-time");
@@ -81,7 +90,7 @@
 
         timeIndicator.setAttribute("style", `width: ${timeIndicatorWidth}px`);
         timeIndicator = undefined;
-        currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;
+        currTimeUpdate.textContent = setTime();
         return true;
     };
 
@@ -107,7 +116,10 @@
         return ;
     };
 
-    const getHumanTime = result => `${(result/60).toFixed(2)}`.replace(/\./, ":");
+    const getHumanTime = result => isNaN(result)
+              ? "00:00"
+              : `${(result/60).toFixed(2)}`.replace(/\./, ":");
+
 
     const createHoverTime = ({event,result}) => {
 
@@ -172,7 +184,7 @@
     };
 
     const videoPlayEvent = () => {
-
+        console.log("shit");
         const play = document.querySelector("[data-fire=play]");
         const pause = document.querySelector("[data-fire=pause]");
         const notify = __checkPlayStateAndNotify();
@@ -189,6 +201,54 @@
 
         if ( coverOnError )
             coverOnError.setAttribute("style", "display: none;");
+    };
+
+    const disableControls = () => {
+        currTimeUpdate.innerHTML = "00:00 / 00:00";
+        document.querySelector(".cover-on-error-src").removeAttribute("style");
+        return video.removeAttribute("src");
+    };
+
+    const videoErrorEvent = async () => {
+
+        const _src = video.getAttribute("src").replace("file://","");
+        const akaraLoaded = document.querySelector(".akara-loaded");
+        const playlistItem = akaraLoaded.querySelector(`#${video.getAttribute("data-id")}`);
+
+        disableControls();
+
+        const btn = dialog.showMessageBox({
+            type: "error",
+            title: "Invalid stream",
+            buttons: [ "Cancel", "Convert" ],
+            message: `${basename(_src)} is not valid. Would you like to convert it ?`
+        });
+
+        // CONFIGURATION jump to play other medias
+        //   if conversion is taking place
+        if ( playlistItem.nextElementSibling )
+            _next();
+        else
+            _previous();
+
+        if ( btn === 0 ) return false;
+
+        const path = await validateMime(_src);
+
+        if ( ! path ) {
+            disableControls();
+            return dialog.showErrorBox(
+                "Cannot convert stream",`${_src} was not converted`
+            );
+        }
+
+        playlistItem.setAttribute("data-full-path", path);
+
+        // CONFIGURATION:- play converted video automatically
+        //     or NOT
+        setupPlaying(playlistItem);
+
+        return true;
     };
 
     const clickedMoveToEvent = event => {
@@ -362,9 +422,13 @@
             opacity: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0]
         },3000);
     };
+
     controlElements.addEventListener("click", fireControlButtonEvent);
+
     video.addEventListener("loadeddata", event => {
-        currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;
+
+        currTimeUpdate.textContent = setTime();
+
         const submenu = videoContextMenu[16].submenu;
         // no need to remove if no subtitle was added in previous videox
         if ( submenu ) {
@@ -377,6 +441,7 @@
         }
 
     });
+
     video.addEventListener("dblclick", () => {
         if ( ! video.hasAttribute("src") ) return false;
 
@@ -385,6 +450,7 @@
         else
             return _enterfullscreen();
     });
+
     video.addEventListener("mouseover", MouseHoverOnVideo);
     video.addEventListener("mouseout", MouseNotHoverVideo);
     video.addEventListener("timeupdate", updateTimeIndicator);
@@ -395,13 +461,7 @@
     video.addEventListener("loadedmetadata", () => {
         currTimeUpdate.textContent = `${getHumanTime(controls.getCurrentTime())} / ${getHumanTime(controls.duration())}`;
     });
-    video.addEventListener("error", event => {
-        currTimeUpdate.textContent = "00:00 / 00:00";
-        document.querySelector(".cover-on-error-src")
-            .removeAttribute("style");
-        video.removeAttribute("src");
-
-    });
+    video.addEventListener("error", videoErrorEvent);
     video.addEventListener("contextmenu", event => {
         let vidMenuInst ;
         menu.clear();

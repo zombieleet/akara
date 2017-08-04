@@ -68,21 +68,21 @@ const controls = {
         return this.mute();
     },
     enterfullscreen() {
-        
+
         const changeIcon = document.querySelector(".fa-expand");
-        
+
         changeIcon.classList.add("fa-arrows-alt");
         changeIcon.classList.remove("fa-expand");
         changeIcon.setAttribute("data-fire","leavefullscreen");
 
         video.parentNode.setAttribute("style", "height: 100%; width: 100%;");
-        
+
         return document.querySelector(".akara-media").webkitRequestFullScreen();
     },
     leavefullscreen() {
-        
+
         const changeIcon = document.querySelector(".fa-arrows-alt");
-        
+
         changeIcon.classList.add("fa-expand");
         changeIcon.classList.remove("fa-arrows-alt");
         changeIcon.setAttribute("data-fire","enterfullscreen");
