@@ -39,6 +39,9 @@ const magic = new Magic(_GET_MIME);
 // get the main window only
 const win = BrowserWindow.fromId(1);
 const createEl = ({path: abs_path, _path: rel_path}) => {
+
+    let lengthOfSib = document.querySelector(".akara-loaded").childElementCount;
+
     const child = document.createElement("li");
     const childchild = document.createElement("span");
     // nonsence
@@ -49,9 +52,12 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
         pathname: abs_path
     }));
 
+    child.setAttribute("id", `_${lengthOfSib++}`);
+
     child.classList.add("playlist");
     childchild.textContent = rel_path;
     child.appendChild(childchild);
+
     return child;
 };
 const removeType = (pNode,...types) => {
@@ -144,13 +150,16 @@ const disableMenuItem = (memItem,target,video) => {
     if ( memItem.label === "No Repeat All" && ! target.parentNode.hasAttribute("data-repeat") )
         memItem.visible = false;
 };
+
 const setupPlaying = target => {
     removeClass(target,"fa","fa-play-circle");
     removeType(target.parentNode,"data-dbclicked","data-now-playing","data-clicked");
     setCurrentPlaying(target);
-    video.src = target.getAttribute("data-full-path");
+    video.setAttribute("data-id", target.getAttribute("id"));
+    video.setAttribute("src", target.getAttribute("data-full-path"));
     return play();
 };
+
 const prevNext = moveTo => {
     let target = document.querySelector("[data-now-playing=true]");
 
@@ -160,8 +169,11 @@ const prevNext = moveTo => {
     if ( moveTo === "prev" && target.previousElementSibling )
         return setupPlaying(target.previousElementSibling);
 };
+
 const createDir = () => mkdirSync(`${CONVERTED_MEDIA}`);
+
 const sendNotice = message =>  new Notification(message);
+
 const getMime = file => new Promise((resolve,reject) => {
     magic.detectFile(file, (err,data) => {
         if ( err) return reject(err);
