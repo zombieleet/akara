@@ -5,16 +5,20 @@ const {
     BrowserWindow,
     globalShortcut
 } = require("electron");
+
 const trayMenu = require("./tray.js");
+
 const handleWinState = require("./window_state.js");
+
 const handleWebContents = require("./webcontent_state.js");
+
 const {
     APP_PATH,
     BACKGROUND_COLOR,
     CONVERTED_MEDIA
 } = require("./constants.js");
-const { join } = require("path");
 
+const { join } = require("path");
 
 require("electron-reload")(APP_PATH, {
     electron: join(APP_PATH, "node_modules", ".bin", "electron")

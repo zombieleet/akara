@@ -8,9 +8,10 @@ const {
     BACKGROUND_COLOR
 } = require("./constants.js");
 
-const createSubTitleWindow = (parent) => {
+const createNewWindow = ({parent,title,html}) => {
     
-    let subtitleWindow = new BrowserWindow({
+    let newWindow = new BrowserWindow({
+        title: "subtitle",
         backgroundColor: BACKGROUND_COLOR,
         center: true,
         frame: false,
@@ -19,23 +20,27 @@ const createSubTitleWindow = (parent) => {
         maximizable: false
     });
 
-    subtitleWindow.loadURL(`file://${APP_PATH}/app/renderer/html/subtitle.html`);
+    newWindow.loadURL(`file://${APP_PATH}/app/renderer/html/${html}`);
     
-    subtitleWindow.on("closed", () => {
-        subtitleWindow = undefined;
+    newWindow.on("closed", () => {
+        newWindow = undefined;
     });
-    subtitleWindow.on("ready-to-show", () => {
-        subtitleWindow.show();
+    newWindow.on("ready-to-show", () => {
+        newWindow.show();
     });
 
     //parent.setIgnoreMouseEvents(true);
-    //const { webContents } = subtitleWindow;
+    const { webContents } = newWindow;
 
-    ipc.on("close-subtitle-window", () => {
-        subtitleWindow.close();
+    webContents.openDevTools();
+
+    ipc.on("close-new-window", () => {
+        newWindow.close();
     });
+
+    console.log(newWindow.getTitle());
 };
 
 module.exports = {
-    createSubTitleWindow
+    createNewWindow
 };
