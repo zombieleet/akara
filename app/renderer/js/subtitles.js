@@ -1,13 +1,38 @@
 ( () => {
     "use strict";
-    const { ipcRenderer: ipc }  = require("electron");
+    const {
+        ipcRenderer: ipc,
+        remote: {
+            BrowserWindow,
+            require: _require
+        }
+    }  = require("electron");
+
+    const {
+        createNewWindow
+    } = _require("./newwindow.js");
+    
+    const {
+        join
+    } = require("path");
+    
+    const {
+        existsSync,
+        mkdirSync
+    } = require("fs");
+    
     const {
         checkValues,
         GetSubTitle,
         StyleResult,
         intervalId,
-        ErrorCheck
+        ErrorCheck,
+        isOnline,
+        downloadURL
     } = require("../js/util.js");
+
+    const akara_emit =  require("../js/emitter.js");
+    
     const movie = document.querySelector("#movies");
     const series = document.querySelector("#series");
     const button = document.querySelector("button");
