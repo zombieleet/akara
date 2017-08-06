@@ -332,18 +332,147 @@ const checkValues = ({input,movie,series,season,episode}) => {
 };
 
 const GetSubTitle = async (option) => {
-    console.log(option);
-    let value;
-    try {
-        value = await OS.search(option);
-    } catch(ex) {
-        value = ex;
-    }
+
+
+    let value = await JSON.parse(readFileSync("./testtest.json","utf-8"));
     return value;
+
+    /*
+     let value;
+     try {
+     value = await OS.search(option);
+     } catch(ex) {
+     value = ex;
+     }
+    return value;
+     */
 };
 
+const skipUnwanted = key => {
+    let i = 0;
+    switch (key) {
+    case "score":
+        i = 1;
+        break;
+    case "downloads":
+        i = 1;
+        break;
+    case "langcode":
+        i = 1;
+        break;
+    default:
+        i = 0;
+
+    }
+
+    if ( i === 1 ) return false;
+
+    return true;
+};
+const createSubtitleEl = (parent,idx,value) => {
+
+    const subtitle = document.createElement("tr");
+
+    subtitle.setAttribute("class","subtitle-item");
+
+    if ( (idx & 1) === 0 ) {
+        subtitle.classList.add("subtitle-color-item");
+    }
+
+    let i = 0;
+
+    const keys = Object.keys(value);
+
+    let __url ;
+    // create subtitle numbering
+    let td = document.createElement("td");
+    td.setAttribute("class", "subtitle-number");
+    td.innerHTML = idx;
+
+    subtitle.appendChild(td);
+
+    while (  i < keys.length ) {
+
+        const _value = value[keys[i]];
+
+        if ( ! skipUnwanted(keys[i]) ) {
+            i++;
+            continue ;
+        }
+
+        td = document.createElement("td");
+        if ( keys[i] === "url" ) {
+
+            __url = _value;
+
+            i++;
+            continue;
+        }
+
+        td.setAttribute("class", "table-data");
+        td.innerHTML = _value;
+        subtitle.appendChild(td);
+        i++;
+    }
+
+    // create download td
+    td = document.createElement("td");
+    td.setAttribute("class", "table-data download");
+    td.setAttribute("data-url", __url);
+
+    // create download icon
+    const download = document.createElement("i");
+    download.setAttribute("class", "fa fa-download");
+    td.appendChild(download);
+
+    subtitle.appendChild(td);
+    return parent.appendChild(subtitle);
+};
+
+const setUpTableHeadersContent = content => {
+    const th = document.createElement("th");
+    th.setAttribute("class", "table-headers");
+    th.innerHTML = content;
+    return th;
+};
+
+const createTableHeaders = values => {
+
+    const tr = document.createElement("tr");
+    const thead = document.createElement("thead");
+    const [ , [ , _value ] ] = Object.entries(values);
+
+    tr.appendChild(setUpTableHeadersContent("s/n"));
+
+    for ( let keys of Object.keys(_value) ) {
+
+        if ( keys === "url" ) continue;
+
+        if ( ! skipUnwanted(keys) ) continue ;
+
+        tr.appendChild(setUpTableHeadersContent(keys));
+    }
+
+    tr.appendChild(setUpTableHeadersContent("download"));
+
+    thead.appendChild(tr);
+
+    return thead;
+};
 const StyleResult = value => {
-    console.log(value);
+
+    const subtitleListParent = document.querySelector(".subtitle-loaded");
+    const subtitleParent = document.createElement("table");
+
+    let idx = 1;
+
+    subtitleParent.appendChild(createTableHeaders(value));
+
+    for ( let [ key, values ] of Object.entries(value)) {
+        //const { lang, encoding, url, langcode } = values;
+        createSubtitleEl(subtitleParent,idx++,values);
+    }
+    return subtitleListParent.appendChild(subtitleParent);
 };
 
 let INTERVAL_COUNT = 0;
@@ -357,6 +486,8 @@ const intervalId = (loaded) => {
         if ( INTERVAL_COUNT === 30 ) {
 
             loaded.innerHTML = "Connection is taking too long";
+
+            INTERVAL_COUNT++;
 
         } else if ( INTERVAL_COUNT === 60 ) {
 
@@ -384,6 +515,39 @@ const ErrorCheck = (err,loaded) => {
     }
     return false;
 };
+
+const isOnline = () => new Promise((resolve,reject) => {
+
+    const options = {
+        protocol: "http:",
+        host: URL_ONLINE,
+        method: "GET"
+    };
+
+    const req = request(options, resp => {
+
+        let _data = Buffer.from("");
+
+        resp.on("data", data => {
+            _data = Buffer.concat([_data,data]);
+        });
+
+        resp.on("end", data => {
+            if ( _data.length > 0 ) {
+                resolve("hi");
+            }
+        });
+
+        resp.on("error", err => {
+            reject("no");
+        });
+
+    });
+
+    req.end();
+});
+
+
 
 module.exports = {
     createEl,

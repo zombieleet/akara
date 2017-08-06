@@ -126,4 +126,24 @@
         }
 
     });
+
+    section.addEventListener("click", event => {
+        const target = event.target;
+        
+        if ( ! target.hasAttribute("data-url") ) return false;
+
+        const url = target.getAttribute("data-url");
+
+        const __obj = {
+            title: "download",
+            width: 365,
+            height: 225
+        };
+
+        const html = `${__obj.title}.html`;
+        
+        createNewWindow(__obj,html);
+
+        localStorage.setItem("url", url);
+    });
 })();

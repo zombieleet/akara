@@ -387,17 +387,18 @@
 
         return { track, lang };
     };
-    const handleLoadSubtitleComputer = async (path,cb) => {
+
+    const handleLoadSubtitle = async (path,cb) => {
 
         if ( ! path ) return ;
 
-        [ path ] = path;
-
+        [ path ] = Array.isArray(path) ? path : [ path ];
+        
         if ( /x-subrip$/.test(mime.lookup(path)) )
             path = cb(path);
 
         const { track, lang } = await setUpTrackElement(path);
-
+        
         video.appendChild(track);
 
         const { submenu } = videoContextMenu[16].submenu[1];
@@ -525,19 +526,24 @@
     ipc.on("slow-speed", () => _setPlaybackRate(0.7));
     ipc.on("very-slow-speed", () => _setPlaybackRate(0.2));
 
-    ipc.on("load-sub-computer", (event,val) => handleLoadSubtitleComputer(val, path => {
+    const readSubtitleFile = path => {
         const _path = join(CONVERTED_MEDIA,basename(path).replace(".srt", ".vtt"));
         const data = readFileSync(path);
         srt2vtt(data, (err,vttData) => {
             if ( err ) return err;
             writeFileSync(_path, vttData);
         });
+        console.log(_path);
         return _path;
-    }));
+    };
+    
+    ipc.on("load-sub-computer", (event,val) =>
+        handleLoadSubtitle(val, path => readSubtitleFile(path)));
+    
+    ipc.on("load-sub-internet", (event,val) =>
+        handleLoadSubtitle(val, path => readSubtitleFile(path)));
 
-    //ipc.on("load-sub-internet", );
-
-    videoEmit.on("subtitle-asked-for", (mItem,id) => {
+    akara_emit.on("video::show_subtitle", (mItem,id) => {
         const { length: _textTrackLength } = textTracks;
         const { submenu } = videoContextMenu[16].submenu[1];
 
