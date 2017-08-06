@@ -41,10 +41,14 @@
     const input = document.querySelector(".subtitle-input");
     const loaded = document.querySelector(".subtitle-info");
     const close = document.querySelector(".subtitle-close");
-    
+    const section = document.querySelector("section");
     const handleSearch = async (value,_id) => {
 
-        const { query, season, episode } = value;
+        const {
+            query,
+            season,
+            episode
+        } = value;
         
         let result;
         
@@ -56,7 +60,7 @@
             result = await GetSubTitle({query});
         }
         
-        if ( ! noNetwork({result,_id}) ) return StyleResult();
+        if ( ! noNetwork({result,_id}) ) return StyleResult(result);
 
     };
 
@@ -77,7 +81,6 @@
             const {query,season,episode} = value;
 
             const _id = intervalId(loaded);
-
             return handleSearch(value,_id);
         }
     };
@@ -99,7 +102,7 @@
         return sOption.setAttribute("hidden", "true");
     });
 
-    button.addEventListener("click", e => {
+    button.addEventListener("click", async (e) => {
 
         e.preventDefault();
 

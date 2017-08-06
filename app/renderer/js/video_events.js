@@ -1,13 +1,16 @@
 ( () => {
 
     "use strict";
+
     const srt2vtt = require("srt2vtt");
+
     const mime = require("mime");
+
     const {
         video,
-        controls,
-        videoEmit
+        controls
     } = require("../js/video_control.js");
+
     const {
         disableVideoMenuItem,
         __MenuInst,
@@ -16,17 +19,23 @@
         validateMime,
         setupPlaying
     } = require("../js/util.js");
+
+    const akara_emit = require("../js/emitter.js");
+
     const {
         parse
     } = require("url");
+
     const {
         basename,
         join
     } = require("path");
+
     const {
         readFileSync,
         writeFileSync
     } = require("fs");
+
     const {
         remote:
         {
@@ -54,9 +63,11 @@
         _enterfullscreen,
         _leavefullscreen
     } = require("../js/handle_dropdown_commands.js")();
+
     const {
         videoContextMenu
     } = _require("./menu.js");
+
     const {
         CONVERTED_MEDIA
     } = _require("./constants.js");
@@ -74,6 +85,7 @@
     const textTracks = video.textTracks;
 
     const setTime = () => {
+
         const curTm = getHumanTime(controls.getCurrentTime());
         const durTm = getHumanTime(controls.duration());
 
@@ -81,6 +93,7 @@
     };
 
     const updateTimeIndicator = () => {
+
         let timeIndicator = document.querySelector(".akara-time-current");
         const currTimeUpdate = document.querySelector(".akara-update-cur-time");
 
@@ -92,6 +105,7 @@
         timeIndicator = undefined;
         currTimeUpdate.textContent = setTime();
         return true;
+
     };
 
 
@@ -319,9 +333,9 @@
             }
         }
         // to enable the showing of fa-volume-down
-        if ( video.volume <= 0.3 )  return videoEmit.emit("low_volume");
+        if ( video.volume <= 0.3 )  return akara_emit.emit("video::low_volume");
 
-        return videoEmit.emit("high_volume");
+        return akara_emit.emit("video::high_volume");
 
     };
 
@@ -349,11 +363,11 @@
         }
 
         if ( video.volume <= 0.3 ) {
-            videoEmit.emit("low_volume");
+            akara_emit.emit("video::low_volume");
             return true;
         }
 
-        videoEmit.emit("high_volume");
+        akara_emit.emit("video::high_volume");
         return true;
     };
     const setUpTrackElement = async (path,fileLang) => {
@@ -391,10 +405,10 @@
         submenu.push({
             label: lang,
             click(menuItem) {
-                // send the current pushed object to subtitle-asked-for event
+                // send the current pushed object to video::show_subtitle event
                 //  the label value of menuItem will be used
                 //  to determine the textTracks language
-                videoEmit.emit("subtitle-asked-for",menuItem,submenu.length - 1);
+                akara_emit.emit("video::show_subtitle",menuItem,submenu.length - 1);
             },
             accelerator: `CommandOrCtrl+${track.getAttribute("id")}`,
             type: "radio",
@@ -454,7 +468,7 @@
     video.addEventListener("mouseover", MouseHoverOnVideo);
     video.addEventListener("mouseout", MouseNotHoverVideo);
     video.addEventListener("timeupdate", updateTimeIndicator);
-    video.addEventListener("ended", () => videoEmit.emit("ended"));
+    video.addEventListener("ended", () => akara_emit.emit("video::ended"));
     video.addEventListener("pause", videoPauseEvent );
     video.addEventListener("play", videoPlayEvent );
     video.addEventListener("loadstart", videoLoadedEvent);
@@ -480,12 +494,12 @@
         jumpToSeekElement.removeEventListener("mousemove", moveToDragedPos));
     akaraVolume.addEventListener("click", handleVolumeChange);
     akaraVolume.addEventListener("mousewheel", handleVolumeWheelChange);
-    videoEmit.on("low_volume", type => {
+    akara_emit.on("video::low_volume", type => {
         if ( type ) changeVolumeIcon.setAttribute("style", "color: red");
         changeVolumeIcon.classList.remove("fa-volume-up");
         changeVolumeIcon.classList.add("fa-volume-down");
     });
-    videoEmit.on("high_volume", type => {
+    akara_emit.on("video::high_volume", type => {
         if ( type ) changeVolumeIcon.removeAttribute("style");
         changeVolumeIcon.classList.remove("fa-volume-down");
         changeVolumeIcon.classList.add("fa-volume-up");

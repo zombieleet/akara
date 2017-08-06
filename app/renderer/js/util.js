@@ -1,4 +1,9 @@
 "use strict";
+
+const { request } = require("http");
+
+const akara_emit = require("../js/emitter.js");
+
 const {
     remote: {
         require: _require,
@@ -6,38 +11,49 @@ const {
     },
     ipcRenderer: ipc
 } = require("electron");
-const { CONVERTED_MEDIA } = _require("./constants.js");
+
+const {
+    CONVERTED_MEDIA,
+    URL_ONLINE,
+    DOWNLOADED_SUBTITLE,
+    SIZE,
+    MEASUREMENT
+} = _require("./constants.js");
+
 const {
     Magic,
     MAGIC_MIME_TYPE: _GET_MIME
 } = require("mmmagic");
+
 const _OS = require("opensubtitles-api");
+
 const url = require("url");
+
 const { spawn } = require("child_process");
+
 const {
     mkdirSync ,
     existsSync,
     readFileSync
 } = require("fs");
+
 const {
     join,
     basename,
     parse
 } = require("path");
-const {
-    video,
-    controls: {
-        play
-    }
-} = require("../js/video_control.js");
+
+const { video, controls: { play } } = require("../js/video_control.js");
 
 const OS = new _OS("OSTestUserAgentTemp");
+
 const { guessLanguage } = require("guesslanguage");
 
 const magic = new Magic(_GET_MIME);
 
 // get the main window only
 const win = BrowserWindow.fromId(1);
+
 const createEl = ({path: abs_path, _path: rel_path}) => {
 
     let lengthOfSib = document.querySelector(".akara-loaded").childElementCount;
@@ -388,5 +404,6 @@ module.exports = {
     GetSubTitle,
     StyleResult,
     intervalId,
-    ErrorCheck
+    ErrorCheck,
+    isOnline
 };
