@@ -1,0 +1,25 @@
+doctype html
+html
+  head
+    title Download
+    link(rel='stylesheet', href='../css/main.css')
+    link(rel='stylesheet', href='../libs/font-awesome.min.css')
+  body.download-body
+    header.akara-download-header
+      span Download
+      span.fa.fa-window-close.download-close
+    section.download
+      p.akara-download-filename
+      .akara-total-byte
+        .akara-download-meter
+      p.akara-downloading-percent 20%
+      .akara-bytes
+        span.akara-currentByte --
+        span.akara-totalByte --
+      p.akara-download-state Connecting
+      .download-control-button
+        button.akara-download-cancel Cancel
+        button.akara-download-pause(disabled='') Pause
+        button.akara-download-resume(hidden='') Resume
+        button.akara-download-restart(hidden='') Restart
+    script(src='../js/download.js')
