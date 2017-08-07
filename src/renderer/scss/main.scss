@@ -1,0 +1,21 @@
+$global-color: #4b4b4b;
+
+@import "subtitle.scss";
+@import "extend.scss";
+@import "reset.scss";
+@import "akara_dropdown";
+@import "akara_title_bar";
+@import "akara_load_section";
+@import "akara_control";
+@import "webkitscroll";
+
+body {
+    background: darken($global-color,20%);
+    overflow: hidden;
+    -webkit-app-region: no-drag;
+    -webkit-user-select: none;
+
+    height: 100vh;
+
+    font-family: monospace;
+}
