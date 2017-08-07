@@ -1,30 +1,40 @@
-; ( ({ ipcRenderer: ipc, remote: { Menu, MenuItem, getCurrentWindow, require: _require} },ul) => {
+"use strict";
 
+( ({ ipcRenderer: ipc, remote: { Menu, MenuItem, getCurrentWindow, require: _require } },ul) => {
+    
     const { addMediaCb } = require("../js/dropdown_callbacks.js");
-
-    const { removeTarget,
-            removeType,
-            setCurrentPlaying,
-            removeClass,
-            disableMenuItem,
-            setupPlaying,
-            prevNext } = require("../js/util.js");
+    
+    const {
+        removeTarget,
+        removeType,
+        setCurrentPlaying,
+        removeClass,
+        disableMenuItem,
+        setupPlaying,
+        prevNext
+    } = require("../js/util.js");
+    
 
     const { videoListMenu } = _require("./menu.js");
 
     const {
-        videoEmit,
         controls,
         video
     } = require("../js/video_control.js");
 
-    const { play, pause, stop, getCurrentTime, duration } = controls;
+    const akara_emit = require("../js/emitter.js");
     
-
+    const {
+        play,
+        pause,
+        stop,
+        getCurrentTime,
+        duration
+    } = controls;
+    
     let currentTarget;
 
     const menu = new Menu();
-
     
     window.addEventListener("DOMContentLoaded", event =>  {
         
@@ -98,7 +108,7 @@
     });
 
 
-    videoEmit.on("ended", () => {
+    akara_emit.on("video::ended", () => {
 
         const justEnded = document.querySelector("[data-now-playing=true]");
 
@@ -186,8 +196,8 @@
         currentTarget.parentNode.removeAttribute("data-repeat");
     });
     
-    videoEmit.on("go-to-next", () => prevNext("next"));
-    videoEmit.on("go-to-previous", () => prevNext("prev"));
+    akara_emit.on("video::go-to-next", () => prevNext("next"));
+    akara_emit.on("video::go-to-previous", () => prevNext("prev"));
 
 
 })(

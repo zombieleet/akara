@@ -1,13 +1,8 @@
 "use strict";
 
-const { EventEmitter } = require("events");
-
-const videoEmit = new EventEmitter();
+const akara_emit = require("../js/emitter.js");
 
 const video = document.querySelector("video");
-      //jumpToSeekElement = document.querySelector(".akara-control");
-
-
 
 const controls = {
 
@@ -36,7 +31,7 @@ const controls = {
 
         video.muted = true;
 
-        videoEmit.emit("low_volume", true);
+        akara_emit.emit("video::low_volume", true);
 
         return _mute.setAttribute("data-drop", "_unmute");
 
@@ -49,16 +44,16 @@ const controls = {
 
         video.muted = false;
 
-        videoEmit.emit("high_volume", true);
+        akara_emit.emit("video::high_volume", true);
 
         return _unmute.setAttribute("data-drop", "_mute");
 
     },
     next() {
-        videoEmit.emit("go-to-next");
+        akara_emit.emit("video::go-to-next");
     },
     previous() {
-        videoEmit.emit("go-to-previous");
+        akara_emit.emit("video::go-to-previous");
     },
     volume() {
 
@@ -103,7 +98,6 @@ const controls = {
 };
 
 module.exports = {
-    videoEmit,
-    controls,
-    video
+    video,
+    controls
 };

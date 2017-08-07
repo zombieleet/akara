@@ -3,15 +3,15 @@ const { video, controls } = require("../js/video_control.js");
 const { addMediaCb } = require("../js/dropdown_callbacks.js");
 
 const { play,
-        pause,
-        mute,
-        unmute,
-        next,
-        previous,
-        setPlaybackRate,
-        enterfullscreen,
-        leavefullscreen
-      } = controls;
+    pause,
+    mute,
+    unmute,
+    next,
+    previous,
+    setPlaybackRate,
+    enterfullscreen,
+    leavefullscreen
+} = controls;
 
 const { iterateDir } = _require("./utils.js"); // get utils from the main process folder
 
@@ -24,21 +24,21 @@ const addMediaFile = () => {
         defaultPath: app.getPath("videos"),
         filters: [
             {name: "Media" , extensions: ["mp4",
-                                          "flac",
-                                          "ogv",
-                                          "ogm",
-                                          "ogg",
-                                          "webm",
-                                          "wav",
-                                          "m4v",
-                                          "m4a",
-                                          "mp3",
-                                          "amr",
-                                          "avi",
-                                          "3gp",
-                                          "swf",
-                                          "wma",
-                                          "mkv"]},
+                "flac",
+                "ogv",
+                "ogm",
+                "ogg",
+                "webm",
+                "wav",
+                "m4v",
+                "m4a",
+                "mp3",
+                "amr",
+                "avi",
+                "3gp",
+                "swf",
+                "wma",
+                "mkv"]},
         ],
         properties: ["openFile", "multiSelections"]
     },addMediaCb);
@@ -128,17 +128,17 @@ const _leavefullscreen = () => {
 };
 
 const HandleDroped = () => ({ addMediaFile,
-                              addMediaFolder ,
-                              _play,
-                              _pause,
-                              _mute,
-                              _unmute,
-                              _stop,
-                              _next,
-                              _previous,
-                              _setPlaybackRate,
-                              _enterfullscreen,
-                              _leavefullscreen
-                            });
+    addMediaFolder ,
+    _play,
+    _pause,
+    _mute,
+    _unmute,
+    _stop,
+    _next,
+    _previous,
+    _setPlaybackRate,
+    _enterfullscreen,
+    _leavefullscreen
+});
 
 module.exports = HandleDroped;

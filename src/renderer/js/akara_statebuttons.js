@@ -1,6 +1,6 @@
 "use strict";
 
-; ( ({ ipcRenderer: ipc }) => {
+( ({ ipcRenderer: ipc }) => {
 
     const akaraMin = document.querySelector(".akara-min");
     const akaraMax = document.querySelector(".akara-max");

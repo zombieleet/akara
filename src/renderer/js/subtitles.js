@@ -1,13 +1,38 @@
 ( () => {
     "use strict";
-    const { ipcRenderer: ipc }  = require("electron");
+    const {
+        ipcRenderer: ipc,
+        remote: {
+            BrowserWindow,
+            require: _require
+        }
+    }  = require("electron");
+
+    const {
+        createNewWindow
+    } = _require("./newwindow.js");
+    
+    const {
+        join
+    } = require("path");
+    
+    const {
+        existsSync,
+        mkdirSync
+    } = require("fs");
+    
     const {
         checkValues,
         GetSubTitle,
         StyleResult,
         intervalId,
-        ErrorCheck
+        ErrorCheck,
+        isOnline,
+        downloadURL
     } = require("../js/util.js");
+
+    const akara_emit =  require("../js/emitter.js");
+    
     const movie = document.querySelector("#movies");
     const series = document.querySelector("#series");
     const button = document.querySelector("button");
@@ -16,10 +41,14 @@
     const input = document.querySelector(".subtitle-input");
     const loaded = document.querySelector(".subtitle-info");
     const close = document.querySelector(".subtitle-close");
-    
+    const section = document.querySelector("section");
     const handleSearch = async (value,_id) => {
 
-        const { query, season, episode } = value;
+        const {
+            query,
+            season,
+            episode
+        } = value;
         
         let result;
         
@@ -31,7 +60,7 @@
             result = await GetSubTitle({query});
         }
         
-        if ( ! noNetwork({result,_id}) ) return StyleResult();
+        if ( ! noNetwork({result,_id}) ) return StyleResult(result);
 
     };
 
@@ -52,7 +81,6 @@
             const {query,season,episode} = value;
 
             const _id = intervalId(loaded);
-
             return handleSearch(value,_id);
         }
     };
@@ -74,7 +102,7 @@
         return sOption.setAttribute("hidden", "true");
     });
 
-    button.addEventListener("click", e => {
+    button.addEventListener("click", async (e) => {
 
         e.preventDefault();
 
@@ -97,5 +125,25 @@
             validateSubtitle(value);
         }
 
+    });
+
+    section.addEventListener("click", event => {
+        const target = event.target;
+        
+        if ( ! target.hasAttribute("data-url") ) return false;
+
+        const url = target.getAttribute("data-url");
+
+        const __obj = {
+            title: "download",
+            width: 365,
+            height: 225
+        };
+
+        const html = `${__obj.title}.html`;
+        
+        createNewWindow(__obj,html);
+
+        localStorage.setItem("url", url);
     });
 })();

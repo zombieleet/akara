@@ -1,13 +1,16 @@
-; ( () => {
+( () => {
 
     "use strict";
+
     const srt2vtt = require("srt2vtt");
+
     const mime = require("mime");
+
     const {
         video,
-        controls,
-        videoEmit
+        controls
     } = require("../js/video_control.js");
+
     const {
         disableVideoMenuItem,
         __MenuInst,
@@ -16,17 +19,23 @@
         validateMime,
         setupPlaying
     } = require("../js/util.js");
+
+    const akara_emit = require("../js/emitter.js");
+
     const {
         parse
     } = require("url");
+
     const {
         basename,
         join
     } = require("path");
+
     const {
         readFileSync,
         writeFileSync
     } = require("fs");
+
     const {
         remote:
         {
@@ -54,19 +63,21 @@
         _enterfullscreen,
         _leavefullscreen
     } = require("../js/handle_dropdown_commands.js")();
+
     const {
         videoContextMenu
     } = _require("./menu.js");
+
     const {
         CONVERTED_MEDIA
     } = _require("./constants.js");
 
     const currTimeUpdate = document.querySelector(".akara-update-cur-time"),
-          jumpToSeekElement = document.querySelector(".akara-time"),
-          akaraVolume = document.querySelector(".akara-volume"),
-          changeVolumeIcon = document.querySelector("[data-fire=volume]"),
-          akaraControl = document.querySelector(".akara-control"),
-          controlElements = akaraControl.querySelector(".akara-control-element");
+        jumpToSeekElement = document.querySelector(".akara-time"),
+        akaraVolume = document.querySelector(".akara-volume"),
+        changeVolumeIcon = document.querySelector("[data-fire=volume]"),
+        akaraControl = document.querySelector(".akara-control"),
+        controlElements = akaraControl.querySelector(".akara-control-element");
 
     const menu = new Menu();
     // the first window, this had to be hadcoded
@@ -74,6 +85,7 @@
     const textTracks = video.textTracks;
 
     const setTime = () => {
+
         const curTm = getHumanTime(controls.getCurrentTime());
         const durTm = getHumanTime(controls.duration());
 
@@ -81,6 +93,7 @@
     };
 
     const updateTimeIndicator = () => {
+
         let timeIndicator = document.querySelector(".akara-time-current");
         const currTimeUpdate = document.querySelector(".akara-update-cur-time");
 
@@ -92,13 +105,14 @@
         timeIndicator = undefined;
         currTimeUpdate.textContent = setTime();
         return true;
+
     };
 
 
     const sendNotification = (title,message) => new Notification(title,message);
 
     const jumpToClick = (event,arg) => Math.
-              round(controls.duration() * ((event.clientX - event.target.offsetLeft) / arg));
+        round(controls.duration() * ((event.clientX - event.target.offsetLeft) / arg));
 
     const handleMovement = (event,cb) => {
         const incrDiv = document.querySelector(".akara-time-current");
@@ -117,8 +131,8 @@
     };
 
     const getHumanTime = result => isNaN(result)
-              ? "00:00"
-              : `${(result/60).toFixed(2)}`.replace(/\./, ":");
+        ? "00:00"
+        : `${(result/60).toFixed(2)}`.replace(/\./, ":");
 
 
     const createHoverTime = ({event,result}) => {
@@ -127,9 +141,9 @@
 
         let target = event.target;
         const hoverIndication = document.createElement("div"),
-              hoverStillVideo = document.createElement("video"),
-              hoverTimeIndication = document.createElement("span"),
-              hoveredLocationTime = getHumanTime(result);
+            hoverStillVideo = document.createElement("video"),
+            hoverTimeIndication = document.createElement("span"),
+            hoveredLocationTime = getHumanTime(result);
 
 
         hoverIndication.append(hoverTimeIndication);
@@ -155,7 +169,7 @@
         );
 
         const target = event.target,
-              nodeName = target.nodeName.toLowerCase();
+            nodeName = target.nodeName.toLowerCase();
 
         if ( nodeName !== "li" ) return false;
 
@@ -278,7 +292,7 @@
     };
 
     const mouseDownDragEvent = event => event.target.classList.contains("akara-time-current") ?
-              jumpToSeekElement.addEventListener("mousemove", moveToDragedPos) : false;
+        jumpToSeekElement.addEventListener("mousemove", moveToDragedPos) : false;
 
 
     const __removeRedMute = () => {
@@ -292,8 +306,8 @@
 
     const handleVolumeWheelChange = event => {
         const scrollPos = event.wheelDeltaY,
-              decimalVol = scrollPos / 100,
-              volumeElements = Array.prototype.slice.call(document.querySelectorAll("[data-volume-set=true]"));
+            decimalVol = scrollPos / 100,
+            volumeElements = Array.prototype.slice.call(document.querySelectorAll("[data-volume-set=true]"));
 
         let popedValue;
 
@@ -319,9 +333,9 @@
             }
         }
         // to enable the showing of fa-volume-down
-        if ( video.volume <= 0.3 )  return videoEmit.emit("low_volume");
+        if ( video.volume <= 0.3 )  return akara_emit.emit("video::low_volume");
 
-        return videoEmit.emit("high_volume");
+        return akara_emit.emit("video::high_volume");
 
     };
 
@@ -349,11 +363,11 @@
         }
 
         if ( video.volume <= 0.3 ) {
-            videoEmit.emit("low_volume");
+            akara_emit.emit("video::low_volume");
             return true;
         }
 
-        videoEmit.emit("high_volume");
+        akara_emit.emit("video::high_volume");
         return true;
     };
     const setUpTrackElement = async (path,fileLang) => {
@@ -373,17 +387,18 @@
 
         return { track, lang };
     };
-    const handleLoadSubtitleComputer = async (path,cb) => {
+
+    const handleLoadSubtitle = async (path,cb) => {
 
         if ( ! path ) return ;
 
-        [ path ] = path;
-
+        [ path ] = Array.isArray(path) ? path : [ path ];
+        
         if ( /x-subrip$/.test(mime.lookup(path)) )
             path = cb(path);
 
         const { track, lang } = await setUpTrackElement(path);
-
+        
         video.appendChild(track);
 
         const { submenu } = videoContextMenu[16].submenu[1];
@@ -391,10 +406,10 @@
         submenu.push({
             label: lang,
             click(menuItem) {
-                // send the current pushed object to subtitle-asked-for event
+                // send the current pushed object to video::show_subtitle event
                 //  the label value of menuItem will be used
                 //  to determine the textTracks language
-                videoEmit.emit("subtitle-asked-for",menuItem,submenu.length - 1);
+                akara_emit.emit("video::show_subtitle",menuItem,submenu.length - 1);
             },
             accelerator: `CommandOrCtrl+${track.getAttribute("id")}`,
             type: "radio",
@@ -454,7 +469,7 @@
     video.addEventListener("mouseover", MouseHoverOnVideo);
     video.addEventListener("mouseout", MouseNotHoverVideo);
     video.addEventListener("timeupdate", updateTimeIndicator);
-    video.addEventListener("ended", () => videoEmit.emit("ended"));
+    video.addEventListener("ended", () => akara_emit.emit("video::ended"));
     video.addEventListener("pause", videoPauseEvent );
     video.addEventListener("play", videoPlayEvent );
     video.addEventListener("loadstart", videoLoadedEvent);
@@ -477,15 +492,15 @@
     jumpToSeekElement.addEventListener("mouseout", removeHoverTime);
     jumpToSeekElement.addEventListener("mousedown", mouseDownDragEvent);
     jumpToSeekElement.addEventListener("mouseup", () =>
-                                       jumpToSeekElement.removeEventListener("mousemove", moveToDragedPos));
+        jumpToSeekElement.removeEventListener("mousemove", moveToDragedPos));
     akaraVolume.addEventListener("click", handleVolumeChange);
     akaraVolume.addEventListener("mousewheel", handleVolumeWheelChange);
-    videoEmit.on("low_volume", type => {
+    akara_emit.on("video::low_volume", type => {
         if ( type ) changeVolumeIcon.setAttribute("style", "color: red");
         changeVolumeIcon.classList.remove("fa-volume-up");
         changeVolumeIcon.classList.add("fa-volume-down");
     });
-    videoEmit.on("high_volume", type => {
+    akara_emit.on("video::high_volume", type => {
         if ( type ) changeVolumeIcon.removeAttribute("style");
         changeVolumeIcon.classList.remove("fa-volume-down");
         changeVolumeIcon.classList.add("fa-volume-up");
@@ -511,19 +526,24 @@
     ipc.on("slow-speed", () => _setPlaybackRate(0.7));
     ipc.on("very-slow-speed", () => _setPlaybackRate(0.2));
 
-    ipc.on("load-sub-computer", (event,val) => handleLoadSubtitleComputer(val, path => {
+    const readSubtitleFile = path => {
         const _path = join(CONVERTED_MEDIA,basename(path).replace(".srt", ".vtt"));
         const data = readFileSync(path);
         srt2vtt(data, (err,vttData) => {
             if ( err ) return err;
             writeFileSync(_path, vttData);
         });
+        console.log(_path);
         return _path;
-    }));
+    };
+    
+    ipc.on("load-sub-computer", (event,val) =>
+        handleLoadSubtitle(val, path => readSubtitleFile(path)));
+    
+    ipc.on("load-sub-internet", (event,val) =>
+        handleLoadSubtitle(val, path => readSubtitleFile(path)));
 
-    //ipc.on("load-sub-internet", );
-
-    videoEmit.on("subtitle-asked-for", (mItem,id) => {
+    akara_emit.on("video::show_subtitle", (mItem,id) => {
         const { length: _textTrackLength } = textTracks;
         const { submenu } = videoContextMenu[16].submenu[1];
 

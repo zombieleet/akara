@@ -1,6 +1,6 @@
-const { app, nativeImage, dialog } = require("electron");
+const { app, nativeImage, dialog, ipcMain: ipc } = require("electron");
 const { join } = require("path");
-const { createSubTitleWindow } = require("./subtitles.js");
+const { createNewWindow } = require("./newwindow.js");
 
 const share = {
     label: "Share",
@@ -269,7 +269,18 @@ const videoContextMenu = [
                         label: "From Net",
                         __priv: true,
                         click(menuItem, BrowserWindow , event ) {
-                            createSubTitleWindow(BrowserWindow);
+
+                            const { webContents } = BrowserWindow;
+
+                            const __obj = {
+                                title: "subtitle",
+                                parent: BrowserWindow
+                            };
+
+                            const html = `${__obj.title}.html`;
+
+                            createNewWindow(__obj,html);
+
                         }
                     }
                 ]
