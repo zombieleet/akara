@@ -16,7 +16,7 @@
         &:hover {
             color: red;
         }
-    }   
+    }
 }
 
 
@@ -24,7 +24,7 @@ section {
     width: 100%;
     height: 100%;
     color: white;
-    
+
     form {
         font-size: 15px;
         padding: 15px 15px 25px 15px;
@@ -38,7 +38,7 @@ input {
     display: block;
     margin-top: 10 + px;
     width: 100 - $input-padding + %;
-    
+
     padding: $input-padding + px;
     color: black;
     font-size: 15px;
@@ -48,9 +48,8 @@ input {
 label[for="series"]{
     margin-left: 12px;
 }
-label[for="movies"],
-label[for="series"] {
-    color: black;
+label {
+    color: $global-color;
 }
 input[type="checkbox"] {
     display: inline;
@@ -67,9 +66,8 @@ input[id="episode"] {
 label[for="season"],
 label[for="episode"] {
     margin-left: 15px;
-    color: black;
 }
-button {
+button[type="search"] {
     float: right;
     margin-top: 12px;
     border: none;
@@ -90,5 +88,36 @@ button {
         font-size: 30px;
         margin: auto;
         margin-top: 150px;
+    }
+}
+
+
+table {
+    td {
+        border: 1px solid gray;
+        padding: 12px;
+        color: $global-color;
+    }
+    .download {
+        cursor: pointer;
+        transition: .2s all ease-in;
+        i {
+            margin: auto;
+        }
+        &:hover {
+            background: #333333;
+            color: white;
+        }
+
+    }
+
+    th {
+        border: 1px solid #666666;
+        padding: 8px;
+        box-shadow: 100px 100px 100px #666666 inset;
+        font-weight: bolder;
+        &:first-letter {
+            text-transform: uppercase;
+        }
     }
 }
