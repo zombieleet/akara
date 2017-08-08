@@ -1,13 +1,6 @@
-$global-color: #4b4b4b;
-
-@import "subtitle.scss";
-@import "extend.scss";
 @import "reset.scss";
-@import "akara_dropdown";
-@import "akara_title_bar";
-@import "akara_load_section";
-@import "akara_control";
-@import "webkitscroll";
+
+$global-color: #4b4b4b;
 
 body {
     background: darken($global-color,20%);
@@ -19,3 +12,13 @@ body {
 
     font-family: monospace;
 }
+
+@import "subtitle.scss";
+@import "download.scss";
+
+@import "extend.scss";
+@import "akara_dropdown";
+@import "akara_title_bar";
+@import "akara_load_section";
+@import "akara_control";
+@import "webkitscroll";
