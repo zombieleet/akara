@@ -5,3 +5,4 @@ app/renderer/html/*.html
 *.mp4
 converted_media/
 testtest.json
+_test.js
