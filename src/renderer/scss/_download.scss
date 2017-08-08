@@ -1,0 +1,89 @@
+
+.download-body {
+    overflow: none;
+    background: white;
+}
+
+.akara-download-header {
+
+    $font-size: 25px;
+
+    width: 100%;
+    padding: 12px;
+    border-bottom: 1px solid black;
+
+    -webkit-app-region: drag;
+
+    span:first-of-type {
+        font-size: $font-size;
+    }
+
+    span:last-of-type {
+
+        float: right;
+        cursor: pointer;
+
+        margin-right: 15px;
+
+        font-size: $font-size;
+
+        -webkit-app-region: no-drag;
+
+        &:hover {
+            color: red;
+        }
+    }
+}
+
+.download {
+    font-size: 18px;
+    .akara-download-filename {
+        width: 100%;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .akara-total-byte {
+        width: 100%;
+        background-color: darkgrey;
+        margin-top: 20px;
+
+        .akara-downloaded-meter {
+            width: 0%;
+            background-color: black;
+            padding: 3px;
+        }
+    }
+    .akara-bytes {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        margin-top: 20px;
+        
+        .akara-currentByte::after {
+            content: " /  ";
+        }
+    }
+
+    .akara-download-state {
+        text-align: center;
+        font-size: 18px;
+
+        margin-top: 12px;
+    }
+
+    .download-control-button {
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        button {
+            width: 50%;
+            font-size: 18px;
+            border: 2px solid lighten(black,70%);
+            &:disabled {
+                cursor: not-allowed;
+            }
+        }
+    }
+}
