@@ -4,22 +4,22 @@ html
     title Download
     link(rel='stylesheet', href='../css/main.css')
     link(rel='stylesheet', href='../libs/font-awesome.min.css')
-  body.download-body
-    header.akara-download-header
+  body(class="download-body")
+    header(class="akara-download-header")
       span Download
-      span.fa.fa-window-close.download-close
-    section.download
-      p.akara-download-filename
-      .akara-total-byte
-        .akara-download-meter
-      p.akara-downloading-percent 20%
-      .akara-bytes
-        span.akara-currentByte --
-        span.akara-totalByte --
-      p.akara-download-state Connecting
-      .download-control-button
-        button.akara-download-cancel Cancel
-        button.akara-download-pause(disabled='') Pause
-        button.akara-download-resume(hidden='') Resume
-        button.akara-download-restart(hidden='') Restart
+      span(class="fa fa-window-close download-close")
+    section(class="download")
+      p(class="akara-download-filename") ( ... )
+      div(class="akara-total-byte")
+        div(class="akara-download-meter")
+      p(class="akara-downloading-percent") 20%
+      div(class="akara-bytes")
+        span(class="akara-currentByte") --
+        span(class="akara-totalByte") --
+      p(class="akara-download-state") Connecting
+      div(class="download-control-button")
+        button(class="akara-download-cancel") Cancel
+        button(class="akara-download-pause" disabled) Pause
+        button(class="akara-download-resume" hidden) Resume
+        button(class="akara-download-restart" hidden) Restart
     script(src='../js/download.js')
