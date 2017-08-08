@@ -1,194 +1,3 @@
-.subtitle-body {
-  background: white;
-  overflow: auto;
-  height: 100%; }
-
-.akara-subtitle-header {
-  padding: 10px;
-  -webkit-app-region: drag;
-  font-size: 20px;
-  border-bottom: 2px solid black; }
-  .akara-subtitle-header .subtitle-close {
-    float: right;
-    -webkit-app-region: no-drag;
-    cursor: pointer; }
-    .akara-subtitle-header .subtitle-close:hover {
-      color: red; }
-
-section {
-  width: 100%;
-  height: 100%;
-  color: black; }
-  section form {
-    font-size: 15px;
-    padding: 15px 15px 25px 15px;
-    border-bottom: 4px solid black; }
-
-input {
-  display: block;
-  margin-top: 10px;
-  width: 88%;
-  padding: 12px;
-  color: black;
-  font-size: 15px;
-  border: 2px solid gray; }
-
-label[for="series"] {
-  margin-left: 12px; }
-
-label[for="movies"],
-label[for="series"] {
-  color: black; }
-
-input[type="checkbox"] {
-  display: inline;
-  width: initial; }
-
-input[id="season"],
-input[id="episode"] {
-  display: inline;
-  width: 3%;
-  margin-left: 12px;
-  padding: 5px; }
-
-label[for="season"],
-label[for="episode"] {
-  margin-left: 15px;
-  color: black; }
-
-button[type="search"] {
-  float: right;
-  margin-top: 12px;
-  border: none;
-  padding: 12px;
-  cursor: pointer;
-  transition: .2s all ease-in-out; }
-  button[type="search"]:hover {
-    background: black;
-    color: white; }
-
-.subtitle-loaded {
-  width: 100%;
-  display: flex; }
-  .subtitle-loaded .subtitle-info {
-    color: black;
-    font-size: 30px;
-    margin: auto;
-    margin-top: 150px; }
-
-table td {
-  border: 1px solid gray;
-  padding: 12px; }
-
-table .download {
-  cursor: pointer;
-  transition: .2s all ease-in; }
-  table .download:hover {
-    background: #333333;
-    color: white; }
-  table .download i {
-    margin: auto; }
-
-table th {
-  border: 1px solid #666666;
-  padding: 8px;
-  box-shadow: 100px 100px 100px #666666 inset;
-  font-weight: bolder; }
-  table th:first-letter {
-    text-transform: uppercase; }
-
-.download-body {
-  overflow: none;
-  background: white; }
-
-.akara-download-header {
-  width: 100%;
-  padding: 12px;
-  border-bottom: 1px solid black;
-  -webkit-app-region: drag; }
-  .akara-download-header span:first-of-type {
-    font-size: 25px; }
-  .akara-download-header span:last-of-type {
-    float: right;
-    cursor: pointer;
-    margin-right: 15px;
-    font-size: 25px;
-    -webkit-app-region: no-drag; }
-    .akara-download-header span:last-of-type:hover {
-      color: red; }
-
-.download {
-  font-size: 18px; }
-  .download .akara-download-filename {
-    width: 100%;
-    text-align: center;
-    margin-top: 20px; }
-  .download .akara-total-byte {
-    width: 100%;
-    background-color: darkgrey;
-    margin-top: 20px; }
-    .download .akara-total-byte .akara-download-meter {
-      width: 0;
-      background-color: black;
-      padding: 3px; }
-  .download .akara-bytes {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 20px; }
-    .download .akara-bytes .akara-currentByte::after {
-      content: " /  "; }
-  .download .akara-download-state {
-    text-align: center;
-    font-size: 18px;
-    margin-top: 12px; }
-  .download .download-control-button {
-    width: 100%;
-    position: fixed;
-    bottom: 0; }
-    .download .download-control-button button {
-      width: 50%;
-      font-size: 18px;
-      border: 2px solid #cccccc;
-      padding: 12px;
-      cursor: pointer; }
-      .download .download-control-button button:disabled {
-        cursor: not-allowed; }
-      .download .download-control-button button:not(.download .download-control-button button[disabled]):hover {
-        border: 5px; }
-
-.akara-media .akara-load .akara-loaded > li:hover, [data-clicked="true"] {
-  background: #3e3e3e; }
-
-.akara-media-element,
-.akara-add-media,
-.akara-subtitle,
-.akara-internet-media, .akara-dropdown {
-  position: absolute;
-  left: 200px;
-  top: 204px;
-  width: 200px;
-  background: white;
-  color: black; }
-
-.akara-media-element > li,
-.akara-add-media > li,
-.akara-subtitle > li,
-.akara-internet-media > li, .akara-dropdown ul > li {
-  display: block;
-  width: inherit; }
-  .akara-media-element > li > span,
-  .akara-add-media > li > span,
-  .akara-subtitle > li > span,
-  .akara-internet-media > li > span, .akara-dropdown ul > li > span {
-    margin-left: 10px; }
-
-.akara-media-element > li,
-.akara-add-media > li,
-.akara-subtitle > li,
-.akara-internet-media > li {
-  width: 180px !important; }
-
 *:focus {
   outline: none; }
 
@@ -237,6 +46,203 @@ q:before, q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0; }
+
+body {
+  background: #181818;
+  overflow: hidden;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: none;
+  height: 100vh;
+  font-family: monospace; }
+
+.subtitle-body {
+  background: white;
+  overflow: hidden; }
+
+.akara-subtitle-header {
+  padding: 10px;
+  -webkit-app-region: drag;
+  font-size: 20px;
+  border-bottom: 2px solid black; }
+  .akara-subtitle-header .subtitle-close {
+    float: right;
+    -webkit-app-region: no-drag;
+    cursor: pointer; }
+    .akara-subtitle-header .subtitle-close:hover {
+      color: red; }
+
+section {
+  width: 100%;
+  height: 100%;
+  color: white; }
+  section form {
+    font-size: 15px;
+    padding: 15px 15px 25px 15px;
+    border-bottom: 4px solid black; }
+
+input {
+  display: block;
+  margin-top: 10px;
+  width: 88%;
+  padding: 12px;
+  color: black;
+  font-size: 15px;
+  border: 2px solid gray; }
+
+label[for="series"] {
+  margin-left: 12px; }
+
+label {
+  color: #4b4b4b; }
+
+input[type="checkbox"] {
+  display: inline;
+  width: initial; }
+
+input[id="season"],
+input[id="episode"] {
+  display: inline;
+  width: 3%;
+  margin-left: 12px;
+  padding: 5px; }
+
+label[for="season"],
+label[for="episode"] {
+  margin-left: 15px; }
+
+button[type="search"] {
+  float: right;
+  margin-top: 12px;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  transition: .2s all ease-in-out; }
+  button[type="search"]:hover {
+    background: black;
+    color: white; }
+
+.subtitle-loaded {
+  width: 100%;
+  display: flex; }
+  .subtitle-loaded .subtitle-info {
+    color: black;
+    font-size: 30px;
+    margin: auto;
+    margin-top: 150px; }
+
+table td {
+  border: 1px solid gray;
+  padding: 12px;
+  color: #4b4b4b; }
+
+table .download {
+  cursor: pointer;
+  transition: .2s all ease-in; }
+  table .download i {
+    margin: auto; }
+  table .download:hover {
+    background: #333333;
+    color: white; }
+
+table th {
+  border: 1px solid #666666;
+  padding: 8px;
+  box-shadow: 100px 100px 100px #666666 inset;
+  font-weight: bolder; }
+  table th:first-letter {
+    text-transform: uppercase; }
+
+.download-body {
+  overflow: none;
+  background: white; }
+
+.akara-download-header {
+  width: 100%;
+  padding: 12px;
+  border-bottom: 1px solid black;
+  -webkit-app-region: drag; }
+  .akara-download-header span:first-of-type {
+    font-size: 25px; }
+  .akara-download-header span:last-of-type {
+    float: right;
+    cursor: pointer;
+    margin-right: 15px;
+    font-size: 25px;
+    -webkit-app-region: no-drag; }
+    .akara-download-header span:last-of-type:hover {
+      color: red; }
+
+.download {
+  font-size: 18px;
+  color: #4b4b4b; }
+  .download .akara-download-filename {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 15px; }
+  .download .akara-total-byte {
+    width: 100%;
+    background-color: darkgrey;
+    margin-top: 20px;
+    padding: 3px; }
+    .download .akara-total-byte .akara-download-meter {
+      width: 0%;
+      background-color: black; }
+  .download .akara-bytes {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; }
+    .download .akara-bytes .akara-currentByte::after {
+      content: " /  "; }
+  .download .akara-download-state {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 12px; }
+  .download .download-control-button {
+    width: 100%;
+    position: fixed;
+    bottom: 0; }
+    .download .download-control-button button {
+      width: 50%;
+      font-size: 18px;
+      border: 2px solid #b3b3b3;
+      cursor: pointer;
+      padding: 10px; }
+      .download .download-control-button button:disabled {
+        cursor: not-allowed; }
+
+.akara-media .akara-load .akara-loaded > li:hover, [data-clicked="true"] {
+  background: #3e3e3e; }
+
+.akara-media-element,
+.akara-add-media,
+.akara-subtitle,
+.akara-internet-media, .akara-dropdown {
+  position: absolute;
+  left: 200px;
+  top: 204px;
+  width: 200px;
+  background: white;
+  color: black; }
+
+.akara-media-element > li,
+.akara-add-media > li,
+.akara-subtitle > li,
+.akara-internet-media > li, .akara-dropdown ul > li {
+  display: block;
+  width: inherit; }
+  .akara-media-element > li > span,
+  .akara-add-media > li > span,
+  .akara-subtitle > li > span,
+  .akara-internet-media > li > span, .akara-dropdown ul > li > span {
+    margin-left: 10px; }
+
+.akara-media-element > li,
+.akara-add-media > li,
+.akara-subtitle > li,
+.akara-internet-media > li {
+  width: 180px !important; }
 
 .akara-add-media {
   top: 0; }
@@ -597,13 +603,5 @@ table {
 
 ::-webkit-scrollbar-button {
   background-color: #666666; }
-
-body {
-  background: #181818;
-  overflow: hidden;
-  -webkit-app-region: no-drag;
-  -webkit-user-select: none;
-  height: 100vh;
-  font-family: monospace; }
 
 /*# sourceMappingURL=maps/main.css.map */

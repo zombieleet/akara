@@ -84,7 +84,7 @@
         console.log(rByte,tByte);
         const percent = ( ( rByte / tByte ) * 100 ) + "%";
         downByPercent.textContent = percent;
-        downByte.setAttribute("style", `width: ${percent}`);
+        downByte.setAttribute("style", `width: ${percent}; padding: 3px`);
     });
 
 

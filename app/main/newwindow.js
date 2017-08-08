@@ -34,7 +34,7 @@ const createNewWindow = (obj,html) => {
 
     webContents.openDevTools();
 
-    ipc.once(`close-${obj.title}-window`, () => {
+    ipc.on(`close-${obj.title}-window`, () => {
         newWindow.close();
     });
 

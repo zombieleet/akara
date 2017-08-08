@@ -1,5 +1,7 @@
 ( () => {
+    
     "use strict";
+    
     const {
         ipcRenderer: ipc,
         remote: {
@@ -23,10 +25,10 @@
     
     const {
         checkValues,
-        GetSubTitle,
-        StyleResult,
+        getSubtitle,
+        styleResult,
         intervalId,
-        ErrorCheck,
+        errorCheck,
         isOnline,
         downloadURL
     } = require("../js/util.js");
@@ -42,8 +44,9 @@
     const loaded = document.querySelector(".subtitle-info");
     const close = document.querySelector(".subtitle-close");
     const section = document.querySelector("section");
+    
     const handleSearch = async (value,_id) => {
-
+        
         const {
             query,
             season,
@@ -54,25 +57,26 @@
         
         if ( series.checked ) {
             // that means series was checked
-            result = await GetSubTitle({query,season,episode});
+            result = await getSubtitle({query,season,episode});
         } else {
             // movies was checked
-            result = await GetSubTitle({query});
+            result = await getSubtitle({query});
         }
         
-        if ( ! noNetwork({result,_id}) ) return StyleResult(result);
+        if ( ! noNetwork({result,_id}) ) return styleResult(result);
 
     };
 
     const noNetwork  = ({result,_id}) => {
-        if ( ErrorCheck(result,loaded) ) {
+        if ( errorCheck(result,loaded) ) {
             clearInterval(_id);
             return true;
         }
         loaded.setAttribute("hidden", "true");
         return false;
     };
-    const validateSubtitle = (value) => {
+    
+    const validateSubtitle = value => {
 
         if ( typeof(value) === "object" ) {
 
@@ -92,6 +96,7 @@
     movie.addEventListener("change", () => {
         console.log(movie.checked);
     });
+    
     series.addEventListener("change", () => {
         let sOption = document.querySelector(".series-option");
         if ( series.checked ) {
@@ -137,7 +142,7 @@
         const __obj = {
             title: "download",
             width: 365,
-            height: 225
+            height: 315
         };
 
         const html = `${__obj.title}.html`;
@@ -146,4 +151,5 @@
 
         localStorage.setItem("url", url);
     });
+    
 })();

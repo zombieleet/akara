@@ -76,6 +76,7 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
 
     return child;
 };
+
 const removeType = (pNode,...types) => {
     Array.from(pNode.children, el => {
         types.forEach( type => el.hasAttribute(type)
@@ -83,6 +84,7 @@ const removeType = (pNode,...types) => {
             : "");
     });
 };
+
 const removeClass = (target, ...types) => {
     Array.from(target.parentNode.children, el => {
         for ( let i of types ) {
@@ -90,6 +92,7 @@ const removeClass = (target, ...types) => {
         }
     });
 };
+
 const setCurrentPlaying = target => {
     target.setAttribute("data-dbclicked", "true");
     target.setAttribute("data-now-playing", "true");
@@ -99,8 +102,11 @@ const setCurrentPlaying = target => {
     document.querySelector(".akara-title").textContent = target.querySelector("span").textContent;
     return ;
 };
+
 const RESETTARGET = target => target.nodeName.toLowerCase() === "li" ? target : target.parentNode;
+
 const removeTarget = (target,video) => {
+    
     target = RESETTARGET(target);
 
     if ( decodeURI(video.src) === target.getAttribute("data-full-path") ) {
@@ -131,11 +137,13 @@ const removeTarget = (target,video) => {
     target = undefined;
     return ;
 };
+
 const __disable = (item,menuObject) => {
     if (  item === menuObject.label ) {
         menuObject.enabled = false;
     }
 };
+
 const disableMenuItem = (memItem,target,video) => {
 
     // if the label is play and the video is not paused
@@ -196,6 +204,7 @@ const getMime = file => new Promise((resolve,reject) => {
         return resolve(data);
     });
 });
+
 const validateMime = async (path) => {
 
     const _getMime = await getMime(path);
@@ -221,6 +230,7 @@ const validateMime = async (path) => {
         path = _fpath;
     return path;
 };
+
 const Convert = _path => new Promise((resolve,reject) => {
     let result;
 
@@ -245,12 +255,14 @@ const Convert = _path => new Promise((resolve,reject) => {
         resolve(_fpath);
     });
 });
+
 const playOnDrop = () => {
     const firstVideoList = document.querySelector(".playlist");
     if ( ! video.getAttribute("src") ) {
         return setupPlaying(firstVideoList);
     }
 };
+
 const disableVideoMenuItem = menuInst => {
 
     if  ( ! video.hasAttribute("src") && menuInst.label !== "Add" )
@@ -280,6 +292,7 @@ const disableVideoMenuItem = menuInst => {
         return(menuInst.visible = true);
 
 };
+
 const __MenuInst = ( menu, match, submatch) => {
     let menuInst;
     for ( let _items of menu.items || menu.submenu.items ) {
@@ -331,21 +344,19 @@ const checkValues = ({input,movie,series,season,episode}) => {
     }
 };
 
-const GetSubTitle = async (option) => {
-
-
+const getSubtitle = async (option) => {
+    
     let value = await JSON.parse(readFileSync("./testtest.json","utf-8"));
+    
     return value;
-
-    /*
-     let value;
-     try {
-     value = await OS.search(option);
-     } catch(ex) {
-     value = ex;
-     }
-    return value;
-     */
+    
+    /*let value;
+    try {
+        value = await OS.search(option);
+    } catch(ex) {
+        value = ex;
+    }
+    return value;*/
 };
 
 const skipUnwanted = key => {
@@ -369,6 +380,7 @@ const skipUnwanted = key => {
 
     return true;
 };
+
 const createSubtitleEl = (parent,idx,value) => {
 
     const subtitle = document.createElement("tr");
@@ -459,8 +471,9 @@ const createTableHeaders = values => {
 
     return thead;
 };
-const StyleResult = value => {
 
+const styleResult = value => {
+    
     const subtitleListParent = document.querySelector(".subtitle-loaded");
     const subtitleParent = document.createElement("table");
 
@@ -507,7 +520,8 @@ const intervalId = (loaded) => {
 
     return intId;
 };
-const ErrorCheck = (err,loaded) => {
+
+const errorCheck = (err,loaded) => {
     INTERVAL_COUNT = 0;
     if ( Error[Symbol.hasInstance](err) ) {
         loaded.innerHTML = "Cannot connect to subtitle server";
@@ -565,9 +579,9 @@ module.exports = {
     langDetect,
     getMime,
     checkValues,
-    GetSubTitle,
-    StyleResult,
+    getSubtitle,
+    styleResult,
     intervalId,
-    ErrorCheck,
+    errorCheck,
     isOnline
 };
