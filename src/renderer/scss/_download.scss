@@ -55,7 +55,12 @@
         .akara-download-meter {
             width: 0%;
             background-color: black;
-            //padding: 0;
+            display: none;
+        }
+        .akara-unknown-download-meter {
+            //display: none;
+            width: 12%;
+            background-color: black;
         }
     }
     .akara-bytes {
@@ -92,4 +97,44 @@
             }
         }
     }
+}
+
+[data-unknown-byte="true"] {
+    animation-name: unknownByte;
+    animation-timing-function: ease-in;
+    animation-direction: alternate-reverse;
+    animation-iteration-count: infinite;
+
+    padding: 3px;
+}
+
+@keyframes unknownByte {
+    0% {
+        margin-left: 10%;
+    }
+    10% {
+        margin-left: 20%;
+    }
+    20% {
+        margin-left: 30%;
+    }
+    30% {
+        margin-left: 40%;
+    }
+    40% {
+        margin-left: 50%;
+    }
+    50% {
+        margin-left: 60%;
+    }
+    60% {
+        margin-left: 70%;
+    }
+    70% {
+        margin-left: 80%;
+    }
+    100% {
+        margin-left: 90%;
+    }
+    
 }

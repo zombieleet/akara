@@ -83,6 +83,8 @@ button[type="search"] {
 .subtitle-loaded {
     width: 100%;
     display: flex;
+    overflow-y: auto;
+    padding-bottom: 12px;
     .subtitle-info {
         color: black;
         font-size: 30px;

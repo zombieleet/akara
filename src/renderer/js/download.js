@@ -16,11 +16,12 @@
     } = _require("./utils.js");
 
     const url = localStorage.getItem("url");
-    
+
     const close  = document.querySelector(".download-close");
     const filename = document.querySelector(".akara-download-filename");
     const downByte = document.querySelector(".akara-download-meter");
-    
+    const unknownByte = document.querySelector(".akara-unknown-download-meter");
+
     const downByPercent = document.querySelector(".akara-downloading-percent");
     const downloadState = document.querySelector(".akara-download-state");
 
@@ -41,16 +42,17 @@
         resume.hidden = _resume;
         restart.hidden = _restart;
     };
-    
+
+
     localStorage.removeItem("url");
-    
+
     downloadURL(url,win);
 
-    
+
     ipc.on("download::state", (event,state) => {
-        
+
         downloadState.textContent = state === "progressing" ? "Downloading" : state;
-        
+
         if ( state === "paused" ) {
             hide({_pause:true,_resume:false,_restart:true});
         } else if ( state === "canceled" ) {
@@ -66,7 +68,7 @@
             cancel.disabled = true;
         }
     });
-    
+
     ipc.on("download::gottenByte", (event,bytes) => {
         currentByte.textContent = computeByte(bytes);
     });
@@ -74,26 +76,36 @@
     ipc.on("download::filename", (event,fname) => {
         filename.textContent = fname;
     });
-    
+
     ipc.on("download::totalbyte", (event,bytes) => {
-        console.log(bytes);
+        if ( bytes === 0 ) {
+            totalByte.setAttribute("style", "display: hidden;");
+            return ;
+        }
         totalByte.textContent = computeByte(bytes);
     });
 
     ipc.on("download::computePercent", (event,rByte,tByte) => {
-        console.log(rByte,tByte);
+
+        if ( tByte === 0 ) {
+            unknownByte.setAttribute("data-unknown-byte", "true");
+            return ;
+        }
+
+        if ( unknownByte.hasAttribute("data-unknown-byte") ) {
+            unknownByte.removeAttribute("data-unknown-byte");
+        }
+        
         const percent = ( ( rByte / tByte ) * 100 ) + "%";
         downByPercent.textContent = percent;
-        downByte.setAttribute("style", `width: ${percent}; padding: 3px`);
+        downByte.setAttribute("style", `width: ${percent}; padding: 3px; display: block`);
+        
     });
 
-
-    
     resume.addEventListener("click", () => {
-        console.log("resume");
         ipc.send("download::resume");
     });
-    
+
     cancel.addEventListener("click", () => {
         ipc.send("download::cancel");
         ipc.send("close-download-window");
@@ -102,15 +114,15 @@
     restart.addEventListener("click", () => {
         ipc.send("download::restart");
     });
-    
+
     close.addEventListener("click", () => {
         // the cancel button will only be disabled
         //   if download is completed
         if ( ! cancel.disabled )
             ipc.send("download::cancel");
-        
+
         ipc.send("close-download-window");
-        
+
     });
 
     pause.addEventListener("click", () => {
