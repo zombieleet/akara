@@ -262,7 +262,7 @@ const videoContextMenu = [
                                     }
                                 ]
                             });
-                            webContents.send("load-sub-computer", val);
+                            webContents.send("subtitle::load-sub", val);
                         }
                     },
                     {
