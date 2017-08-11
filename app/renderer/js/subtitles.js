@@ -1,7 +1,7 @@
 ( () => {
-    
+
     "use strict";
-    
+
     const {
         ipcRenderer: ipc,
         remote: {
@@ -13,16 +13,16 @@
     const {
         createNewWindow
     } = _require("./newwindow.js");
-    
+
     const {
         join
     } = require("path");
-    
+
     const {
         existsSync,
         mkdirSync
     } = require("fs");
-    
+
     const {
         checkValues,
         getSubtitle,
@@ -34,7 +34,7 @@
     } = require("../js/util.js");
 
     const akara_emit =  require("../js/emitter.js");
-    
+
     const movie = document.querySelector("#movies");
     const series = document.querySelector("#series");
     const button = document.querySelector("button");
@@ -44,17 +44,17 @@
     const loaded = document.querySelector(".subtitle-info");
     const close = document.querySelector(".subtitle-close");
     const section = document.querySelector("section");
-    
+
     const handleSearch = async (value,_id) => {
-        
+
         const {
             query,
             season,
             episode
         } = value;
-        
+
         let result;
-        
+
         if ( series.checked ) {
             // that means series was checked
             result = await getSubtitle({query,season,episode});
@@ -62,7 +62,7 @@
             // movies was checked
             result = await getSubtitle({query});
         }
-        
+
         if ( ! noNetwork({result,_id}) ) return styleResult(result);
 
     };
@@ -75,7 +75,7 @@
         loaded.setAttribute("hidden", "true");
         return false;
     };
-    
+
     const validateSubtitle = value => {
 
         if ( typeof(value) === "object" ) {
@@ -88,15 +88,15 @@
             return handleSearch(value,_id);
         }
     };
-    
+
     close.addEventListener("click", () => {
         ipc.send("close-subtitle-window");
     });
-    
+
     movie.addEventListener("change", () => {
         console.log(movie.checked);
     });
-    
+
     series.addEventListener("change", () => {
         let sOption = document.querySelector(".series-option");
         if ( series.checked ) {
@@ -134,7 +134,7 @@
 
     section.addEventListener("click", event => {
         const target = event.target;
-        
+
         if ( ! target.hasAttribute("data-url") ) return false;
 
         const url = target.getAttribute("data-url");
@@ -146,10 +146,10 @@
         };
 
         const html = `${__obj.title}.html`;
-        
+
         createNewWindow(__obj,html);
 
         localStorage.setItem("url", url);
     });
-    
+
 })();

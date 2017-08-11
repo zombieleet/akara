@@ -12,6 +12,8 @@ const {
     ipcRenderer: ipc
 } = require("electron");
 
+const srt2vtt = require("srt2vtt");
+
 const {
     CONVERTED_MEDIA,
     URL_ONLINE,
@@ -34,7 +36,8 @@ const { spawn } = require("child_process");
 const {
     mkdirSync ,
     existsSync,
-    readFileSync
+    readFileSync,
+    writeFileSync
 } = require("fs");
 
 const {
@@ -196,8 +199,6 @@ const prevNext = moveTo => {
 
 const createDir = () => mkdirSync(`${CONVERTED_MEDIA}`);
 
-const sendNotice = message =>  new Notification(message);
-
 const getMime = file => new Promise((resolve,reject) => {
     magic.detectFile(file, (err,data) => {
         if ( err) return reject(err);
@@ -215,7 +216,7 @@ const validateMime = async (path) => {
 
     if ( /^maybe$|^probably$/.test(canPlay) ) return path;
 
-    sendNotice("Unsupported Mime/Codec detected, this file will be converted in the background");
+    sendNotification("Invalid Mime","Unsupported Mime/Codec detected, this file will be converted in the background");
     let _fpath;
 
     try {
@@ -236,9 +237,6 @@ const Convert = _path => new Promise((resolve,reject) => {
 
     // _fpath will contain the converted path
     const _fpath = join(CONVERTED_MEDIA,parse(_path).name + ".mp4");
-
-    if ( ! existsSync(CONVERTED_MEDIA) )
-        createDir();
 
     // if _fpath exists instead just resolve don't convert
     if ( existsSync(_fpath) ) {
@@ -262,6 +260,8 @@ const playOnDrop = () => {
         return setupPlaying(firstVideoList);
     }
 };
+
+const sendNotification = (title,message) => new Notification(title,message);
 
 const disableVideoMenuItem = menuInst => {
 
@@ -561,7 +561,15 @@ const isOnline = () => new Promise((resolve,reject) => {
     req.end();
 });
 
-
+const readSubtitleFile = path => new Promise((resolve,reject) => {
+    const _path = join(CONVERTED_MEDIA,basename(path).replace(".srt", ".vtt"));
+    const data = readFileSync(path);
+    srt2vtt(data, (err,vttData) => {
+        if ( err ) return reject(err);
+        writeFileSync(_path, vttData);
+        return resolve(_path);
+    });
+});
 
 module.exports = {
     createEl,
@@ -583,5 +591,7 @@ module.exports = {
     styleResult,
     intervalId,
     errorCheck,
-    isOnline
+    isOnline,
+    readSubtitleFile,
+    sendNotification
 };

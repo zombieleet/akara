@@ -123,7 +123,9 @@ button[type="search"] {
 
 .subtitle-loaded {
   width: 100%;
-  display: flex; }
+  display: flex;
+  overflow-y: auto;
+  padding-bottom: 12px; }
   .subtitle-loaded .subtitle-info {
     color: black;
     font-size: 30px;
@@ -187,6 +189,10 @@ table th {
     padding: 3px; }
     .download .akara-total-byte .akara-download-meter {
       width: 0%;
+      background-color: black;
+      display: none; }
+    .download .akara-total-byte .akara-unknown-download-meter {
+      width: 12%;
       background-color: black; }
   .download .akara-bytes {
     width: 100%;
@@ -211,6 +217,33 @@ table th {
       padding: 10px; }
       .download .download-control-button button:disabled {
         cursor: not-allowed; }
+
+[data-unknown-byte="true"] {
+  animation-name: unknownByte;
+  animation-timing-function: ease-in;
+  animation-direction: alternate-reverse;
+  animation-iteration-count: infinite;
+  padding: 3px; }
+
+@keyframes unknownByte {
+  0% {
+    margin-left: 10%; }
+  10% {
+    margin-left: 20%; }
+  20% {
+    margin-left: 30%; }
+  30% {
+    margin-left: 40%; }
+  40% {
+    margin-left: 50%; }
+  50% {
+    margin-left: 60%; }
+  60% {
+    margin-left: 70%; }
+  70% {
+    margin-left: 80%; }
+  100% {
+    margin-left: 90%; } }
 
 .akara-media .akara-load .akara-loaded > li:hover, [data-clicked="true"] {
   background: #3e3e3e; }

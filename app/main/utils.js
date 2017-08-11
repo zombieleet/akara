@@ -123,11 +123,13 @@ const downloadURL = (url,window) => {
             
             // send the path were the file
             //   was downloaded to the renderer process
-            /*let [ win ] = BrowserWindow.getAllWindows().filter(
-                win => win.getTitle() === "Subtitle" ? win : undefined
-            );
+            //   1 was hardcoded because we
+            //   only needed the main window
+
+            let win = BrowserWindow.fromId(1);
+            
             console.log(win.webContents,win.getTitle());
-            win.webContents.send("load-sub-internet",fPath);*/
+            win.webContents.send("subtitle::load-sub",fPath);
         });
 
         ipc.on("download::cancel", () => {
