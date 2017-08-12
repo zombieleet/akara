@@ -37,3 +37,38 @@ $drop-down-left-pos: 200;
         width: 180px !important;
     }
 }
+
+%new_window_headers {
+    $font-size: 25px;
+
+    width: 100%;
+    padding: 12px;
+    border-bottom: 1px solid black;
+
+    -webkit-app-region: drag;
+
+    span:first-of-type {
+        font-size: $font-size;
+    }
+
+    span:last-of-type {
+
+        float: right;
+        cursor: pointer;
+
+        margin-right: 15px;
+
+        font-size: $font-size;
+
+        -webkit-app-region: no-drag;
+
+        &:hover {
+            color: red;
+        }
+    }    
+}
+
+%new_window_body {
+    overflow: none;
+    background: white;
+}

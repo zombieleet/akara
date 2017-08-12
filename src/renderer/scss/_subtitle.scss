@@ -1,7 +1,6 @@
 
 .subtitle-body {
-    background: white;
-    overflow: hidden;
+    @extend %new_window_body;
 }
 
 .akara-subtitle-header {

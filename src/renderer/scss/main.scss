@@ -13,10 +13,13 @@ body {
     font-family: monospace;
 }
 
-@import "subtitle.scss";
-@import "download.scss";
 
 @import "extend.scss";
+
+@import "subtitle.scss";
+@import "download.scss";
+@import "mediainfo.scss";
+
 @import "akara_dropdown";
 @import "akara_title_bar";
 @import "akara_load_section";
