@@ -4,6 +4,8 @@ const { request } = require("http");
 
 const akara_emit = require("../js/emitter.js");
 
+const ffmpeg = require("ffmpeg");
+
 const {
     remote: {
         require: _require,
@@ -209,14 +211,17 @@ const getMime = file => new Promise((resolve,reject) => {
 const validateMime = async (path) => {
 
     const _getMime = await getMime(path);
-
+    
     if ( ! /^audio|^video/.test(_getMime) ) return undefined;
 
     const canPlay = video.canPlayType(_getMime);
 
     if ( /^maybe$|^probably$/.test(canPlay) ) return path;
 
-    sendNotification("Invalid Mime","Unsupported Mime/Codec detected, this file will be converted in the background");
+    sendNotification("Invalid Mime", {
+        body: "Unsupported Mime/Codec detected, this file will be converted in the background"
+    });
+    
     let _fpath;
 
     try {
@@ -571,6 +576,24 @@ const readSubtitleFile = path => new Promise((resolve,reject) => {
     });
 });
 
+const getMetaData = async () => {
+    
+    const url = decodeURI(localStorage.getItem("currplaying")).replace("file://","");
+    
+    const metadata = new ffmpeg(url);
+    
+    let result;
+    
+    try {
+        ({ metadata: result }= await metadata);
+        //localStorage.removeItem("currplaying");
+    } catch(ex) {
+        console.log(ex);
+        result = ex;
+    }
+    return result;
+};
+
 module.exports = {
     createEl,
     removeTarget,
@@ -593,5 +616,6 @@ module.exports = {
     errorCheck,
     isOnline,
     readSubtitleFile,
-    sendNotification
+    sendNotification,
+    getMetaData
 };
