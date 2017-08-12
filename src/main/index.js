@@ -20,6 +20,7 @@ const {
 
 const { join } = require("path");
 
+
 require("electron-reload")(APP_PATH, {
     electron: join(APP_PATH, "node_modules", ".bin", "electron")
 });
