@@ -55,9 +55,57 @@ body {
   height: 100vh;
   font-family: monospace; }
 
-.subtitle-body {
+.akara-media .akara-load .akara-loaded > li:hover, [data-clicked="true"] {
+  background: #3e3e3e; }
+
+.akara-media-element,
+.akara-add-media,
+.akara-subtitle,
+.akara-internet-media, .akara-dropdown {
+  position: absolute;
+  left: 200px;
+  top: 204px;
+  width: 200px;
   background: white;
-  overflow: hidden; }
+  color: black; }
+
+.akara-media-element > li,
+.akara-add-media > li,
+.akara-subtitle > li,
+.akara-internet-media > li, .akara-dropdown ul > li {
+  display: block;
+  width: inherit; }
+  .akara-media-element > li > span,
+  .akara-add-media > li > span,
+  .akara-subtitle > li > span,
+  .akara-internet-media > li > span, .akara-dropdown ul > li > span {
+    margin-left: 10px; }
+
+.akara-media-element > li,
+.akara-add-media > li,
+.akara-subtitle > li,
+.akara-internet-media > li {
+  width: 180px !important; }
+
+.akara-download-header, .akara-media-info {
+  width: 100%;
+  padding: 12px;
+  border-bottom: 1px solid black;
+  -webkit-app-region: drag; }
+  .akara-download-header span:first-of-type, .akara-media-info span:first-of-type {
+    font-size: 25px; }
+  .akara-download-header span:last-of-type, .akara-media-info span:last-of-type {
+    float: right;
+    cursor: pointer;
+    margin-right: 15px;
+    font-size: 25px;
+    -webkit-app-region: no-drag; }
+    .akara-download-header span:last-of-type:hover, .akara-media-info span:last-of-type:hover {
+      color: red; }
+
+.subtitle-body, .download-body, .media-info {
+  overflow: none;
+  background: white; }
 
 .akara-subtitle-header {
   padding: 10px;
@@ -154,26 +202,6 @@ table th {
   table th:first-letter {
     text-transform: uppercase; }
 
-.download-body {
-  overflow: none;
-  background: white; }
-
-.akara-download-header {
-  width: 100%;
-  padding: 12px;
-  border-bottom: 1px solid black;
-  -webkit-app-region: drag; }
-  .akara-download-header span:first-of-type {
-    font-size: 25px; }
-  .akara-download-header span:last-of-type {
-    float: right;
-    cursor: pointer;
-    margin-right: 15px;
-    font-size: 25px;
-    -webkit-app-region: no-drag; }
-    .akara-download-header span:last-of-type:hover {
-      color: red; }
-
 .download {
   font-size: 18px;
   color: #4b4b4b; }
@@ -245,37 +273,34 @@ table th {
   100% {
     margin-left: 90%; } }
 
-.akara-media .akara-load .akara-loaded > li:hover, [data-clicked="true"] {
-  background: #3e3e3e; }
+.akara-info {
+  width: 100%;
+  overflow-y: auto; }
+  .akara-info div {
+    color: black;
+    width: 100%; }
+    .akara-info div ul {
+      padding-top: 20px;
+      margin-left: 12px; }
+      .akara-info div ul li {
+        margin-top: 20px;
+        font-size: 15px;
+        border-bottom: 2px solid black;
+        padding-bottom: 12px; }
+        .akara-info div ul li span:first-of-type:after {
+          content: ":"; }
+        .akara-info div ul li span:first-of-type {
+          border: 1px solid white;
+          padding: 7px;
+          background-color: #cbcbcb; }
+        .akara-info div ul li span:last-of-type {
+          margin-left: 30px; }
 
-.akara-media-element,
-.akara-add-media,
-.akara-subtitle,
-.akara-internet-media, .akara-dropdown {
-  position: absolute;
-  left: 200px;
-  top: 204px;
-  width: 200px;
-  background: white;
-  color: black; }
+.media-has-deep {
+  margin-left: 0 !important; }
 
-.akara-media-element > li,
-.akara-add-media > li,
-.akara-subtitle > li,
-.akara-internet-media > li, .akara-dropdown ul > li {
-  display: block;
-  width: inherit; }
-  .akara-media-element > li > span,
-  .akara-add-media > li > span,
-  .akara-subtitle > li > span,
-  .akara-internet-media > li > span, .akara-dropdown ul > li > span {
-    margin-left: 10px; }
-
-.akara-media-element > li,
-.akara-add-media > li,
-.akara-subtitle > li,
-.akara-internet-media > li {
-  width: 180px !important; }
+.akara-media-deep {
+  margin-left: 30px; }
 
 .akara-add-media {
   top: 0; }

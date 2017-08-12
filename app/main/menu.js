@@ -234,8 +234,16 @@ const videoContextMenu = [
     },
     {
         label: "Media Info",
-        click() { },
-        accelearator: "CommandOrCtrl+M"
+        click(menuItem, BrowserWindow , event ) {
+            const __obj = {
+                title: "mediainfo",
+                parent: BrowserWindow,
+                height: 773,
+                width: 608
+            };
+            const html = `${__obj.title}.html`;
+            createNewWindow(__obj,html);
+        }
     },
     {
         type: "separator"

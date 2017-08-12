@@ -200,12 +200,15 @@
     };
 
     const videoPlayEvent = () => {
-        console.log("shit");
+        
         const play = document.querySelector("[data-fire=play]");
         const pause = document.querySelector("[data-fire=pause]");
         const notify = __checkPlayStateAndNotify();
 
         pause.classList.remove("akara-display");
+
+        localStorage.setItem("currplaying", video.src);
+        
         return play.classList.add("akara-display");
     };
 
@@ -410,7 +413,9 @@
 
         const { track, lang } = await setUpTrackElement(path);
         
-        sendNotification("Subtitle", "Subtitle have been successfully added");
+        sendNotification("Subtitle", {
+            body: "Subtitle have been successfully added"
+        });
         
         video.appendChild(track);
 

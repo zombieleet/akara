@@ -22,7 +22,7 @@ const createNewWindow = (obj,html) => {
 
     newWindow.loadURL(`file://${APP_PATH}/app/renderer/html/${html}`);
 
-    newWindow.on("closed", () => {
+    newWindow.once("closed", () => {
         newWindow = undefined;
     });
     newWindow.on("ready-to-show", () => {
@@ -34,7 +34,7 @@ const createNewWindow = (obj,html) => {
 
     webContents.openDevTools();
 
-    ipc.on(`close-${obj.title}-window`, () => {
+    ipc.once(`close-${obj.title}-window`, () => {
         newWindow.close();
     });
 
