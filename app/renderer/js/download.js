@@ -33,64 +33,145 @@
     const resume = document.querySelector(".akara-download-resume");
     const restart = document.querySelector(".akara-download-restart");
 
+    /**
+     * 
+     * get window with title Download
+     *
+     **/
+    
     const [ win ] = BrowserWindow.getAllWindows().filter(
         win => win.getTitle() === "Download" ? win : undefined
     );
 
+
+    /**
+     *
+     *
+     * hide or show pause resume and restart 
+     *  buttons
+     *
+     *
+     **/
+    
     const hide = ({_pause,_resume,_restart}) => {
         pause.hidden = _pause;
         resume.hidden = _resume;
         restart.hidden = _restart;
     };
 
-
+    // remove stored url
     localStorage.removeItem("url");
 
+    // open download window
     downloadURL(url,win);
 
 
+    /**
+     *
+     *
+     *  download::state event listener will be trigerred
+     *  whenever the state of the download is updated
+     *
+     **/
+    
     ipc.on("download::state", (event,state) => {
 
         downloadState.textContent = state === "progressing" ? "Downloading" : state;
 
-        if ( state === "paused" ) {
+        switch(state) {
+        case "paused":
             hide({_pause:true,_resume:false,_restart:true});
-        } else if ( state === "canceled" ) {
+            break;
+        case "cancelled":
+            // close download window
             ipc.send("close-download-window");
-        } else if ( state === "resumed" ) {
+            break;
+        case "resumed":
             hide({_pause:false,_resume:true,_restart:true});
-        } else if ( state === "noResume" ) {
+            break;
+        case "noResume":
             hide({_pause:true,_resume:true,_restart:false});
-        } else if ( state === "progressing" ) {
+            break;
+        case "progressing":
             pause.disabled = false;
-        } else if ( state === "completed" ) {
+            break;
+        case "completed":
             pause.disabled = true;
             cancel.disabled = true;
+            break;
+        default:
+            // do nothing
         }
     });
 
+    
+    /**
+     *
+     *
+     * download::gottenByte event listener will be trigerred 
+     * each time a byte is downloaded
+     *
+     **/
+
+    
     ipc.on("download::gottenByte", (event,bytes) => {
         currentByte.textContent = computeByte(bytes);
     });
+
+    
+    /**
+     *
+     *
+     *
+     * download::filename event is trigerred whenever
+     *  the downloads starts, fname is the name of the file
+     *
+     **/
 
     ipc.on("download::filename", (event,fname) => {
         filename.textContent = fname;
     });
 
+    
+    /**
+     *
+     *
+     *
+     * download::totalbyte event is trigerred whenever the download starts
+     *  bytes contains the totalbyte of the file
+     *
+     **/
+    
     ipc.on("download::totalbyte", (event,bytes) => {
+        
+        /**
+         * when byte is 0 don't do a percent download
+         * just do an unknown byte download
+         **/
+        
         if ( bytes === 0 ) {
             totalByte.setAttribute("style", "display: hidden;");
             return ;
         }
+        
         totalByte.textContent = computeByte(bytes);
     });
 
+
+    /**
+     *
+     * download::computePercent calculates 
+     * the percentage of receivedByte to totalByte
+     *
+     **/
+    
     ipc.on("download::computePercent", (event,rByte,tByte) => {
 
         if ( tByte === 0 ) {
             unknownByte.setAttribute("data-unknown-byte", "true");
             return ;
         }
+
 
         if ( unknownByte.hasAttribute("data-unknown-byte") ) {
             unknownByte.removeAttribute("data-unknown-byte");
@@ -102,15 +183,18 @@
         
     });
 
+    
     resume.addEventListener("click", () => {
         ipc.send("download::resume");
     });
 
+    
     cancel.addEventListener("click", () => {
         ipc.send("download::cancel");
         ipc.send("close-download-window");
     });
 
+    
     restart.addEventListener("click", () => {
         ipc.send("download::restart");
     });
