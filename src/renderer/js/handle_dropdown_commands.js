@@ -44,6 +44,13 @@ const addMediaFile = () => {
     },addMediaCb);
 };
 
+/**
+ *
+ * addMediaFolder handles the selection of folder
+ * containging media files
+ *
+ **/
+
 const addMediaFolder = () => {
 
     dialog.showOpenDialog({
@@ -65,6 +72,7 @@ const addMediaFolder = () => {
 };
 
 const __videoAttribute = video => video.hasAttribute("src");
+
 const __spitError = () =>  dialog.showErrorBox("Invalid Media File", "No Media file was found");
 
 const _play = () => {

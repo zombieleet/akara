@@ -1,9 +1,21 @@
+
+"use strict";
+
 const { basename } = require("path");
 const {
     createEl,
     validateMime,
     playOnDrop
 } = require("../js/util.js");
+
+
+/**
+ *
+ * addMediacb function will be called
+ * whenever a media file is added
+ * it basically appends the media to the playlist section
+ *
+ **/
 
 const addMediaCb = paths => {
 
