@@ -36,6 +36,10 @@ const url = require("url");
 const { spawn } = require("child_process");
 
 const {
+    KEY_BINDINGS
+} = require("../js/key.js");
+
+const {
     mkdirSync ,
     existsSync,
     readFileSync,
@@ -594,6 +598,8 @@ const getMetaData = async () => {
     return result;
 };
 
+const matchCode = (keyCode) => new RegExp(`.*${keyCode}.*`,"igm");
+
 module.exports = {
     createEl,
     removeTarget,
@@ -617,5 +623,6 @@ module.exports = {
     isOnline,
     readSubtitleFile,
     sendNotification,
-    getMetaData
+    getMetaData,
+    matchCode
 };

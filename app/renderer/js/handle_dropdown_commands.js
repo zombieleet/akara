@@ -1,8 +1,23 @@
-const {remote: { dialog, app , require: _require }} = require("electron");
-const { video, controls } = require("../js/video_control.js");
-const { addMediaCb } = require("../js/dropdown_callbacks.js");
+const {
+    remote: {
+        dialog,
+        app ,
+        require: _require
+    }
+} = require("electron");
 
-const { play,
+const {
+    video,
+    controls
+} = require("../js/video_control.js");
+
+const {
+    addMediaCb,
+    searchAndAppend
+} = require("../js/dropdown_callbacks.js");
+
+const {
+    play,
     pause,
     mute,
     unmute,
@@ -44,13 +59,45 @@ const addMediaFile = () => {
     },addMediaCb);
 };
 
+
+const search = () => {
+
+    if ( document.querySelector(".search-parent") )
+        return false;
+    
+    const parent = document.createElement("div");
+    parent.setAttribute("class","search-parent");
+
+    const input = document.createElement("input");
+    input.setAttribute("class", "search-input");
+    input.setAttribute("type","text");
+    
+    const findingsParent = document.createElement("div");
+    findingsParent.setAttribute("class", "findings-parent");
+
+    const findings = document.createElement("ul");
+    findings.setAttribute("class", "findings");
+
+    const akaraMedia = document.querySelector(".akara-media");
+    const akaraLoad = akaraMedia.querySelector(".akara-load");
+
+    parent.appendChild(input);
+    findingsParent.appendChild(findings);
+    parent.appendChild(findingsParent);
+
+    
+    akaraMedia.insertBefore(parent, akaraLoad);
+
+    searchAndAppend(input,findings);
+};
+
+
 /**
  *
  * addMediaFolder handles the selection of folder
  * containging media files
  *
  **/
-
 const addMediaFolder = () => {
 
     dialog.showOpenDialog({
@@ -135,8 +182,10 @@ const _leavefullscreen = () => {
     return __spitError();
 };
 
-const HandleDroped = () => ({ addMediaFile,
-    addMediaFolder ,
+const HandleDroped = () => ({
+    addMediaFile,
+    addMediaFolder,
+    search,
     _play,
     _pause,
     _mute,

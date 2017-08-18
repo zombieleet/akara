@@ -5,7 +5,8 @@ const { basename } = require("path");
 const {
     createEl,
     validateMime,
-    playOnDrop
+    playOnDrop,
+    matchCode
 } = require("../js/util.js");
 
 
@@ -27,17 +28,47 @@ const addMediaCb = paths => {
     }
 
     paths.forEach( path => {
-        
+
         let _path = basename(path);
-        
+
         const createdElement = createEl({path,_path});
-        
+
         mediaPathParent.appendChild(createdElement);
-        
+
         return playOnDrop();
     });
 };
 
+const searchAndAppend = (input,findings) => {
+
+    input.addEventListener("keyup", evt => {
+
+        const playlist = document.querySelectorAll("[data-full-path] > span");
+
+        Array.from(playlist, el => {
+            
+            if ( matchCode(input.value).test(el.textContent) ) {
+                console.log("wow");
+                const li = document.createElement("li");
+                li.setAttribute("class","items-found");
+                li.textContent = el.textContent;
+                findings.appendChild(li);
+                console.log(findings);
+            } else {
+                Array.from(document.querySelectorAll(".items-found"), elIn => {
+                    Array.from(playlist, matchEln => {
+                        if ( elIn.textContent === matchEln.textContent ) {
+                            elIn.remove();
+                        }
+                    });
+                });
+            }
+
+        });
+    });
+};
+
 module.exports = {
-    addMediaCb
+    addMediaCb,
+    searchAndAppend
 };
