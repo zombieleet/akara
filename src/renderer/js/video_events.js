@@ -54,6 +54,7 @@
     const {
         addMediaFile,
         addMediaFolder,
+        search,
         _play,
         _stop,
         _pause,
@@ -955,5 +956,6 @@
 
     ipc.on("leave-video-fullscreen", _leavefullscreen);
 
+    ipc.on("video-search", search);
 
 })();

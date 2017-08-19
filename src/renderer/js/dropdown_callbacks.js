@@ -5,8 +5,7 @@ const { basename } = require("path");
 const {
     createEl,
     validateMime,
-    playOnDrop,
-    matchCode
+    playOnDrop
 } = require("../js/util.js");
 
 
@@ -45,26 +44,48 @@ const searchAndAppend = (input,findings) => {
 
         const playlist = document.querySelectorAll("[data-full-path] > span");
 
+        const li = document.querySelectorAll(".items-found");
+        
+        const regexp = new RegExp(input.value, "ig");
+        
         Array.from(playlist, el => {
             
-            if ( matchCode(input.value).test(el.textContent) ) {
-                console.log("wow");
+            if ( regexp.test(el.textContent) ) {
+                
                 const li = document.createElement("li");
+                
                 li.setAttribute("class","items-found");
+                
+                li.setAttribute("id", el.parentNode.getAttribute("id"));
+                li.setAttribute("data-full-path", el.parentNode.getAttribute("data-full-path"));
+                
                 li.textContent = el.textContent;
+                
                 findings.appendChild(li);
-                console.log(findings);
+                
             } else {
-                Array.from(document.querySelectorAll(".items-found"), elIn => {
-                    Array.from(playlist, matchEln => {
-                        if ( elIn.textContent === matchEln.textContent ) {
-                            elIn.remove();
-                        }
+                
+                if ( li ) {
+                    
+                    Array.from(li, el => {
+                        
+                        if ( ! regexp.test(el.textContent) )
+                            el.remove();
+                        
                     });
-                });
+                    
+                }
             }
 
         });
+
+        
+        if ( /^\s+$|^$/.test(input.value) ) {
+            
+            if ( li ) {
+                Array.from(li, el => el.remove());
+            }
+        }
     });
 };
 

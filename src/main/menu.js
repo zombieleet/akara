@@ -329,7 +329,16 @@ const videoContextMenu = [
     {
         type: "separator"
     },
-    share
+    share,
+    {
+        type: "separator"
+    },
+    {
+        label: "Search",
+        click(menuItem, { webContents }, event ) {
+            webContents.send("video-search");
+        }
+    }
 ];
 
 

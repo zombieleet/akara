@@ -60,6 +60,16 @@ const addMediaFile = () => {
 };
 
 
+
+
+/**
+ *
+ *
+ * show search box when this function
+ *  is called
+ *
+ **/
+
 const search = () => {
 
     if ( document.querySelector(".search-parent") )
@@ -90,6 +100,8 @@ const search = () => {
 
     searchAndAppend(input,findings);
 };
+
+
 
 
 /**
