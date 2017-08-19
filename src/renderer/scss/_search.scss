@@ -1,0 +1,49 @@
+.search-parent {
+    position: fixed;
+    width: 100%;
+
+    input {
+        border: none;
+        background-color: $global-color;
+        color: white;
+        font-size: 20px;
+
+        padding: 30px;
+        
+        width: 50%;
+
+        margin: auto;
+
+        margin-left: 30%;
+    }
+    .findings-parent {
+        
+        display: block;
+        width: 54%;
+        margin-left: 30%;
+        background-color: $global-color;
+        
+        ul {
+            
+            width: 100%;
+            overflow-y: auto;
+            
+            li {
+                padding: 10px;
+                margin-top: 20px;
+                cursor: pointer;
+
+                width: 100%;
+                
+                transition: .2s color ease-in;
+                &:hover {
+                    background: black;
+                }
+            }
+        }
+    }
+}
+
+[data-navigate="true"] {
+    background: black !important;
+}
