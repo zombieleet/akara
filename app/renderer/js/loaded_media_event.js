@@ -114,14 +114,14 @@
 
         if ( justEnded.nextElementSibling && ! justEnded.hasAttribute("data-repeat") ) {
 
-            removeClass(justEnded,"fa","fa-play-circle");
+            removeClass(ul,"fa","fa-play-circle");
 
             removeType(justEnded.parentNode,"data-dbclicked","data-now-playing","data-clicked");
 
             setCurrentPlaying(justEnded.nextElementSibling);
 
             video.src = justEnded.nextElementSibling.getAttribute("data-full-path");
-
+            
             justEnded.nextElementSibling.setAttribute("data-clicked","true");
 
             justEnded.nextElementSibling.classList.add("fa");
@@ -139,15 +139,15 @@
             removeType(justEnded.parentNode,"data-dbclicked","data-now-playing","data-clicked");
 
             video.src = firstChild.getAttribute("data-full-path");
-
-            removeClass(justEnded,"fa","fa-play-circle");
+            
+            removeClass(ul,"fa","fa-play-circle");
 
             setCurrentPlaying(firstChild);
 
             return play();
 
         }
-
+        
         // force the control element to change it's icon
         // if this is is not called, the control icon that handles
         // pause and play will not change

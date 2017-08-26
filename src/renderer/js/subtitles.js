@@ -45,6 +45,20 @@
     const close = document.querySelector(".subtitle-close");
     const section = document.querySelector("section");
 
+
+
+    
+    /**
+     *
+     *
+     * handleSearch calls the getSubtitle function 
+     *   to retrieve the subtitle file and
+     *   also calls the styleResult to render the result
+     *
+     **/
+
+
+    
     const handleSearch = async (value,_id) => {
 
         const {
@@ -67,6 +81,16 @@
 
     };
 
+
+
+    
+    /**
+     *
+     * if there is an error in retrieving the subtitle file
+     *   we assume there was a network error
+     *
+     **/
+    
     const noNetwork  = ({result,_id}) => {
         if ( errorCheck(result,loaded) ) {
             clearInterval(_id);
@@ -76,6 +100,17 @@
         return false;
     };
 
+
+
+    
+    /**
+     *
+     *
+     * validates the return value of the users inputs
+     * which is assigned to an object
+     *
+     **/
+    
     const validateSubtitle = value => {
 
         if ( typeof(value) === "object" ) {
@@ -89,14 +124,21 @@
         }
     };
 
+
+    
     close.addEventListener("click", () => {
         ipc.send("close-subtitle-window");
     });
+
+
+    
 
     movie.addEventListener("change", () => {
         console.log(movie.checked);
     });
 
+
+    
     series.addEventListener("change", () => {
         let sOption = document.querySelector(".series-option");
         if ( series.checked ) {
@@ -107,6 +149,17 @@
         return sOption.setAttribute("hidden", "true");
     });
 
+
+
+    /**
+     *
+     *
+     * calls checkValues to handle what the user is searching for
+     *
+     **/
+
+
+    
     button.addEventListener("click", async (e) => {
 
         e.preventDefault();
@@ -132,6 +185,19 @@
 
     });
 
+
+    
+    /**
+     *
+     * when download icon is clicked
+     * the url of the subtitle is saved in the 
+     *   localStorage with key "url"
+     *  a new window is then created
+     *
+     **/
+
+
+    
     section.addEventListener("click", event => {
         const target = event.target;
 

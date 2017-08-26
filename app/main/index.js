@@ -63,4 +63,5 @@ const createWindow = () => {
     app.on("quit", () => {
     });
 };
+
 createWindow();

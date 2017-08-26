@@ -302,6 +302,90 @@ table th {
 .akara-media-deep {
   margin-left: 30px; }
 
+.akara-playlist {
+  border-bottom: 3px solid black;
+  padding: 5px;
+  font-family: tahoma; }
+  .akara-playlist .playlist-name {
+    color: white;
+    margin-left: 3px; }
+  .akara-playlist .playlist-widget {
+    float: right;
+    cursor: pointer; }
+    .akara-playlist .playlist-widget .playlist-load,
+    .akara-playlist .playlist-widget .playlist-create,
+    .akara-playlist .playlist-widget .playlist-remove {
+      margin-left: 5px;
+      transition: .5s background ease-in; }
+    .akara-playlist .playlist-widget .playlist-load:hover,
+    .akara-playlist .playlist-widget .playlist-create:hover,
+    .akara-playlist .playlist-widget .playlist-remove:hover {
+      color: #4d4d4d; }
+
+.search-parent {
+  position: fixed;
+  width: 100%; }
+  .search-parent input {
+    border: none;
+    background-color: #4b4b4b;
+    color: white;
+    font-size: 20px;
+    padding: 30px;
+    width: 50%;
+    margin: auto;
+    margin-left: 30%; }
+  .search-parent .findings-parent {
+    display: block;
+    width: 54%;
+    margin-left: 30%;
+    background-color: #4b4b4b; }
+    .search-parent .findings-parent ul {
+      width: 100%;
+      overflow-y: auto; }
+      .search-parent .findings-parent ul li {
+        padding: 10px;
+        margin-top: 20px;
+        cursor: pointer;
+        width: 100%;
+        transition: .2s color ease-in; }
+        .search-parent .findings-parent ul li:hover {
+          background: black; }
+
+[data-navigate="true"] {
+  background: black !important; }
+
+.search-parent {
+  position: fixed;
+  width: 100%; }
+  .search-parent input {
+    border: none;
+    background-color: #4b4b4b;
+    color: white;
+    font-size: 20px;
+    padding: 30px;
+    width: 50%;
+    margin: auto;
+    margin-left: 30%; }
+  .search-parent .findings-parent {
+    display: block;
+    width: 54%;
+    margin-left: 30%;
+    background-color: #4b4b4b; }
+    .search-parent .findings-parent ul {
+      width: 100%;
+      overflow-y: auto; }
+      .search-parent .findings-parent ul li {
+        padding: 10px;
+        margin-top: 20px;
+        cursor: pointer;
+        width: 100%;
+        transition: .2s color ease-in; }
+        .search-parent .findings-parent ul li:hover {
+          background: black; }
+
+[data-navigate="true"] {
+  background: black !important; }
+
 .akara-add-media {
   top: 0; }
 
@@ -513,7 +597,6 @@ table th {
     .akara-media .akara-load .akara-loaded {
       overflow-y: auto;
       height: inherit;
-      margin-top: 20px;
       margin-right: 6px; }
       .akara-media .akara-load .akara-loaded > li {
         padding: 5px;
@@ -525,7 +608,7 @@ table th {
         white-space: nowrap;
         transition: .2s ease-in-out; }
       .akara-media .akara-load .akara-loaded li:last-of-type {
-        margin-bottom: 70px; }
+        margin-bottom: 100px; }
 
 [data-clicked="true"] {
   width: 100% !important; }

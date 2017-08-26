@@ -16,8 +16,15 @@
 
     const close = document.querySelector(".media-close");
 
-    const styleDeeper = ({ul,li,key,val},{_key,_val}) => {
 
+    /**
+     *
+     * render objects of objects
+     *
+     **/
+    
+    const styleDeeper = ({ul,li,key,val},{_key,_val}) => {
+        
         key.innerHTML = _key;
         val.innerHTML = _val;
 
@@ -28,6 +35,17 @@
 
     };
 
+
+
+
+    /**
+     *
+     *
+     * retrieveDeepValues retrieve objects of objects
+     *
+     *
+     **/
+    
     const retrieveDeepValues = value => {
 
         let currentValue ;
@@ -71,6 +89,16 @@
 
     };
 
+
+
+    /**
+     *
+     *
+     * retrieveValue retrieves the metadata info
+     *  of a media file
+     *
+     **/
+    
     const retrieveValue = obj => {
 
         const ul = document.createElement("ul");
@@ -114,6 +142,18 @@
 
     };
 
+
+
+    
+    /**
+     *
+     *
+     * style the parent element
+     *  holding the metadata information
+     *
+     **/
+
+    
     const styleMetaData = async () => {
 
         const values = await getMetaData();

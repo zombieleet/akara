@@ -36,6 +36,10 @@ const url = require("url");
 const { spawn } = require("child_process");
 
 const {
+    KEY_BINDINGS
+} = require("../js/key.js");
+
+const {
     mkdirSync ,
     existsSync,
     readFileSync,
@@ -90,28 +94,78 @@ const removeType = (pNode,...types) => {
     });
 };
 
-const removeClass = (target, ...types) => {
-    Array.from(target.parentNode.children, el => {
+
+
+
+/**
+ *
+ *
+ * if another video is playing
+ * remove all setup from previous video
+ * from playlist section
+ *
+ *
+ *
+ **/
+const removeClass = (parentNode, ...types) => {
+    Array.from(parentNode.children, el => {
         for ( let i of types ) {
             if ( el.classList.contains(i) ) el.classList.remove(i);
         }
     });
 };
 
+
+
+
+
+/**
+ *
+ * set the required attributes to indicate
+ * a current playing video in the playlist
+ *
+ *
+ *
+ **/
+
+
 const setCurrentPlaying = target => {
+
+
+    /**
+     *
+     * incase target came from search
+     * or any other place
+     *
+     **/
+
+    if ( target.childElementCount === 0 ) {
+
+        const loaded = document.querySelector(".akara-loaded");
+
+        target = loaded.querySelector(`#${target.getAttribute("id")}`);
+
+    }
+
     target.setAttribute("data-dbclicked", "true");
     target.setAttribute("data-now-playing", "true");
     target.setAttribute("data-clicked", "true");
     target.classList.add("fa");
     target.classList.add("fa-play-circle");
-    document.querySelector(".akara-title").textContent = target.querySelector("span").textContent;
+    
+    document.querySelector(".akara-title").textContent =  target.querySelector("span").textContent;
+
+    video.setAttribute("data-id", target.getAttribute("id"));
+
+    video.setAttribute("src", target.getAttribute("data-full-path"));
+
     return ;
 };
 
 const RESETTARGET = target => target.nodeName.toLowerCase() === "li" ? target : target.parentNode;
 
 const removeTarget = (target,video) => {
-    
+
     target = RESETTARGET(target);
 
     if ( decodeURI(video.src) === target.getAttribute("data-full-path") ) {
@@ -180,16 +234,43 @@ const disableMenuItem = (memItem,target,video) => {
         memItem.visible = false;
 };
 
+
+
+
+
+/**
+ *
+ *
+ * when a playlist video is clicked
+ * do the neccessary setup and play video
+ *
+ **/
 const setupPlaying = target => {
-    removeClass(target,"fa","fa-play-circle");
-    removeType(target.parentNode,"data-dbclicked","data-now-playing","data-clicked");
+
+    const loaded = document.querySelector(".akara-loaded");
+
+    removeClass(loaded,"fa","fa-play-circle");
+
+    removeType(loaded,"data-dbclicked","data-now-playing","data-clicked");
+
     setCurrentPlaying(target);
-    video.setAttribute("data-id", target.getAttribute("id"));
-    video.setAttribute("src", target.getAttribute("data-full-path"));
+
     return play();
 };
 
+
+
+
+
+/**
+ *
+ *
+ * prevNext, jump to next or previous video
+ * during video navigation
+ *
+ **/
 const prevNext = moveTo => {
+
     let target = document.querySelector("[data-now-playing=true]");
 
     if ( moveTo === "next" && target.nextElementSibling ) {
@@ -211,7 +292,7 @@ const getMime = file => new Promise((resolve,reject) => {
 const validateMime = async (path) => {
 
     const _getMime = await getMime(path);
-    
+
     if ( ! /^audio|^video/.test(_getMime) ) return undefined;
 
     const canPlay = video.canPlayType(_getMime);
@@ -221,7 +302,7 @@ const validateMime = async (path) => {
     sendNotification("Invalid Mime", {
         body: "Unsupported Mime/Codec detected, this file will be converted in the background"
     });
-    
+
     let _fpath;
 
     try {
@@ -350,11 +431,11 @@ const checkValues = ({input,movie,series,season,episode}) => {
 };
 
 const getSubtitle = async (option) => {
-    
+
     let value = await JSON.parse(readFileSync("./testtest.json","utf-8"));
-    
+
     return value;
-    
+
     /*let value;
     try {
         value = await OS.search(option);
@@ -478,7 +559,7 @@ const createTableHeaders = values => {
 };
 
 const styleResult = value => {
-    
+
     const subtitleListParent = document.querySelector(".subtitle-loaded");
     const subtitleParent = document.createElement("table");
 
@@ -577,13 +658,13 @@ const readSubtitleFile = path => new Promise((resolve,reject) => {
 });
 
 const getMetaData = async () => {
-    
+
     const url = decodeURI(localStorage.getItem("currplaying")).replace("file://","");
-    
+
     const metadata = new ffmpeg(url);
-    
+
     let result;
-    
+
     try {
         ({ metadata: result }= await metadata);
         //localStorage.removeItem("currplaying");
@@ -617,5 +698,6 @@ module.exports = {
     isOnline,
     readSubtitleFile,
     sendNotification,
-    getMetaData
+    getMetaData,
+    matchCode
 };
