@@ -5,8 +5,7 @@ const { basename } = require("path");
 const {
     createEl,
     validateMime,
-    playOnDrop,
-    matchCode
+    playOnDrop
 } = require("../js/util.js");
 
 

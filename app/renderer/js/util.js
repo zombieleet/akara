@@ -698,6 +698,5 @@ module.exports = {
     isOnline,
     readSubtitleFile,
     sendNotification,
-    getMetaData,
-    matchCode
+    getMetaData
 };
