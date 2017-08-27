@@ -122,5 +122,4 @@
             document.querySelector(".search-parent").remove();
         }
     });
-    
 })();
