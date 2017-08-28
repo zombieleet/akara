@@ -25,8 +25,41 @@
         .playlist-remove:hover {
             color: #4d4d4d;
         }
-        
+
+        .tool-tip {
+            border: 2px solid white;
+            background: black;
+            color: white;
+            //font-family: tahoma;
+            padding: 5px;
+            font-weight: bolder;
+
+            border-radius: 4px;
+
+            animation-name: moveToolTip;
+            animation-duration: .3s;
+            animation-timing-function: ease-in;
+            animation-fill-mode: forwards;
+        }
     }
 }
 
 
+
+@keyframes moveToolTip {
+    0% {
+        margin-top: 0px;
+    }
+    10% {
+        margin-top: 2px;
+    }
+    20% {
+        margin-top: 3px;
+    }
+    30% {
+        margin-top: 4px;
+    }
+    to {
+        margin-top: 5px;
+    }
+}
