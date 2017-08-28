@@ -407,6 +407,11 @@
 
         // possibly the codec or mime is not supported
         // show a message to the user to convert the file or not
+
+        if ( _src.test(/^\s+$/) ) {
+            return disableControls();
+        }
+        
         const btn = dialog.showMessageBox({
             type: "error",
             title: "Invalid stream",
