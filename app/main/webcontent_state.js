@@ -6,7 +6,7 @@ const { checkType, iterateDir } = require("./utils.js");
 const handleWebContents = ({webContents}) => {
 
     webContents.openDevTools({
-        mode: "detach"
+        mode: "bottom"
     });
 
     webContents.on("will-navigate", (event,path) => {
