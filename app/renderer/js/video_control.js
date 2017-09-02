@@ -31,7 +31,7 @@ const controls = {
 
         video.muted = true;
 
-        akara_emit.emit("video::low_volume", true);
+        akara_emit.emit("video::volume", video.volume);
 
         return _mute.setAttribute("data-drop", "_unmute");
 
@@ -44,7 +44,7 @@ const controls = {
 
         video.muted = false;
 
-        akara_emit.emit("video::high_volume", true);
+        akara_emit.emit("video::volume", video.volume);
 
         return _unmute.setAttribute("data-drop", "_mute");
 
