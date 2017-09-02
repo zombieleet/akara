@@ -114,7 +114,7 @@ module.exports.updateTimeIndicator = () => {
  **/
 
 const jumpToClick = (event,arg) => Math.
-          round(controls.duration() * ((event.clientX - event.target.offsetLeft) / arg));
+    round(controls.duration() * ((event.clientX - event.target.offsetLeft) / arg));
 
 
 /**
@@ -167,8 +167,8 @@ module.exports.removeHoverTime = removeHoverTime;
  **/
 
 const getHumanTime = result => isNaN(result)
-          ? "00:00"
-          : `${(result/60).toFixed(2)}`.replace(/\./, ":");
+    ? "00:00"
+    : `${(result/60).toFixed(2)}`.replace(/\./, ":");
 
 
 
@@ -188,9 +188,9 @@ const createHoverTime = ({event,result}) => {
     let target = event.target;
 
     const hoverIndication = document.createElement("div"),
-          hoverStillVideo = document.createElement("video"),
-          hoverTimeIndication = document.createElement("span"),
-          hoveredLocationTime = getHumanTime(result);
+        hoverStillVideo = document.createElement("video"),
+        hoverTimeIndication = document.createElement("span"),
+        hoveredLocationTime = getHumanTime(result);
 
 
     hoverIndication.append(hoverTimeIndication);
@@ -246,7 +246,7 @@ module.exports.fireControlButtonEvent = event => {
     );
 
     const target = event.target,
-          nodeName = target.nodeName.toLowerCase();
+        nodeName = target.nodeName.toLowerCase();
 
     if ( nodeName !== "li" ) return false;
 
@@ -579,8 +579,8 @@ const __removeRedMute = () => {
 module.exports.handleVolumeWheelChange = event => {
     
     const scrollPos = event.wheelDeltaY,
-          decimalVol = scrollPos / 100,
-          volumeElements = Array.prototype.slice.call(document.querySelectorAll("[data-volume-set=true]"));
+        decimalVol = scrollPos / 100,
+        volumeElements = Array.prototype.slice.call(document.querySelectorAll("[data-volume-set=true]"));
 
     let popedValue;
 
@@ -760,7 +760,7 @@ module.exports.videoLoadData = event => {
         });
     }
 
-}
+};
 
 
 module.exports.mouseHoverOnVideo = () => {
