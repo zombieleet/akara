@@ -11,15 +11,15 @@ $drop-down-left-pos: 200;
 }
 
 %hovered_menu_item_unhide {
-    
+
     position: $drop-down-pos;
     left: $drop-down-left-pos + px;
     top: $drop-down-top-pos + px;
 
     width: $drop-down-width;
-    
+
     background: $drop-down-back-color;
-    color: $drop-down-color;    
+    color: $drop-down-color;
 }
 
 %move_droped_span {
@@ -65,10 +65,28 @@ $drop-down-left-pos: 200;
         &:hover {
             color: red;
         }
-    }    
+    }
 }
 
 %new_window_body {
-    overflow: none;
+    overflow: hidden;
     background: white;
+}
+
+%forms {
+    font-size: 15px;
+    padding: 15px 15px 25px 15px;
+}
+
+%form-input {
+    $input-padding: 12;
+    $margin-top: 10;
+    display: block;
+    margin-top: 10 + px;
+    width: 100 - $input-padding + %;
+
+    padding: $input-padding + px;
+    color: black;
+    font-size: 15px;
+    border: 2px solid lighten(black,50%);
 }
