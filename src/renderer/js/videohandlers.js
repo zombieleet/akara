@@ -234,16 +234,19 @@ module.exports.moveToDragedPos = moveToDragedPos;
 /**
  *
  *
- * show error message, when no media is in playlist
- * and a video control element is clicked
+ * call any method of the control object
+ * from data-fire
+ *
  *
  **/
 
 module.exports.fireControlButtonEvent = event => {
 
-    if ( ! video.src.length ) return dialog.showErrorBox(
-        "No Media", "No Media Source was found"
-    );
+    ///////////////////////////////////////////////////////////
+    // if ( ! video.src.length ) return dialog.showErrorBox( //
+    //     "No Media", "No Media Source was found"           //
+    // );                                                    //
+    ///////////////////////////////////////////////////////////
 
     const target = event.target,
           nodeName = target.nodeName.toLowerCase();
@@ -559,11 +562,12 @@ module.exports.mouseDownDragEvent = event => {
 
 const __removeRedMute = () => {
     const changeVolumeIcon = document.querySelector("[data-fire=volume]");
-    if ( changeVolumeIcon.hasAttribute("style") ) {
-        changeVolumeIcon.removeAttribute("style");
+    if ( video.muted ) {
+        changeVolumeIcon.setAttribute("style", "color: red;");
         controls.unmute();
+    } else {
+        changeVolumeIcon.removeAttribute("style");
     }
-    return ;
 };
 
 
@@ -577,14 +581,14 @@ const __removeRedMute = () => {
  **/
 
 module.exports.handleVolumeWheelChange = event => {
-    
+
     const scrollPos = event.wheelDeltaY,
           decimalVol = scrollPos / 100,
           volumeElements = Array.prototype.slice.call(document.querySelectorAll("[data-volume-set=true]"));
 
     let popedValue;
 
-    //__removeRedMute();
+    __removeRedMute();
 
     if ( (Math.sign(decimalVol) === -1 )
          && ( popedValue = volumeElements.pop() )
@@ -623,9 +627,13 @@ module.exports.handleVolumeWheelChange = event => {
 module.exports.handleVolumeChange = event => {
 
     const target = event.target;
+
     let isChanged = 0;
+
     if ( target.nodeName.toLowerCase() !== "span" ) return false;
+
     target.setAttribute("data-volume-set", "true");
+
     video.volume = target.getAttribute("data-volume-controler");
 
     __removeRedMute();
@@ -809,18 +817,18 @@ module.exports.lowHighVolume = volume => {
 
     const changeVolumeIcon = document.querySelector("[data-fire=volume]");
     let type;
-    
+
     if ( volume && ( type = volume <= 0.3 ? "down" : "up") ) {
-        
+
         changeVolumeIcon.classList.remove(`fa-volume-${ type === "down" ? "up" : type }`);
         changeVolumeIcon.classList.add(`fa-volume-${type}`);
     }
 
-    if ( ! volume  )
+    if ( ! volume  || video.muted )
         changeVolumeIcon.setAttribute("style", "color: red");
     else
         changeVolumeIcon.removeAttribute("style");
-    
+
 };
 
 module.exports.dbClickEvent = () => {
@@ -834,9 +842,9 @@ module.exports.dbClickEvent = () => {
 
 
 module.exports.showSubtitle = (mItem,id) => {
-    
+
     const textTracks = video.textTracks;
-    
+
     const { length: _textTrackLength } = textTracks;
 
     const { submenu } = videoContextMenu[16].submenu[1];
@@ -866,5 +874,5 @@ module.exports.showSubtitle = (mItem,id) => {
 
     Object.assign(submenu[id], {
         checked: true
-    });    
+    });
 };
