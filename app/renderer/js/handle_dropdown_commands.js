@@ -172,6 +172,7 @@ const _stop = function () {
 const _next = () => {
     
     if ( __videoAttribute(video) ) return controls.next();
+    
     return __spitError();
 };
 
