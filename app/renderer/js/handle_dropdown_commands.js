@@ -73,14 +73,14 @@ const search = () => {
 
     if ( document.querySelector(".search-parent") )
         return false;
-    
+
     const parent = document.createElement("div");
     parent.setAttribute("class","search-parent");
 
     const input = document.createElement("input");
     input.setAttribute("class", "search-input");
     input.setAttribute("type","text");
-    
+
     const findingsParent = document.createElement("div");
     findingsParent.setAttribute("class", "findings-parent");
 
@@ -94,7 +94,7 @@ const search = () => {
     findingsParent.appendChild(findings);
     parent.appendChild(findingsParent);
 
-    
+
     akaraMedia.insertBefore(parent, akaraLoad);
 
     searchAndAppend(input,findings);
@@ -127,7 +127,7 @@ const addMediaFolder = () => {
         addMediaCb(files);
 
     });
-    
+
 };
 
 const __videoAttribute = video => video.hasAttribute("src");
@@ -135,29 +135,29 @@ const __videoAttribute = video => video.hasAttribute("src");
 const __spitError = () =>  dialog.showErrorBox("Invalid Media File", "No Media file was found");
 
 const _play = () => {
-    
+
     if ( __videoAttribute(video) ) return play();
-    
+
     return __spitError();
 };
 
 const _pause = () => {
-    
+
     if ( __videoAttribute(video) ) return pause();
 
     return __spitError();
 };
 
 const _mute = () => {
-    
+
     if ( __videoAttribute(video) ) return mute();
-    
-    return __spitError();    
-    
+
+    return __spitError();
+
 };
 
 const _unmute = () => {
-    
+
     if ( __videoAttribute(video) ) return unmute();
 
     return __spitError();
@@ -170,14 +170,14 @@ const _stop = function () {
 };
 
 const _next = () => {
-    
+
     if ( __videoAttribute(video) ) return controls.next();
-    
+
     return __spitError();
 };
 
 const _previous = () => {
-    
+
     if ( __videoAttribute(video) ) return controls.previous();
     return __spitError();
 };

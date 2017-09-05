@@ -79,7 +79,7 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
     //abs_path = URL.createObjectURL( new File([ dirname(abs_path) ] , basename(abs_path)) );
 
     abs_path = abs_path.replace(/^file:\/\//,"");
-    
+
     child.setAttribute("data-full-path", url.format({
         protocol: "file",
         slashes: "/",
@@ -163,7 +163,7 @@ const setCurrentPlaying = target => {
     target.classList.add("fa-play-circle");
 
     updatePlaylistName(target);
-    
+
     document.querySelector(".akara-title").textContent =  target.querySelector("span").textContent;
 
     video.setAttribute("data-id", target.getAttribute("id"));
@@ -697,15 +697,15 @@ const makeDynamic = (el,i) => {
     return i;
 };
 const playlistSave = (key,files) => {
-    
+
     const list = require(playlistLocation);
-    
+
     let savedList = list[key] || [];
 
     for ( let __list of files ) {
         savedList.push(__list);
     }
-    
+
     savedList = savedList.sort().filter(
         (value,index,array) => value !== array[++index]
     );
@@ -719,7 +719,7 @@ const playlistSave = (key,files) => {
     sendNotification("Playlist Saved", {
         body: "Playlist is saved"
     });
-    
+
 };
 
 const updatePlaylistName = target => {

@@ -176,7 +176,7 @@
                          *
                          *
                          **/
-                        
+
                         this.__removeList();
 
                     } else {
@@ -187,11 +187,11 @@
                          * remove all elements in akara-loaded section
                          *
                          **/
-                        
+
                         const isChecked = this.__isChecked();
-                        
+
                         if ( ! isChecked ) return false;
-                        
+
                         this.__removeList();
                     }
 
@@ -228,11 +228,11 @@
                 } else if ( btn === 1 ) {
                     // No
                     // check if anything is checked
-                    
+
                     const isChecked = this.__isChecked();
-                    
+
                     if ( ! isChecked ) return ;
-                    
+
                     Array.from(playlist, el => {
                         const span = el.querySelector(".fa-check-square-o");
                         if ( span ) playlistArr.push(el.getAttribute("data-full-path"));
