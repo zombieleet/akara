@@ -1,9 +1,18 @@
 "use strict";
-const { join, basename } = require("path");
+const {
+    join,
+    basename
+} = require("path");
 
-const { app } = require("electron");
+const {
+    app
+} = require("electron");
 
-const { existsSync,mkdirSync } = require("fs");
+const {
+    existsSync,
+    mkdirSync,
+    writeFileSync
+} = require("fs");
 
 const APP_PATH = app.getAppPath();
 
@@ -11,11 +20,21 @@ const BACKGROUND_COLOR = "#4B4B4B";
 
 const USER_DATA = app.getPath("userData");
 
+const PLAYLIST_FILE = () => {
+    const playlistfile = join(USER_DATA, "playlist.json");
+    if ( existsSync(playlistfile) ) {
+        return playlistfile;
+    }
+    writeFileSync(playlistfile, JSON.stringify({}));
+    return playlistfile;
+};
+
 const _CONVERTED_MEDIA = () => {
     const _conv = join(USER_DATA, "converted_media");
     if ( existsSync(_conv) ) {
         return _conv;
     }
+    
     mkdirSync(_conv);
     return _conv;
 };
@@ -42,5 +61,6 @@ module.exports = {
     URL_ONLINE,
     DOWNLOADED_SUBTITLE,
     SIZE,
-    MEASUREMENT
+    MEASUREMENT,
+    PLAYLIST_FILE
 };
