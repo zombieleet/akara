@@ -10,21 +10,21 @@ html
        span Download Subtitles
        span(class="fa fa-window-close subtitle-close")
      section(class="subtitle")
-         form
+         form(class="subtitle-form")
             label(for="input") Name of Movie/Series
             input(class="subtitle-input" type="text" id="input")
 
             label(for="movies") Movies
-            input(class="subtitle-radio" type="checkbox" id="movies" checked)
+            input(class="subtitle-radio subtitle-form-input" type="checkbox" id="movies" checked)
 
             label(for="series") Series
-            input(class="subtitle-radio" type="checkbox" id="series")
+            input(class="subtitle-radio subtitle-form-input" type="checkbox" id="series")
             div(class="series-option" hidden)
                 label(for="season") Season
                 input(class="subtitle-series-type" type="text" id="season")
 
                 label(for="episode") Episode
-                input(class="subtitle-series-type" type="text" id="episode")
+                input(class="subtitle-series-type subtitle-form-input" type="text" id="episode")
            
             button(class="fa fa-search" type="search") Search
          section(class="subtitle-loaded")
