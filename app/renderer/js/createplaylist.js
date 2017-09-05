@@ -18,7 +18,7 @@
     const {
         playlistSave
     } = require("../js/util.js");
-    
+
     const {
         iterateDir
     } = _require("./utils.js");
@@ -50,7 +50,7 @@
      *
      *
      **/
-    
+
     function removeAndRearrange(evt) {
 
         let i = 0;
@@ -93,7 +93,7 @@
 
 
 
-    
+
 
     /**
      *
@@ -103,7 +103,7 @@
      *
      **/
 
-    
+
     function styleList(files) {
 
         const ul = document.createElement("ul");
@@ -195,31 +195,31 @@
     function noListMessage() {
 
         const p = document.createElement("p");
-        
+
         const a = document.createElement("a");
         const textNodeP = document.createTextNode(" or Drop a file or folder here");
-        
+
         a.setAttribute("class", "playlist-add-hyper");
         a.textContent = "Click Here";
-        
+
         p.appendChild(a);
         p.appendChild(textNodeP);
-        
+
         addPlaylist.setAttribute("data-playlist", "no-playlist");
-        
+
         p.setAttribute(
             "style",
             `
                   width: 70%;
                 `
         );
-        
+
         addPlaylist.appendChild(p);
-        
+
         a.addEventListener("click", () => openFileDialog(p));
         return true;
     }
-    
+
 
 
 
@@ -249,9 +249,9 @@
         }
 
         addPlaylist.setAttribute("data-playlist", "playlist");
-        
+
         addPlaylist.appendChild(styleList(JSON.parse(playlistItems)));
-        
+
         return localStorage.removeItem("akara::newplaylist");
     }
 
@@ -271,12 +271,12 @@
         const savedPlaylist = Object.keys(list);
 
         if ( savedPlaylist.length === 0 ) {
-            
+
             const p = document.createElement("p");
-            
+
             p.textContent = "No Saved Playlist";
             addToExisting.setAttribute("data-saveList", "no-saved");
-            
+
             return addToExisting.appendChild(p);
         }
 
@@ -285,19 +285,19 @@
         const ul = document.createElement("ul");
 
         let i = 0;
-        
+
         for ( let __list of savedPlaylist ) {
-            
+
             const li = document.createElement("li");
             const p = document.createElement("p");
-            
+
             p.textContent = __list;
 
             i = makeDynamic(li,i);
-            
-            
+
+
             li.setAttribute("class", "saved-playlist");
-            
+
             li.appendChild(p);
 
             ul.appendChild(li);
@@ -345,21 +345,21 @@
 
         const addedList = Array.prototype.slice.call(document.querySelectorAll("[data-playlist-item]"));
 
-        
+
         /**
          *
          * show error message if data-playlist-item does not exist
          *
          **/
 
-        
+
         if ( addedList.length === 0 ) {
             return dialog.showErrorBox(
                 "Cannot Find Playlist",
                 "List of Playlist have not been added");
         }
 
-        
+
         /**
          *
          *
@@ -371,15 +371,15 @@
         let key = input.value;
 
         let arrayOfFile = [];
-        
+
         addedList.forEach(
             el => arrayOfFile.push(
                 el.getAttribute("data-playlist-item")
             )
         );
-        
+
         playlistSave(key,arrayOfFile);
-        
+
         return true;
     });
 

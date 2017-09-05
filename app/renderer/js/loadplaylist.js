@@ -109,9 +109,9 @@
     }
 
     listLoadParent.addEventListener("click", evt => {
-        
+
         let target = evt.target;
-        
+
         const _case = target.nodeName.toLowerCase();
 
         if ( _case === "ul"  ) return false;
@@ -184,6 +184,6 @@
         Array.from(selection, el => {
             ipc.sendTo(1,"akara::loadplaylist", list[el.getAttribute("data-capture")], el.getAttribute("data-capture"));
         });
-        
+
     });
 })();
