@@ -24,24 +24,14 @@ section {
     height: 100%;
     color: white;
 
-    form {
-        font-size: 15px;
-        padding: 15px 15px 25px 15px;
+    .subtitle-form {
+        @extend %forms;
         border-bottom: 4px solid black;
     }
 }
 
-input {
-    $input-padding: 12;
-    $margin-top: 10;
-    display: block;
-    margin-top: 10 + px;
-    width: 100 - $input-padding + %;
-
-    padding: $input-padding + px;
-    color: black;
-    font-size: 15px;
-    border: 2px solid lighten(black,50%);
+.subtitle-form-input {
+    @extend %form-input;
 }
 
 label[for="series"]{
