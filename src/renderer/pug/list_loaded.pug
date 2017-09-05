@@ -3,13 +3,6 @@ div(class="akara-media")
         video(poster="../img/logo.jpg")
     div(class="akara-load")
         div(class="akara-loaded-dragger")
-        div(class="akara-playlist")
-          span(class="fa fa-dot-circle-o")
-          span(class="playlist-name") Playlist
-          div(class="playlist-widget")
-            span(class="fa fa-file-powerpoint-o playlist-load" data-title="load playlist")
-            span(class="fa fa-plus-circle playlist-create" data-title="create playlist")
-            span(class="playlist-select" data-title="select playlist")
-            span(class="fa fa-times-circle playlist-remove" data-title="remove playlist")
+        include playlist.pug
         ul(class="akara-loaded")
     include akara_control
