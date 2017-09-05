@@ -1,0 +1,22 @@
+doctype html
+
+html
+  head
+    title AddPlaylist
+    link(rel="stylesheet", href="../css/main.css")
+    link(rel="stylesheet", href="../libs/font-awesome.min.css")
+  body(class="addplaylist-body")
+    header(class="addplaylist-header")
+      span Add Playlist
+      span(class="fa fa-window-close addplaylist-close")
+
+    section(class="addplaylist")
+
+      a new list
+
+      div(class="addplaylist-newlist" hidden)
+        input(type="text")
+        i(class="fa fa-close addplaylist-close-input")
+
+      button(class="submitaddplaylist" type="submit") Add
+    script(src="../js/addplaylist.js")
