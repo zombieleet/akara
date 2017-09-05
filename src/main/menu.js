@@ -25,7 +25,7 @@ const share = {
 
 const videoListMenu = [
     {
-        label: "Remove",
+        label: "Remove From Playlist",
         click(menuItem,{ webContents },event) {
 
             webContents.send("remove-target-hit");
@@ -33,12 +33,15 @@ const videoListMenu = [
         },
         accelearation: "CtrlOrCommand+r"
     },
-    { type: "separator" },
     {
         label: "Add To Playlist",
-        click() {
+        click(menuItem, { webContents }, event) {
+            webContents.send("add-toplaylist-hit");
         },
-        accelearation: "CtrlOrCommand+p"
+        accelearator: "CtrlOrCommand+p"
+    },
+    {
+        type: "separator"
     },
     {
         label: "Play",
