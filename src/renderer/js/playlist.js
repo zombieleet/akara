@@ -188,10 +188,6 @@
                          *
                          **/
 
-                        const isChecked = this.__isChecked();
-
-                        if ( ! isChecked ) return false;
-
                         this.__removeList();
                     }
 
