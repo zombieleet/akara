@@ -1,5 +1,5 @@
-
 .akara-playlist {
+    
     border-bottom: 3px solid black;
     padding: 5px;
     font-family: tahoma;
@@ -13,16 +13,12 @@
         float: right;
         cursor: pointer;
 
-        .playlist-load,
-        .playlist-create,
-        .playlist-remove {
+        .playlist-widget-item {
             margin-left: 5px;
             transition: .5s background ease-in;
         }
 
-        .playlist-load:hover,
-        .playlist-create:hover,
-        .playlist-remove:hover {
+        .playlist-widget-item:hover {
             color: #4d4d4d;
         }
 
