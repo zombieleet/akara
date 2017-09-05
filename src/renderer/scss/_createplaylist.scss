@@ -1,0 +1,173 @@
+.create-playlist-body {
+    @extend %new_window_body;
+}
+
+.playlist-header {
+    @extend %new_window_headers;
+}
+
+.create-playlist {
+    .create-playlist-form {
+        @extend %forms;
+    }
+}
+
+.create-playlist-input {
+    @extend %form-input;
+    width: 95%;
+}
+
+
+.media-playlist-container {
+
+    width: 100%;
+
+    margin-top: 20px;
+
+    /**
+     *
+     *
+     * This contains the list of videos to add as playlist
+     *
+     **/
+
+    .add-playlist {
+        border: 0.2px solid lighten(black,55%);
+        float: left;
+        overflow-y: auto;
+        max-height: 650px;
+        width: 40%;
+        margin-bottom: 20px;
+    }
+
+
+    /**
+     *
+     * This contains existing playlist name
+     *
+     **/
+
+    .add-to-existing-playlist {
+        border: 0.2px solid lighten(black,55%);
+        float: right;
+        overflow-y: auto;
+        max-height: 500px;
+        width: 40%;
+
+        margin-right: 3%;
+    }
+
+}
+
+.submit-cancel-button {
+
+    clear: both;
+    float: right;
+
+
+    position: absolute;
+    
+    bottom: 50px;
+    right: 50px;
+    button {
+        
+        margin: 12px;
+        cursor: pointer;
+        border: none;
+        padding: 20px;
+
+        font-size: 1.1em;
+
+        font-family: tahoma;
+
+        transition: .2s background, color ease-in, .2s color ease-in;
+        &:hover {
+            background: black;
+            color: white;
+        }
+    }
+
+    /*button:last-of-type {
+    }*/
+}
+
+%list {
+    background: lighten(lightgrey,20%);
+    padding: 20px;
+    color: lighten(black,50%);
+}
+
+[data-playlist="no-playlist"] {
+    @extend %list;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+
+
+    line-height: 1.5;
+    
+    p {
+        a {
+            cursor: pointer;
+            transition: .2s color ease-in;
+            color: inherit;
+            &:hover {
+                color: darken(black,50%);
+            }
+        }
+    }
+}
+
+[data-playlist="playlist"] {
+    
+    @extend %list;
+    
+    p {
+        
+        width: 80%;
+        
+        text-overflow: ellipsis;
+        overflow: hidden;
+
+        white-space: nowrap;
+        float: left;
+
+    }
+}
+
+.create-playlist-item {
+    
+    border: 2px solid lighten(gray,60%);
+    padding: 15px 15px 25px 15px;
+    margin-top: 12px;
+    transtion: .2s background ease-in, .2s color ease-in;
+
+    &:hover {
+        background: darken(lightgrey,20%);
+        color: white;
+        i {
+            box-shadow: 100px 100px 100px 100px 100px green inset ;
+        }
+    }
+
+    i {
+        cursor: pointer;
+    }
+}
+
+[data-dynamic-style] {
+    background: lightgrey;
+}
+
+[data-saveList="no-saved"] {
+    @extend %list;
+}
+
+.saved-playlist {
+    @extend .create-playlist-item;
+}
+
+[data-saveList="saveList"] {
+    @extend [data-playlist="playlist"];
+    cursor: pointer;
+}
