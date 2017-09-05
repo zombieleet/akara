@@ -14,6 +14,12 @@ const {
     ipcRenderer: ipc
 } = require("electron");
 
+const {
+    playlist: {
+        file: playlistLocation
+    }
+} = _require("./configuration.js");
+
 const srt2vtt = require("srt2vtt");
 
 const {
@@ -71,6 +77,9 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
     const childchild = document.createElement("span");
     // nonsence
     //abs_path = URL.createObjectURL( new File([ dirname(abs_path) ] , basename(abs_path)) );
+
+    abs_path = abs_path.replace(/^file:\/\//,"");
+    
     child.setAttribute("data-full-path", url.format({
         protocol: "file",
         slashes: "/",
@@ -152,6 +161,8 @@ const setCurrentPlaying = target => {
     target.setAttribute("data-clicked", "true");
     target.classList.add("fa");
     target.classList.add("fa-play-circle");
+
+    updatePlaylistName(target);
     
     document.querySelector(".akara-title").textContent =  target.querySelector("span").textContent;
 
@@ -667,7 +678,7 @@ const getMetaData = async () => {
 
     try {
         ({ metadata: result }= await metadata);
-        //localStorage.removeItem("currplaying");
+        localStorage.removeItem("currplaying");
     } catch(ex) {
         console.log(ex);
         result = ex;
@@ -675,7 +686,47 @@ const getMetaData = async () => {
     return result;
 };
 
+const makeDynamic = (el,i) => {
+    if ( i === 1 ) {
+        el.setAttribute("data-dynamic-style", "true");
+        i = 0;
+    } else {
+        el.removeAttribute("data-dynamic-style");
+        i = 1;
+    }
+    return i;
+};
+const playlistSave = (key,files) => {
+    
+    const list = require(playlistLocation);
+    
+    let savedList = list[key] || [];
 
+    for ( let __list of files ) {
+        savedList.push(__list);
+    }
+    
+    savedList = savedList.sort().filter(
+        (value,index,array) => value !== array[++index]
+    );
+
+    Object.assign(list, {
+        [key]: savedList
+    });
+    console.log(key,savedList);
+    writeFileSync(playlistLocation, JSON.stringify(list));
+
+    sendNotification("Playlist Saved", {
+        body: "Playlist is saved"
+    });
+    
+};
+
+const updatePlaylistName = target => {
+    const playlistEl = document.querySelector(".playlist-name");
+    playlistEl.innerHTML = target.getAttribute("data-belongsto-playlist");
+    return true;
+};
 module.exports = {
     createEl,
     removeTarget,
@@ -699,5 +750,8 @@ module.exports = {
     isOnline,
     readSubtitleFile,
     sendNotification,
-    getMetaData
+    getMetaData,
+    makeDynamic,
+    playlistSave,
+    updatePlaylistName
 };
