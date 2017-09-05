@@ -1,9 +1,11 @@
 "use strict";
 
 ( ({ ipcRenderer: ipc, remote: { Menu, MenuItem, getCurrentWindow, require: _require } },ul) => {
-    
-    const { addMediaCb } = require("../js/dropdown_callbacks.js");
-    
+
+    const {
+        addMediaCb
+    } = require("../js/dropdown_callbacks.js");
+
     const {
         removeTarget,
         removeType,
@@ -11,11 +13,17 @@
         removeClass,
         disableMenuItem,
         setupPlaying,
-        prevNext
+        prevNext,
+        updatePlaylistName
     } = require("../js/util.js");
-    
 
-    const { videoListMenu } = _require("./menu.js");
+    const {
+        createNewWindow: addPlaylistWindow
+    } = _require("./newwindow.js");
+
+    const {
+        videoListMenu
+    } = _require("./menu.js");
 
     const {
         controls,
@@ -23,7 +31,8 @@
     } = require("../js/video_control.js");
 
     const akara_emit = require("../js/emitter.js");
-    
+
+
     const {
         play,
         pause,
@@ -31,21 +40,21 @@
         getCurrentTime,
         duration
     } = controls;
-    
+
     let currentTarget;
 
     const menu = new Menu();
-    
+
     window.addEventListener("DOMContentLoaded", event =>  {
-        
+
         const coverOnError = document.querySelector(".cover-on-error-src");
 
         if ( video.getAttribute("src") )
-            
+
             coverOnError.setAttribute("style", "display: none;");
-        
+
     });
-    
+
 
     ul.addEventListener("click", event => {
 
@@ -58,6 +67,10 @@
         if ( ! target.hasAttribute("data-clicked") ) {
 
             removeType(target.parentNode,"data-clicked");
+
+            console.log(target);
+
+            updatePlaylistName(target);
 
             target.setAttribute("data-clicked","true");
         }
@@ -121,7 +134,7 @@
             setCurrentPlaying(justEnded.nextElementSibling);
 
             video.src = justEnded.nextElementSibling.getAttribute("data-full-path");
-            
+
             justEnded.nextElementSibling.setAttribute("data-clicked","true");
 
             justEnded.nextElementSibling.classList.add("fa");
@@ -139,7 +152,7 @@
             removeType(justEnded.parentNode,"data-dbclicked","data-now-playing","data-clicked");
 
             video.src = firstChild.getAttribute("data-full-path");
-            
+
             removeClass(ul,"fa","fa-play-circle");
 
             setCurrentPlaying(firstChild);
@@ -147,7 +160,7 @@
             return play();
 
         }
-        
+
         // force the control element to change it's icon
         // if this is is not called, the control icon that handles
         // pause and play will not change
@@ -195,7 +208,21 @@
     ipc.on("no-repeat-all", () => {
         currentTarget.parentNode.removeAttribute("data-repeat");
     });
-    
+
+    ipc.on("add-toplaylist-hit", () => {
+
+        const obj = {
+            width: 626,
+            height: 400,
+            title: "addplaylist",
+            parent: getCurrentWindow()
+        };
+
+        localStorage.setItem("akara::addplaylist", currentTarget.getAttribute("data-full-path"));
+
+        addPlaylistWindow(obj,"addplaylist.html");
+
+    });
     akara_emit.on("video::go-to-next", () => prevNext("next"));
     akara_emit.on("video::go-to-previous", () => prevNext("prev"));
 
@@ -204,4 +231,3 @@
     require("electron"),
     document.querySelector(".akara-loaded")
 );
-
