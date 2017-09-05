@@ -16,6 +16,7 @@ const controls = {
     stop() {
 
         video.currentTime = 0;
+
         this.pause();
 
         video.__status = undefined;
@@ -25,7 +26,6 @@ const controls = {
     mute() {
 
         const _mute = document.querySelector("[data-drop=_mute]");
-
 
         _mute.textContent = _mute.textContent.replace("Mute", " Unmute");
 
