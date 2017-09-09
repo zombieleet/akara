@@ -75,6 +75,7 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
 
     const child = document.createElement("li");
     const childchild = document.createElement("span");
+    
     // nonsence
     //abs_path = URL.createObjectURL( new File([ dirname(abs_path) ] , basename(abs_path)) );
 
@@ -670,7 +671,7 @@ const readSubtitleFile = path => new Promise((resolve,reject) => {
 
 const getMetaData = async () => {
 
-    const url = decodeURI(localStorage.getItem("currplaying")).replace("file://","");
+    const url = decodeURIComponent(localStorage.getItem("currplaying")).replace("file://","");
 
     const metadata = new ffmpeg(url);
 
@@ -713,7 +714,7 @@ const playlistSave = (key,files) => {
     Object.assign(list, {
         [key]: savedList
     });
-    console.log(key,savedList);
+
     writeFileSync(playlistLocation, JSON.stringify(list));
 
     sendNotification("Playlist Saved", {
@@ -726,6 +727,59 @@ const updatePlaylistName = target => {
     const playlistEl = document.querySelector(".playlist-name");
     playlistEl.innerHTML = target.getAttribute("data-belongsto-playlist");
     return true;
+};
+
+const triggerNotArrow = () => {
+
+    const findings = document.querySelector(".findings");
+
+    if ( ! findings || ! findings.hasChildNodes() ) return false;
+
+    let el = findings.querySelector("[data-navigate=true]");
+    
+    return [ findings, el ];
+};
+
+
+const handlePlaySearchResult = () => {
+    
+    const val = triggerNotArrow();
+
+    if ( ! val )  return false;
+
+    const [ , el ] = val;
+
+    if ( el ) {
+        setupPlaying(el);
+        document.querySelector(".search-parent").remove();
+    }
+};
+
+
+/**
+ *
+ *
+ *
+ * handleArrowkeys, this function makes sure that
+ *   arrowup and arrowdown key are not trigerred
+ *   in some cases to avoid errors
+ *
+ *
+ **/
+
+const handleArrowKeys = () => {
+
+    const val = triggerNotArrow();
+
+    if ( ! val )  return false;
+    
+    let [ findings, el ] = val;
+
+    if ( ! el ) {
+        findings.children[0].setAttribute("data-navigate", "true");
+        el = findings.children[0];
+    }
+    return el;
 };
 module.exports = {
     createEl,
@@ -753,5 +807,8 @@ module.exports = {
     getMetaData,
     makeDynamic,
     playlistSave,
-    updatePlaylistName
+    updatePlaylistName,
+    triggerNotArrow,
+    handlePlaySearchResult,
+    handleArrowKeys
 };

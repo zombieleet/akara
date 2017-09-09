@@ -21,6 +21,9 @@
         }
     } = _require("./configuration.js");
 
+    const {
+        existsSync
+    } = require("fs");
 
     const loadplaylist = document.querySelector(".loadplaylist");
     const button = document.querySelector("button");
@@ -182,7 +185,18 @@
         }
 
         Array.from(selection, el => {
-            ipc.sendTo(1,"akara::loadplaylist", list[el.getAttribute("data-capture")], el.getAttribute("data-capture"));
+            const playlistName = el.getAttribute("data-capture");
+            const playlistList = list[playlistName];
+            
+            const validPlaylist = playlistList.filter( list => {
+                
+                if ( existsSync(decodeURIComponent(list.replace(/^file:\/\//,""))) )
+                    return list;
+                else
+                    return dialog.showErrorBox("Playlist location not found",`path to ${list} was not found`);
+            });
+            
+            ipc.sendTo(1,"akara::loadplaylist", validPlaylist , el.getAttribute("data-capture"));
         });
 
     });

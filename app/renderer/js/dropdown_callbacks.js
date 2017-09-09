@@ -6,10 +6,20 @@ const {
 } = require("path");
 
 const {
+    existsSync
+} = require("fs");
+
+const {
     createEl,
     playOnDrop
 } = require("../js/util.js");
-console.log(createEl,playOnDrop);
+
+const {
+    remote: {
+        dialog
+    }
+} = require("electron");
+
 
 /**
  *
@@ -30,7 +40,9 @@ const addMediaCb = (paths,forPlaylist) => {
 
     paths.forEach( path => {
 
-        let _path = basename(path);
+        const decodedPath = decodeURIComponent(path);
+        
+        let _path = basename(decodedPath);
 
         const createdElement = createEl({path,_path});
 
@@ -46,6 +58,9 @@ const searchAndAppend = (input,findings) => {
 
     input.addEventListener("keyup", evt => {
 
+
+        if ( /^38$|^40$/.test(evt.keyCode) ) return false;
+        
         const playlist = document.querySelectorAll("[data-full-path] > span");
 
         const li = document.querySelectorAll(".items-found");
