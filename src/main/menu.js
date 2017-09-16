@@ -1,24 +1,41 @@
-const { app, nativeImage, dialog, ipcMain: ipc } = require("electron");
-const { join } = require("path");
-const { createNewWindow } = require("./newwindow.js");
+const {
+    app,
+    nativeImage,
+    dialog,
+    ipcMain: ipc
+} = require("electron");
+
+const {
+    join
+} = require("path");
+
+const {
+    createNewWindow
+} = require("./newwindow.js");
+
+const {
+    shortcut
+} = require("./configuration.js");
+console.log(shortcut);
 
 const share = {
     label: "Share",
     submenu: [
         {
             label: "Facebook",
-            click() { },
-            accelearation: "CtrlOrCommand+1"
+            accelerator: shortcut.facebook,
+            click() {
+            }
         },
         {
             label: "Twitter",
-            click() { },
-            accelearation: "CtrlOrCommand+2"
+            accelerator: shortcut.twitter,
+            click() { }
         },
         {
             label: "Youtube",
-            click() { },
-            accelearation: "CtrlOrCommand+3"
+            accelerator: "shift+y",
+            click() { }
         }
     ]
 };
@@ -26,55 +43,56 @@ const share = {
 const videoListMenu = [
     {
         label: "Remove From Playlist",
+        accelerator: shortcut.remove_from_playlist,
         click(menuItem,{ webContents },event) {
-
             webContents.send("remove-target-hit");
-
-        },
-        accelearation: "CtrlOrCommand+r"
+        }
     },
     {
         label: "Add To Playlist",
+        accelerator: shortcut.add_to_playlist,
         click(menuItem, { webContents }, event) {
             webContents.send("add-toplaylist-hit");
-        },
-        accelearator: "CtrlOrCommand+p"
+        }
     },
     {
         type: "separator"
     },
     {
         label: "Play",
+        accelerator: shortcut.play,
         click(menuItem,{ webContents },event) {
             webContents.send("play-hit-target");
-        },
-        accelearation: "Alt+p"
+        }
     },
     {
         label: "Pause",
+        accelerator: "shortcut.pause",
         click(menuItem,{ webContents },event) {
             webContents.send("pause-hit-target");
-        },
-        accelearation: "Alt+o"
+        }
     },
     {
         type: "separator"
     },
     {
         label: "Repeat",
+        accelerator: shortcut.repeat,
         click(menuItem,{ webContents },event) {
             webContents.send("repeat-hit-target");
         }
     },
     {
         label: "No Repeat",
+        accelerator: shortcut.no_repeat,
         click(menuItem,{ webContents },event) {
             webContents.send("no-repeat-hit-target");
         }
     },
     {
         label: "Repeat All",
-        click(menuIte, { webContents }, event) {
+        accelerator: "CtrlOrCommand+Alt+r",
+        click(menuItem, { webContents }, event) {
         }
     },
     {
@@ -101,20 +119,21 @@ const videoContextMenu = [
         submenu: [
             {
                 label: "File",
+                accelerator: shortcut.file,
                 click(menuItem, { webContents } , event) {
                     webContents.send("video-open-file");
-                },
-                accelearator: "Alt+Shift+f"
+                }
             },
             {
                 label: "Folder",
+                accelerator: shortcut.folder,
                 click(menuItem, { webContents }, event ) {
                     webContents.send("video-open-folder");
-                },
-                accelearator: "Alt+f"
+                }
             },
             {
                 label: "Stream",
+                accelerator: "Alt+s",
                 click(menItem, { webContents }, event) {
                     webContents.send("video-open-stream");
                 }
@@ -123,47 +142,52 @@ const videoContextMenu = [
     },
     {
         label: "Play",
+        accelerator: "shortcut.play",
         click(menuItem, { webContents }, event ) {
             webContents.send("video-play");
         }
     },
     {
         label: "Pause",
+        accelerator: "shortcut.pause",
         click(menuItem, { webContents }, event) {
             webContents.send("video-pause");
         }
     },
     {
         label: "Stop",
+        accelerator: shortcut.stop,
         click(menuItem, { webContents }, event) {
             webContents.send("video-stop");
         }
     },
     {
         label: "Next",
+        accelerator: shortcut.next,
         click(menuItem, { webContents } ,event) {
             webContents.send("video-next");
-        },
-        accelerator: "n"
+        }
     },
     {
         label: "Previous",
+        accelerator: shortcut.previous,
         click(menuItem, { webContents } ,event ) {
             webContents.send("video-previous");
-        },
-        accelerator: "p"
+        }
     },
     {
         type: "separator"
     },
     {
         label: "Repeat",
+        accelerator: shortcut.repeat,
         click(menuItem, { webContents }, event) {
             webContents.send("video-repeat");
         }
     },
     {
         label: "No Repeat",
+        accelerator: shortcut.no_repeat,
         click(menuItem, { webContents }, event ) {
             webContents.send("video-no-repeat");
         },
@@ -177,38 +201,38 @@ const videoContextMenu = [
         submenu: [
             {
                 label: "Normal",
+                accelerator: shortcut.normal,
                 click(menuItem, { webContents }, event) {
                     webContents.send("normal-speed");
-                },
-                accelearation: "CommandOrCtrl+n"
+                }
             },
             {
                 label: "Fast",
+                accelerator: "CommandOrCtrl+f",
                 click(menuItem, { webContents }, event) {
                     webContents.send("fast-speed");
-                },
-                accelearation: "CommandOrCtrl+f"
+                }
             },
             {
                 label: "Very Fast",
+                accelerator: "CommandOrCtrl+Shift+f",
                 click(menuItem, { webContents }, event) {
                     webContents.send("very-fast-speed");
-                },
-                accelearation: "CommandOrCtrl+Shift+V"
+                }
             },
             {
                 label: "Slow",
+                accelerator: "CommandOrCtrl+s",
                 click(menuItem, { webContents }, event) {
                     webContents.send("slow-speed");
-                },
-                accelearator: "Alt+s"
+                }
             },
             {
                 label: "Very Slow",
+                accelerator: "CommandOrCtrl+Shift+s",
                 click(menuItem, { webContents }, event) {
                     webContents.send("very-slow-speed");
-                },
-                accelearator: "Alt+Shift+V"
+                }
             }
         ]
     },
@@ -220,14 +244,17 @@ const videoContextMenu = [
         submenu: [
             {
                 label: "Entire Screen",
+                accelerator: "CommandOrCtrl+p",
                 click() { }
             },
             {
                 label: "Video Section",
+                accelerator: "CommandOrCtrl+v",
                 click() { }
             },
             {
                 label: "Select Area",
+                accelerator: "CommandOrCtrl+Alt+s",
                 click() { }
             }
         ]
@@ -237,6 +264,7 @@ const videoContextMenu = [
     },
     {
         label: "Media Info",
+        accelerator: "CommandOrCtrl+m",
         click(menuItem, BrowserWindow , event ) {
             const __obj = {
                 title: "mediainfo",
@@ -259,6 +287,7 @@ const videoContextMenu = [
                 submenu: [
                     {
                         label: "From Computer",
+                        accelerator: "Alt+t",
                         click(menuItem, { webContents }, event) {
                             const val = dialog.showOpenDialog({
                                 title: "Select Subtitle",
@@ -279,6 +308,7 @@ const videoContextMenu = [
                     {
                         label: "From Net",
                         __priv: true,
+                        accelerator: "Alt+n",
                         click(menuItem, BrowserWindow , event ) {
 
                             const { webContents } = BrowserWindow;
@@ -309,12 +339,14 @@ const videoContextMenu = [
         label: "Enter FullScreen",
         // this kind of fullscreen is not dope
         //role: "togglefullscreen"
+        accelerator: "f",
         click(menuItem, { webContents }, event) {
             webContents.send("enter-video-fullscreen");
         }
     },
     {
         label: "Leave FullScreen",
+        accelerator: "f",
         click(menuItem, { webContents }, event ) {
             webContents.send("leave-video-fullscreen");
         },
@@ -325,6 +357,7 @@ const videoContextMenu = [
     },
     {
         label: "Open File Location",
+        accelerator: "Ctrl+o",
         click(menuItem,{ webContents } ,event) {
             webContents.send("video-open-external");
         }
@@ -338,6 +371,7 @@ const videoContextMenu = [
     },
     {
         label: "Search",
+        accelerator: "Shift+s",
         click(menuItem, { webContents }, event ) {
             webContents.send("video-search");
         }
