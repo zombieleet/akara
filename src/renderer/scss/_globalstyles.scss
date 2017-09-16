@@ -1,0 +1,27 @@
+$global-color: #4b4b4b;
+
+body {
+    background: darken($global-color,20%);
+    overflow: hidden;
+    -webkit-app-region: no-drag;
+    -webkit-user-select: none;
+
+    height: 100vh;
+
+    font-family: monospace;
+}
+.tool-tip {
+    border: 2px solid white;
+    background: black;
+    color: white;
+    //font-family: tahoma;
+    padding: 5px;
+    font-weight: bolder;
+
+    border-radius: 4px;
+    
+    animation-name: moveToolTip;
+    animation-duration: .3s;
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+}
