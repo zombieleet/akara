@@ -38,6 +38,7 @@ const _CONVERTED_MEDIA = () => {
     mkdirSync(_conv);
     return _conv;
 };
+
 const CONVERTED_MEDIA = _CONVERTED_MEDIA();
 
 const DOWNLOADED_SUBTITLE = join(USER_DATA, "subtitle");
