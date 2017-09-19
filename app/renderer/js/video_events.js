@@ -131,9 +131,9 @@
 
     ipc.on("video-previous", _previous);
 
-    ipc.on("video-repeat", () => video.setAttribute("loop", "true") );
+    ipc.on("video-repeat", () => video.loop = true );
 
-    ipc.on("video-no-repeat", () => video.removeAttribute("loop") );
+    ipc.on("video-no-repeat", () => video.loop = false );
 
     ipc.on("video-open-external", () => showItemInFolder(
         video.getAttribute("src").replace("file://","")

@@ -18,10 +18,11 @@
         const targetDataDrop = target.hasAttribute("data-drop") ? target.getAttribute("data-drop") : undefined;
 
 
-        if ( ! targetDataDrop ) return undefined;
+        if ( ! targetDataDrop )
+            return undefined;
 
         try {
-            return HandleDroped()[targetDataDrop]();
+            return HandleDroped()[targetDataDrop](event);
         } catch(ex) {
             console.log(ex);
             return dialog.showErrorBox("Not Implemented", `${targetDataDrop} has not been implemented yet`);

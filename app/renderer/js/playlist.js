@@ -282,49 +282,6 @@
 
     });
 
-    playlistWidget.addEventListener("mouseover", evt => {
-
-        const target = evt.target;
-
-        /**
-         *
-         * avoid the parent of the widgets to trigger anything
-         *
-         **/
-
-        if ( target.nodeName.toLowerCase() === "div" ) return false;
-
-        const toolTip = target.getAttribute("data-title");
-
-        const xAxis = evt.clientX;// - target.parentNode.getBoundingClientRect().left;
-        const yAxis = evt.clientY;// - target.parentNode.getBoundingClientRect().top;
-
-        const toolTipEl = document.createElement("span");
-
-        toolTipEl.textContent = toolTip;
-
-        toolTipEl.setAttribute("class", "tool-tip");
-        //toolTipEl.setAttribute("style",`position: absolute; top: ${yAxis + 70}px; left: ${xAxis}px;`);
-        toolTipEl.setAttribute("style",`position: absolute; top: ${yAxis + 15}px; left: ${xAxis - 50}px;`);
-
-        target.parentNode.appendChild(toolTipEl);
-
-        return true;
-    });
-
-    playlistWidget.addEventListener("mouseout", evt => {
-
-        const target = evt.target.nodeName.toLowerCase() === "div"
-            ? evt.target
-            : evt.target.parentNode;
-        let el;
-
-        if ( ( el = target.querySelector(".tool-tip") ) )
-            el.remove();
-
-        return ;
-    });
-
 
     playlistWidget.addEventListener("click", evt => {
 
