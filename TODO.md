@@ -9,3 +9,4 @@
 7. ask for where to save subtitle
 8. install superagent for api calls on youtube, fb, twiter and others, instead of using the built in http/https module
 9. support for plugin on playlist ( get, set , remove , delete )
+10. fix repeat bug once and for all
