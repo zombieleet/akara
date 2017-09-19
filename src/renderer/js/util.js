@@ -42,10 +42,6 @@ const url = require("url");
 const { spawn } = require("child_process");
 
 const {
-    KEY_BINDINGS
-} = require("../js/key.js");
-
-const {
     mkdirSync ,
     existsSync,
     readFileSync,
@@ -697,7 +693,7 @@ const makeDynamic = (el,i) => {
     }
     return i;
 };
-const playlistSave = (key,files) => {
+const playlistSave = (key, files, notify) => {
 
     const list = require(playlistLocation);
 
@@ -716,6 +712,8 @@ const playlistSave = (key,files) => {
     });
 
     writeFileSync(playlistLocation, JSON.stringify(list));
+
+    if ( ! notify ) return ;
 
     sendNotification("Playlist Saved", {
         body: "Playlist is saved"
