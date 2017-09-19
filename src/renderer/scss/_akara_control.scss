@@ -9,6 +9,8 @@ $volume-color: white;
     bottom: 0;
     
     background: darken($global-color,20%);
+
+    z-index: 4444;
 }
 
 .cover-on-error-src {

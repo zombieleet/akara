@@ -77,7 +77,8 @@
             result = await getSubtitle({query});
         }
 
-        if ( ! noNetwork({result,_id}) ) return styleResult(result);
+        if ( ! noNetwork({result,_id}) )
+            return styleResult(result);
 
     };
 

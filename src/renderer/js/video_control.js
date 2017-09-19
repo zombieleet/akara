@@ -1,13 +1,95 @@
 "use strict";
+const {
+    remote: {
+        Menu,
+        MenuItem,
+        getCurrentWindow
+    }
+} = require("electron");
 
 const akara_emit = require("../js/emitter.js");
 
 const video = document.querySelector("video");
 
+const akLoaded = document.querySelector(".akara-loaded");
+
+let _REPEAT_MENU_ = new Menu();
+
+let target;
+//////////////////////////////////////////////////////////
+// let _SUBTITLE_MENU_ = new Menu();                    //
+//                                                      //
+// function buildSubtitleMenu() {                       //
+//                                                      //
+//     const textTracks = video.textTracks;             //
+//                                                      //
+//     const menuItem = [];                             //
+//                                                      //
+//     const { length: _textTrackLength } = textTracks; //
+//                                                      //
+//     for ( let i = 0; i < _textTrackLength; i++ ) {   //
+//         console.log(textTracks[i]);                  //
+//         if ( textTracks[i].mode === "showing" )      //
+//             menuItem.push({                          //
+//                 label: textTracks[i].label,          //
+//                 type: "radio",                       //
+//                 click() {                            //
+//                 }                                    //
+//             });                                      //
+//     }                                                //
+// }                                                    //
+//////////////////////////////////////////////////////////
+
+function buildRepeatMenu() {
+
+    const menuItems = [
+        {
+            label: "Repeat One",
+            id: 0,
+            type: "radio",
+            click() {
+
+                video.loop = true;
+
+                if ( akLoaded.hasAttribute("data-repeat") )
+                    akLoaded.removeAttribute("data-repeat");
+
+                target.setAttribute("data-title","repeat one");
+            }
+        },
+        {
+            label: "Repeat All",
+            type: "radio",
+            click() {
+                akLoaded.setAttribute("data-repeat","repeat");
+                if ( video.loop )
+                    video.loop = false;
+                target.setAttribute("data-title","repeat all");
+            }
+        },
+        {
+            label: "Normal",
+            type: "radio",
+            checked: true,
+            click() {
+                video.loop = false;
+                akLoaded.removeAttribute("data-repeat");
+                target.setAttribute("data-title","normal");
+            }
+        }
+    ];
+
+    menuItems.forEach( mItem => {
+        _REPEAT_MENU_.append(new MenuItem(mItem));
+    });
+
+    return _REPEAT_MENU_;
+}
+
 const controls = {
 
     play() {
-        return  video.play();
+        return video.play();
     },
     pause()  {
         return video.pause();
@@ -94,8 +176,14 @@ const controls = {
     setPlaybackRate(rate) {
         video.playbackRate = rate;
         return rate;
+    },
+    repeat({target: _target}) {
+        target = _target;
+        _REPEAT_MENU_.popup(getCurrentWindow(), { async: true });
     }
 };
+
+buildRepeatMenu();
 
 module.exports = {
     video,

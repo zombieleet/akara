@@ -75,7 +75,7 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
 
     const child = document.createElement("li");
     const childchild = document.createElement("span");
-    
+
     // nonsence
     //abs_path = URL.createObjectURL( new File([ dirname(abs_path) ] , basename(abs_path)) );
 
@@ -736,13 +736,13 @@ const triggerNotArrow = () => {
     if ( ! findings || ! findings.hasChildNodes() ) return false;
 
     let el = findings.querySelector("[data-navigate=true]");
-    
+
     return [ findings, el ];
 };
 
 
 const handlePlaySearchResult = () => {
-    
+
     const val = triggerNotArrow();
 
     if ( ! val )  return false;
@@ -772,7 +772,7 @@ const handleArrowKeys = () => {
     const val = triggerNotArrow();
 
     if ( ! val )  return false;
-    
+
     let [ findings, el ] = val;
 
     if ( ! el ) {

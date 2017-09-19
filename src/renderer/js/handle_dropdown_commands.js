@@ -130,68 +130,118 @@ const addMediaFolder = () => {
 
 };
 
+
+/**
+ *
+ * toggle to show playlist or hide playlist
+ *
+ **/
+
+
+const togglePlist = () => {
+    const akaraLoad = document.querySelector(".akara-load");
+    const akaraMediaCover = document.querySelector(".akara-media-cover");
+
+    if ( akaraLoad.clientWidth === 0 ) {
+        akaraLoad.removeAttribute("style");
+        akaraMediaCover.removeAttribute("style");
+        return ;
+    }
+    akaraLoad.setAttribute("style", `width: 0%`);
+    akaraMediaCover.setAttribute("style", `width: 100%`);
+    return ;
+};
+
+
 const __videoAttribute = video => video.hasAttribute("src");
 
-const __spitError = () =>  dialog.showErrorBox("Invalid Media File", "No Media file was found");
+const __spitError = () =>
+          dialog.showErrorBox("Cannot Carry Out Operation", "This Operation Could Not be carried out");
 
 const _play = () => {
 
-    if ( __videoAttribute(video) ) return play();
+    if ( __videoAttribute(video) )
+
+        return play();
 
     return __spitError();
 };
 
 const _pause = () => {
 
-    if ( __videoAttribute(video) ) return pause();
+    if ( __videoAttribute(video) )
+
+        return pause();
 
     return __spitError();
 };
 
 const _mute = () => {
 
-    if ( __videoAttribute(video) ) return mute();
+    if ( __videoAttribute(video) )
+
+        return mute();
 
     return __spitError();
-
 };
 
 const _unmute = () => {
 
-    if ( __videoAttribute(video) ) return unmute();
+    if ( __videoAttribute(video) )
+
+        return unmute();
 
     return __spitError();
 };
 
 const _stop = function () {
 
-    if ( __videoAttribute(video) ) return controls.stop();
+    if ( __videoAttribute(video) )
+
+        return controls.stop();
+
     return __spitError();
 };
 
 const _next = () => {
 
-    if ( __videoAttribute(video) ) return controls.next();
+    if ( __videoAttribute(video) )
+
+        return controls.next();
 
     return __spitError();
 };
 
 const _previous = () => {
 
-    if ( __videoAttribute(video) ) return controls.previous();
+    if ( __videoAttribute(video) )
+
+        return controls.previous();
+
     return __spitError();
 };
 const _setPlaybackRate = (rate) => {
-    if ( __videoAttribute(video) ) return controls.setPlaybackRate(rate);
+
+    if ( __videoAttribute(video) )
+
+        return controls.setPlaybackRate(rate);
+
     return __spitError();
 };
 
 const _enterfullscreen = () => {
-    if ( __videoAttribute(video) ) return controls.enterfullscreen();
+
+    if ( __videoAttribute(video) )
+        return controls.enterfullscreen();
+
     return __spitError();
 };
 const _leavefullscreen = () => {
-    if ( __videoAttribute(video) ) return controls.leavefullscreen();
+
+    if ( __videoAttribute(video) )
+
+        return controls.leavefullscreen();
+
     return __spitError();
 };
 
@@ -208,7 +258,8 @@ const HandleDroped = () => ({
     _previous,
     _setPlaybackRate,
     _enterfullscreen,
-    _leavefullscreen
+    _leavefullscreen,
+    togglePlist
 });
 
 module.exports = HandleDroped;
