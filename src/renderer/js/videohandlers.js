@@ -251,9 +251,12 @@ module.exports.fireControlButtonEvent = event => {
     const target = event.target,
           nodeName = target.nodeName.toLowerCase();
 
-    if ( nodeName !== "li" ) return false;
+    if ( nodeName !== "li" ) return ;
 
-    return controls[target.getAttribute("data-fire")]();
+    if ( target.hasAttribute("data-fire") )
+        controls[target.getAttribute("data-fire")](event);
+
+    return ;
 };
 
 
@@ -353,9 +356,39 @@ const disableControls = () => {
     return video.removeAttribute("src");
 };
 
+/**
+ *
+ * during conversion start to
+ * play next video or previous video
+ *
+ * the controls object is use
+ * since we do not want to fire
+ * __splitError in handle_droped_commands.js
+ * because video.getAttribute("src") is assumed
+ *    to be false whenever this function is hit
+ * by calling the _next function
+ *
+ **/
+
+const playNextOrPrev = () => {
+    const akaraLoaded = document.querySelector(".akara-loaded");
+    const playlistItem = akaraLoaded.querySelector(`#${video.getAttribute("data-id")}`);
+    // ask user if to play next or
+    // previous video or not at all
+
+    if ( ! playlistItem ) return disableControls();
+
+    if ( playlistItem.nextElementSibling ) {
+        return controls.next();
+    } else if (playlistItem.previousElementSibling ) {
+        return controls.previous();
+    } else {
+        return disableControls();
+    }
+};
 
 
-
+module.exports.playNextOrPrev = playNextOrPrev;
 
 /**
  *
@@ -373,42 +406,11 @@ module.exports.videoErrorEvent = async () => {
     const akaraLoaded = document.querySelector(".akara-loaded");
     const playlistItem = akaraLoaded.querySelector(`#${video.getAttribute("data-id")}`);
 
-
     // as soon as an error occur
     // disable the controls
 
     disableControls();
 
-
-    /**
-     *
-     * during conversion start to
-     * play next video or previous video
-     *
-     * the controls object is use
-     * since we do not want to fire
-     * __splitError in handle_droped_commands.js
-     * because video.getAttribute("src") is assumed
-     *    to be false whenever this function is hit
-     * by calling the _next function
-     *
-     **/
-
-    const playNextOrPrev = () => {
-
-        // ask user if to play next or
-        // previous video or not at all
-
-
-
-        if ( playlistItem.nextElementSibling ) {
-            return controls.next();
-        } else if (playlistItem.previousElementSibling ) {
-            return controls.previous();
-        } else {
-            return disableControls();
-        }
-    };
 
 
     const isMedia = await getMime(_src);
@@ -420,7 +422,6 @@ module.exports.videoErrorEvent = async () => {
      * form the playlist section
      *
      **/
-
 
     if ( /^\s{0,}$/.test(_src) ) {
         return playNextOrPrev();
@@ -480,8 +481,6 @@ module.exports.videoErrorEvent = async () => {
     // CONFIGURATION:- play converted video automatically
     //     or NOT
     setupPlaying(playlistItem);
-
-    return true;
 };
 
 
@@ -773,7 +772,8 @@ module.exports.videoLoadData = event => {
 
 module.exports.mouseHoverOnVideo = () => {
     const akaraControl = document.querySelector(".akara-control");
-    if ( ! document.webkitIsFullScreen ) return false;
+    if ( ! document.webkitIsFullScreen )
+        return false;
     return akaraControl.removeAttribute("hidden");
 };
 
@@ -784,7 +784,8 @@ module.exports.mouseNotHoverVideo = () => {
 
     const akaraControl = document.querySelector(".akara-control");
 
-    if ( ! document.webkitIsFullScreen ) return false;
+    if ( ! document.webkitIsFullScreen )
+        return false;
 
     setTimeout( () => {
         akaraControl.setAttribute("hidden", "true");
@@ -802,6 +803,7 @@ module.exports.contextMenuEvent = () => {
     let vidMenuInst ;
 
     menu.clear();
+    console.log(menu);
     videoContextMenu.forEach( _menu => {
         vidMenuInst = new MenuItem(_menu);
         disableVideoMenuItem(vidMenuInst);
@@ -809,8 +811,6 @@ module.exports.contextMenuEvent = () => {
     });
 
     menu.popup(getCurrentWindow(), { async: true });
-
-    menu = undefined;
 };
 
 module.exports.lowHighVolume = volume => {
@@ -831,14 +831,15 @@ module.exports.lowHighVolume = volume => {
 
 };
 
-module.exports.dbClickEvent = () => {
-    if ( ! video.hasAttribute("src") ) return false;
+const dbClickEvent = () => {
 
     if ( document.webkitIsFullScreen )
         return _leavefullscreen();
     else
         return _enterfullscreen();
 };
+
+module.exports.dbClickEvent = dbClickEvent;
 
 
 module.exports.showSubtitle = (mItem,id) => {
@@ -852,11 +853,8 @@ module.exports.showSubtitle = (mItem,id) => {
     for ( let i = 0; i < _textTrackLength; i++ ) {
 
         if ( mItem.label === textTracks[i].label ) {
-
             textTracks[i].mode = "showing";
-
             continue;
-
         }
 
         textTracks[i].mode = "hidden";
