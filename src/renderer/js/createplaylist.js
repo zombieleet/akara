@@ -26,6 +26,7 @@
     const {
         makeDynamic
     } = require("../js/util.js");
+
     const {
         playlist
     } = _require("./configuration.js");
@@ -378,7 +379,7 @@
             )
         );
 
-        playlistSave(key,arrayOfFile);
+        playlistSave( key , arrayOfFile , true );
 
         return true;
     });

@@ -12,12 +12,29 @@
     }  = require("electron");
 
     const {
+        playlistSave
+    } = require("../js/util.js");
+
+    const {
         createNewWindow: playListWindow
     } = _require("./newwindow.js");
 
     const {
+        playlist
+    } = _require("./configuration.js");
+
+
+    const { file: playlistLocation } = playlist;
+
+    const list = require(playlistLocation);
+
+    const {
         addMediaCb
     } = require("../js/dropdown_callbacks.js");
+
+    const {
+        playNextOrPrev
+    } = require("../js/videohandlers.js");
 
     const playlistWidget = document.querySelector(".playlist-widget");
 
@@ -25,17 +42,47 @@
 
         __removeList: {
 
-            value() {
+            value(type) {
 
-                let list = document.querySelectorAll("li[data-full-path]");
+                let medialist = type === "all"
+                        ? document.querySelectorAll("li[data-full-path]")
+                        : Array.from(
+                            document.querySelectorAll("li[data-full-path] .fa-check-square-o")
+                        ).map( el => el.parentNode);
 
-                if ( ! list ) return false;
+                if ( ! medialist || medialist.length  === 0 )
+                    return false;
 
-                Array.from(list, el => {
+                Array.from(medialist, el => {
+
+                    const path = el.getAttribute("data-full-path").replace(/^file:\/\//,"");
+                    const playlistName = el.getAttribute("data-belongsto-playlist");
+                    ////////////////////////////////////////////////
+                    // if ( list[playlistName].indexOf(path) )  { //
+                    //                                            //
+                    //     list[playlistName].filter( mList => {  //
+                    //         if ( mList !== path )              //
+                    //             return mList;                  //
+                    //     });                                    //
+                    //                                            //
+                    // }                                          //
+                    ////////////////////////////////////////////////
+
+                    let newList = list[playlistName].filter( mList => {
+                        if ( mList !== path ) {
+                            console.log(mList, path);
+                            return mList;
+                        }
+                    });
+                    console.log(newList);
+                    playlistSave(playlistName, newList, false);
+
                     el.remove();
+
                 });
 
-                document.querySelector("video").src = "";
+                playNextOrPrev();
+
                 document.querySelector(".akara-title").textContent = "Akara Media Player";
 
                 return true;
@@ -162,36 +209,19 @@
 
                 dialog.showMessageBox({
                     type: "info",
-                    message: `Click Yes to remove all videos from current playing and also to delete this playlist from disk`,
-                    buttons: [ "Cancel", "Yes", "No"]
+                    message: `Remove Playlist from current playlist`,
+                    buttons: [ "Remove All", "Remove Selected", "Cancel" ]
                 }, btn => {
+
                     if ( btn === 0 ) {
-                        return false;
-                    } else if ( btn == 1 ) {
-
-                        /**
-                         *
-                         * remove playlist from list of playlist
-                         * and from loaded sectoin
-                         *
-                         *
-                         **/
-
-                        this.__removeList();
-
+                        this.__removeList("all");
+                        return ;
+                    } else if ( btn === 1 ) {
+                        this.__removeList("selected");
+                        return ;
                     } else {
-
-                        /**
-                         *
-                         * At this point btn is 2
-                         * remove all elements in akara-loaded section
-                         *
-                         **/
-
-                        this.__removeList();
+                        return ;
                     }
-
-                    return true ;
                 });
             }
         },
