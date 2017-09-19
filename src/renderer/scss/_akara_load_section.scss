@@ -7,8 +7,8 @@ $akara-load-width: 20% ;//- $akara-media-cover-width;
 
 .akara-media {
 
-    
-    clear: both;    
+
+    clear: both;
 
     width: $akara-media-width;
     height: $akara-media-height;
@@ -37,6 +37,11 @@ $akara-load-width: 20% ;//- $akara-media-cover-width;
 
         background: darken($global-color,15%);
 
+        /***********************/
+        /* position: relative; */
+        /* z-index: 3333;      */
+        /***********************/
+
         .akara-loaded-dragger {
 
             height: inherit;
@@ -48,17 +53,17 @@ $akara-load-width: 20% ;//- $akara-media-cover-width;
         }
 
         .akara-loaded {
-            
+
             //overflow: auto;
             overflow-y: auto;
 
             height: inherit;
-            
+
             //margin-top: 20px;
             margin-right: 6px;
-            
+
             > li {
-                
+
                 padding: 5px;
 
                 width: inherit;
@@ -67,17 +72,17 @@ $akara-load-width: 20% ;//- $akara-media-cover-width;
 
                 font-size: 1.2em;
                 font-family: DejaVau;
-                
-                
+
+
                 margin-top: 4px;
 
                 white-space: nowrap;
                 transition: .2s ease-in-out;
-                
+
                 &:hover {
                     @extend %loaded_media_hover_li;
                 }
-                
+
             }
 
             li:last-of-type {

@@ -1,21 +1,9 @@
 @import "reset.scss";
+@import "keyframes.scss";
 
-$global-color: #4b4b4b;
-
-body {
-    background: darken($global-color,20%);
-    overflow: hidden;
-    -webkit-app-region: no-drag;
-    -webkit-user-select: none;
-
-    height: 100vh;
-
-    font-family: monospace;
-}
-
+@import "globalstyles.scss";
 
 @import "extend.scss";
-
 @import "subtitle.scss";
 @import "download.scss";
 @import "mediainfo.scss";
@@ -23,11 +11,7 @@ body {
 @import "createplaylist.scss";
 @import "loadplaylist.scss";
 @import "addplaylist.scss";
-
 @import "search.scss";
-
-
-
 @import "akara_dropdown";
 @import "akara_title_bar";
 @import "akara_load_section";
