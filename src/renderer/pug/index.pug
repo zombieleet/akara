@@ -10,7 +10,6 @@ html
       header(class="akara-title-bar")
          span(class="fa fa-ellipsis-v akara-menu-toggle")
             div(class="akara-dropdown" hidden)
-
                 ul(class="akara-dropdown-item")
 
                    li(class="fa fa-plus-circle akara-dropdown-list akara-drop-add")
@@ -24,7 +23,17 @@ html
                    li(class="fa fa-save akara-dropdown-list" data-drop="saveMedia")
                         span Save
 
-                   li(class="akara-dropdown-list" data-drop="loadPlist") Load Playlist
+                   li(class="fa akara-dropdown-list" data-drop="togglePlist")
+                        span toggle playlist
+                   li(class="fa akara-dropdown-list")
+                        span Playlist
+                        ul(class="akara-playlist-option" hidden)
+                          li(class="fa akara-dropdown-list" data-drop="CreatePlaylist")
+                            span Create Playlist
+                          li(class="fa akara-dropdown-list" data-drop="RemovePlaylist")
+                            span Remove Playlist
+                          li(class="fa akara-dropdown-list" data-drop="LoadPlaylist")
+                            span Load Playlist
 
                    li(class="fa fa-picture-o akara-dropdown-list screenshot" data-drop="screenshot")
                        span Screenshot
@@ -79,7 +88,8 @@ html
                li(class="fa fa-window-minimize akara-min")
                li(class="fa fa-window-maximize akara-max")
                li(class="fa fa-window-close akara-close")
-      include list_loaded.pug   
+      include list_loaded.pug
+      script(src="../js/tooltip.js")
       script(src="../js/main_windowKey.js")
       script(src="../js/akara_statebuttons.js")
       script(src="../js/dropdown.js")
