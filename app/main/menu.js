@@ -16,7 +16,7 @@ const {
 const {
     shortcut
 } = require("./configuration.js");
-console.log(shortcut);
+
 
 const share = {
     label: "Share",
@@ -34,7 +34,7 @@ const share = {
         },
         {
             label: "Youtube",
-            accelerator: "shift+y",
+            accelerator: shortcut.youtube,
             click() { }
         }
     ]
