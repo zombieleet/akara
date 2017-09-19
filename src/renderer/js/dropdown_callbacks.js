@@ -14,6 +14,8 @@ const {
     playOnDrop
 } = require("../js/util.js");
 
+console.log(createEl);
+
 const {
     remote: {
         dialog
