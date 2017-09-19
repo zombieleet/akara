@@ -1,52 +1,65 @@
-/*; ((o,oP,mCover,x) => {
-    
-    let startX, startWidth, startWidth2;
-    
-    o.addEventListener("mousedown", initDrag ,false);
+( () => {
 
-    const pxToPercent = (target,context) => {
-        return ( target / context ) * 100;
+    "use strict";
+
+    const dragger = document.querySelector(".akara-loaded-dragger");
+    const docElement = document.documentElement;
+    const akaraLoad = document.querySelector(".akara-load");
+    const akaraMediaCover = document.querySelector(".akara-media-cover");
+    const akaraM = document.querySelector(".akara-media");
+    
+    
+    let mouseHeldDown = false;
+
+    let akaraLoadWidth = akaraLoad.clientWidth;
+
+    let akaraMediaCoverWidth = akaraMediaCover.clientWidth;
+
+    let akaraMWidth = akaraM.clientWidth;
+
+    const docElementMovement = evt => {
+
+        const akaraLoadWidthInner = evt.clientX;
+
+        akaraMediaCoverWidth = akaraMediaCoverWidth === undefined ? 0 : akaraMediaCoverWidth;
+
+        akaraLoad.setAttribute("style", `width:${(akaraLoadWidth/akaraMWidth) * 100}% !important`);
+
+        if ( akaraLoad.clientWidth === 0 )
+            return ;
+
+        let widthComputation = akaraLoadWidthInner;
+        
+        
+        if ( akaraLoadWidth > akaraLoadWidthInner ) {
+            let value = ((akaraMediaCoverWidth += 10)/akaraMWidth) * 100;
+            akaraMediaCover.setAttribute("style", `width:${value}% !important`);
+        } else if ( akaraMediaCoverWidth <= 0 ) {
+            akaraMediaCover.setAttribute("style", "width:0% !important");
+        } else {
+            let value = ((akaraMediaCoverWidth -= 1)/akaraMWidth) * 100;
+            akaraMediaCover.setAttribute("style", `width:${value}% !important`);
+        }
+
+        akaraLoadWidth = akaraLoadWidthInner;
     };
-    
-    function initDrag (event) {
-        
-        startX = event.clientX;
-        
-        startWidth = parseInt(document.defaultView.getComputedStyle(oP).width, 10);
-        startWidth2 = parseInt(document.defaultView.getComputedStyle(mCover).width, 10);
 
-        document.documentElement.addEventListener("mousemove", doDrag, false);
-        document.documentElement.addEventListener("mouseup", stopDrag, false);
-    };
+    dragger.addEventListener("mousedown", evt => {
+        mouseHeldDown = true;
+        docElement.addEventListener("mousemove", docElementMovement);
+    });
 
-    function doDrag(event) {
-        
-        let opWidth = pxToPercent(startWidth
-                                  + event.clientX
-                                  - startX,
-                                  oP.parentNode.clientWidth);
-        
-        let mCoverWidth = pxToPercent(startWidth2
-                                      + event.clientX
-                                      - startX,
-                                      mCover.parentNode.clientWidth);
-        
-        oP.setAttribute("style", `width: ${opWidth}%`);
-        mCover.setAttribute("style", `width: ${mCoverWidth}%`);
-        
-    };
+    dragger.addEventListener("mouseup", evt => {
+        mouseHeldDown = false;
+        akaraMediaCoverWidth = undefined;
+        docElement.removeEventListener("mousemove", docElementMovement);
+    });
 
-    function stopDrag (event) {
-        document.documentElement.removeEventListener("mousemove", doDrag, false);
-        document.documentElement.removeEventListener("mouseup", stopDrag, false);
-     };
-     
-    
-})(
-    document.querySelector(".akara-loaded-dragger"),
-    document.querySelector(".akara-load"),
-    document.querySelector(".akara-media-cover")
-    
-);
+    docElement.addEventListener("mouseup", evt => {
+        if ( mouseHeldDown ) {
+            akaraMediaCoverWidth = undefined;
+            docElement.removeEventListener("mousemove", docElementMovement);
+        }
+    });
 
-*/
+})();
