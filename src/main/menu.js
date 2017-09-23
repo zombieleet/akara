@@ -264,16 +264,9 @@ const videoContextMenu = [
     },
     {
         label: "Media Info",
-        accelerator: "CommandOrCtrl+m",
-        click(menuItem, BrowserWindow , event ) {
-            const __obj = {
-                title: "mediainfo",
-                parent: BrowserWindow,
-                height: 773,
-                width: 608
-            };
-            const html = `${__obj.title}.html`;
-            createNewWindow(__obj,html);
+        accelerator: "CommandOrCtrl+Shift+m",
+        click(menuItem, { webContents } , event ) {
+            webContents.send("media-info");
         }
     },
     {
@@ -289,39 +282,15 @@ const videoContextMenu = [
                         label: "From Computer",
                         accelerator: "Alt+t",
                         click(menuItem, { webContents }, event) {
-                            const val = dialog.showOpenDialog({
-                                title: "Select Subtitle",
-                                property: [ "openFile" ],
-                                filters: [
-                                    {
-                                        name: "Subtitle File",
-                                        extensions: [
-                                            "srt",
-                                            "webvvt"
-                                        ]
-                                    }
-                                ]
-                            });
-                            webContents.send("subtitle::load-sub", val);
+                            webContents.send("subtitle::load-sub", "computer");
                         }
                     },
                     {
                         label: "From Net",
                         __priv: true,
                         accelerator: "Alt+n",
-                        click(menuItem, BrowserWindow , event ) {
-
-                            const { webContents } = BrowserWindow;
-
-                            const __obj = {
-                                title: "subtitle",
-                                parent: BrowserWindow
-                            };
-
-                            const html = `${__obj.title}.html`;
-
-                            createNewWindow(__obj,html);
-
+                        click(menuItem, { webContents } , event ) {
+                            webContents.send("subtitle::load-sub", "net");
                         }
                     }
                 ]

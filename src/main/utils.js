@@ -129,7 +129,7 @@ const downloadURL = (url,window) => {
             let win = BrowserWindow.fromId(1);
             
             console.log(win.webContents,win.getTitle());
-            win.webContents.send("subtitle::load-sub",fPath);
+            win.webContents.send("subtitle::load-sub", "net" , fPath);
         });
 
         ipc.on("download::cancel", () => {

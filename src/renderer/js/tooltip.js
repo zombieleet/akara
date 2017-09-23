@@ -9,6 +9,7 @@
         const target = evt.target;
 
         if ( ! target.hasAttribute("data-title") )
+            
             return false;
 
         const toolTip = target.getAttribute("data-title");
@@ -21,7 +22,7 @@
         const ppNode = target.parentNode.parentNode;
 
         const { left, top } = ppNode.getBoundingClientRect();
-        console.log(left);
+
         toolTipEl.textContent = toolTip;
 
         toolTipEl.setAttribute("class", "tool-tip");

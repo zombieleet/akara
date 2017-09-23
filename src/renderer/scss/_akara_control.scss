@@ -152,3 +152,9 @@ $cur-pad-top: 1;
 [data-volume-set="true"] {
     background: #fff;
 }
+
+[data-sub-on=false] {
+    background: white;
+    //cursor: not-allowed !important;
+    box-shadow: 500px 500px 500px 500px white inset !important;
+}

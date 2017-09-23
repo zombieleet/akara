@@ -11,17 +11,23 @@
     // TODO: move makeFullScreen to handle_dropdown_command
     const {
         addMediaFile,
+        search,
         _play,
         _pause,
         _next,
         _previous,
         _stop,
         _setPlaybackRate,
-        togglePlist
+        togglePlist,
+        incrDecrVolume,
+        showMediaInfoWindow
     } = require("../js/handle_dropdown_commands.js")();
 
+    const akara_emit = require("../js/emitter.js");
     const {
-        dbClickEvent
+        dbClickEvent,
+        showFileLocation,
+        subHandler
     } = require("../js/videohandlers.js");
 
     const mainWindowKey = new (require("../js/keyevents.js"));
@@ -29,7 +35,6 @@
     const video = document.querySelector("video");
 
     const findings = document.querySelector(".findings");
-
 
 
     /**
@@ -151,6 +156,180 @@
     mainWindowKey.register({
         key: "f",
         handler: dbClickEvent
+    });
+
+    mainWindowKey.register({
+        key: "s",
+        modifier: [ "ctrlKey" ],
+        handler: search
+    });
+
+    mainWindowKey.register({
+        key: "ArrowUp",
+        modifier: [ "ctrlKey" ],
+        handler: () => incrDecrVolume("next")
+    });
+
+
+    mainWindowKey.register({
+        key: "ArrowDown",
+        modifier: [ "ctrlKey" ],
+        handler: () => incrDecrVolume("prev")
+    });
+
+    mainWindowKey.register({
+        key: "o",
+        modifier: [ "ctrlKey" ],
+        handler: showFileLocation
+    });
+
+    mainWindowKey.register({
+        key: "m",
+        modifier: [ "ctrlKey", "shiftKey" ],
+        handler: showMediaInfoWindow
+    });
+
+    mainWindowKey.register({
+        key: "n",
+        modifier: [ "altKey" ],
+        handler: () => _setPlaybackRate(1)
+    });
+
+    mainWindowKey.register({
+        key: "f",
+        modifier: [ "altKey", "ctrlKey"] ,
+        handler: () => _setPlaybackRate(12)
+    });
+
+    mainWindowKey.register({
+        key: "f",
+        modifier: [ "shiftKey" ],
+        handler: () => _setPlaybackRate(25)
+    });
+
+    mainWindowKey.register({
+        key: "s",
+        modifier: [ "altKey", "ctrlKey" ],
+        handler: () => _setPlaybackRate(0.7)
+    });
+
+    mainWindowKey.register({
+        key: "s",
+        modifier: [ "shiftKey" ],
+        handler: () => _setPlaybackRate(0.2)
+    });
+
+    mainWindowKey.register({
+        key: "ArrowRight",
+        modifier: [ "shiftKey" ],
+        handler() {
+
+            if ( ! video.hasAttribute("data-id") )
+
+                return false;
+
+            video.currentTime += 5;
+
+            return true;
+        }
+    });
+
+
+    mainWindowKey.register({
+        key: "ArrowLeft",
+        modifier: [ "shiftKey" ],
+        handler() {
+
+            if ( ! video.hasAttribute("data-id") )
+
+                return false;
+
+            video.currentTime -= 5;
+
+            return true;
+        }
+    });
+
+    mainWindowKey.register({
+        key: "ArrowRight",
+        modifier: [ "ctrlKey" ],
+        handler() {
+
+            if ( ! video.hasAttribute("data-id") )
+
+                return false;
+
+            video.currentTime += 80;
+
+            return true;
+        }
+    });
+
+    mainWindowKey.register({
+        key: "ArrowLeft",
+        modifier: [ "ctrlKey" ],
+        handler() {
+
+            if ( ! video.hasAttribute("data-id") )
+
+                return false;
+
+            video.currentTime -= 80;
+
+            return true;
+        }
+    });
+
+    mainWindowKey.register({
+        key: "t",
+        modifier: [ "altKey" ],
+        handler: () => subHandler( undefined, "computer" )
+    });
+
+    mainWindowKey.register({
+        key: "x",
+        modifier: [ "altKey" ],
+        handler: () => subHandler( undefined, "net")
+    });
+
+
+    akara_emit.on("video::subtitle:shortcut", track => {
+        console.log(track);
+        mainWindowKey.register({
+            key: track.id,
+            modifier: [ "ctrlKey" ],
+            handler() {
+                
+                const textTracks = video.textTracks;
+
+                const {
+                    length: _trackLength
+                } = textTracks;
+
+                for ( let i = 0; i < _trackLength; i++ ) {
+                    
+                    if ( textTracks[i].id != track.id ) {
+                        
+                        textTracks[i].mode = "hidden";
+                        
+                        akara_emit.emit("video::state:track", textTracks[i].id, "disable");
+                        
+                        continue ;
+                    }
+                    
+                    textTracks[i].mode = "showing";
+                    
+                    akara_emit.emit("video::state:track", textTracks[i].id, "enable");
+                }
+            }
+        });
+    });
+
+    akara_emit.on("video::subtitle:remove", id => {
+        mainWindowKey.remove({
+            key: id,
+            modifier: [ "ctrlKey"]
+        });
     });
 
 })();

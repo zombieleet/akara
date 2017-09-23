@@ -359,42 +359,84 @@ const sendNotification = (title,message) => new Notification(title,message);
 
 const disableVideoMenuItem = menuInst => {
 
-    if  ( ! video.hasAttribute("src") && menuInst.label !== "Add" )
-        return(menuInst.enabled = false);
+    const toggleSubOnOff = document.querySelector("[data-sub-on]");
 
-    if ( menuInst.label === "Play" && ! video.paused )
-        return(menuInst.enabled = false);
+    const ccStatus = toggleSubOnOff.getAttribute("data-sub-on");
 
-    if ( menuInst.label === "Pause" && video.paused )
-        return(menuInst.enabled = false);
+    if  ( ! video.hasAttribute("src") && menuInst.label !== "Add" ) {
+        menuInst.enabled = false;
+        return ;
+    }
 
-    if ( menuInst.label === "Repeat" && video.hasAttribute("loop") )
-        return(menuInst.visible = false);
+    if ( menuInst.label === "Play" && ! video.paused ) {
+        menuInst.enabled = false;
+        return ;
+    }
 
-    if ( menuInst.label === "No Repeat" && video.hasAttribute("loop") )
-        return(menuInst.visible = true);
+    if ( menuInst.label === "Pause" && video.paused ) {
+        menuInst.enabled = false;
+        return ;
+    }
+
+    if ( menuInst.label === "Repeat" && video.hasAttribute("loop") ) {
+        menuInst.visible = false;
+        return ;
+    }
+
+    if ( menuInst.label === "No Repeat" && video.hasAttribute("loop") ) {
+        menuInst.visible = true;
+        return ;
+    }
 
     if ( menuInst.label === "Subtitle" && ! navigator.onLine) {
         // optimize this code later
-        return(__MenuInst(menuInst, "Load Subtitle", "From Net").enabled = false);
+        disableNoConnection(menuInst, "Load Subtitle", "From Net").enabled = false;
+        return ;
     }
 
-    if ( menuInst.label === "Enter FullScreen" && win.isFullScreen() )
-        return(menuInst.visible = false);
+    if ( menuInst.label === "Subtitle" && ccStatus === "false" ) {
+        ccState(menuInst).enabled = false;
+        return ;
+    }
 
-    if ( menuInst.label === "Leave FullScreen" && win.isFullScreen() )
-        return(menuInst.visible = true);
+    if ( menuInst.label === "Subtitle" && ccStatus === "true" ) {
+        ccState(menuInst).enabled = true;
+        return ;
+    }
 
+    if ( menuInst.label === "Enter FullScreen" && win.isFullScreen() ) {
+        menuInst.visible = false;
+        return ;
+    }
+
+    if ( menuInst.label === "Leave FullScreen" && win.isFullScreen() ) {
+        menuInst.visible = true;
+        return ;
+    }
 };
 
-const __MenuInst = ( menu, match, submatch) => {
+const ccState = menuInst => {
+
+    for ( let _mItem of menuInst.submenu.items ) {
+
+        if ( _mItem.label === "Choose Subtitle" )
+
+            return _mItem;
+
+    }
+    
+};
+
+const disableNoConnection = ( menu, match, submatch) => {
+
     let menuInst;
+
     for ( let _items of menu.items || menu.submenu.items ) {
 
         if ( _items.label === match && ! _items.__priv ) {
             // match is not neccessary here,
             //  since it's recurse function
-            return __MenuInst(_items,match,submatch);
+            return disableNoConnection(_items,match,submatch);
         }
         if ( _items.label === submatch && _items.__priv ) {
             menuInst = _items;
@@ -791,7 +833,7 @@ module.exports = {
     validateMime,
     playOnDrop,
     disableVideoMenuItem,
-    __MenuInst,
+    disableNoConnection,
     langDetect,
     getMime,
     checkValues,
