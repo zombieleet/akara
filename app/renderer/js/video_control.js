@@ -16,31 +16,11 @@ const akLoaded = document.querySelector(".akara-loaded");
 let _REPEAT_MENU_ = new Menu();
 
 let target;
-//////////////////////////////////////////////////////////
-// let _SUBTITLE_MENU_ = new Menu();                    //
-//                                                      //
-// function buildSubtitleMenu() {                       //
-//                                                      //
-//     const textTracks = video.textTracks;             //
-//                                                      //
-//     const menuItem = [];                             //
-//                                                      //
-//     const { length: _textTrackLength } = textTracks; //
-//                                                      //
-//     for ( let i = 0; i < _textTrackLength; i++ ) {   //
-//         console.log(textTracks[i]);                  //
-//         if ( textTracks[i].mode === "showing" )      //
-//             menuItem.push({                          //
-//                 label: textTracks[i].label,          //
-//                 type: "radio",                       //
-//                 click() {                            //
-//                 }                                    //
-//             });                                      //
-//     }                                                //
-// }                                                    //
-//////////////////////////////////////////////////////////
 
-function buildRepeatMenu() {
+let _SUBTITLE_MENU_ = new Menu();
+
+
+const buildRepeatMenu = () => {
 
     const menuItems = [
         {
@@ -59,6 +39,7 @@ function buildRepeatMenu() {
         },
         {
             label: "Repeat All",
+            id: 1,
             type: "radio",
             click() {
                 akLoaded.setAttribute("data-repeat","repeat");
@@ -69,6 +50,7 @@ function buildRepeatMenu() {
         },
         {
             label: "Normal",
+            id: 2,
             type: "radio",
             checked: true,
             click() {
@@ -83,8 +65,9 @@ function buildRepeatMenu() {
         _REPEAT_MENU_.append(new MenuItem(mItem));
     });
 
-    return _REPEAT_MENU_;
-}
+    return true;
+};
+
 
 const controls = {
 
@@ -180,6 +163,37 @@ const controls = {
     repeat({target: _target}) {
         target = _target;
         _REPEAT_MENU_.popup(getCurrentWindow(), { async: true });
+    },
+    subtitle({ target }) {
+        
+        const textTracks = video.textTracks;
+        
+        const { length: _textTrackLength } = textTracks;
+        
+        if ( target.getAttribute("data-sub-on") === "true") {
+            
+            target.setAttribute("data-sub-on", "false");
+            
+            for ( let i = 0; i < _textTrackLength; i++ ) {
+                
+                if ( textTracks[i].mode === "showing" ) {
+                    textTracks[i].mode = "hidden";
+                    target.setAttribute("data-sub", textTracks[i].id);
+                }
+            }
+            
+        } else {
+            
+            target.setAttribute("data-sub-on", "true");
+            
+            for ( let i = 0; i < _textTrackLength; i++ ) {
+                
+                if ( Number(textTracks[i].id) === Number(target.getAttribute("data-sub")) ) {
+                    textTracks[i].mode = "showing";
+                    target.removeAttribute("data-sub");
+                }
+            }
+        }
     }
 };
 

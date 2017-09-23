@@ -59,7 +59,5 @@ const createWindow = () => {
         handleWebContents(mainWindow);
         handleWinState(mainWindow);
     });
-    app.on("quit", () => {
-    });
 };
 createWindow();

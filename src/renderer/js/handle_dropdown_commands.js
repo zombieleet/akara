@@ -2,9 +2,16 @@ const {
     remote: {
         dialog,
         app ,
+        BrowserWindow,
         require: _require
     }
 } = require("electron");
+
+const akara_emit = require("../js/emitter.js");
+
+const {
+    createNewWindow
+} = _require("./newwindow.js");
 
 const {
     video,
@@ -28,9 +35,13 @@ const {
     leavefullscreen
 } = controls;
 
-const { iterateDir } = _require("./utils.js"); // get utils from the main process folder
+const {
+    iterateDir
+} = _require("./utils.js"); // get utils from the main process folder
 
-const { prevNext  } = require("../js/util.js");
+const {
+    prevNext
+} = require("../js/util.js");
 
 const addMediaFile = () => {
 
@@ -164,7 +175,7 @@ const _play = () => {
 
         return play();
 
-    return __spitError();
+    return false;
 };
 
 const _pause = () => {
@@ -173,7 +184,7 @@ const _pause = () => {
 
         return pause();
 
-    return __spitError();
+    return false;
 };
 
 const _mute = () => {
@@ -182,7 +193,7 @@ const _mute = () => {
 
         return mute();
 
-    return __spitError();
+    return false;
 };
 
 const _unmute = () => {
@@ -191,7 +202,7 @@ const _unmute = () => {
 
         return unmute();
 
-    return __spitError();
+    return false;
 };
 
 const _stop = function () {
@@ -200,7 +211,7 @@ const _stop = function () {
 
         return controls.stop();
 
-    return __spitError();
+    return false;
 };
 
 const _next = () => {
@@ -209,7 +220,7 @@ const _next = () => {
 
         return controls.next();
 
-    return __spitError();
+    return false;
 };
 
 const _previous = () => {
@@ -218,7 +229,7 @@ const _previous = () => {
 
         return controls.previous();
 
-    return __spitError();
+    return false;
 };
 const _setPlaybackRate = (rate) => {
 
@@ -226,15 +237,16 @@ const _setPlaybackRate = (rate) => {
 
         return controls.setPlaybackRate(rate);
 
-    return __spitError();
+    return false;
 };
 
 const _enterfullscreen = () => {
 
     if ( __videoAttribute(video) )
+        
         return controls.enterfullscreen();
 
-    return __spitError();
+    return false;
 };
 const _leavefullscreen = () => {
 
@@ -242,7 +254,71 @@ const _leavefullscreen = () => {
 
         return controls.leavefullscreen();
 
-    return __spitError();
+    return false;
+};
+
+const incrDecrVolume = direction => {
+
+    if ( ! __videoAttribute(video) )
+
+        return false;
+    
+    let volumeElements = document.querySelectorAll("[data-volume-set=true]");
+
+    let currentVolume = volumeElements[volumeElements.length - 1];
+    
+    
+    if ( direction === "next" &&
+         currentVolume.nextElementSibling ) {
+
+        let _currentVolume = currentVolume.nextElementSibling;
+
+             
+        _currentVolume.setAttribute("data-volume-set", "true");
+
+        video.volume = _currentVolume.getAttribute("data-volume-controler");
+        
+    } else if ( direction === "prev" && currentVolume.previousElementSibling ) {
+        
+        currentVolume
+            .removeAttribute("data-volume-set");
+        
+        video.volume = currentVolume
+            .previousElementSibling.getAttribute("data-volume-controler");
+        
+    } else {
+        /**
+         *
+         * to fix errors that cannot be reproduced
+         * they occur whenever they want to occure
+         *
+         *
+         **/
+        return false;
+    }
+
+    akara_emit.emit("video::volume", video.volume);
+    
+};
+
+const showMediaInfoWindow = () => {
+    
+    if ( ! __videoAttribute(video) )
+
+        return false;
+    
+    const __obj = {
+        title: "mediainfo",
+        parent: BrowserWindow.fromId(1),
+        height: 773,
+        width: 608
+    };
+    
+    const html = `${__obj.title}.html`;
+    
+    createNewWindow(__obj,html);
+
+    return true;
 };
 
 const HandleDroped = () => ({
@@ -259,7 +335,9 @@ const HandleDroped = () => ({
     _setPlaybackRate,
     _enterfullscreen,
     _leavefullscreen,
-    togglePlist
+    togglePlist,
+    incrDecrVolume,
+    showMediaInfoWindow
 });
 
 module.exports = HandleDroped;

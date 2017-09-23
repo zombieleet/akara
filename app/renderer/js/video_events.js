@@ -17,9 +17,8 @@
     const {
         ipcRenderer: ipc,
         remote: {
-            shell: {
-                showItemInFolder
-            }
+            BrowserWindow,
+            require: _require
         }
     } = require("electron");
 
@@ -34,7 +33,8 @@
         _previous,
         _setPlaybackRate,
         _enterfullscreen,
-        _leavefullscreen
+        _leavefullscreen,
+        showMediaInfoWindow
     } = require("../js/handle_dropdown_commands.js")();
 
     const {
@@ -58,9 +58,14 @@
         handleVolumeChange,
         handleVolumeWheelChange,
         lowHighVolume,
-        handleLoadSubtitle,
-        showSubtitle
+        subHandler,
+        showSubtitle,
+        showFileLocation
     } = require("../js/videohandlers.js");
+
+    const {
+        createNewWindow: playListWindow
+    } = _require("./newwindow.js");
     
     const currTimeUpdate = document.querySelector(".akara-update-cur-time"),
         jumpToSeekElement = document.querySelector(".akara-time"),
@@ -135,9 +140,7 @@
 
     ipc.on("video-no-repeat", () => video.loop = false );
 
-    ipc.on("video-open-external", () => showItemInFolder(
-        video.getAttribute("src").replace("file://","")
-    ));
+    ipc.on("video-open-external", showFileLocation);
 
     ipc.on("normal-speed", () => _setPlaybackRate(1));
 
@@ -150,16 +153,7 @@
 
     ipc.on("very-slow-speed", () => _setPlaybackRate(0.2));
 
-    ipc.on("subtitle::load-sub", (event,val) => {
-
-        handleLoadSubtitle(val, async (path) => {
-
-            // TODO: HANDLE PROMISE ERROR LATER
-            const result = await readSubtitleFile(path);
-            return result;
-        });
-
-    });
+    ipc.on("subtitle::load-sub", subHandler );
 
     akara_emit.on("video::show_subtitle", showSubtitle);
 
@@ -169,4 +163,6 @@
 
     ipc.on("video-search", search);
 
+    ipc.on("media-info", showMediaInfoWindow);
+    
 })();
