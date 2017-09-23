@@ -3,6 +3,8 @@ const assert = require("assert");
 
 const crypto = require("crypto");
 
+const akara_emit = require("../js/emitter.js");
+
 
 /**
  * AkaraKey Class handles the registeration of keyevents
@@ -166,10 +168,15 @@ class AkaraKey  {
      *
      **/
 
-    remove(key,modifier) {
+    remove({key,modifier}) {
 
         if ( this.search(key,modifier) ) {
-            delete this.stack[key];
+
+            if ( modifier ) 
+                delete this.stack[`${key}_${this.__computeHash(modifier)}`];
+            else
+                delete this.stack[key];
+            
             return true;
         }
         return false;
@@ -182,9 +189,9 @@ class AkaraKey  {
      *
      **/
 
-    // list() {
-    //     return this.stack;
-    // }
+    list() {
+        return this.stack;
+    }
 
     /**
      *

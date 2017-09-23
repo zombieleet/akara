@@ -12,10 +12,16 @@ const {
         Menu,
         MenuItem,
         getCurrentWindow,
-        require: _require
+        require: _require,
+        shell: {
+            showItemInFolder
+        }
     }
 } = require("electron");
 
+const {
+    createNewWindow
+} = _require("./newwindow.js");
 
 const {
     parse
@@ -28,7 +34,6 @@ const {
 
 const {
     disableVideoMenuItem,
-    __MenuInst,
     langDetect,
     getMime,
     validateMime,
@@ -570,7 +575,6 @@ const __removeRedMute = () => {
 };
 
 
-
 /**
  *
  *
@@ -693,7 +697,8 @@ const setUpTrackElement = async (path,fileLang) => {
  *  in the menu
  *
  **/
-module.exports.handleLoadSubtitle = async (path,cb) => {
+
+const handleLoadSubtitle = async (path,cb) => {
 
     if ( ! path ) return ;
 
@@ -719,25 +724,37 @@ module.exports.handleLoadSubtitle = async (path,cb) => {
     });
 
     video.appendChild(track);
-
+    
     const { submenu } = videoContextMenu[16].submenu[1];
-
+    
     submenu.push({
         label: lang,
+        id: track.id,
+        checked: false,
         click(menuItem) {
             // send the current pushed object to video::show_subtitle event
             //  the label value of menuItem will be used
             //  to determine the textTracks language
             akara_emit.emit("video::show_subtitle",menuItem,submenu.length - 1);
         },
-        accelerator: `CommandOrCtrl+${track.getAttribute("id")}`,
-        type: "radio",
-        checked: false
+        accelerator: `CommandOrCtrl+${track.id}`,
+        type: "radio"
     });
 
     Object.assign(videoContextMenu[16].submenu[1], {
         submenu
     });
+
+    
+    const toggleSubOnOff = document.querySelector("[data-sub-on=true]");
+    
+    // start showing the track automatically
+    // add this as a config option
+    if ( ! track.previousElementSibling && toggleSubOnOff )
+
+        video.textTracks[0].mode = "showing";
+
+    akara_emit.emit("video::subtitle:shortcut", track);
 };
 
 
@@ -763,6 +780,7 @@ module.exports.videoLoadData = event => {
             submenu: []
         });
         Array.from(document.querySelectorAll("track"), el => {
+            akara_emit.emit("video::subtitle:remove", el.id);
             el.remove();
         });
     }
@@ -802,8 +820,6 @@ module.exports.contextMenuEvent = () => {
 
     let vidMenuInst ;
 
-    menu.clear();
-    console.log(menu);
     videoContextMenu.forEach( _menu => {
         vidMenuInst = new MenuItem(_menu);
         disableVideoMenuItem(vidMenuInst);
@@ -816,6 +832,7 @@ module.exports.contextMenuEvent = () => {
 module.exports.lowHighVolume = volume => {
 
     const changeVolumeIcon = document.querySelector("[data-fire=volume]");
+
     let type;
 
     if ( volume && ( type = volume <= 0.3 ? "down" : "up") ) {
@@ -852,7 +869,7 @@ module.exports.showSubtitle = (mItem,id) => {
 
     for ( let i = 0; i < _textTrackLength; i++ ) {
 
-        if ( mItem.label === textTracks[i].label ) {
+        if ( mItem.id === textTracks[i].id ) {
             textTracks[i].mode = "showing";
             continue;
         }
@@ -874,3 +891,92 @@ module.exports.showSubtitle = (mItem,id) => {
         checked: true
     });
 };
+
+module.exports.showFileLocation = () => (
+    showItemInFolder(
+        video.getAttribute("src").replace("file://","")
+    )
+);
+
+const subHandlerComputer = () => {
+
+    const val = dialog.showOpenDialog({
+
+        title: "Select Subtitle",
+        property: [ "openFile", "multiSelections" ],
+        filters: [
+            {
+                name: "Subtitle File",
+                extensions: [
+                    "srt",
+                    "webvvt"
+                ]
+            }
+        ]
+    });
+
+    return val;
+};
+
+const subHandlerNet = () => {
+
+    const __obj = {
+        title: "subtitle",
+        parent: getCurrentWindow()
+    };
+
+    const html = `${__obj.title}.html`;
+
+    createNewWindow(__obj,html);
+};
+
+module.exports.subHandler = ( event, from, fPath ) => {
+
+    let val;
+
+    if ( from === "computer" )
+        val = subHandlerComputer();
+
+    if ( from === "net" && ! fPath )
+
+        return subHandlerNet();
+
+    if ( from === "net" && fPath )
+
+        val = fPath;
+
+    handleLoadSubtitle(val, async (path) => {
+        const result = await readSubtitleFile(path);
+        return result;
+    });
+
+    return true;
+};
+
+if ( require.main !== module ) {
+
+    akara_emit.on("video::state:track", (id,mode) => {
+
+        const {
+            submenu
+        } = videoContextMenu[16].submenu[1];
+
+        if ( mode === "disable" ) {
+
+            Object.assign(submenu[id], {
+                checked: false
+            });
+
+            Object.assign(videoContextMenu[16].submenu[1], {
+                submenu
+            });
+
+            return ;
+        }
+
+        Object.assign(submenu[id], {
+            checked: true
+        });
+    });
+
+}

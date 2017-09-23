@@ -833,6 +833,10 @@ table th {
 [data-volume-set="true"] {
   background: #fff; }
 
+[data-sub-on=false] {
+  background: white;
+  box-shadow: 500px 500px 500px 500px white inset !important; }
+
 ::-webkit-scrollbar {
   width: 7px;
   cursor: pointer; }
