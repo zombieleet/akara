@@ -9,7 +9,8 @@ const ffmpeg = require("ffmpeg");
 const {
     remote: {
         require: _require,
-        BrowserWindow
+        BrowserWindow,
+        dialog
     },
     ipcRenderer: ipc
 } = require("electron");
@@ -424,7 +425,7 @@ const ccState = menuInst => {
             return _mItem;
 
     }
-    
+
 };
 
 const disableNoConnection = ( menu, match, submatch) => {
@@ -763,6 +764,38 @@ const playlistSave = (key, files, notify) => {
 
 };
 
+const playlistLoad = listName => {
+
+    if ( typeof(listName) !== "string" )
+
+        throw TypeError(`expected string as listName but got ${typeof(listName)}`);
+
+    const list = require(playlistLocation);
+
+    let playlistList;
+
+    if ( listName in list )
+        playlistList = list[listName];
+    else
+        return dialog.showErrorBox(
+            "unable to load playlist",
+            `${listName} could not be loaded`
+        );
+
+
+    const validPlaylist = playlistList.filter( list => {
+
+        if ( existsSync(decodeURIComponent(list.replace(/^file:\/\//,""))) )
+            return list;
+        else
+            return dialog.showErrorBox("Playlist location not found",`path to ${list} was not found`);
+    });
+
+    ipc.sendTo(1,"akara::loadplaylist", validPlaylist , listName);
+
+    return true;
+};
+
 const updatePlaylistName = target => {
     const playlistEl = document.querySelector(".playlist-name");
     playlistEl.innerHTML = target.getAttribute("data-belongsto-playlist");
@@ -850,5 +883,6 @@ module.exports = {
     updatePlaylistName,
     triggerNotArrow,
     handlePlaySearchResult,
-    handleArrowKeys
+    handleArrowKeys,
+    playlistLoad
 };
