@@ -99,6 +99,14 @@ table {
   to {
     margin-top: 5px; } }
 
+@keyframes fullScreenVideo {
+  from {
+    height: 100px;
+    width: 80%; }
+  to {
+    height: 90px;
+    width: 50%; } }
+
 body {
   background: #181818;
   overflow: hidden;
@@ -723,7 +731,18 @@ table th {
   left: 0;
   bottom: 0;
   background: #181818;
-  z-index: 4444; }
+  /**
+     *
+     * overwrite chromes default controls
+     * 32bit integer value z-index
+     *
+     **/
+  z-index: 5555555555555; }
+
+.akara-control {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 10px; }
 
 .cover-on-error-src {
   position: absolute;
@@ -787,6 +806,9 @@ table th {
   [data-hover="true"] span {
     color: white; }
 
+.expand {
+  visibility: hidden; }
+
 .volume-incr {
   border-top-right-radius: 10%;
   border-top-left-radius: 10%;
@@ -837,6 +859,15 @@ table th {
   background: white;
   box-shadow: 500px 500px 500px 500px white inset !important; }
 
+[data-anim] {
+  animation-name: fullScreenVideo;
+  animation-duration: .1s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 80px; }
+
 ::-webkit-scrollbar {
   width: 7px;
   cursor: pointer; }
@@ -850,5 +881,8 @@ table th {
 
 ::-webkit-scrollbar-button {
   background-color: #666666; }
+
+video::-webkit-media-controls {
+  display: none; }
 
 /*# sourceMappingURL=maps/main.css.map */

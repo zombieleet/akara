@@ -78,3 +78,14 @@
         margin-top: 5px;
     }
 }
+
+@keyframes fullScreenVideo {
+    from {
+        height: 100px;
+        width: 80%;
+    }
+    to {
+        height: 90px;
+        width: 50%;
+    }
+}

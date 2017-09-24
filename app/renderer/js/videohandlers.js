@@ -39,9 +39,11 @@ const {
     validateMime,
     setupPlaying,
     readSubtitleFile,
+    playlistLoad,
     sendNotification
 } = require("../js/util.js");
 
+const fs = require("fs");
 
 const {
     videoContextMenu
@@ -96,16 +98,18 @@ module.exports.updateTimeIndicator = () => {
 
     let timeIndicator = document.querySelector(".akara-time-current");
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
-
+    
+    const pNode = timeIndicator.parentNode;
+    
     const elapsed = Math.round((controls.getCurrentTime()).toFixed(1));
-    const timeIndicatorWidth = ( elapsed * timeIndicator.parentNode.clientWidth) /
-              ( controls.duration().toFixed(1));
+    
+    const timeIndicatorWidth = ( elapsed * pNode.clientWidth ) /
+              ( controls.duration().toFixed(1)) ;
 
     timeIndicator.setAttribute("style", `width: ${timeIndicatorWidth}px`);
     timeIndicator = undefined;
     currTimeUpdate.textContent = setTime();
     return true;
-
 };
 
 
@@ -494,7 +498,7 @@ module.exports.videoErrorEvent = async () => {
  *
  *
  * jump current time indicator to selected time
- *  by the user in the time indicator
+ *  when the time indicator is clicked
  *
  **/
 
@@ -724,9 +728,9 @@ const handleLoadSubtitle = async (path,cb) => {
     });
 
     video.appendChild(track);
-    
+
     const { submenu } = videoContextMenu[16].submenu[1];
-    
+
     submenu.push({
         label: lang,
         id: track.id,
@@ -745,9 +749,9 @@ const handleLoadSubtitle = async (path,cb) => {
         submenu
     });
 
-    
+
     const toggleSubOnOff = document.querySelector("[data-sub-on=true]");
-    
+
     // start showing the track automatically
     // add this as a config option
     if ( ! track.previousElementSibling && toggleSubOnOff )
@@ -788,31 +792,36 @@ module.exports.videoLoadData = event => {
 };
 
 
-module.exports.mouseHoverOnVideo = () => {
-    const akaraControl = document.querySelector(".akara-control");
-    if ( ! document.webkitIsFullScreen )
-        return false;
-    return akaraControl.removeAttribute("hidden");
-};
-
-
-
-// FIX-ME
-module.exports.mouseNotHoverVideo = () => {
+module.exports.mouseMoveOnVideo = () => {
 
     const akaraControl = document.querySelector(".akara-control");
 
     if ( ! document.webkitIsFullScreen )
+
         return false;
 
-    setTimeout( () => {
-        akaraControl.setAttribute("hidden", "true");
-    },3000);
 
-    akaraControl.animate({
-        opacity: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0]
-    },3000);
+    akaraControl.hidden = false;
+
+    return true;
 };
+
+
+
+// // FIX-ME
+// module.exports.mouseNotHoverVideo = () => {
+
+//     const akaraControl = document.querySelector(".akara-control");
+
+//     if ( ! document.webkitIsFullScreen )
+//         return false;
+
+//     akaraControl.hidden = true;
+
+//     akaraControl.removeAttribute("data-anim");
+
+//     return true;
+// };
 
 module.exports.contextMenuEvent = () => {
 
@@ -820,10 +829,17 @@ module.exports.contextMenuEvent = () => {
 
     let vidMenuInst ;
 
+
+    akara_emit.emit("akara::playlist", videoContextMenu);
+
     videoContextMenu.forEach( _menu => {
+
         vidMenuInst = new MenuItem(_menu);
+
         disableVideoMenuItem(vidMenuInst);
+
         menu.append(vidMenuInst);
+
     });
 
     menu.popup(getCurrentWindow(), { async: true });
@@ -980,3 +996,60 @@ if ( require.main !== module ) {
     });
 
 }
+
+
+module.exports.loadContextPlaylist = (videoContextMenu,playlistLocation) => {
+
+    let { submenu } = videoContextMenu[28];
+
+    if ( submenu.length > 0 )
+
+        submenu = [];
+
+    let result ;
+
+    try {
+        result = fs.readFileSync(playlistLocation);
+    } catch(ex) {
+        result = ex;
+    }
+
+    if ( Error[Symbol.hasInstance](result) )
+
+        return false;
+
+    Object.keys(JSON.parse(result)).forEach( list => {
+        submenu.push({
+            label: list,
+            click: () => playlistLoad(list)
+        });
+    });
+
+    return submenu;
+};
+
+module.exports.contextPlaylist = videoContextMenu => {
+
+    const akLoaded = document.querySelectorAll(".playlist");
+
+    if ( akLoaded.length === 0 )
+
+        return false;
+
+    let { submenu } = videoContextMenu[27];
+
+    if ( submenu.length > 0 )
+
+        submenu = [];
+
+
+    Array.from(akLoaded, pList => {
+        submenu.push({
+            label: pList.textContent,
+            id: pList.getAttribute("id"),
+            click: () => setupPlaying(pList)
+        });
+    });
+
+    return submenu;
+};

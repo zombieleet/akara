@@ -12,7 +12,8 @@
     } = require("electron");
 
     const {
-        makeDynamic
+        makeDynamic,
+        playlistLoad
     } = require("../js/util.js");
 
     const {
@@ -170,10 +171,7 @@
 
     close.addEventListener("click", evt => ipc.sendSync("close-loadplaylist-window"));
 
-
     button.addEventListener("click", evt => {
-
-        const list = require(playlistLocation);
 
         const selection = document.querySelectorAll("[data-load]");
 
@@ -186,17 +184,7 @@
 
         Array.from(selection, el => {
             const playlistName = el.getAttribute("data-capture");
-            const playlistList = list[playlistName];
-            
-            const validPlaylist = playlistList.filter( list => {
-                
-                if ( existsSync(decodeURIComponent(list.replace(/^file:\/\//,""))) )
-                    return list;
-                else
-                    return dialog.showErrorBox("Playlist location not found",`path to ${list} was not found`);
-            });
-            
-            ipc.sendTo(1,"akara::loadplaylist", validPlaylist , el.getAttribute("data-capture"));
+            return playlistLoad(playlistName);
         });
 
     });

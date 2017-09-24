@@ -123,6 +123,7 @@ const controls = {
     volume() {
 
         if ( video.muted )
+            
             return this.unmute();
 
         return this.mute();
@@ -130,24 +131,49 @@ const controls = {
     enterfullscreen() {
 
         const changeIcon = document.querySelector(".fa-expand");
+        const akControl = document.querySelector(".akara-control");
+
+        const expand = akControl.querySelector(".expand");
 
         changeIcon.classList.add("fa-arrows-alt");
+
         changeIcon.classList.remove("fa-expand");
+
         changeIcon.setAttribute("data-fire","leavefullscreen");
 
-        video.parentNode.setAttribute("style", "height: 100%; width: 100%;");
+        video.setAttribute("style", "height: 100%; width: 100%;");
 
-        return document.querySelector(".akara-media").webkitRequestFullScreen();
+        akControl.setAttribute("data-anim", "true");
+
+
+        expand.setAttribute("style","visibility: visible;");
+
+        return video.webkitRequestFullScreen();
     },
     leavefullscreen() {
 
         const changeIcon = document.querySelector(".fa-arrows-alt");
+        const akControl = document.querySelector(".akara-control");
+
+        const expand_unexpand = akControl.querySelector(".expand")
+                  || akControl.querySelector(".unexpand");
 
         changeIcon.classList.add("fa-expand");
+
         changeIcon.classList.remove("fa-arrows-alt");
+
         changeIcon.setAttribute("data-fire","enterfullscreen");
-        video.parentNode.removeAttribute("style");
-        document.querySelector(".akara-control").removeAttribute("hidden");
+
+        video.removeAttribute("style");
+
+        akControl.removeAttribute("data-anim");
+
+        if ( expand_unexpand ) {
+            expand_unexpand.removeAttribute("style");
+            expand_unexpand.classList.remove("unexpand");
+            expand_unexpand.classList.add("expand");
+        }
+
         return document.webkitCancelFullScreen();
     },
     getCurrentTime() {
@@ -165,35 +191,59 @@ const controls = {
         _REPEAT_MENU_.popup(getCurrentWindow(), { async: true });
     },
     subtitle({ target }) {
-        
+
         const textTracks = video.textTracks;
-        
+
         const { length: _textTrackLength } = textTracks;
-        
+
         if ( target.getAttribute("data-sub-on") === "true") {
-            
+
             target.setAttribute("data-sub-on", "false");
-            
+
             for ( let i = 0; i < _textTrackLength; i++ ) {
-                
+
                 if ( textTracks[i].mode === "showing" ) {
                     textTracks[i].mode = "hidden";
                     target.setAttribute("data-sub", textTracks[i].id);
                 }
             }
-            
+
         } else {
-            
+
             target.setAttribute("data-sub-on", "true");
-            
+
             for ( let i = 0; i < _textTrackLength; i++ ) {
-                
+
                 if ( Number(textTracks[i].id) === Number(target.getAttribute("data-sub")) ) {
                     textTracks[i].mode = "showing";
                     target.removeAttribute("data-sub");
                 }
             }
         }
+    },
+    expand({ target }) {
+
+        const akControl = document.querySelector(".akara-control");
+
+        akControl.removeAttribute("data-anim");
+
+        target.classList.remove("expand");
+        target.classList.add("unexpand");
+
+        target.setAttribute("data-fire", "unexpand");
+    },
+    unexpand({ target }) {
+
+        const akContol = document.querySelector(".akara-control");
+
+        akContol.setAttribute("data-anim", "true");
+
+        target.classList.remove("unexpand");
+
+        target.classList.add("expand");
+
+        target.setAttribute("data-fire", "expand");
+
     }
 };
 
