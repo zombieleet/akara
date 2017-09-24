@@ -15,3 +15,7 @@
 ::-webkit-scrollbar-button {
     background-color: darken(#fff,60%);
 }
+
+video::-webkit-media-controls {
+    display: none;
+}
