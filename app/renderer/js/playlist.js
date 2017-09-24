@@ -74,7 +74,7 @@
                             return mList;
                         }
                     });
-                    console.log(newList);
+
                     playlistSave(playlistName, newList, false);
 
                     el.remove();
@@ -308,8 +308,21 @@
                 target.classList.add("fa-square-o");
                 return this.__turnOffSelectMode(akaraLoaded);
             }
-        }
+        },
 
+        deleteplaylist: {
+            value(target) {
+
+                const obj = {
+                    width: 408,
+                    height: 527,
+                    parent: BrowserWindow.getFocusedWindow(),
+                    title: "removeplaylist"
+                };
+
+                playListWindow(obj, "removeplaylist.html");
+            }
+        }
     });
 
 

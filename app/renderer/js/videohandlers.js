@@ -7,6 +7,7 @@ const {
 } = require("../js/video_control.js");
 
 const {
+    ipcRenderer: ipc,
     remote: {
         dialog,
         Menu,
@@ -1021,7 +1022,10 @@ module.exports.loadContextPlaylist = (videoContextMenu,playlistLocation) => {
     Object.keys(JSON.parse(result)).forEach( list => {
         submenu.push({
             label: list,
-            click: () => playlistLoad(list)
+            click: () => {
+                const filteredPlaylistName = playlistLoad(list);
+                ipc.sendTo(1,"akara::loadplaylist", filteredPlaylistName , list);
+            }
         });
     });
 

@@ -736,6 +736,23 @@ const makeDynamic = (el,i) => {
     }
     return i;
 };
+
+
+
+
+
+/**
+ *
+ *
+ * saves a playlist 
+ * key is the name to saveplaylist with
+ * files, an array of files
+ * notify, is either true or false
+ *    to notify if saved or not
+ *
+ **/
+
+
 const playlistSave = (key, files, notify) => {
 
     const list = require(playlistLocation);
@@ -756,13 +773,28 @@ const playlistSave = (key, files, notify) => {
 
     writeFileSync(playlistLocation, JSON.stringify(list));
 
-    if ( ! notify ) return ;
+    if ( ! notify )
+        return ;
 
     sendNotification("Playlist Saved", {
         body: "Playlist is saved"
     });
 
+    return ;
+
 };
+
+
+
+
+
+/**
+ *
+ *
+ * loads a playlist saved with listName
+ * it returns the items in listName
+ *
+ **/
 
 const playlistLoad = listName => {
 
@@ -772,16 +804,14 @@ const playlistLoad = listName => {
 
     const list = require(playlistLocation);
 
-    let playlistList;
 
-    if ( listName in list )
-        playlistList = list[listName];
-    else
+    if ( !( listName in list) )
         return dialog.showErrorBox(
             "unable to load playlist",
             `${listName} could not be loaded`
         );
 
+    let playlistList = list[listName];
 
     const validPlaylist = playlistList.filter( list => {
 
@@ -791,9 +821,200 @@ const playlistLoad = listName => {
             return dialog.showErrorBox("Playlist location not found",`path to ${list} was not found`);
     });
 
-    ipc.sendTo(1,"akara::loadplaylist", validPlaylist , listName);
+    return validPlaylist;
+};
+
+
+
+
+
+/**
+ *
+ *
+ * deletes playlist and write to
+ * the config file
+ *
+ **/
+
+const deletePlaylist = listName => {
+
+    if ( typeof(listName) !== "string" )
+        throw TypeError(`expected string as listName but got ${typeof(listName)}`);
+
+    let list = require(playlistLocation);
+
+    if ( !( listName in list) )
+        return false;
+
+    delete list[listName];
+
+    if ( Object.keys(list).length === 0 )
+        list = {};
+
+    writeFileSync(playlistLocation, JSON.stringify(list));
 
     return true;
+};
+
+const selectMultipe = listLoadParent => {
+
+    listLoadParent.addEventListener("click", evt => {
+
+        let target = evt.target;
+
+        const _case = target.nodeName.toLowerCase();
+
+        if ( _case === "ul"  ) return false;
+
+        target = _case === "li" ? target : target.parentNode;
+
+
+
+        /**
+         *
+         * clicked li already has data-load just remove it
+         *  as a sign of unclick
+         *
+         **/
+
+        if ( target.hasAttribute("data-load") ) {
+            return target.removeAttribute("data-load");
+        }
+
+
+        /**
+         *
+         *
+         * if ctrlKey is not held down
+         * with a left click
+         * remove all li element marked with data-load=multiple
+         *
+         **/
+
+        if ( ! evt.ctrlKey ) {
+            removeSelections();
+            return target.setAttribute("data-load", "single");
+        }
+
+
+        /**
+         *
+         * setup multiple selection
+         * turn single selection to multiple selection
+         *
+         **/
+
+        const single = document.querySelector("[data-load=single]");
+
+        target.setAttribute("data-load", "multiple");
+
+        if ( single )
+            single.setAttribute("data-load", "multiple");
+
+        return true;
+
+    });
+};
+
+const removeSelections = () => {
+
+    Array.from(
+        document.querySelectorAll("[data-load]"),
+        el => {
+
+            if ( el.getAttribute("data-load") === "multiple" ) {
+                el.removeAttribute("data-load");
+                return ;
+            }
+
+            /**
+         *
+         * avoid double data-load=single
+         *
+         **/
+
+            if ( el.getAttribute("data-load") === "single" ) {
+                el.removeAttribute("data-load");
+                return ;
+            }
+
+        });
+};
+
+
+
+
+
+/**
+ *
+ *
+ * renders all playlist name and total
+ *   list item to the dom
+ *
+ **/
+
+const renderPlayList = type => {
+
+    const loadplaylist = document.querySelector(`.${type}`);
+
+    const list = require(playlistLocation);
+
+    if ( ! loadplaylist )
+        return false;
+
+    if ( Object.keys(list).length === 0 ) {
+
+        const p = document.createElement("p");
+
+        p.textContent = "No Playlist have been created";
+
+        p.setAttribute("class", "no-loadplaylist");
+
+        document.querySelector("button").hidden = true;
+        
+        loadplaylist.appendChild(p);
+
+        return false;
+    }
+
+    const ul = document.createElement("ul");
+
+    let  noP = loadplaylist.querySelector(".no-loadplaylist");
+
+    if ( noP )
+
+        noP.remove();
+
+    noP = undefined;
+
+    let i = 0;
+
+    for ( let __list of Object.keys(list) ) {
+
+        const li = document.createElement("li");
+        const p = document.createElement("p");
+
+        const numlist = document.createElement("span");
+
+        p.textContent = __list;
+
+        numlist.textContent = `${list[__list].length} files`;
+
+        i = makeDynamic(li,i);
+
+        li.setAttribute("class", "loadplaylist-item");
+
+        li.setAttribute("data-capture", __list);
+
+
+        li.appendChild(p);
+        li.appendChild(numlist);
+        ul.appendChild(li);
+    }
+
+    loadplaylist.appendChild(ul);
+
+    return selectMultipe(ul);
 };
 
 const updatePlaylistName = target => {
@@ -818,7 +1039,8 @@ const handlePlaySearchResult = () => {
 
     const val = triggerNotArrow();
 
-    if ( ! val )  return false;
+    if ( ! val )
+        return false;
 
     const [ , el ] = val;
 
@@ -826,6 +1048,7 @@ const handlePlaySearchResult = () => {
         setupPlaying(el);
         document.querySelector(".search-parent").remove();
     }
+    return true;
 };
 
 
@@ -854,6 +1077,7 @@ const handleArrowKeys = () => {
     }
     return el;
 };
+
 module.exports = {
     createEl,
     removeTarget,
@@ -884,5 +1108,7 @@ module.exports = {
     triggerNotArrow,
     handlePlaySearchResult,
     handleArrowKeys,
-    playlistLoad
+    playlistLoad,
+    renderPlayList,
+    deletePlaylist
 };
