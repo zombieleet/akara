@@ -41,8 +41,8 @@
         fireControlButtonEvent,
         videoLoadData,
         dbClickEvent,
-        MouseNotHoverVideo,
-        MouseHoverOnVideo,
+        mouseNotHoverVideo,
+        mouseMoveOnVideo,
         updateTimeIndicator,
         videoPauseEvent,
         videoPlayEvent,
@@ -60,18 +60,24 @@
         lowHighVolume,
         subHandler,
         showSubtitle,
-        showFileLocation
+        showFileLocation,
+        loadContextPlaylist,
+        contextPlaylist,
+        removeContextPlaylist
     } = require("../js/videohandlers.js");
 
     const {
         createNewWindow: playListWindow
     } = _require("./newwindow.js");
-    
+
+    const fs = require("fs");
+
     const currTimeUpdate = document.querySelector(".akara-update-cur-time"),
         jumpToSeekElement = document.querySelector(".akara-time"),
         akaraVolume = document.querySelector(".akara-volume"),
         akaraControl = document.querySelector(".akara-control"),
         controlElements = akaraControl.querySelector(".akara-control-element");
+
 
     controlElements.addEventListener("click", fireControlButtonEvent);
 
@@ -79,9 +85,9 @@
 
     video.addEventListener("dblclick", dbClickEvent);
 
-    video.addEventListener("mouseover", MouseHoverOnVideo);
+    video.addEventListener("mousemove", mouseMoveOnVideo);
 
-    video.addEventListener("mouseout", MouseNotHoverVideo);
+    //video.addEventListener("mouseout", mouseNotHoverVideo);
 
     video.addEventListener("timeupdate", updateTimeIndicator);
 
@@ -155,8 +161,6 @@
 
     ipc.on("subtitle::load-sub", subHandler );
 
-    akara_emit.on("video::show_subtitle", showSubtitle);
-
     ipc.on("enter-video-fullscreen", _enterfullscreen);
 
     ipc.on("leave-video-fullscreen", _leavefullscreen);
@@ -164,5 +168,33 @@
     ipc.on("video-search", search);
 
     ipc.on("media-info", showMediaInfoWindow);
-    
+
+
+    akara_emit.on("video::show_subtitle", showSubtitle);
+
+    akara_emit.on("akara::playlist", videoContextMenu => {
+
+        const {
+            playlist: {
+                file: playlistLocation
+            }
+        } = _require("./configuration.js");
+
+        let submenu ;
+
+        if ( ( submenu = contextPlaylist(videoContextMenu) ) ) {
+            Object.assign(videoContextMenu[27], {
+                submenu
+            });
+            return ;
+        }
+
+        if ( ( submenu  = loadContextPlaylist(videoContextMenu,playlistLocation) ) ) {
+            Object.assign(videoContextMenu[28], {
+                submenu
+            });
+            return ;
+        }
+    });
+
 })();
