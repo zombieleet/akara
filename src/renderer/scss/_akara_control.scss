@@ -7,10 +7,23 @@ $volume-color: white;
     right: 0;
     left: 0;
     bottom: 0;
-    
+
     background: darken($global-color,20%);
 
-    z-index: 4444;
+
+    /**
+     *
+     * overwrite chromes default controls
+     * 32bit integer value z-index
+     *
+     **/
+    z-index: 5555555555555;
+}
+
+.akara-control {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
 }
 
 .cover-on-error-src {
@@ -61,11 +74,11 @@ $volume-color: white;
 .akara-media-control-right {
 
     width: percent(50 ( 20 + 20 ) );
-    
+
     li.akara-volume {
         display: inline-block;
     }
-    
+
     li.fa {
 
         cursor: pointer;
@@ -111,11 +124,12 @@ $volume-color: white;
     }
 }
 
-
-
+.expand {
+    visibility: hidden;
+}
 
 .volume-incr {
-   
+
 
     border-top: {
         right-radius: 10%;
@@ -124,7 +138,7 @@ $volume-color: white;
 
     // work on this margin latter
     margin-left: 1px;
-    
+
     padding: 1px;
     background: lighten(black,20%);
 
@@ -139,12 +153,12 @@ $volume-color: white;
 $cur-pad-top: 1;
 @for $i from 1 through 11 {
     .volume-incr:nth-of-type(#{$i}) {
-        
+
         @if $i == 1 {
             margin-left: -5px;
         }
         padding-top: $cur-pad-top + px;
-        
+
         $cur-pad-top: $cur-pad-top + 3;
     }
 }
@@ -157,4 +171,16 @@ $cur-pad-top: 1;
     background: white;
     //cursor: not-allowed !important;
     box-shadow: 500px 500px 500px 500px white inset !important;
+}
+
+[data-anim] {
+    animation-name: fullScreenVideo;
+    animation-duration: .1s;
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    margin-bottom: 80px;
 }
