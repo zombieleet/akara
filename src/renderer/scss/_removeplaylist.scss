@@ -1,0 +1,15 @@
+.remove-playlist-body {
+    @extend %new_window_body;
+}
+
+.removeplaylist-header {
+    @extend %new_window_headers;
+}
+
+.removeplaylist {
+    @extend .loadplaylist;
+}
+
+.removeplaylist-load {
+    @extend .loadplaylist-load;
+}
