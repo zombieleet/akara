@@ -153,12 +153,12 @@ const togglePlist = () => {
     const akaraLoad = document.querySelector(".akara-load");
     const akaraMediaCover = document.querySelector(".akara-media-cover");
 
-    if ( akaraLoad.clientWidth === 0 ) {
+    if ( akaraLoad.hasAttribute("style") ) {
         akaraLoad.removeAttribute("style");
         akaraMediaCover.removeAttribute("style");
         return ;
     }
-    akaraLoad.setAttribute("style", `width: 0%`);
+    akaraLoad.setAttribute("style", `display: none;`);
     akaraMediaCover.setAttribute("style", `width: 100%`);
     return ;
 };

@@ -3,7 +3,7 @@ $akara-media-height: 100%;
 $akara-media-cover-width: 70%;
 $akara-media-element-height: 100%;
 
-$akara-load-width: 20% ;//- $akara-media-cover-width;
+$akara-load-width: 30% ;//- $akara-media-cover-width;
 
 .akara-media {
 
@@ -18,7 +18,7 @@ $akara-load-width: 20% ;//- $akara-media-cover-width;
     .akara-media-cover {
 
         float: right;
-        width: 80%;
+        width: 70%;
         height: 80%;
         video {
             width: 100% !important;
