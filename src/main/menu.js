@@ -344,6 +344,17 @@ const videoContextMenu = [
         click(menuItem, { webContents }, event ) {
             webContents.send("video-search");
         }
+    },
+    {
+        type: "separator"
+    },
+    {
+        label: "Playlists",
+        submenu: []
+    },
+    {
+        label: "Load Playlist",
+        submenu: []
     }
 ];
 
