@@ -27,6 +27,7 @@ const handleWinState = win => {
         removeConvMedia();
         app.quit();
     });
+    
     ipc.on("window-maximize", event => {
         
         if ( win.isMaximized() ) {
@@ -40,7 +41,8 @@ const handleWinState = win => {
     });
     
     ipc.on("window-minimize", () => {    
-        if ( ! win.isMinimized() ) win.minimize();
+        if ( ! win.isMinimized() )
+            win.minimize();
     });
 
     ipc.on("window-close", () => {

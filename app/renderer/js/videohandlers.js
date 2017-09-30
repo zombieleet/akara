@@ -20,6 +20,11 @@ const {
     }
 } = require("electron");
 
+
+const {
+    CURRENT_TIME
+} = _require("./constants.js");
+
 const {
     createNewWindow
 } = _require("./newwindow.js");
@@ -33,6 +38,8 @@ const {
     join
 } = require("path");
 
+const crypto = require("crypto");
+
 const {
     disableVideoMenuItem,
     langDetect,
@@ -41,7 +48,10 @@ const {
     setupPlaying,
     readSubtitleFile,
     playlistLoad,
-    sendNotification
+    sendNotification,
+    removeClass,
+    removeType,
+    setCurrentPlaying
 } = require("../js/util.js");
 
 const fs = require("fs");
@@ -56,6 +66,8 @@ const {
 } = require("../js/handle_dropdown_commands.js")();
 
 const akara_emit = require("../js/emitter.js");
+
+let controlMouseEnterFscreen = false;
 
 const mime = require("mime");
 
@@ -83,6 +95,52 @@ const setTime = () => {
 module.exports.setTime = setTime;
 
 
+
+
+const hashedPath = path => join(
+    CURRENT_TIME,
+    crypto
+        .createHash("md5")
+        .update(path)
+        .digest("hex")
+);
+/**
+ *
+ *
+ *  save video current time position
+ *
+ *
+ **/
+
+const saveCurrentTimePos = currPlaying => {
+    
+    const pathToFile = hashedPath(currPlaying);
+    
+    return fs.writeFileSync(pathToFile, controls.getCurrentTime());
+    
+};
+
+
+
+/**
+ *
+ *
+ * retrieved video current time
+ *   starts video from were it stoped
+ *
+ **/
+
+const getRecentPos = plItem  => {
+    
+    const pathToFile = hashedPath(plItem);
+
+    if ( fs.existsSync(pathToFile) )
+
+        return fs.readFileSync(pathToFile);
+
+    return 0;
+};
+
 /**
  *
  *
@@ -98,18 +156,23 @@ module.exports.setTime = setTime;
 module.exports.updateTimeIndicator = () => {
 
     let timeIndicator = document.querySelector(".akara-time-current");
+
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
-    
+
     const pNode = timeIndicator.parentNode;
-    
+
     const elapsed = Math.round((controls.getCurrentTime()).toFixed(1));
-    
+
     const timeIndicatorWidth = ( elapsed * pNode.clientWidth ) /
               ( controls.duration().toFixed(1)) ;
 
     timeIndicator.setAttribute("style", `width: ${timeIndicatorWidth}px`);
-    timeIndicator = undefined;
+
     currTimeUpdate.textContent = setTime();
+
+    // src holds the full path
+    saveCurrentTimePos(video.src);
+
     return true;
 };
 
@@ -410,7 +473,7 @@ module.exports.playNextOrPrev = playNextOrPrev;
  *
  **/
 
-module.exports.videoErrorEvent = async () => {
+module.exports.videoErrorEvent = async (evt) => {
 
     const _src = video.getAttribute("src").replace("file://","");
     const akaraLoaded = document.querySelector(".akara-loaded");
@@ -513,6 +576,45 @@ module.exports.clickedMoveToEvent = event => {
 };
 
 
+module.exports.videoEndedEvent = () => {
+
+    const justEnded = document.querySelector("[data-now-playing=true]");
+    const akaraLoaded = document.querySelector(".akara-loaded");
+
+    if ( video.hasAttribute("data-random") ) {
+
+        const playlistItems = document.querySelectorAll("[data-full-path]");
+
+        const index = (Math.random() * playlistItems.length).toFixed();
+
+        if ( index > playlistItems.length )
+
+            return setupPlaying(playlistItems[0]);
+
+        return setupPlaying(playlistItems[index]);
+    }
+
+
+    if ( justEnded.nextElementSibling && ! justEnded.hasAttribute("data-repeat") )
+
+        return setupPlaying(justEnded.nextElementSibling);
+
+
+    if ( justEnded.hasAttribute("data-repeat") )
+
+        return controls.play();
+
+
+    if ( ! justEnded.nextElementSibling && justEnded.parentNode.hasAttribute("data-repeat") )
+
+        return setupPlaying(justEnded.parentNode.firstElementChild);
+
+    // force the control element to change it's icon
+    // if this is is not called, the control icon that handles
+    // pause and play will not change
+
+    return controls.pause();
+};
 
 
 /**
@@ -768,6 +870,7 @@ const handleLoadSubtitle = async (path,cb) => {
  *
  * loaddata event handler
  *
+ *
  **/
 
 
@@ -775,8 +878,37 @@ module.exports.videoLoadData = event => {
 
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
 
-    currTimeUpdate.textContent = setTime();
+    const pathToFile = hashedPath(video.src);
+    
+    /*if ( fs.existsSync(pathToFile) ) {
+         
+         dialog.showMessageBox({
+             title: "Resume Media File",
+             type: "info",
+             message: "Resume from previous playing",
+             buttons: [ "Yes", "No", "Cancel" ]
+         }), btn => {
 
+             if ( btn === 0 ) {
+                 video.currentTime = Number(getRecentPos(video.src).toString());
+                 return ;
+             }
+
+             if ( btn === 1 ) {
+                 fs.unlinkSync(pathToFile);
+                 return ;
+             }
+
+             if ( btn === 2 )
+                 return ;
+             
+         });
+    }*/
+    
+    video.currentTime = Number(getRecentPos(video.src).toString());
+    
+    //currTimeUpdate.textContent = setTime();
+    
     const submenu = videoContextMenu[16].submenu;
 
     // no need to remove if no subtitle was added in previous video
@@ -793,36 +925,122 @@ module.exports.videoLoadData = event => {
 };
 
 
+
+
+
+/**
+ *
+ *
+ * handles the behaviour of control section
+ * in fullscreen mood
+ *
+ *
+ **/
+
+const ctrlBhviourInFullScreen = akaraControl => {
+
+    let id = setTimeout( () => {
+
+        const unexpand = akaraControl.querySelector(".unexpand");
+
+        // no-operation in strecth mood in fullscreen
+        if ( unexpand )
+            return ;
+
+        /**
+         *
+         * prevent any operation on controls
+         *  sections if not in fullscreen mode
+         *
+         **/
+
+        if ( ! document.webkitIsFullScreen )
+            return ;
+        if ( controlMouseEnterFscreen )
+            return ;
+
+        akaraControl.hidden = true;
+
+    }, 5000);
+
+    return id;
+};
+
 module.exports.mouseMoveOnVideo = () => {
 
     const akaraControl = document.querySelector(".akara-control");
 
     if ( ! document.webkitIsFullScreen )
-
         return false;
 
-
     akaraControl.hidden = false;
+
+    let id = ctrlBhviourInFullScreen(akaraControl);
 
     return true;
 };
 
 
 
-// // FIX-ME
-// module.exports.mouseNotHoverVideo = () => {
 
-//     const akaraControl = document.querySelector(".akara-control");
+/**
+ *
+ *
+ * set controlMouseEnterFscreen to boolean
+ *   which is used by the hideCtrlsinfullscreen
+ *   function to work properly with
+ *   the controlDragFullScreen function
+ *
+ **/
 
-//     if ( ! document.webkitIsFullScreen )
-//         return false;
+module.exports.controlMouseEnter = evt => {
+    controlMouseEnterFscreen = true;
+};
 
-//     akaraControl.hidden = true;
+module.exports.controlMouseLeave = evt => {
+    controlMouseEnterFscreen = false;
+};
 
-//     akaraControl.removeAttribute("data-anim");
+module.exports.controlDragFullScreen = evt => {
 
-//     return true;
-// };
+    const { target: akControl } = evt;
+
+    const unexpand = akControl.querySelector(".unexpand");
+
+    if ( ! document.webkitIsFullScreen )
+        return false;
+
+    // no-operation in strecth mood in fullscreen
+    if ( unexpand )
+        return false;
+
+    const mouseMoveEventDrag = evt => {
+
+        let { screenX, screenY } = evt;
+
+        const { left } = akControl.getBoundingClientRect();
+
+        akControl.style.position = "absolute";
+        akControl.style.left = `${screenX - left - 150}px`;
+        akControl.style.top = `${screenY - 25}px`;
+
+        return true;
+    };
+
+    document.documentElement.addEventListener("mousemove", mouseMoveEventDrag);
+
+    akControl.addEventListener("mouseup", () => {
+
+        console.log("up");
+        document
+            .documentElement
+            .removeEventListener(
+                "mousemove", mouseMoveEventDrag
+            );
+    });
+
+    return true;
+};
 
 module.exports.contextMenuEvent = () => {
 

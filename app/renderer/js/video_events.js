@@ -63,7 +63,11 @@
         showFileLocation,
         loadContextPlaylist,
         contextPlaylist,
-        removeContextPlaylist
+        removeContextPlaylist,
+        controlDragFullScreen,
+        controlMouseEnter,
+        controlMouseLeave,
+        videoEndedEvent
     } = require("../js/videohandlers.js");
 
     const {
@@ -91,7 +95,7 @@
 
     video.addEventListener("timeupdate", updateTimeIndicator);
 
-    video.addEventListener("ended", () => akara_emit.emit("video::ended"));
+    video.addEventListener("ended", videoEndedEvent);
 
     video.addEventListener("pause", videoPauseEvent );
 
@@ -169,7 +173,11 @@
 
     ipc.on("media-info", showMediaInfoWindow);
 
+    akaraControl.addEventListener("mousedown", controlDragFullScreen);
 
+    akaraControl.addEventListener("mouseenter", controlMouseEnter);
+    akaraControl.addEventListener("mouseleave", controlMouseLeave);
+    
     akara_emit.on("video::show_subtitle", showSubtitle);
 
     akara_emit.on("akara::playlist", videoContextMenu => {
