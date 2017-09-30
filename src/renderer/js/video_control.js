@@ -244,6 +244,20 @@ const controls = {
 
         target.setAttribute("data-fire", "expand");
 
+    },
+    random({ target }) {
+        
+        const random = target;
+        
+        video.setAttribute("data-random", "random");
+        random.setAttribute("data-fire", "norandom");
+    },
+    norandom({ target }) {
+        
+        const no_random = target;
+
+        video.removeAttribute("data-random");
+        no_random.setAttribute("data-fire", "random");
     }
 };
 

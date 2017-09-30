@@ -91,7 +91,7 @@
 
     video.addEventListener("timeupdate", updateTimeIndicator);
 
-    video.addEventListener("ended", () => akara_emit.emit("video::ended"));
+    video.addEventListener("ended", videoEndedEvent);
 
     video.addEventListener("pause", videoPauseEvent );
 

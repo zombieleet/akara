@@ -120,60 +120,9 @@
         currentTarget = target;
     });
 
-
-    akara_emit.on("video::ended", () => {
-
-        const justEnded = document.querySelector("[data-now-playing=true]");
-
-        if ( justEnded.nextElementSibling && ! justEnded.hasAttribute("data-repeat") ) {
-
-            removeClass(ul,"fa","fa-play-circle");
-
-            removeType(justEnded.parentNode,"data-dbclicked","data-now-playing","data-clicked");
-
-            setCurrentPlaying(justEnded.nextElementSibling);
-
-            video.src = justEnded.nextElementSibling.getAttribute("data-full-path");
-
-            justEnded.nextElementSibling.setAttribute("data-clicked","true");
-
-            justEnded.nextElementSibling.classList.add("fa");
-            justEnded.nextElementSibling.classList.add("fa-play-circle");
-
-            return play();
-        }
-
-        if ( justEnded.hasAttribute("data-repeat") ) return play();
-
-        if ( ! justEnded.nextElementSibling && justEnded.parentNode.hasAttribute("data-repeat") ) {
-
-            const firstChild = justEnded.parentNode.firstElementChild;
-
-            removeType(justEnded.parentNode,"data-dbclicked","data-now-playing","data-clicked");
-
-            video.src = firstChild.getAttribute("data-full-path");
-
-            removeClass(ul,"fa","fa-play-circle");
-
-            setCurrentPlaying(firstChild);
-
-            return play();
-
-        }
-
-        // force the control element to change it's icon
-        // if this is is not called, the control icon that handles
-        // pause and play will not change
-
-        return pause();
-    });
-
-
-
     ipc.on("media-droped-files", (event, mediaPaths) => {
         addMediaCb(mediaPaths);
     });
-
 
     ipc.on("remove-target-hit", () => removeTarget(currentTarget,video));
 

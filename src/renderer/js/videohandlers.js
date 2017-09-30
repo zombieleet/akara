@@ -571,6 +571,45 @@ module.exports.clickedMoveToEvent = event => {
 };
 
 
+module.exports.videoEndedEvent = () => {
+
+    const justEnded = document.querySelector("[data-now-playing=true]");
+    const akaraLoaded = document.querySelector(".akara-loaded");
+
+    if ( video.hasAttribute("data-random") ) {
+
+        const playlistItems = document.querySelectorAll("[data-full-path]");
+
+        const index = (Math.random() * playlistItems.length).toFixed();
+
+        if ( index > playlistItems.length )
+
+            return setupPlaying(playlistItems[0]);
+
+        return setupPlaying(playlistItems[index]);
+    }
+
+
+    if ( justEnded.nextElementSibling && ! justEnded.hasAttribute("data-repeat") )
+
+        return setupPlaying(justEnded.nextElementSibling);
+
+
+    if ( justEnded.hasAttribute("data-repeat") )
+
+        return controls.play();
+
+
+    if ( ! justEnded.nextElementSibling && justEnded.parentNode.hasAttribute("data-repeat") )
+
+        return setupPlaying(justEnded.parentNode.firstElementChild);
+
+    // force the control element to change it's icon
+    // if this is is not called, the control icon that handles
+    // pause and play will not change
+
+    return controls.pause();
+};
 
 
 /**
@@ -825,6 +864,7 @@ const handleLoadSubtitle = async (path,cb) => {
 /**
  *
  * loaddata event handler
+ *
  *
  **/
 
