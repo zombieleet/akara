@@ -48,7 +48,10 @@ const {
     setupPlaying,
     readSubtitleFile,
     playlistLoad,
-    sendNotification
+    sendNotification,
+    removeClass,
+    removeType,
+    setCurrentPlaying
 } = require("../js/util.js");
 
 const fs = require("fs");
@@ -63,6 +66,8 @@ const {
 } = require("../js/handle_dropdown_commands.js")();
 
 const akara_emit = require("../js/emitter.js");
+
+let controlMouseEnterFscreen = false;
 
 const mime = require("mime");
 
@@ -468,7 +473,7 @@ module.exports.playNextOrPrev = playNextOrPrev;
  *
  **/
 
-module.exports.videoErrorEvent = async () => {
+module.exports.videoErrorEvent = async (evt) => {
 
     const _src = video.getAttribute("src").replace("file://","");
     const akaraLoaded = document.querySelector(".akara-loaded");
@@ -917,39 +922,125 @@ module.exports.videoLoadData = event => {
         });
     }
 
-}
+};
 
+
+
+
+
+/**
+ *
+ *
+ * handles the behaviour of control section
+ * in fullscreen mood
+ *
+ *
+ **/
+
+const ctrlBhviourInFullScreen = akaraControl => {
+
+    let id = setTimeout( () => {
+
+        const unexpand = akaraControl.querySelector(".unexpand");
+
+        // no-operation in strecth mood in fullscreen
+        if ( unexpand )
+            return ;
+
+        /**
+         *
+         * prevent any operation on controls
+         *  sections if not in fullscreen mode
+         *
+         **/
+
+        if ( ! document.webkitIsFullScreen )
+            return ;
+        if ( controlMouseEnterFscreen )
+            return ;
+
+        akaraControl.hidden = true;
+
+    }, 5000);
+
+    return id;
+};
 
 module.exports.mouseMoveOnVideo = () => {
 
     const akaraControl = document.querySelector(".akara-control");
 
     if ( ! document.webkitIsFullScreen )
-
         return false;
 
-
     akaraControl.hidden = false;
+
+    let id = ctrlBhviourInFullScreen(akaraControl);
 
     return true;
 };
 
 
 
-// // FIX-ME
-// module.exports.mouseNotHoverVideo = () => {
 
-//     const akaraControl = document.querySelector(".akara-control");
+/**
+ *
+ *
+ * set controlMouseEnterFscreen to boolean
+ *   which is used by the hideCtrlsinfullscreen
+ *   function to work properly with
+ *   the controlDragFullScreen function
+ *
+ **/
 
-//     if ( ! document.webkitIsFullScreen )
-//         return false;
+module.exports.controlMouseEnter = evt => {
+    controlMouseEnterFscreen = true;
+};
 
-//     akaraControl.hidden = true;
+module.exports.controlMouseLeave = evt => {
+    controlMouseEnterFscreen = false;
+};
 
-//     akaraControl.removeAttribute("data-anim");
+module.exports.controlDragFullScreen = evt => {
 
-//     return true;
-// };
+    const { target: akControl } = evt;
+
+    const unexpand = akControl.querySelector(".unexpand");
+
+    if ( ! document.webkitIsFullScreen )
+        return false;
+
+    // no-operation in strecth mood in fullscreen
+    if ( unexpand )
+        return false;
+
+    const mouseMoveEventDrag = evt => {
+
+        let { screenX, screenY } = evt;
+
+        const { left } = akControl.getBoundingClientRect();
+
+        akControl.style.position = "absolute";
+        akControl.style.left = `${screenX - left - 150}px`;
+        akControl.style.top = `${screenY - 25}px`;
+
+        return true;
+    };
+
+    document.documentElement.addEventListener("mousemove", mouseMoveEventDrag);
+
+    akControl.addEventListener("mouseup", () => {
+
+        console.log("up");
+        document
+            .documentElement
+            .removeEventListener(
+                "mousemove", mouseMoveEventDrag
+            );
+    });
+
+    return true;
+};
 
 module.exports.contextMenuEvent = () => {
 

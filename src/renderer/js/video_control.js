@@ -1,5 +1,6 @@
 "use strict";
 const {
+    ipcRenderer: ipc,
     remote: {
         Menu,
         MenuItem,
@@ -123,7 +124,7 @@ const controls = {
     volume() {
 
         if ( video.muted )
-            
+
             return this.unmute();
 
         return this.mute();
@@ -145,6 +146,7 @@ const controls = {
 
         akControl.setAttribute("data-anim", "true");
 
+        akControl.hidden = true;
 
         expand.setAttribute("style","visibility: visible;");
 
@@ -167,7 +169,10 @@ const controls = {
         video.removeAttribute("style");
 
         akControl.removeAttribute("data-anim");
-
+        akControl.removeAttribute("style");
+        
+        akControl.hidden = false;
+        
         if ( expand_unexpand ) {
             expand_unexpand.removeAttribute("style");
             expand_unexpand.classList.remove("unexpand");
@@ -225,8 +230,17 @@ const controls = {
 
         const akControl = document.querySelector(".akara-control");
 
+        let { position, left, top } = akControl.style;
+        
+        Object.assign(this, {
+            position,
+            left,
+            top
+        });
+        
         akControl.removeAttribute("data-anim");
-
+        akControl.removeAttribute("style");
+        
         target.classList.remove("expand");
         target.classList.add("unexpand");
 
@@ -234,9 +248,17 @@ const controls = {
     },
     unexpand({ target }) {
 
-        const akContol = document.querySelector(".akara-control");
+        const akControl = document.querySelector(".akara-control");
 
-        akContol.setAttribute("data-anim", "true");
+        akControl.setAttribute("data-anim", "true");
+
+        const { position, left, top } = this;
+        
+        Object.assign(akControl.style, {
+            position,
+            left,
+            top
+        });
 
         target.classList.remove("unexpand");
 
