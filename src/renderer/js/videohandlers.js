@@ -20,6 +20,11 @@ const {
     }
 } = require("electron");
 
+
+const {
+    CURRENT_TIME
+} = _require("./constants.js");
+
 const {
     createNewWindow
 } = _require("./newwindow.js");
@@ -32,6 +37,8 @@ const {
     basename,
     join
 } = require("path");
+
+const crypto = require("crypto");
 
 const {
     disableVideoMenuItem,
@@ -83,6 +90,52 @@ const setTime = () => {
 module.exports.setTime = setTime;
 
 
+
+
+const hashedPath = path => join(
+    CURRENT_TIME,
+    crypto
+        .createHash("md5")
+        .update(path)
+        .digest("hex")
+);
+/**
+ *
+ *
+ *  save video current time position
+ *
+ *
+ **/
+
+const saveCurrentTimePos = currPlaying => {
+    
+    const pathToFile = hashedPath(currPlaying);
+    
+    return fs.writeFileSync(pathToFile, controls.getCurrentTime());
+    
+};
+
+
+
+/**
+ *
+ *
+ * retrieved video current time
+ *   starts video from were it stoped
+ *
+ **/
+
+const getRecentPos = plItem  => {
+    
+    const pathToFile = hashedPath(plItem);
+
+    if ( fs.existsSync(pathToFile) )
+
+        return fs.readFileSync(pathToFile);
+
+    return 0;
+};
+
 /**
  *
  *
@@ -98,18 +151,23 @@ module.exports.setTime = setTime;
 module.exports.updateTimeIndicator = () => {
 
     let timeIndicator = document.querySelector(".akara-time-current");
+
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
-    
+
     const pNode = timeIndicator.parentNode;
-    
+
     const elapsed = Math.round((controls.getCurrentTime()).toFixed(1));
-    
+
     const timeIndicatorWidth = ( elapsed * pNode.clientWidth ) /
               ( controls.duration().toFixed(1)) ;
 
     timeIndicator.setAttribute("style", `width: ${timeIndicatorWidth}px`);
-    timeIndicator = undefined;
+
     currTimeUpdate.textContent = setTime();
+
+    // src holds the full path
+    saveCurrentTimePos(video.src);
+
     return true;
 };
 
@@ -775,8 +833,37 @@ module.exports.videoLoadData = event => {
 
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
 
-    currTimeUpdate.textContent = setTime();
+    const pathToFile = hashedPath(video.src);
+    
+    /*if ( fs.existsSync(pathToFile) ) {
+         
+         dialog.showMessageBox({
+             title: "Resume Media File",
+             type: "info",
+             message: "Resume from previous playing",
+             buttons: [ "Yes", "No", "Cancel" ]
+         }), btn => {
 
+             if ( btn === 0 ) {
+                 video.currentTime = Number(getRecentPos(video.src).toString());
+                 return ;
+             }
+
+             if ( btn === 1 ) {
+                 fs.unlinkSync(pathToFile);
+                 return ;
+             }
+
+             if ( btn === 2 )
+                 return ;
+             
+         });
+    }*/
+    
+    video.currentTime = Number(getRecentPos(video.src).toString());
+    
+    //currTimeUpdate.textContent = setTime();
+    
     const submenu = videoContextMenu[16].submenu;
 
     // no need to remove if no subtitle was added in previous video

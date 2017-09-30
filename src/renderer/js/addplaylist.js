@@ -83,6 +83,7 @@
     close.addEventListener("click", evt => ipc.sendSync("close-addplaylist-window"));
 
     closeInput.addEventListener("click", evt => div.hidden = true);
+    
     loadSavedPlaylist();
 
 })();
