@@ -8,3 +8,5 @@ This project is still undergoing development, at this point the application is n
 `git clone https://github.com/zombieleet/akara`
 
 `npm install`
+
+`gulp`
