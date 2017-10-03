@@ -1,3 +1,4 @@
+"use strict";
 const {
     BrowserWindow,
     ipcMain: ipc
@@ -8,10 +9,12 @@ const {
     BACKGROUND_COLOR
 } = require("./constants.js");
 
+const url = require("url");
+
 const createNewWindow = (obj,html) => {
 
     Object.assign(obj, {
-        frame: false,
+        frame: obj.frame ? true : false,
         show: false,
         maximizable: false,
         center: true,
@@ -19,8 +22,16 @@ const createNewWindow = (obj,html) => {
     });
 
     let newWindow = new BrowserWindow(obj);
-
-    newWindow.loadURL(`file://${APP_PATH}/app/renderer/html/${html}`);
+    
+    let urLocation;
+    
+    if ( url.parse(html).protocol )
+        
+        urLocation = html;
+    else
+        urLocation = `file://${APP_PATH}/app/renderer/html/${html}`;
+    
+    newWindow.loadURL(urLocation);
 
     newWindow.once("closed", () => {
         newWindow = undefined;
