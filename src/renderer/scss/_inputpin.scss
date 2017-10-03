@@ -1,0 +1,23 @@
+.inputpin-body {
+    @extend %new_window_body;
+}
+
+.akara-inputpin-header {
+    @extend %new_window_headers;
+}
+
+.inputpin-input {
+    @extend %form-input;
+
+    width: 50%;
+    margin: auto;
+
+    margin-top: 10%;
+}
+
+.inputpin-pin {
+    @extend %buttons;
+    position: static;
+    margin-top: 10%;
+    margin-left: 40%;
+}
