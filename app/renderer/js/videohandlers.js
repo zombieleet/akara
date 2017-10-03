@@ -531,7 +531,8 @@ module.exports.videoErrorEvent = async (evt) => {
      *
      **/
 
-    if ( btn === 0 ) return playNextOrPrev();
+    if ( btn === 0 )
+        return playNextOrPrev();
 
 
     // btn is 1
@@ -1133,6 +1134,14 @@ module.exports.showFileLocation = () => (
     )
 );
 
+
+/**
+ *
+ * handle loading of subtitle from computer
+ *
+ *
+ **/
+
 const subHandlerComputer = () => {
 
     const val = dialog.showOpenDialog({
@@ -1153,6 +1162,13 @@ const subHandlerComputer = () => {
     return val;
 };
 
+
+
+/**
+ *
+ * handle loading of subtitle from internet
+ *
+ **/
 const subHandlerNet = () => {
 
     const __obj = {
@@ -1165,6 +1181,14 @@ const subHandlerNet = () => {
     createNewWindow(__obj,html);
 };
 
+
+
+
+/**
+ *
+ * subtitle handler
+ *
+ **/
 module.exports.subHandler = ( event, from, fPath ) => {
 
     let val;
@@ -1217,6 +1241,13 @@ if ( require.main !== module ) {
 }
 
 
+
+/**
+ *
+ *
+ * loads playlist name
+ *
+ **/
 module.exports.loadContextPlaylist = (videoContextMenu,playlistLocation) => {
 
     let { submenu } = videoContextMenu[28];
@@ -1250,6 +1281,14 @@ module.exports.loadContextPlaylist = (videoContextMenu,playlistLocation) => {
     return submenu;
 };
 
+
+
+/**
+ *
+ *
+ * loads all playlist items 
+ *
+ **/
 module.exports.contextPlaylist = videoContextMenu => {
 
     const akLoaded = document.querySelectorAll(".playlist");

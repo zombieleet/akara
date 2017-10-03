@@ -66,6 +66,8 @@ const SIZE = 1000;
 
 const MEASUREMENT = [ "Bytes", "kB", "MB", "GB", "TB" ];
 
+const TWITTER_OAUTH = "https://api.twitter.com/oauth/authenticate";
+
 /*const BYTE = 8;
 const MBYTE = 1048576;
 const GBYTE = 1073741824;
@@ -81,5 +83,6 @@ module.exports = {
     DOWNLOADED_SUBTITLE,
     SIZE,
     MEASUREMENT,
-    PLAYLIST_FILE
+    PLAYLIST_FILE,
+    TWITTER_OAUTH
 };

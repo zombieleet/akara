@@ -24,18 +24,23 @@ const share = {
         {
             label: "Facebook",
             accelerator: shortcut.facebook,
-            click() {
+            click(mItem, { webContents }, event ) {
+                webContents.send("akara::fb-share");
             }
         },
         {
             label: "Twitter",
             accelerator: shortcut.twitter,
-            click() { }
+            click(mItem, { webContents }, event) {
+                webContents.send("akara::twit-share");
+            }
         },
         {
             label: "Youtube",
             accelerator: shortcut.youtube,
-            click() { }
+            click(mItem, { webContents }, event ) {
+                webContents.send("akara:ytube-share");
+            }
         }
     ]
 };
