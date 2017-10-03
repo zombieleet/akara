@@ -36,10 +36,12 @@ const {
     MAGIC_MIME_TYPE: _GET_MIME
 } = require("mmmagic");
 
+const env = require("dotenv").load();
+const Twitter = require("twitter");
+const bBird = require("bluebird");
+
 const _OS = require("opensubtitles-api");
-
 const url = require("url");
-
 const { spawn } = require("child_process");
 
 const {
@@ -1078,6 +1080,16 @@ const handleArrowKeys = () => {
     return el;
 };
 
+                
+const tClient = bBird.promisifyAll(
+    new Twitter({
+        consumer_key: process.env.AKARA_CONSUMER_KEY,
+        consumer_secret: process.env.AKARA_CONSUMER_SECRET,
+        access_token_key: process.env.AKARA_ACCESS_TOKEN_KEY,
+        access_token_secret: process.env.AKARA_ACCESS_TOKEN_SECRET
+    })
+);
+
 module.exports = {
     createEl,
     removeTarget,
@@ -1110,5 +1122,6 @@ module.exports = {
     handleArrowKeys,
     playlistLoad,
     renderPlayList,
-    deletePlaylist
+    deletePlaylist,
+    tClient
 };
