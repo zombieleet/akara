@@ -71,20 +71,21 @@
     right: 50px;
     button {
         
-        margin: 12px;
-        cursor: pointer;
-        border: none;
-        padding: 20px;
+        /* margin: 12px; */
+        /* cursor: pointer; */
+        /* border: none; */
+        /* padding: 20px; */
 
-        font-size: 1.1em;
+        /* font-size: 1.1em; */
 
-        font-family: tahoma;
+        /* font-family: tahoma; */
 
-        transition: .2s background, color ease-in, .2s color ease-in;
-        &:hover {
-            background: black;
-            color: white;
-        }
+        /* transition: .2s background, color ease-in, .2s color ease-in; */
+        /* &:hover { */
+        /*     background: black; */
+        /*     color: white; */
+        /* } */
+        @extend %buttons;
     }
 
     /*button:last-of-type {

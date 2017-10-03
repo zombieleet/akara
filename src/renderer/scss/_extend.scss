@@ -90,3 +90,19 @@ $drop-down-left-pos: 200;
     font-size: 15px;
     border: 2px solid lighten(black,50%);
 }
+
+%buttons {
+    border: none;
+    padding: 15px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: .2s background ease-in, .2s color ease-in;
+
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    &:hover {
+        background: darken(lightgrey, 70%);
+        color: white;
+    }    
+}
