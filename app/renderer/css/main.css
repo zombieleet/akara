@@ -163,23 +163,23 @@ body {
 .akara-playlist-option > li {
   width: 180px !important; }
 
-.akara-download-header, .akara-media-info, .playlist-header, .loadplaylist-header, .addplaylist-header, .removeplaylist-header, .akara-inputpin-header {
+.akara-download-header, .akara-media-info, .playlist-header, .loadplaylist-header, .addplaylist-header, .removeplaylist-header, .akara-inputpin-header, .podcast-header {
   width: 100%;
   padding: 12px;
   border-bottom: 1px solid black;
   -webkit-app-region: drag; }
-  .akara-download-header span:first-of-type, .akara-media-info span:first-of-type, .playlist-header span:first-of-type, .loadplaylist-header span:first-of-type, .addplaylist-header span:first-of-type, .removeplaylist-header span:first-of-type, .akara-inputpin-header span:first-of-type {
+  .akara-download-header span:first-of-type, .akara-media-info span:first-of-type, .playlist-header span:first-of-type, .loadplaylist-header span:first-of-type, .addplaylist-header span:first-of-type, .removeplaylist-header span:first-of-type, .akara-inputpin-header span:first-of-type, .podcast-header span:first-of-type {
     font-size: 25px; }
-  .akara-download-header span:last-of-type, .akara-media-info span:last-of-type, .playlist-header span:last-of-type, .loadplaylist-header span:last-of-type, .addplaylist-header span:last-of-type, .removeplaylist-header span:last-of-type, .akara-inputpin-header span:last-of-type {
+  .akara-download-header span:last-of-type, .akara-media-info span:last-of-type, .playlist-header span:last-of-type, .loadplaylist-header span:last-of-type, .addplaylist-header span:last-of-type, .removeplaylist-header span:last-of-type, .akara-inputpin-header span:last-of-type, .podcast-header span:last-of-type {
     float: right;
     cursor: pointer;
     margin-right: 15px;
     font-size: 25px;
     -webkit-app-region: no-drag; }
-    .akara-download-header span:last-of-type:hover, .akara-media-info span:last-of-type:hover, .playlist-header span:last-of-type:hover, .loadplaylist-header span:last-of-type:hover, .addplaylist-header span:last-of-type:hover, .removeplaylist-header span:last-of-type:hover, .akara-inputpin-header span:last-of-type:hover {
+    .akara-download-header span:last-of-type:hover, .akara-media-info span:last-of-type:hover, .playlist-header span:last-of-type:hover, .loadplaylist-header span:last-of-type:hover, .addplaylist-header span:last-of-type:hover, .removeplaylist-header span:last-of-type:hover, .akara-inputpin-header span:last-of-type:hover, .podcast-header span:last-of-type:hover {
       color: red; }
 
-.subtitle-body, .download-body, .media-info, .create-playlist-body, .load-playlist-body, .addplaylist-body, .remove-playlist-body, .inputpin-body {
+.subtitle-body, .download-body, .media-info, .create-playlist-body, .load-playlist-body, .addplaylist-body, .remove-playlist-body, .inputpin-body, .podcast-body {
   overflow: hidden;
   background: white; }
 
@@ -572,6 +572,112 @@ table th {
   position: static;
   margin-top: 10%;
   margin-left: 40%; }
+
+.podcast-left {
+  width: 150px;
+  float: left;
+  background: gainsboro;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: 0.9px 0px 10px 0.8px #767676; }
+  .podcast-left ul li {
+    margin-top: 10%;
+    padding: 15px;
+    color: black; }
+  .podcast-left ul li:not(.podcastload) {
+    cursor: pointer; }
+    .podcast-left ul li:not(.podcastload):hover {
+      background: darkgrey;
+      text-decoration: underline; }
+  .podcast-left ul p {
+    background-color: darkgrey;
+    padding: 10px 0;
+    text-align: center;
+    width: 100%; }
+  .podcast-left ul .podcastload {
+    padding: 0; }
+
+.podcastload p {
+  color: black; }
+
+.podcastload .nopoadcast {
+  background: none;
+  line-height: 2;
+  font-size: 13px;
+  margin-top: 50px; }
+
+.podcastload ul li {
+  margin-top: 0;
+  cursor: pointer;
+  color: black;
+  width: 80%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap; }
+
+.podcastload ul li:first-of-type {
+  margin-top: 10px; }
+
+.podcast-modal {
+  width: 40%;
+  height: 20%;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  padding: 50px 100px 100px 100px;
+  border: 2px solid white;
+  border-radius: 5px;
+  background: white; }
+  .podcast-modal .podcast-modal-parent {
+    width: 100%; }
+    .podcast-modal .podcast-modal-parent .podcast-modal-info {
+      margin-bottom: 10px;
+      width: 100%;
+      word-break: break-word;
+      line-height: 1.2;
+      font-size: 10px; }
+    .podcast-modal .podcast-modal-parent .podcast-modal-addpodcastarea {
+      display: block;
+      width: 100%;
+      height: 80px;
+      resize: none;
+      border-radius: 4px; }
+    .podcast-modal .podcast-modal-parent .podcast-modal-btn {
+      display: flex;
+      justify-content: flex-end; }
+      .podcast-modal .podcast-modal-parent .podcast-modal-btn button {
+        width: 20%;
+        border: none;
+        padding: 7px;
+        margin: 10px;
+        cursor: pointer;
+        transition: .2s ease-in;
+        font-size: .9em; }
+        .podcast-modal .podcast-modal-parent .podcast-modal-btn button:hover {
+          background-color: #ededed; }
+      .podcast-modal .podcast-modal-parent .podcast-modal-btn .podcast-modal-cancel {
+        margin-right: -2%; }
+
+.podcast-right {
+  color: black;
+  width: 630px;
+  float: right;
+  height: 100vh;
+  overflow-y: auto;
+  padding-top: 5px; }
+
+.cover-view {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: #4d4d4d;
+  opacity: .75; }
 
 .search-parent {
   position: fixed;

@@ -18,7 +18,8 @@ const {
 const {
     playlist: {
         file: playlistLocation
-    }
+    },
+    podcast
 } = _require("./configuration.js");
 
 const srt2vtt = require("srt2vtt");
@@ -746,7 +747,7 @@ const makeDynamic = (el,i) => {
 /**
  *
  *
- * saves a playlist 
+ * saves a playlist
  * key is the name to saveplaylist with
  * files, an array of files
  * notify, is either true or false
@@ -973,7 +974,7 @@ const renderPlayList = type => {
         p.setAttribute("class", "no-loadplaylist");
 
         document.querySelector("button").hidden = true;
-        
+
         loadplaylist.appendChild(p);
 
         return false;
@@ -1080,7 +1081,7 @@ const handleArrowKeys = () => {
     return el;
 };
 
-                
+
 const tClient = bBird.promisifyAll(
     new Twitter({
         consumer_key: process.env.AKARA_CONSUMER_KEY,
@@ -1089,6 +1090,33 @@ const tClient = bBird.promisifyAll(
         access_token_secret: process.env.AKARA_ACCESS_TOKEN_SECRET
     })
 );
+
+
+const savepodcast = name => {
+
+    const pod = require(podcast);
+
+    if ( Array.isArray(name) )
+    ;
+    else if ( typeof(name) === "string" )
+        name = [ name ];
+    else
+        return false;
+
+    name.forEach( feed => {
+        if ( pod.indexOf(feed) === -1 )
+            pod[pod.length] = feed;
+    });
+    
+    writeFileSync(podcast, JSON.stringify(pod));
+
+    return true;
+};
+
+const loadpodcast = () => {
+    const pod = require(podcast);
+    return pod.length > 0 ? pod : [];
+};
 
 module.exports = {
     createEl,
@@ -1123,5 +1151,7 @@ module.exports = {
     playlistLoad,
     renderPlayList,
     deletePlaylist,
-    tClient
+    tClient,
+    savepodcast,
+    loadpodcast
 };
