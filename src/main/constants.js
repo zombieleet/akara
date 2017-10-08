@@ -27,7 +27,7 @@ const PLAYLIST_FILE = () => {
     if ( existsSync(playlistfile) )
         return playlistfile;
 
-    writeFileSync(playlistfile, JSON.stringify({}));
+    writeFileSync(playlistfile, JSON.stringify([]));
 
     return playlistfile;
 };
@@ -41,6 +41,15 @@ const _CONVERTED_MEDIA = () => {
     mkdirSync(_conv);
 
     return _conv;
+};
+
+const PODCAST = () => {
+    const pod = join(USER_DATA, "podcast.json");
+    if ( existsSync(pod) )
+        return pod;
+    
+    writeFileSync(pod, JSON.stringify([]));
+    return pod;
 };
 
 const _CURRENT_TIME = () => {
@@ -84,5 +93,6 @@ module.exports = {
     SIZE,
     MEASUREMENT,
     PLAYLIST_FILE,
-    TWITTER_OAUTH
+    TWITTER_OAUTH,
+    PODCAST
 };
