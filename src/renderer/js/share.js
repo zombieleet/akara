@@ -64,7 +64,7 @@
                 try {
                     accessTokens = await tClient.post("oauth/request_token", { oauth_callback: "oob" });
                 } catch(ex) {
-                    return dialog.showErrorBox("Error in connection",ex);
+                    return dialog.showErrorBox("Error in connection",ex + " ");
                 }
 
                 let {
