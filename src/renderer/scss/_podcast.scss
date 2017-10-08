@@ -1,0 +1,183 @@
+.podcast-body {
+    @extend %new_window_body;
+}
+
+.podcast-header {
+    @extend %new_window_headers;
+}
+
+.podcast-left {
+
+    width: 150px;
+    float: left;
+    
+    background: lighten(darkgrey, 20%);
+    
+    height: 100vh;
+
+    overflow-y: auto;
+
+    box-shadow: 0.9px 0px 10px 0.8px darken(darkgrey,20%);
+
+    ul {
+        
+        li {
+            margin-top: 10%;
+            padding: 15px;
+            color: black;
+        }
+        
+        li:not(.podcastload) {
+            cursor: pointer;
+            &:hover {
+                background: darkgrey;
+                text-decoration: underline;
+            }
+        }
+        
+        p {
+            background-color: darkgrey;
+            padding: 10px 0;
+            text-align: center;
+            width: 100%;
+        }
+        .podcastload {
+            padding: 0;
+        }
+    }
+}
+
+.podcastload {
+    p {
+        color: black;
+    }
+    .nopoadcast {
+        background: none;
+        line-height: 2;
+        font-size: 13px;
+        margin-top: 50px;
+    }
+    ul {
+        li {
+            margin-top: 0;
+            cursor: pointer;
+            color: black;
+            width: 80%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+
+            white-space: nowrap;
+        }
+        li:first-of-type {
+            margin-top: 10px;
+        }
+    }
+}
+
+.podcast-modal {
+
+    width: 40%;
+    height: 20%;
+    
+    position: absolute;
+
+    margin: auto;
+    
+    top: 0;
+    right: 0;
+
+    left: 0;
+    bottom: 0;
+    
+    padding: 50px 100px 100px 100px;
+    
+    border: 2px solid white;
+    
+    border-radius: 5px;
+
+    background: white;
+
+    .podcast-modal-parent {
+        
+        width: 100%;
+        
+        .podcast-modal-info {
+            margin-bottom: 10px;
+            width: 100%;
+
+            word-break: break-word;
+
+            line-height: 1.2;
+            font-size: 10px;
+        }
+        
+        .podcast-modal-addpodcastarea {
+
+            display: block;
+            
+            width: 100%;
+            height:80px;
+            resize: none;
+
+            border-radius: 4px;
+        }
+
+        .podcast-modal-btn {
+            
+            display: flex;
+            justify-content: flex-end;
+            
+            button {
+
+                width: 20%;
+                
+                border: none;
+                
+                padding: 7px;
+                
+                margin: 10px;
+
+                cursor: pointer;
+
+                transition: .2s ease-in;
+
+                font-size: .9em;
+                
+                &:hover {
+                    background-color: lighten(lightgrey, 10%);
+                }
+            }
+            .podcast-modal-cancel {
+                margin-right: -2%;
+            }
+        }
+    }
+}
+
+
+.podcast-right {
+    
+    color: black;
+    width: 630px;
+    float: right;
+    height: 100vh;
+    
+    overflow-y: auto;
+
+    padding-top: 5px;
+    
+}
+
+.cover-view {
+    
+    width: 100%;
+    
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    
+    background: lighten(black,30%);
+    opacity: .75;
+}
