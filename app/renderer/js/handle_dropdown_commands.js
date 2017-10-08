@@ -321,6 +321,25 @@ const showMediaInfoWindow = () => {
     return true;
 };
 
+
+
+/**
+ *
+ *
+ *
+ **/
+
+const podWinOption = {
+    width: 800,
+    height: 530,
+    title: "podcast",
+    maximizable: false,
+    minimizable: false,
+    resizable: false
+};
+
+const podcast = () => createNewWindow(podWinOption, "podcast.html");
+
 const HandleDroped = () => ({
     addMediaFile,
     addMediaFolder,
@@ -337,7 +356,8 @@ const HandleDroped = () => ({
     _leavefullscreen,
     togglePlist,
     incrDecrVolume,
-    showMediaInfoWindow
+    showMediaInfoWindow,
+    podcast
 });
 
 module.exports = HandleDroped;
