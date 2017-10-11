@@ -4,18 +4,7 @@
 }
 
 .akara-subtitle-header {
-    padding: 10px;
-    -webkit-app-region: drag;
-    font-size: 20px;
-    border-bottom: 2px solid black;
-    .subtitle-close {
-        float: right;
-        -webkit-app-region: no-drag;
-        cursor: pointer;
-        &:hover {
-            color: red;
-        }
-    }
+    @extend %new_window_headers;
 }
 
 
@@ -23,10 +12,9 @@ section {
     width: 100%;
     height: 100%;
     color: white;
-
     .subtitle-form {
         @extend %forms;
-        border-bottom: 4px solid black;
+        border-bottom: 4px solid white;
     }
 }
 
@@ -38,7 +26,7 @@ label[for="series"]{
     margin-left: 12px;
 }
 label {
-    color: $global-color;
+    color: white;
 }
 input[type="checkbox"] {
     display: inline;
@@ -57,16 +45,13 @@ label[for="episode"] {
     margin-left: 15px;
 }
 button[type="search"] {
+    @extend %buttons;
+    
+    position: static;
     float: right;
-    margin-top: 12px;
-    border: none;
     padding: 12px;
-    cursor: pointer;
-    transition: .2s all ease-in-out;
-    &:hover {
-        background: black;
-        color: white;
-    }
+    margin-top: 10px;
+    margin-right: 64px;
 }
 
 .subtitle-loaded {
@@ -75,7 +60,7 @@ button[type="search"] {
     overflow-y: auto;
     padding-bottom: 12px;
     .subtitle-info {
-        color: black;
+        color: white;
         font-size: 30px;
         margin: auto;
         margin-top: 150px;
@@ -84,20 +69,30 @@ button[type="search"] {
 
 
 table {
+    table-layout: fixed;
+    width: 100%;
+    word-wrap: break-word;
     td {
         border: 1px solid gray;
         padding: 12px;
-        color: $global-color;
+        color: white;
+    }
+    td:last-of-type {
+        cursor: pointer;
+        &:hover {
+            text-decoration: underline;
+        }
     }
     .download {
         cursor: pointer;
         transition: .2s all ease-in;
         i {
-            margin: auto;
+            margin-left: 13px;
+            color: white;
         }
         &:hover {
             background: #333333;
-            color: white;
+            color: lighten($global-color,40%);
         }
 
     }
