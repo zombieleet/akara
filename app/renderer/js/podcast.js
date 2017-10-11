@@ -6,12 +6,17 @@
     } = require("../js/util.js");
     
     const {
+        ipcRenderer: ipc,
         remote: {
             dialog,
-            getCurrentWindow
+            getCurrentWindow,
+            require: _require
         }
     } = require("electron");
 
+    const {
+        downloadI
+    } = _require("./utils.js");
 
     const podson = require("podson");
     const path = require("path");
@@ -21,43 +26,122 @@
     const podcastFuncs = document.querySelector(".podcast-fnality");
     const close = document.querySelector(".podcast-close");
 
-    const appendPodcastToDOM = ({ episodes }) => {
+
+    const podcastPlayEvent = ({target}) => {
+        const podcasturl = target.parentNode.parentNode.getAttribute("podcast-url");
+        ipc.sendTo(1, "akara::podcasturl", [ podcasturl ], "podder");
+    };
+
+    const podcastDownloadEvent = () => {
         
-        const podcastParent = document.querySelector(".podcast-right");    
+    };
+
+    
+    const podcastRemoveEvent = ({ target }) => target.remove();
+    
+    const podAudioWidget = () => {
+
+        let widgetP = document.createElement("div");
+        
+        let playI = document.createElement("i"),
+            downloadI = document.createElement("i"),
+            removePodI = document.createElement("i");
+
+        playI.setAttribute("class", "fa fa-play-circle");
+        downloadI.setAttribute("class", "fa fa-download");
+        removePodI.setAttribute("class", "fa fa-times-circle");
+
+        playI.addEventListener("click", podcastPlayEvent);
+        downloadI.addEventListener("click", podcastDownloadEvent);
+        removePodI.addEventListener("click", podcastRemoveEvent);
+
+        [ playI, downloadI, removePodI ].
+            forEach( wid => widgetP.appendChild(wid));
+        
+        widgetP.setAttribute("class", "podaudio-widget");
+        
+        return widgetP;
+    };
+    
+    const appendPodcastToDOM = ({ episodes }) => {
+
+        const podcastParent = document.querySelector(".podcast-right");
         let ul = podcastParent.querySelector("ul");
 
         if ( ul )
             ul.remove();
-        
+
         ul = document.createElement("ul");
-        
+        ul.setAttribute("class", "podcaster-podcast");
+
         for ( let episode of episodes ) {
             const li = document.createElement("li");
+            const { title: podTitle } = episode;
+            
             li.setAttribute("class", "podcast-audio");
             li.setAttribute("podcast-duration", episode.duration);
             li.setAttribute("podcast-title", episode.title);
             li.setAttribute("podcast-filesize", episode.enclosure.filesize);
             li.setAttribute("podcast-url", episode.enclosure.url);
-            li.textContent = episode.title;
+            
+            li.textContent = podTitle.length > 48 ?
+                podTitle.replace(
+                    new RegExp(podTitle.substr(48 + 1, podTitle.length)), "..."
+                )
+                : podTitle;
+
+            li.appendChild(podAudioWidget());
+            
             ul.appendChild(li);
         }
         podcastParent.appendChild(ul);
     };
 
+    const spinOnPodLoad = () => {
+        let podRight = document.querySelector(".podcast-right");
+        let spinner = document.querySelector(".podcast-spinner");
+        let podcasterPod = document.querySelector(".podcaster-podcast");
+
+        if ( spinner )
+            spinner.remove();
+
+        if ( podcasterPod)
+            podcasterPod.remove();
+
+        let spin = document.createElement("i");
+        let loadText = document.createElement("p");
+        
+        spinner = document.createElement("div");
+        spinner.setAttribute("class", "podcast-spinner");
+
+        spin.setAttribute("class", "fa fa-spinner fa-pulse fa-5x");
+        loadText.textContent = "Loading...";
+
+        spinner.appendChild(spin);
+        spinner.appendChild(loadText);
+        
+        podRight.appendChild(spinner);
+
+        return spinner;
+    };
+
     const getPodcast = async (evt) => {
 
         let podLink = evt.target.getAttribute("data-url");
-        
+        let result;
+
         if ( ! url.parse(podLink).protocol )
             podLink = podLink.replace(/^/,"http://");
 
-        let result;
+        let spin = spinOnPodLoad();
 
         try {
             result = await podson.getPodcast(podLink);
         } catch (ex) {
             result = ex;
         }
+
+        spin.remove();
 
         if ( Error[Symbol.hasInstance](result) )
             return dialog.showErrorBox(
@@ -71,7 +155,7 @@
 
 
     const createPodcast = podcasts => {
-        
+
         let ul = document.querySelector(".podcastload ul") || document.createElement("ul");
         let podload = document.querySelector(".podcastload");
         let nopod = document.querySelector(".nopoadcast");
@@ -92,23 +176,6 @@
         podload.appendChild(ul);
     };
 
-    window.addEventListener("DOMContentLoaded", evt => {
-
-        const podcasts = loadpodcast();
-
-        let podload = document.querySelector(".podcastload");
-
-        // pods.length is 0
-        if ( ! podcasts.length ) {
-            let nopod = document.createElement("p");
-            nopod.classList.add("nopoadcast");
-            nopod.innerHTML = "No podcast has been added yet";
-            podload.appendChild(nopod);
-            return ;
-        }
-        createPodcast(podcasts);
-        return ;
-    });
 
     const podcast = Object.defineProperties( {} , {
 
@@ -240,6 +307,24 @@
     });
 
     close.addEventListener("click", () => getCurrentWindow().close());
+
+    window.addEventListener("DOMContentLoaded", evt => {
+
+        const podcasts = loadpodcast();
+
+        let podload = document.querySelector(".podcastload");
+
+        // pods.length is 0
+        if ( ! podcasts.length ) {
+            let nopod = document.createElement("p");
+            nopod.classList.add("nopoadcast");
+            nopod.innerHTML = "No podcast has been added yet";
+            podload.appendChild(nopod);
+            return ;
+        }
+        createPodcast(podcasts);
+        return ;
+    });
 
     podcastKey.register({
         key: "Escape",

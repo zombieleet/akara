@@ -1,16 +1,16 @@
 "use strict";
 
 const { request } = require("http");
-
 const akara_emit = require("../js/emitter.js");
-
 const ffmpeg = require("ffmpeg");
+const srt2vtt = require("srt2vtt");
 
 const {
     remote: {
         require: _require,
         BrowserWindow,
-        dialog
+        dialog,
+        app
     },
     ipcRenderer: ipc
 } = require("electron");
@@ -22,20 +22,17 @@ const {
     podcast
 } = _require("./configuration.js");
 
-const srt2vtt = require("srt2vtt");
-
 const {
     CONVERTED_MEDIA,
-    URL_ONLINE,
-    DOWNLOADED_SUBTITLE,
-    SIZE,
-    MEASUREMENT
+    URL_ONLINE
 } = _require("./constants.js");
 
 const {
     Magic,
     MAGIC_MIME_TYPE: _GET_MIME
 } = require("mmmagic");
+
+const { homedir } = require("os");
 
 const env = require("dotenv").load();
 const Twitter = require("twitter");
@@ -64,6 +61,10 @@ const OS = new _OS("OSTestUserAgentTemp");
 
 const { guessLanguage } = require("guesslanguage");
 
+const {
+    createNewWindow: downloadWindow
+} = _require("./newwindow.js");
+
 const magic = new Magic(_GET_MIME);
 
 // get the main window only
@@ -79,10 +80,12 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
     // nonsence
     //abs_path = URL.createObjectURL( new File([ dirname(abs_path) ] , basename(abs_path)) );
 
-    abs_path = abs_path.replace(/^file:\/\//,"");
+    const { protocol } = url.parse(abs_path);
+    
+    abs_path = abs_path.replace(new RegExp(`^${protocol}//`),"");
 
     child.setAttribute("data-full-path", url.format({
-        protocol: "file",
+        protocol: protocol.replace(":",""),
         slashes: "/",
         pathname: abs_path
     }));
@@ -96,6 +99,8 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
     return child;
 };
 
+module.exports.createEl = createEl;
+
 const removeType = (pNode,...types) => {
     Array.from(pNode.children, el => {
         types.forEach( type => el.hasAttribute(type)
@@ -104,7 +109,7 @@ const removeType = (pNode,...types) => {
     });
 };
 
-
+module.exports.removeType = removeType;
 
 
 /**
@@ -125,7 +130,7 @@ const removeClass = (parentNode, ...types) => {
     });
 };
 
-
+module.exports.removeClass = removeClass;
 
 
 
@@ -174,11 +179,11 @@ const setCurrentPlaying = target => {
     return ;
 };
 
-const RESETTARGET = target => target.nodeName.toLowerCase() === "li" ? target : target.parentNode;
+module.exports.setCurrentPlaying = setCurrentPlaying;
 
 const removeTarget = (target,video) => {
 
-    target = RESETTARGET(target);
+    target = target.nodeName.toLowerCase() === "li" ? target : target.parentNode;
 
     if ( decodeURI(video.src) === target.getAttribute("data-full-path") ) {
 
@@ -209,11 +214,7 @@ const removeTarget = (target,video) => {
     return ;
 };
 
-const __disable = (item,menuObject) => {
-    if (  item === menuObject.label ) {
-        menuObject.enabled = false;
-    }
-};
+module.exports.removeTarget = removeTarget;
 
 const disableMenuItem = (memItem,target,video) => {
 
@@ -247,7 +248,7 @@ const disableMenuItem = (memItem,target,video) => {
 };
 
 
-
+module.exports.disableMenuItem = disableMenuItem;
 
 
 /**
@@ -270,7 +271,7 @@ const setupPlaying = target => {
     return play();
 };
 
-
+module.exports.setupPlaying = setupPlaying;
 
 
 
@@ -281,7 +282,7 @@ const setupPlaying = target => {
  * during video navigation
  *
  **/
-const prevNext = moveTo => {
+module.exports.prevNext = moveTo => {
 
     let target = document.querySelector("[data-now-playing=true]");
 
@@ -292,7 +293,6 @@ const prevNext = moveTo => {
         return setupPlaying(target.previousElementSibling);
 };
 
-const createDir = () => mkdirSync(`${CONVERTED_MEDIA}`);
 
 const getMime = file => new Promise((resolve,reject) => {
     magic.detectFile(file, (err,data) => {
@@ -301,15 +301,19 @@ const getMime = file => new Promise((resolve,reject) => {
     });
 });
 
-const validateMime = async (path) => {
+module.exports.getMime = getMime;
+
+module.exports.validateMime = async (path) => {
 
     const _getMime = await getMime(path);
 
-    if ( ! /^audio|^video/.test(_getMime) ) return undefined;
+    if ( ! /^audio|^video/.test(_getMime) )
+        return undefined;
 
     const canPlay = video.canPlayType(_getMime);
 
-    if ( /^maybe$|^probably$/.test(canPlay) ) return path;
+    if ( /^maybe$|^probably$/.test(canPlay) )
+        return path;
 
     sendNotification("Invalid Mime", {
         body: "Unsupported Mime/Codec detected, this file will be converted in the background"
@@ -352,16 +356,16 @@ const Convert = _path => new Promise((resolve,reject) => {
     });
 });
 
-const playOnDrop = () => {
+module.exports.playOnDrop = () => {
     const firstVideoList = document.querySelector(".playlist");
-    if ( ! video.getAttribute("src") ) {
-        return setupPlaying(firstVideoList);
-    }
+    if ( video.getAttribute("src") )
+        return undefined;
+    return setupPlaying(firstVideoList);
 };
 
-const sendNotification = (title,message) => new Notification(title,message);
+module.exports.sendNotification = (title,message) => new Notification(title,message);
 
-const disableVideoMenuItem = menuInst => {
+module.exports.disableVideoMenuItem = menuInst => {
 
     const toggleSubOnOff = document.querySelector("[data-sub-on]");
 
@@ -428,7 +432,7 @@ const ccState = menuInst => {
             return _mItem;
 
     }
-
+    return undefined;
 };
 
 const disableNoConnection = ( menu, match, submatch) => {
@@ -450,7 +454,7 @@ const disableNoConnection = ( menu, match, submatch) => {
     return menuInst;
 };
 
-const langDetect = (file) => {
+module.exports.langDetect = (file) => {
     return new Promise((resolve,reject) => {
         guessLanguage.name(readFileSync(file).toString(), info => {
             resolve(info);
@@ -458,219 +462,20 @@ const langDetect = (file) => {
     });
 };
 
-const checkValues = ({input,movie,series,season,episode}) => {
-    if ( input.value.length === 0 ) {
-        return "TEXT_LENGTH_GREAT";
-    }
-    if ( series.checked ) {
-        if ( isNaN(season.value) || season.value.length === 0 ) {
-            return "SEASON_INVALID";
-        }
-        if ( isNaN(episode.value) || episode.value.length === 0 )  {
-            return "EPISODE_INVALID";
-        }
-        const query = input.value;
-        season = season.value;
-        episode = episode.value;
-        return { query, season, episode };
-    }
-    if ( input.value.length > 0 &&
-         ! series.checked && ! movie.checked ) {
-        return "SERIES_MOVIE_NO_CHECKED";
-    }
-    if ( movie.checked ) {
-        const query = input.value;
-        return { query };
-    }
-};
+module.exports.getSubtitle = async (option) => {
 
-const getSubtitle = async (option) => {
+    let value;
 
-    let value = await JSON.parse(readFileSync("./testtest.json","utf-8"));
-
-    return value;
-
-    /*let value;
     try {
         value = await OS.search(option);
     } catch(ex) {
         value = ex;
     }
-    return value;*/
+    return value;
 };
 
-const skipUnwanted = key => {
-    let i = 0;
-    switch (key) {
-    case "score":
-        i = 1;
-        break;
-    case "downloads":
-        i = 1;
-        break;
-    case "langcode":
-        i = 1;
-        break;
-    default:
-        i = 0;
 
-    }
-
-    if ( i === 1 ) return false;
-
-    return true;
-};
-
-const createSubtitleEl = (parent,idx,value) => {
-
-    const subtitle = document.createElement("tr");
-
-    subtitle.setAttribute("class","subtitle-item");
-
-    if ( (idx & 1) === 0 ) {
-        subtitle.classList.add("subtitle-color-item");
-    }
-
-    let i = 0;
-
-    const keys = Object.keys(value);
-
-    let __url ;
-    // create subtitle numbering
-    let td = document.createElement("td");
-    td.setAttribute("class", "subtitle-number");
-    td.innerHTML = idx;
-
-    subtitle.appendChild(td);
-
-    while (  i < keys.length ) {
-
-        const _value = value[keys[i]];
-
-        if ( ! skipUnwanted(keys[i]) ) {
-            i++;
-            continue ;
-        }
-
-        td = document.createElement("td");
-        if ( keys[i] === "url" ) {
-
-            __url = _value;
-
-            i++;
-            continue;
-        }
-
-        td.setAttribute("class", "table-data");
-        td.innerHTML = _value;
-        subtitle.appendChild(td);
-        i++;
-    }
-
-    // create download td
-    td = document.createElement("td");
-    td.setAttribute("class", "table-data download");
-    td.setAttribute("data-url", __url);
-
-    // create download icon
-    const download = document.createElement("i");
-    download.setAttribute("class", "fa fa-download");
-    td.appendChild(download);
-
-    subtitle.appendChild(td);
-    return parent.appendChild(subtitle);
-};
-
-const setUpTableHeadersContent = content => {
-    const th = document.createElement("th");
-    th.setAttribute("class", "table-headers");
-    th.innerHTML = content;
-    return th;
-};
-
-const createTableHeaders = values => {
-
-    const tr = document.createElement("tr");
-    const thead = document.createElement("thead");
-    const [ , [ , _value ] ] = Object.entries(values);
-
-    tr.appendChild(setUpTableHeadersContent("s/n"));
-
-    for ( let keys of Object.keys(_value) ) {
-
-        if ( keys === "url" ) continue;
-
-        if ( ! skipUnwanted(keys) ) continue ;
-
-        tr.appendChild(setUpTableHeadersContent(keys));
-    }
-
-    tr.appendChild(setUpTableHeadersContent("download"));
-
-    thead.appendChild(tr);
-
-    return thead;
-};
-
-const styleResult = value => {
-
-    const subtitleListParent = document.querySelector(".subtitle-loaded");
-    const subtitleParent = document.createElement("table");
-
-    let idx = 1;
-
-    subtitleParent.appendChild(createTableHeaders(value));
-
-    for ( let [ key, values ] of Object.entries(value)) {
-        //const { lang, encoding, url, langcode } = values;
-        createSubtitleEl(subtitleParent,idx++,values);
-    }
-    return subtitleListParent.appendChild(subtitleParent);
-};
-
-let INTERVAL_COUNT = 0;
-
-const intervalId = (loaded) => {
-
-    const intId = setInterval( () => {
-        console.log(INTERVAL_COUNT);
-        if ( loaded.getAttribute("hidden") ) return clearInterval(intId);
-
-        if ( INTERVAL_COUNT === 30 ) {
-
-            loaded.innerHTML = "Connection is taking too long";
-
-            INTERVAL_COUNT++;
-
-        } else if ( INTERVAL_COUNT === 60 ) {
-
-            loaded.innerHTML = "Giving Up. Check Your Internet Speed";
-
-            clearInterval(intId);
-
-            INTERVAL_COUNT = 0;
-
-        } else {
-
-            INTERVAL_COUNT++;
-
-        }
-
-    },5000);
-
-    return intId;
-};
-
-const errorCheck = (err,loaded) => {
-    INTERVAL_COUNT = 0;
-    if ( Error[Symbol.hasInstance](err) ) {
-        loaded.innerHTML = "Cannot connect to subtitle server";
-        return true;
-    }
-    return false;
-};
-
-const isOnline = () => new Promise((resolve,reject) => {
+module.exports.isOnline = () => new Promise((resolve,reject) => {
 
     const options = {
         protocol: "http:",
@@ -701,7 +506,7 @@ const isOnline = () => new Promise((resolve,reject) => {
     req.end();
 });
 
-const readSubtitleFile = path => new Promise((resolve,reject) => {
+module.exports.readSubtitleFile = path => new Promise((resolve,reject) => {
     const _path = join(CONVERTED_MEDIA,basename(path).replace(".srt", ".vtt"));
     const data = readFileSync(path);
     srt2vtt(data, (err,vttData) => {
@@ -711,9 +516,11 @@ const readSubtitleFile = path => new Promise((resolve,reject) => {
     });
 });
 
-const getMetaData = async () => {
+module.exports.getMetaData = async () => {
 
-    const url = decodeURIComponent(localStorage.getItem("currplaying")).replace("file://","");
+    const url = decodeURIComponent(
+        localStorage.getItem("currplaying")
+    ).replace("file://","");
 
     const metadata = new ffmpeg(url);
 
@@ -740,7 +547,7 @@ const makeDynamic = (el,i) => {
     return i;
 };
 
-
+module.exports.makeDynamic = makeDynamic;
 
 
 
@@ -756,7 +563,7 @@ const makeDynamic = (el,i) => {
  **/
 
 
-const playlistSave = (key, files, notify) => {
+module.exports.playlistSave = (key, files, notify) => {
 
     const list = require(playlistLocation);
 
@@ -799,7 +606,7 @@ const playlistSave = (key, files, notify) => {
  *
  **/
 
-const playlistLoad = listName => {
+module.exports.playlistLoad = listName => {
 
     if ( typeof(listName) !== "string" )
 
@@ -839,7 +646,7 @@ const playlistLoad = listName => {
  *
  **/
 
-const deletePlaylist = listName => {
+module.exports.deletePlaylist = listName => {
 
     if ( typeof(listName) !== "string" )
         throw TypeError(`expected string as listName but got ${typeof(listName)}`);
@@ -1026,63 +833,10 @@ const updatePlaylistName = target => {
     return true;
 };
 
-const triggerNotArrow = () => {
-
-    const findings = document.querySelector(".findings");
-
-    if ( ! findings || ! findings.hasChildNodes() ) return false;
-
-    let el = findings.querySelector("[data-navigate=true]");
-
-    return [ findings, el ];
-};
+module.exports.updatePlaylistName = updatePlaylistName;
 
 
-const handlePlaySearchResult = () => {
-
-    const val = triggerNotArrow();
-
-    if ( ! val )
-        return false;
-
-    const [ , el ] = val;
-
-    if ( el ) {
-        setupPlaying(el);
-        document.querySelector(".search-parent").remove();
-    }
-    return true;
-};
-
-
-/**
- *
- *
- *
- * handleArrowkeys, this function makes sure that
- *   arrowup and arrowdown key are not trigerred
- *   in some cases to avoid errors
- *
- *
- **/
-
-const handleArrowKeys = () => {
-
-    const val = triggerNotArrow();
-
-    if ( ! val )  return false;
-
-    let [ findings, el ] = val;
-
-    if ( ! el ) {
-        findings.children[0].setAttribute("data-navigate", "true");
-        el = findings.children[0];
-    }
-    return el;
-};
-
-
-const tClient = bBird.promisifyAll(
+module.exports.tClient = bBird.promisifyAll(
     new Twitter({
         consumer_key: process.env.AKARA_CONSUMER_KEY,
         consumer_secret: process.env.AKARA_CONSUMER_SECRET,
@@ -1092,7 +846,7 @@ const tClient = bBird.promisifyAll(
 );
 
 
-const savepodcast = name => {
+module.exports.savepodcast = name => {
 
     const pod = require(podcast);
 
@@ -1107,51 +861,90 @@ const savepodcast = name => {
         if ( pod.indexOf(feed) === -1 )
             pod[pod.length] = feed;
     });
-    
+
     writeFileSync(podcast, JSON.stringify(pod));
 
     return true;
 };
 
-const loadpodcast = () => {
+module.exports.loadpodcast = () => {
     const pod = require(podcast);
     return pod.length > 0 ? pod : [];
 };
 
-module.exports = {
-    createEl,
-    removeTarget,
-    removeClass,
-    removeType,
-    setCurrentPlaying,
-    disableMenuItem,
-    setupPlaying,
-    prevNext,
-    validateMime,
-    playOnDrop,
-    disableVideoMenuItem,
-    disableNoConnection,
-    langDetect,
-    getMime,
-    checkValues,
-    getSubtitle,
-    styleResult,
-    intervalId,
-    errorCheck,
-    isOnline,
-    readSubtitleFile,
-    sendNotification,
-    getMetaData,
-    makeDynamic,
-    playlistSave,
-    updatePlaylistName,
-    triggerNotArrow,
-    handlePlaySearchResult,
-    handleArrowKeys,
-    playlistLoad,
-    renderPlayList,
-    deletePlaylist,
-    tClient,
-    savepodcast,
-    loadpodcast
+
+
+const resumeDownloading = (item,webContents) => {
+    console.log("resume");
+    if ( item.canResume() ) {
+        item.resume();
+        webContents.send("download::state", "resumed");
+    } else {
+        webContents.send("download::state", "noResume");
+    }
 };
+
+
+module.exports.downloadWindow = () => {
+    let __obj = {
+        title: "download",
+        width: 365,
+        height: 315
+    };
+    
+    let html = `${__obj.title}.html`;
+    
+    let window = downloadWindow(__obj,html);
+
+    return window;
+};
+
+const downloadFile = (url, window ) => {
+    
+    window.webContents.downloadURL(url);
+
+    window.webContents.session.on("will-download", (event,item,webContents) => {
+        
+        item.setSavePath(app.getPath("downloads"));
+
+        webContents.send("download::filename", item.getFilename());
+
+        item.on("updated", (event,state) => {
+
+            webContents.send("download::state", state);
+
+            if ( state === "interrupted" )
+                resumeDownloading(item,webContents);
+            console.log(item);
+            webContents.send("download::gottenByte", item.getReceivedBytes());
+            webContents.send("download::computePercent", item.getReceivedBytes(), item.getTotalBytes());
+        });
+
+
+        item.once("done", (event,state) => {
+            webContents.send("download::state", state);
+            akara_emit.emit("download::complete", item.getSavePath());
+        });
+
+        ipc.on("download::cancel", () => {
+            console.log("canceled");
+            webContents.send("download::state", "canceled");
+            item.cancel();
+        });
+
+        ipc.on("download::pause", () => {
+            console.log("paused");
+            item.pause();
+            webContents.send("download::state", "paused");
+        });
+
+        ipc.on("download::resume", () => resumeDownloading(item,webContents));
+        ipc.on("download::restart", () => {
+            webContents.send("download::state", "restarting");
+            downloadFile(url,window);
+        });
+        webContents.send("download::totalbyte", item.getTotalBytes());
+    });
+};
+
+module.exports.downloadFile = downloadFile;

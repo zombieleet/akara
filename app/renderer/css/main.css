@@ -163,25 +163,26 @@ body {
 .akara-playlist-option > li {
   width: 180px !important; }
 
-.akara-download-header, .akara-media-info, .playlist-header, .loadplaylist-header, .addplaylist-header, .removeplaylist-header, .akara-inputpin-header, .podcast-header {
+.akara-subtitle-header, .akara-download-header, .akara-media-info, .playlist-header, .loadplaylist-header, .addplaylist-header, .removeplaylist-header, .akara-inputpin-header, .podcast-header {
   width: 100%;
   padding: 12px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid white;
   -webkit-app-region: drag; }
-  .akara-download-header span:first-of-type, .akara-media-info span:first-of-type, .playlist-header span:first-of-type, .loadplaylist-header span:first-of-type, .addplaylist-header span:first-of-type, .removeplaylist-header span:first-of-type, .akara-inputpin-header span:first-of-type, .podcast-header span:first-of-type {
+  .akara-subtitle-header span:first-of-type, .akara-download-header span:first-of-type, .akara-media-info span:first-of-type, .playlist-header span:first-of-type, .loadplaylist-header span:first-of-type, .addplaylist-header span:first-of-type, .removeplaylist-header span:first-of-type, .akara-inputpin-header span:first-of-type, .podcast-header span:first-of-type {
     font-size: 25px; }
-  .akara-download-header span:last-of-type, .akara-media-info span:last-of-type, .playlist-header span:last-of-type, .loadplaylist-header span:last-of-type, .addplaylist-header span:last-of-type, .removeplaylist-header span:last-of-type, .akara-inputpin-header span:last-of-type, .podcast-header span:last-of-type {
+  .akara-subtitle-header span:last-of-type, .akara-download-header span:last-of-type, .akara-media-info span:last-of-type, .playlist-header span:last-of-type, .loadplaylist-header span:last-of-type, .addplaylist-header span:last-of-type, .removeplaylist-header span:last-of-type, .akara-inputpin-header span:last-of-type, .podcast-header span:last-of-type {
     float: right;
     cursor: pointer;
     margin-right: 15px;
     font-size: 25px;
     -webkit-app-region: no-drag; }
-    .akara-download-header span:last-of-type:hover, .akara-media-info span:last-of-type:hover, .playlist-header span:last-of-type:hover, .loadplaylist-header span:last-of-type:hover, .addplaylist-header span:last-of-type:hover, .removeplaylist-header span:last-of-type:hover, .akara-inputpin-header span:last-of-type:hover, .podcast-header span:last-of-type:hover {
+    .akara-subtitle-header span:last-of-type:hover, .akara-download-header span:last-of-type:hover, .akara-media-info span:last-of-type:hover, .playlist-header span:last-of-type:hover, .loadplaylist-header span:last-of-type:hover, .addplaylist-header span:last-of-type:hover, .removeplaylist-header span:last-of-type:hover, .akara-inputpin-header span:last-of-type:hover, .podcast-header span:last-of-type:hover {
       color: red; }
 
 .subtitle-body, .download-body, .media-info, .create-playlist-body, .load-playlist-body, .addplaylist-body, .remove-playlist-body, .inputpin-body, .podcast-body {
   overflow: hidden;
-  background: white; }
+  background: #4b4b4b;
+  color: white; }
 
 section .subtitle-form, .create-playlist .create-playlist-form {
   font-size: 15px;
@@ -196,7 +197,7 @@ section .subtitle-form, .create-playlist .create-playlist-form {
   font-size: 15px;
   border: 2px solid gray; }
 
-.submit-cancel-button button, .loadplaylist-load, .removeplaylist-load, .inputpin-pin {
+button[type="search"], .submit-cancel-button button, .loadplaylist-load, .removeplaylist-load, .inputpin-pin {
   border: none;
   padding: 15px;
   font-size: 1.1em;
@@ -205,34 +206,22 @@ section .subtitle-form, .create-playlist .create-playlist-form {
   position: fixed;
   bottom: 0;
   right: 0; }
-  .submit-cancel-button button:hover, .loadplaylist-load:hover, .removeplaylist-load:hover, .inputpin-pin:hover {
+  button[type="search"]:hover, .submit-cancel-button button:hover, .loadplaylist-load:hover, .removeplaylist-load:hover, .inputpin-pin:hover {
     background: #212121;
     color: white; }
-
-.akara-subtitle-header {
-  padding: 10px;
-  -webkit-app-region: drag;
-  font-size: 20px;
-  border-bottom: 2px solid black; }
-  .akara-subtitle-header .subtitle-close {
-    float: right;
-    -webkit-app-region: no-drag;
-    cursor: pointer; }
-    .akara-subtitle-header .subtitle-close:hover {
-      color: red; }
 
 section {
   width: 100%;
   height: 100%;
   color: white; }
   section .subtitle-form {
-    border-bottom: 4px solid black; }
+    border-bottom: 4px solid white; }
 
 label[for="series"] {
   margin-left: 12px; }
 
 label {
-  color: #4b4b4b; }
+  color: white; }
 
 input[type="checkbox"] {
   display: inline;
@@ -250,15 +239,11 @@ label[for="episode"] {
   margin-left: 15px; }
 
 button[type="search"] {
+  position: static;
   float: right;
-  margin-top: 12px;
-  border: none;
   padding: 12px;
-  cursor: pointer;
-  transition: .2s all ease-in-out; }
-  button[type="search"]:hover {
-    background: black;
-    color: white; }
+  margin-top: 10px;
+  margin-right: 64px; }
 
 .subtitle-loaded {
   width: 100%;
@@ -266,36 +251,43 @@ button[type="search"] {
   overflow-y: auto;
   padding-bottom: 12px; }
   .subtitle-loaded .subtitle-info {
-    color: black;
+    color: white;
     font-size: 30px;
     margin: auto;
     margin-top: 150px; }
 
-table td {
-  border: 1px solid gray;
-  padding: 12px;
-  color: #4b4b4b; }
-
-table .download {
-  cursor: pointer;
-  transition: .2s all ease-in; }
-  table .download i {
-    margin: auto; }
-  table .download:hover {
-    background: #333333;
+table {
+  table-layout: fixed;
+  width: 100%;
+  word-wrap: break-word; }
+  table td {
+    border: 1px solid gray;
+    padding: 12px;
     color: white; }
-
-table th {
-  border: 1px solid #666666;
-  padding: 8px;
-  box-shadow: 100px 100px 100px #666666 inset;
-  font-weight: bolder; }
-  table th:first-letter {
-    text-transform: uppercase; }
+  table td:last-of-type {
+    cursor: pointer; }
+    table td:last-of-type:hover {
+      text-decoration: underline; }
+  table .download {
+    cursor: pointer;
+    transition: .2s all ease-in; }
+    table .download i {
+      margin-left: 13px;
+      color: white; }
+    table .download:hover {
+      background: #333333;
+      color: #b1b1b1; }
+  table th {
+    border: 1px solid #666666;
+    padding: 8px;
+    box-shadow: 100px 100px 100px #666666 inset;
+    font-weight: bolder; }
+    table th:first-letter {
+      text-transform: uppercase; }
 
 .download {
   font-size: 18px;
-  color: #4b4b4b; }
+  color: white; }
   .download .akara-download-filename {
     width: 100%;
     text-align: center;
@@ -303,12 +295,12 @@ table th {
     font-size: 15px; }
   .download .akara-total-byte {
     width: 100%;
-    background-color: darkgrey;
+    background-color: white;
     margin-top: 20px;
     padding: 3px; }
     .download .akara-total-byte .akara-download-meter {
       width: 0%;
-      background-color: black;
+      background-color: #7e7e7e;
       display: none; }
     .download .akara-total-byte .akara-unknown-download-meter {
       width: 12%;
@@ -576,18 +568,18 @@ table th {
 .podcast-left {
   width: 150px;
   float: left;
-  background: gainsboro;
+  background: #4b4b4b;
   height: 100vh;
   overflow-y: auto;
   box-shadow: 0.9px 0px 10px 0.8px #767676; }
   .podcast-left ul li {
     margin-top: 10%;
     padding: 15px;
-    color: black; }
+    color: white;
+    box-shadow: 0px 1px 9px 0px rgba(238, 238, 238, 0.14); }
   .podcast-left ul li:not(.podcastload) {
     cursor: pointer; }
     .podcast-left ul li:not(.podcastload):hover {
-      background: darkgrey;
       text-decoration: underline; }
   .podcast-left ul p {
     background-color: darkgrey;
@@ -596,27 +588,26 @@ table th {
     width: 100%; }
   .podcast-left ul .podcastload {
     padding: 0; }
+    .podcast-left ul .podcastload p {
+      padding: 12px 0px 12px 0px;
+      margin: 25px auto; }
 
-.podcastload p {
-  color: black; }
-
-.podcastload .nopoadcast {
-  background: none;
-  line-height: 2;
-  font-size: 13px;
-  margin-top: 50px; }
-
-.podcastload ul li {
-  margin-top: 0;
-  cursor: pointer;
-  color: black;
-  width: 80%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap; }
-
-.podcastload ul li:first-of-type {
-  margin-top: 10px; }
+.podcastload {
+  color: white; }
+  .podcastload .nopoadcast {
+    background: none;
+    line-height: 2;
+    font-size: 13px;
+    margin-top: 50px; }
+  .podcastload ul li {
+    margin-top: 0;
+    cursor: pointer;
+    width: 80%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap; }
+  .podcastload ul li:first-of-type {
+    margin-top: 10px; }
 
 .podcast-modal {
   width: 40%;
@@ -628,9 +619,9 @@ table th {
   left: 0;
   bottom: 0;
   padding: 50px 100px 100px 100px;
-  border: 2px solid white;
+  border: 2px solid #4b4b4b;
   border-radius: 5px;
-  background: white; }
+  background: #4b4b4b; }
   .podcast-modal .podcast-modal-parent {
     width: 100%; }
     .podcast-modal .podcast-modal-parent .podcast-modal-info {
@@ -662,8 +653,8 @@ table th {
         margin-right: -2%; }
 
 .podcast-right {
-  color: black;
-  width: 630px;
+  color: white;
+  width: 650px;
   float: right;
   height: 100vh;
   overflow-y: auto;
@@ -676,8 +667,38 @@ table th {
   bottom: 0;
   right: 0;
   left: 0;
-  background: #4d4d4d;
+  background: #989898;
   opacity: .75; }
+
+.podcaster-podcast {
+  padding: 5px;
+  padding-bottom: 20px; }
+  .podcaster-podcast .podcast-audio {
+    padding: 10px;
+    background: #4b4b4b;
+    box-shadow: 0px 1px 9px 0px rgba(238, 238, 238, 0.14);
+    margin-top: 5px;
+    cursor: pointer;
+    color: white;
+    font-weight: 400;
+    font-size: 1em;
+    text-overflow: ellipsis; }
+
+.podcast-spinner {
+  height: 100%;
+  text-align: center; }
+  .podcast-spinner i {
+    margin-top: 20%; }
+  .podcast-spinner p {
+    font-size: 3em;
+    opacity: .13;
+    margin-top: 5%; }
+
+.podaudio-widget {
+  float: right;
+  width: 10%; }
+  .podaudio-widget i:not(:first-of-type) {
+    margin-left: 5px; }
 
 .search-parent {
   position: fixed;
