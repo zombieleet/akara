@@ -10,13 +10,9 @@
 
     width: 150px;
     float: left;
-    
-    background: lighten(darkgrey, 20%);
-    
+    background: $global-color;
     height: 100vh;
-
     overflow-y: auto;
-
     box-shadow: 0.9px 0px 10px 0.8px darken(darkgrey,20%);
 
     ul {
@@ -24,13 +20,15 @@
         li {
             margin-top: 10%;
             padding: 15px;
-            color: black;
+            color: white;
+
+            box-shadow: 0px 1px 9px 0px rgba(238, 238, 238, 0.14);
         }
         
         li:not(.podcastload) {
             cursor: pointer;
             &:hover {
-                background: darkgrey;
+                //background: darkgrey;
                 text-decoration: underline;
             }
         }
@@ -43,14 +41,17 @@
         }
         .podcastload {
             padding: 0;
+            p {
+                padding: 12px 0px 12px 0px;
+                margin: 25px auto;
+            }
         }
     }
 }
 
 .podcastload {
-    p {
-        color: black;
-    }
+    color: white;
+    
     .nopoadcast {
         background: none;
         line-height: 2;
@@ -61,11 +62,9 @@
         li {
             margin-top: 0;
             cursor: pointer;
-            color: black;
             width: 80%;
             text-overflow: ellipsis;
             overflow: hidden;
-
             white-space: nowrap;
         }
         li:first-of-type {
@@ -91,11 +90,11 @@
     
     padding: 50px 100px 100px 100px;
     
-    border: 2px solid white;
+    border: 2px solid $global-color;
     
     border-radius: 5px;
 
-    background: white;
+    background: $global-color;
 
     .podcast-modal-parent {
         
@@ -157,8 +156,9 @@
 
 .podcast-right {
     
-    color: black;
-    width: 630px;
+    color: white;
+    
+    width: 650px;
     float: right;
     height: 100vh;
     
@@ -178,6 +178,52 @@
     right: 0;
     left: 0;
     
-    background: lighten(black,30%);
+    background: lighten($global-color,30%);
     opacity: .75;
+}
+
+.podcaster-podcast {
+
+    padding: 5px;
+
+
+    padding-bottom: 20px;
+    .podcast-audio {
+        padding: 10px;
+        background: $global-color;
+        box-shadow: 0px 1px 9px 0px rgba(238, 238, 238, 0.14);
+        margin-top: 5px;
+        cursor: pointer;
+        color: white;
+        
+        font: {
+            weight: 400;
+            size: 1em;
+        }
+
+        text-overflow: ellipsis;
+    }
+}
+
+
+.podcast-spinner {
+    height: 100%;
+    text-align: center;
+    i {
+        margin-top: 20%;
+    }
+    p {
+        font-size: 3em;
+        opacity: .13;
+
+        margin-top: 5%;
+    }
+}
+
+.podaudio-widget {
+    float: right;
+    width: 10%;
+    i:not(:first-of-type) {
+        margin-left: 5px;
+    }
 }
