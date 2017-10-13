@@ -86,6 +86,7 @@
         /*     color: white; */
         /* } */
         @extend %buttons;
+        position: relative;
     }
 
     /*button:last-of-type {
