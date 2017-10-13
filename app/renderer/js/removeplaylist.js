@@ -25,7 +25,6 @@
         const selection = document.querySelectorAll("[data-load]");
 
         if ( ! selection )
-
             return false;
 
         Array.from(selection, el => {

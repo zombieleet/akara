@@ -432,7 +432,8 @@ table {
     /* &:hover { */
     /*     background: black; */
     /*     color: white; */
-    /* } */ }
+    /* } */
+    position: relative; }
 
 [data-playlist="no-playlist"], [data-playlist="playlist"], [data-saveList="saveList"], [data-saveList="no-saved"] {
   background: white;

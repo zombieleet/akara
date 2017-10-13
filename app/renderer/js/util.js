@@ -4,6 +4,7 @@ const { request } = require("http");
 const akara_emit = require("../js/emitter.js");
 const ffmpeg = require("ffmpeg");
 const srt2vtt = require("srt2vtt");
+const { FFMPEG_LOCATION } = _require("./constants.js");
 
 const {
     remote: {
@@ -85,7 +86,7 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
     abs_path = abs_path.replace(new RegExp(`^${protocol}//`),"");
 
     child.setAttribute("data-full-path", url.format({
-        protocol: protocol.replace(":",""),
+        protocol: protocol ? protocol.replace(":","") : "file",
         slashes: "/",
         pathname: abs_path
     }));
@@ -345,7 +346,7 @@ const Convert = _path => new Promise((resolve,reject) => {
         return resolve(_fpath);
     }
 
-    const ffmpeg = spawn("ffmpeg", ["-i", _path , "-acodec", "libmp3lame", "-vcodec", "mpeg4", "-f", "mp4", _fpath]);
+    const ffmpeg = spawn(FFMPEG_LOCATION, ["-i", _path , "-acodec", "libmp3lame", "-vcodec", "mpeg4", "-f", "mp4", _fpath]);
 
     ffmpeg.stderr.on("data", data => {});
 
@@ -763,7 +764,7 @@ const removeSelections = () => {
  *
  **/
 
-const renderPlayList = type => {
+module.exports.renderPlayList = type => {
 
     const loadplaylist = document.querySelector(`.${type}`);
 
