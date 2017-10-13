@@ -3,8 +3,7 @@
     "use strict";
 
     const {
-        handlePlaySearchResult,
-        handleArrowKeys,
+        setupPlaying,
         makeFullScreen
     } = require("../js/util.js");
 
@@ -36,6 +35,63 @@
 
     const findings = document.querySelector(".findings");
 
+
+    
+    const triggerNotArrow = () => {
+
+        const findings = document.querySelector(".findings");
+
+        if ( ! findings || ! findings.hasChildNodes() )
+            return false;
+
+        let el = findings.querySelector("[data-navigate=true]");
+
+        return [ findings, el ];
+    };
+
+
+    const handlePlaySearchResult = () => {
+
+        const val = triggerNotArrow();
+
+        if ( ! val )
+            return false;
+
+        const [ , el ] = val;
+
+        if ( el ) {
+            setupPlaying(el);
+            document.querySelector(".search-parent").remove();
+        }
+        return true;
+    };
+
+    
+    /**
+     *
+     *
+     *
+     * handleArrowkeys, this function makes sure that
+     *   arrowup and arrowdown key are not trigerred
+     *   in some cases to avoid errors
+     *
+     *
+     **/
+
+    const handleArrowKeys = () => {
+
+        const val = triggerNotArrow();
+
+        if ( ! val )  return false;
+
+        let [ findings, el ] = val;
+
+        if ( ! el ) {
+            findings.children[0].setAttribute("data-navigate", "true");
+            el = findings.children[0];
+        }
+        return el;
+    };
 
     /**
      *

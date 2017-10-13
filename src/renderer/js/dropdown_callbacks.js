@@ -39,7 +39,7 @@ const addMediaCb = (paths,forPlaylist) => {
         mediaPathParent = undefined;
         return ;
     }
-
+    console.log(paths, typeof(paths));
     paths.forEach( path => {
 
         const decodedPath = decodeURIComponent(path);

@@ -1,6 +1,13 @@
 
-const { dialog , app, Menu } = require("electron");
-const { checkType, iterateDir } = require("./utils.js");
+const {
+    dialog,
+    app,
+    Menu
+} = require("electron");
+const {
+    checkType,
+    iterateDir
+} = require("./utils.js");
 
 
 const handleWebContents = ({webContents}) => {
@@ -16,7 +23,6 @@ const handleWebContents = ({webContents}) => {
         let mediaPaths =  checkType(path.replace("file://",""));
         
         if ( ! mediaPaths )
-            
             return dialog.showErrorBox("Invalid File Type", `Error while reading from ${path}`);        
         
         webContents.send("media-droped-files", mediaPaths);
