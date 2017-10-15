@@ -1,3 +1,6 @@
+
+const path = require("path");
+
 const {
     remote: {
         dialog,
@@ -20,7 +23,9 @@ const {
 
 const {
     addMediaCb,
-    searchAndAppend
+    searchAndAppend,
+    saveplaylistCb,
+    loadplaylistCb
 } = require("../js/dropdown_callbacks.js");
 
 const {
@@ -40,7 +45,11 @@ const {
 } = _require("./utils.js"); // get utils from the main process folder
 
 const {
-    prevNext
+    prevNext,
+    exportMpegGurl,
+    exportXspf,
+    importXspf,
+    importMpegGurl
 } = require("../js/util.js");
 
 const addMediaFile = () => {
@@ -340,6 +349,28 @@ const podWinOption = {
 
 const podcast = () => createNewWindow(podWinOption, "podcast.html");
 
+const saveplaylist = () => {
+    dialog.showSaveDialog({
+        defaultPath: app.getPath("documents"),
+        filters: [
+            { name: "xml shareable portable format" , extensions: [ "xspf" ] },
+            { name: "media playlist format", extensions: [ "m3u8", "m3u" ] }
+        ]
+    }, saveplaylistCb);
+};
+
+const loadplaylist = () => {
+    dialog.showOpenDialog({
+        defaultPath: app.getPath("documents"),
+        properties: [ "multiSelection", "openFile" ],
+        filters: [
+            { name: "xml shareable portable format" , extensions: [ "xspf" ] },
+            { name: "media playlist format", extensions: [ "m3u8", "m3u" ] }
+        ]
+    }, loadplaylistCb);
+};
+
+
 const HandleDroped = () => ({
     addMediaFile,
     addMediaFolder,
@@ -357,7 +388,9 @@ const HandleDroped = () => ({
     togglePlist,
     incrDecrVolume,
     showMediaInfoWindow,
-    podcast
+    podcast,
+    saveplaylist,
+    loadplaylist
 });
 
 module.exports = HandleDroped;

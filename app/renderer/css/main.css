@@ -127,6 +127,9 @@ body {
   animation-timing-function: ease-in;
   animation-fill-mode: forwards; }
 
+[data-dynamic-style] {
+  background: lightgrey; }
+
 .akara-media .akara-load .akara-loaded > li:hover, [data-clicked="true"] {
   background: #3e3e3e; }
 
@@ -418,9 +421,7 @@ table {
   float: right;
   position: absolute;
   bottom: 50px;
-  right: 50px;
-  /*button:last-of-type {
-    }*/ }
+  right: 50px; }
   .submit-cancel-button button {
     /* margin: 12px; */
     /* cursor: pointer; */
@@ -432,8 +433,9 @@ table {
     /* &:hover { */
     /*     background: black; */
     /*     color: white; */
-    /* } */
-    position: relative; }
+    /* } */ }
+  .submit-cancel-button button:first-of-type {
+    right: 90px; }
 
 [data-playlist="no-playlist"], [data-playlist="playlist"], [data-saveList="saveList"], [data-saveList="no-saved"] {
   background: white;
@@ -472,9 +474,6 @@ table {
   .create-playlist-item i, .saved-playlist i {
     cursor: pointer; }
 
-[data-dynamic-style] {
-  background: lightgrey; }
-
 [data-saveList="saveList"] {
   cursor: pointer; }
 
@@ -485,18 +484,20 @@ table {
   max-height: 400px; }
   .loadplaylist ul, .removeplaylist ul {
     margin-top: 20px; }
-    .loadplaylist ul li, .removeplaylist ul li {
+    .loadplaylist ul :not([data-dyanmic-style]), .removeplaylist ul :not([data-dyanmic-style]) {
+      color: white; }
+    .loadplaylist ul .loadplaylist-item, .removeplaylist ul .loadplaylist-item {
       padding: 20px 20px 30px 20px;
       margin-bottom: 15px;
       cursor: pointer;
       transition: .2s background ease-in, .2s color ease-in; }
-      .loadplaylist ul li p:first-letter, .removeplaylist ul li p:first-letter {
+      .loadplaylist ul .loadplaylist-item p:first-letter, .removeplaylist ul .loadplaylist-item p:first-letter {
         text-transform: uppercase; }
-      .loadplaylist ul li p, .removeplaylist ul li p {
+      .loadplaylist ul .loadplaylist-item p, .removeplaylist ul .loadplaylist-item p {
         float: left; }
-      .loadplaylist ul li span, .removeplaylist ul li span {
+      .loadplaylist ul .loadplaylist-item span, .removeplaylist ul .loadplaylist-item span {
         float: right; }
-      .loadplaylist ul li:hover, .removeplaylist ul li:hover {
+      .loadplaylist ul .loadplaylist-item:hover, .removeplaylist ul .loadplaylist-item:hover {
         background-color: #6d6d6d;
         color: white; }
 

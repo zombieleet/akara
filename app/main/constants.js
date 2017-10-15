@@ -27,7 +27,7 @@ const PLAYLIST_FILE = () => {
     if ( existsSync(playlistfile) )
         return playlistfile;
 
-    writeFileSync(playlistfile, JSON.stringify([]));
+    writeFileSync(playlistfile, JSON.stringify({}));
 
     return playlistfile;
 };
