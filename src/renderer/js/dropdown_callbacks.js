@@ -9,9 +9,18 @@ const {
     existsSync
 } = require("fs");
 
+const path = require("path");
+
 const {
+    
     createEl,
-    playOnDrop
+    playOnDrop,
+    importMpegGurl,
+    exportMpegGurl,
+    
+    importXspf,
+    exportXspf
+    
 } = require("../js/util.js");
 
 console.log(createEl);
@@ -39,7 +48,11 @@ const addMediaCb = (paths,forPlaylist) => {
         mediaPathParent = undefined;
         return ;
     }
-    console.log(paths, typeof(paths));
+
+    paths = typeof(paths) === "string"
+        ? [ paths ]
+        : paths;
+        
     paths.forEach( path => {
 
         const decodedPath = decodeURIComponent(path);
@@ -59,7 +72,6 @@ const addMediaCb = (paths,forPlaylist) => {
 const searchAndAppend = (input,findings) => {
 
     input.addEventListener("keyup", evt => {
-
 
         if ( /^38$|^40$/.test(evt.keyCode) ) return false;
         
@@ -110,7 +122,62 @@ const searchAndAppend = (input,findings) => {
     });
 };
 
+const saveplaylistCb = fpath => {
+    
+    if ( ! fpath )
+        return false;
+    
+    if ( /m3u|m3u8/.test(path.extname(fpath)) )
+        return exportMpegGurl(fpath);
+    
+    if ( path.extname(fpath) === ".xspf" )
+        return exportXspf(fpath);
+    
+    return false;
+};
+
+const loadplaylistCb = lists => {
+    if ( ! lists )
+        return false;
+
+    let result ;
+    
+    try {
+        
+        lists.forEach( async (list) => {
+            
+            if ( path.extname(list) === ".xspf" ) {
+                let tracks = await importXspf(list);
+                for ( let _track of tracks ) {
+                    let { location: [ location ] } = _track;
+                    addMediaCb(location);
+                }
+            }
+            
+            if ( /m3|m3u8/.test(path.extname(list)) ) {
+                let tracks = await importMpegGurl(list);
+                addMediaCb(tracks);
+            }
+            
+        });
+        
+    } catch(ex) {
+        result = ex;
+    }
+
+    if ( Error[Symbol.hasInstance](result) ) {
+        return dialog.showErrorBox(
+            "Uexpected Error",
+            "An Error Occured while parsing the playlist"
+        );
+    }
+    return true;
+};
+
+
 module.exports = {
     addMediaCb,
-    searchAndAppend
+    searchAndAppend,
+    saveplaylistCb,
+    loadplaylistCb
 };
