@@ -43,7 +43,7 @@ $drop-down-left-pos: 200;
 
     width: 100%;
     padding: 12px;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid white;
 
     -webkit-app-region: drag;
 
@@ -70,7 +70,8 @@ $drop-down-left-pos: 200;
 
 %new_window_body {
     overflow: hidden;
-    background: white;
+    background: $global-color;
+    color: white;
 }
 
 %forms {

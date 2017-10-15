@@ -14,8 +14,11 @@
     max-height: 400px;
     ul {
         margin-top: 20px;
-        
-        li {
+
+        :not([data-dyanmic-style]) {
+            color: white;
+        }
+        .loadplaylist-item {
             
             padding: 20px 20px 30px 20px;
 

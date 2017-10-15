@@ -10,3 +10,7 @@
 8. install superagent for api calls on youtube, fb, twiter and others, instead of using the built in http/https module
 9. support for plugin on playlist ( get, set , remove , delete )
 10. fix repeat bug once and for all
+ffmpeg -i input.mp4 <video options> -filter split rtmp://server[:port][/app] out.mp4
+
+ffmpeg -i original.mp4 -c:v libvpx -preset slow -s 1024x576 -qmin 0 -qmax 50 -an -b:v 400K -pass 1 homepage.webm
+ffmpeg -i original.mp4 -c:v libx264 -preset slow -s 1024x576 -an -b:v 370K homepage.mp4

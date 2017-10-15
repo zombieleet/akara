@@ -24,13 +24,10 @@
     } = require("fs");
 
     const {
-        checkValues,
         getSubtitle,
-        styleResult,
-        intervalId,
-        errorCheck,
         isOnline,
-        downloadURL
+        downloadWindow,
+        downloadFile
     } = require("../js/util.js");
 
     const akara_emit =  require("../js/emitter.js");
@@ -40,25 +37,20 @@
     const button = document.querySelector("button");
     const season = document.querySelector("#season");
     const episode = document.querySelector("#episode");
-    const input = document.querySelector(".subtitle-input");
+    const input = document.querySelector(".subtitle-form-input");
     const loaded = document.querySelector(".subtitle-info");
     const close = document.querySelector(".subtitle-close");
     const section = document.querySelector("section");
 
 
-
-    
     /**
      *
      *
-     * handleSearch calls the getSubtitle function 
+     * handleSearch calls the getSubtitle function
      *   to retrieve the subtitle file and
      *   also calls the styleResult to render the result
      *
      **/
-
-
-    
     const handleSearch = async (value,_id) => {
 
         const {
@@ -70,76 +62,204 @@
         let result;
 
         if ( series.checked ) {
-            // that means series was checked
             result = await getSubtitle({query,season,episode});
         } else {
-            // movies was checked
             result = await getSubtitle({query});
         }
 
-        if ( ! noNetwork({result,_id}) )
-            return styleResult(result);
-
-    };
-
-
-
-    
-    /**
-     *
-     * if there is an error in retrieving the subtitle file
-     *   we assume there was a network error
-     *
-     **/
-    
-    const noNetwork  = ({result,_id}) => {
-        if ( errorCheck(result,loaded) ) {
-            clearInterval(_id);
+        if ( Error[Symbol.hasInstance](result) ) {
+            loaded.innerHTML = "Cannot connect to subtitle server";
             return true;
         }
-        loaded.setAttribute("hidden", "true");
-        return false;
-    };
 
-
-
-    
-    /**
-     *
-     *
-     * validates the return value of the users inputs
-     * which is assigned to an object
-     *
-     **/
-    
-    const validateSubtitle = value => {
-
-        if ( typeof(value) === "object" ) {
-
-            loaded.innerHTML = "Loading...";
-
-            const {query,season,episode} = value;
-
-            const _id = intervalId(loaded);
-            return handleSearch(value,_id);
+        if ( Object.keys(result).length === 0 ) {
+            loaded.innerHTML = "Cannot find required subtitle";
+            return true;
         }
+
+        loaded.hidden = true;
+        return styleResult(result);
+    };
+
+    const styleResult = value => {
+
+        const subtitleListParent = document.querySelector(".subtitle-loaded");
+        const subtitleParent = document.createElement("table");
+
+        let idx = 1;
+
+        subtitleParent.appendChild(createTableHeaders(value));
+
+        for ( let [ key, values ] of Object.entries(value)) {
+            //const { lang, encoding, url, langcode } = values;
+            createSubtitleEl(subtitleParent,idx++,values);
+        }
+        return subtitleListParent.appendChild(subtitleParent);
+    };
+
+    const createSubtitleEl = (parent,idx,value) => {
+
+        const subtitle = document.createElement("tr");
+
+        subtitle.setAttribute("class","subtitle-item");
+
+        if ( (idx & 1) === 0 ) {
+            subtitle.classList.add("subtitle-color-item");
+        }
+
+        let i = 0;
+
+        const keys = Object.keys(value);
+
+        let __url ;
+        // create subtitle numbering
+        let td = document.createElement("td");
+        td.setAttribute("class", "subtitle-number");
+        td.innerHTML = idx;
+
+        subtitle.appendChild(td);
+
+        while (  i < keys.length ) {
+
+            const _value = value[keys[i]];
+
+            if ( ! skipUnwanted(keys[i]) ) {
+                i++;
+                continue ;
+            }
+
+            td = document.createElement("td");
+            if ( keys[i] === "url" ) {
+
+                __url = _value;
+
+                i++;
+                continue;
+            }
+
+            td.setAttribute("class", "table-data");
+            td.innerHTML = _value;
+            subtitle.appendChild(td);
+            i++;
+        }
+
+        td.addEventListener("click", () => {
+
+            let win= downloadWindow();
+
+            downloadFile(__url,win);
+
+            akara_emit.once("download::complete", fpath => {
+                console.log("sent");
+                ipc.sendTo(1,"subtitle::load-sub", "net", fpath);
+            });
+        });
+
+        return parent.appendChild(subtitle);
+    };
+
+    const setUpTableHeadersContent = content => {
+        const th = document.createElement("th");
+        th.setAttribute("class", "table-headers");
+        th.innerHTML = content;
+        return th;
+    };
+
+    const createTableHeaders = values => {
+
+        const tr = document.createElement("tr");
+        const thead = document.createElement("thead");
+        const [ , [ , _value ] ] = Object.entries(values);
+
+        tr.appendChild(setUpTableHeadersContent("s/n"));
+
+        for ( let keys of Object.keys(_value) ) {
+
+            if ( keys === "url" )
+                continue;
+
+            if ( ! skipUnwanted(keys) )
+                continue ;
+
+            tr.appendChild(setUpTableHeadersContent(keys));
+        }
+
+        thead.appendChild(tr);
+
+        return thead;
     };
 
 
-    
+    const skipUnwanted = key => {
+
+        let i = 0;
+
+        switch (key) {
+
+        case "score":
+            i = 1;
+            break;
+        case "downloads":
+            i = 1;
+            break;
+        case "langcode":
+            i = 1;
+            break;
+        case "id":
+            i = 1;
+            break;
+        default:
+            i = 0;
+
+        }
+
+        if ( i === 1 )
+            return false;
+
+        return true;
+    };
+
+
+    const checkValues = ({input,movie,series,season,episode}) => {
+
+        if ( input.value.length === 0 )
+            return "TEXT_LENGTH_GREAT";
+
+        if ( series.checked ) {
+            if ( isNaN(season.value) || season.value.length === 0 ) {
+                return "SEASON_INVALID";
+            }
+            if ( isNaN(episode.value) || episode.value.length === 0 )  {
+                return "EPISODE_INVALID";
+            }
+            const query = input.value;
+            season = season.value;
+            episode = episode.value;
+            return { query, season, episode };
+        }
+
+        if ( input.value.length > 0 && ! series.checked && ! movie.checked ) {
+            return "SERIES_MOVIE_NO_CHECKED";
+        }
+
+        if ( movie.checked ) {
+            const query = input.value;
+            return { query };
+        }
+
+        return undefined;
+    };
+
+
+
     close.addEventListener("click", () => {
         ipc.send("close-subtitle-window");
     });
-
-
-    
 
     movie.addEventListener("change", () => {
         console.log(movie.checked);
     });
 
-
-    
     series.addEventListener("change", () => {
         let sOption = document.querySelector(".series-option");
         if ( series.checked ) {
@@ -151,7 +271,6 @@
     });
 
 
-
     /**
      *
      *
@@ -159,8 +278,6 @@
      *
      **/
 
-
-    
     button.addEventListener("click", async (e) => {
 
         e.preventDefault();
@@ -181,42 +298,25 @@
             loaded.innerHTML = "Search type is not checked";
             break;
         default:
-            validateSubtitle(value);
+
+            if ( typeof(value) === "object" ) {
+
+                let table = document.querySelector("table");
+
+                if ( table ) {
+                    table.remove();
+                    loaded.hidden = false;
+                }
+
+                loaded.innerHTML = "Loading...";
+
+                const {query,season,episode} = value;
+
+                handleSearch(value);
+            }
+
         }
 
-    });
-
-
-    
-    /**
-     *
-     * when download icon is clicked
-     * the url of the subtitle is saved in the 
-     *   localStorage with key "url"
-     *  a new window is then created
-     *
-     **/
-
-
-    
-    section.addEventListener("click", event => {
-        const target = event.target;
-
-        if ( ! target.hasAttribute("data-url") ) return false;
-
-        const url = target.getAttribute("data-url");
-
-        const __obj = {
-            title: "download",
-            width: 365,
-            height: 315
-        };
-
-        const html = `${__obj.title}.html`;
-
-        createNewWindow(__obj,html);
-
-        localStorage.setItem("url", url);
     });
 
 })();

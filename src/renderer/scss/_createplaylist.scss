@@ -88,8 +88,9 @@
         @extend %buttons;
     }
 
-    /*button:last-of-type {
-    }*/
+    button:first-of-type {
+        right: 90px;
+    }
 }
 
 %list {
@@ -154,10 +155,6 @@
     i {
         cursor: pointer;
     }
-}
-
-[data-dynamic-style] {
-    background: lightgrey;
 }
 
 [data-saveList="no-saved"] {

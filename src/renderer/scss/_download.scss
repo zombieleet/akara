@@ -8,8 +8,9 @@
 }
 
 .download {
+    
     font-size: 18px;
-    color: $global-color;
+    color: white;
     
     .akara-download-filename {
         width: 100%;
@@ -21,18 +22,18 @@
 
     .akara-total-byte {
         width: 100%;
-        background-color: darkgrey;
+        background-color: white;
         margin-top: 20px;
         padding: 3px;
         .akara-download-meter {
             width: 0%;
-            background-color: black;
+            background-color: lighten($global-color,20%);
             display: none;
         }
         .akara-unknown-download-meter {
             //display: none;
             width: 12%;
-            background-color: black;
+            background-color: darken($global-color,30%);
         }
     }
     .akara-bytes {

@@ -449,7 +449,8 @@ const playNextOrPrev = () => {
     // ask user if to play next or
     // previous video or not at all
 
-    if ( ! playlistItem ) return disableControls();
+    if ( ! playlistItem )
+        return disableControls();
 
     if ( playlistItem.nextElementSibling ) {
         return controls.next();
@@ -1212,34 +1213,6 @@ module.exports.subHandler = ( event, from, fPath ) => {
     return true;
 };
 
-if ( require.main !== module ) {
-
-    akara_emit.on("video::state:track", (id,mode) => {
-
-        const {
-            submenu
-        } = videoContextMenu[16].submenu[1];
-
-        if ( mode === "disable" ) {
-
-            Object.assign(submenu[id], {
-                checked: false
-            });
-
-            Object.assign(videoContextMenu[16].submenu[1], {
-                submenu
-            });
-
-            return ;
-        }
-
-        Object.assign(submenu[id], {
-            checked: true
-        });
-    });
-
-}
-
 
 
 /**
@@ -1314,3 +1287,32 @@ module.exports.contextPlaylist = videoContextMenu => {
 
     return submenu;
 };
+
+
+if ( require.main !== module ) {
+
+    akara_emit.on("video::state:track", (id,mode) => {
+
+        const {
+            submenu
+        } = videoContextMenu[16].submenu[1];
+
+        if ( mode === "disable" ) {
+
+            Object.assign(submenu[id], {
+                checked: false
+            });
+
+            Object.assign(videoContextMenu[16].submenu[1], {
+                submenu
+            });
+
+            return ;
+        }
+
+        Object.assign(submenu[id], {
+            checked: true
+        });
+    });
+
+}

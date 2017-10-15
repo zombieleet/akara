@@ -27,7 +27,7 @@ const PLAYLIST_FILE = () => {
     if ( existsSync(playlistfile) )
         return playlistfile;
 
-    writeFileSync(playlistfile, JSON.stringify([]));
+    writeFileSync(playlistfile, JSON.stringify({}));
 
     return playlistfile;
 };
@@ -77,6 +77,7 @@ const MEASUREMENT = [ "Bytes", "kB", "MB", "GB", "TB" ];
 
 const TWITTER_OAUTH = "https://api.twitter.com/oauth/authenticate";
 
+const FFMPEG_LOCATION = `${__dirname}/node_modules/.bin/ffmpeg`;
 /*const BYTE = 8;
 const MBYTE = 1048576;
 const GBYTE = 1073741824;
@@ -94,5 +95,6 @@ module.exports = {
     MEASUREMENT,
     PLAYLIST_FILE,
     TWITTER_OAUTH,
-    PODCAST
+    PODCAST,
+    FFMPEG_LOCATION
 };

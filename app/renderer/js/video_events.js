@@ -9,6 +9,10 @@
     } = require("../js/video_control.js");
 
     const {
+        addMediaCb
+    } = require("../js/dropdown_callbacks.js");
+    
+    const {
         readSubtitleFile
     } = require("../js/util.js");
 
@@ -36,7 +40,7 @@
         _leavefullscreen,
         showMediaInfoWindow
     } = require("../js/handle_dropdown_commands.js")();
-
+  
     const {
         fireControlButtonEvent,
         videoLoadData,
@@ -172,6 +176,8 @@
     ipc.on("video-search", search);
 
     ipc.on("media-info", showMediaInfoWindow);
+
+    ipc.on("akara::podcasturl", (evt,path,category) => addMediaCb(path,category));
 
     akaraControl.addEventListener("mousedown", controlDragFullScreen);
 

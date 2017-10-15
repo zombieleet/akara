@@ -6,16 +6,19 @@
         ipcRenderer: ipc,
         remote: {
             BrowserWindow,
+            getCurrentWindow,
             require: _require
         }
     } = require("electron");
 
     const {
-        downloadURL,
-        computeByte
-    } = _require("./utils.js");
+        downloadURL
+    } = require("../js/util.js");
 
-    const url = localStorage.getItem("url");
+    const {
+        SIZE,
+        MEASUREMENT
+    } = _require("./constants.js");
 
     const close  = document.querySelector(".download-close");
     const filename = document.querySelector(".akara-download-filename");
@@ -33,15 +36,17 @@
     const resume = document.querySelector(".akara-download-resume");
     const restart = document.querySelector(".akara-download-restart");
 
-    /**
-     * 
-     * get window with title Download
-     *
-     **/
-    
-    const [ win ] = BrowserWindow.getAllWindows().filter(
-        win => win.getTitle() === "Download" ? win : undefined
-    );
+    const computeByte = bytes => {
+        
+        if ( bytes === 0 )
+            return `${bytes} byte`;
+        
+        const idx = Math.floor(
+            Math.log(bytes) / Math.log(SIZE)
+        );
+        
+        return `${( bytes / Math.pow(SIZE,idx)).toPrecision(3)} ${MEASUREMENT[idx]}`;
+    };
 
 
     /**
@@ -58,12 +63,7 @@
         resume.hidden = _resume;
         restart.hidden = _restart;
     };
-
-    // remove stored url
-    localStorage.removeItem("url");
-
-    // open download window
-    downloadURL(url,win);
+    
 
 
     /**
@@ -76,7 +76,9 @@
     
     ipc.on("download::state", (event,state) => {
 
-        downloadState.textContent = state === "progressing" ? "Downloading" : state;
+        downloadState.textContent = state === "progressing"
+            ? "Downloading"
+            : state;
 
         switch(state) {
         case "paused":
@@ -158,6 +160,10 @@
     });
 
 
+    ipc.on("akara::downloadPath", (evt,url,cb) => {
+        downloadURL(url,getCurrentWindow(),cb);
+    });
+    
     /**
      *
      * download::computePercent calculates 
@@ -193,7 +199,6 @@
         ipc.send("download::cancel");
         ipc.send("close-download-window");
     });
-
     
     restart.addEventListener("click", () => {
         ipc.send("download::restart");
