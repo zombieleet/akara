@@ -4,7 +4,14 @@ const { request } = require("http");
 const akara_emit = require("../js/emitter.js");
 const ffmpeg = require("ffmpeg");
 const srt2vtt = require("srt2vtt");
-const { FFMPEG_LOCATION } = _require("./constants.js");
+const m3u8 = require("m3u8");
+const m3ureader = require("m3u8-reader");
+const xmlbuilder = require("xmlbuilder");
+const xml2js = require("xml2js");
+const fs = require("fs");
+
+//const { M3U: m3uParser } = require("playlist-parser");
+
 
 const {
     remote: {
@@ -61,6 +68,7 @@ const { video, controls: { play } } = require("../js/video_control.js");
 const OS = new _OS("OSTestUserAgentTemp");
 
 const { guessLanguage } = require("guesslanguage");
+const { FFMPEG_LOCATION } = _require("./constants.js");
 
 const {
     createNewWindow: downloadWindow
@@ -364,7 +372,8 @@ module.exports.playOnDrop = () => {
     return setupPlaying(firstVideoList);
 };
 
-module.exports.sendNotification = (title,message) => new Notification(title,message);
+const sendNotification = (title,message) => new Notification(title,message);
+module.exports.sendNotification = sendNotification;
 
 module.exports.disableVideoMenuItem = menuInst => {
 
@@ -949,3 +958,80 @@ const downloadFile = (url, window ) => {
 };
 
 module.exports.downloadFile = downloadFile;
+
+module.exports.exportMpegGurl = file => {
+    
+    const m3u = m3u8.M3U.create();
+    
+    const playlists = document.querySelectorAll(".playlist");
+    
+    Array.from(playlists, list => {
+        m3u.addPlaylistItem({
+            uri: decodeURIComponent(list.getAttribute("data-full-path"))
+        });
+    });
+
+    let writeStream = fs.createWriteStream(file);
+    writeStream.write(m3u.toString());
+    return ;
+};
+
+module.exports.exportXspf = file => {
+    const buildRoot = xmlbuilder.create({
+        playlist: {
+            "@version": 1,
+            "@xmlns": "http://xspf.org/ns/0/",
+            tracklist: {}
+        }
+    });
+
+    const tracklist = buildRoot.ele("tracklist");
+    const playlists = document.querySelectorAll(".playlist");
+
+    
+    Array.from(playlists, list => {
+        let track = tracklist.ele("track");
+        track.ele("title").text(list.querySelector("span").textContent);
+        track.ele("location").text(
+            decodeURIComponent(list.getAttribute("data-full-path"))
+        );
+    });
+    
+    let writeStream = fs.createWriteStream(file);
+    writeStream.write(buildRoot.end({pretty: true}));
+    return ;
+};
+
+module.exports.importXspf = file => {
+    
+    const parser = new xml2js.Parser();
+    
+    return new Promise((resolve,reject) => {
+        
+        fs.readFile(file, (err,data) => {
+            
+            if ( err )
+                reject(err);
+
+            parser.parseString(data, (err,result) => {
+                if ( err )
+                    reject(err);
+                
+                let { tracklist: [ , track ] } = result.playlist;
+                ({ track } = track);
+                resolve(track);
+            });
+            
+        });
+    });
+};
+
+module.exports.importMpegGurl = file => {
+    return new Promise((resolve,reject) => {
+        fs.readFile(file, "utf8", (err,data) => {
+            if ( err )
+                reject(err);
+            resolve(m3ureader(data));
+        });
+    });
+};
