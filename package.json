@@ -24,6 +24,8 @@
         "electron": "^1.7.9",
         "facebook-api-video-upload": "^1.2.2",
         "ffmpeg": "0.0.4",
+        "google-auth-library": "^0.11.0",
+        "googleapis": "^22.2.0",
         "guesslanguage": "^0.2.0",
         "gulp": "^3.9.1",
         "m3u": "git+https://github.com/felixge/node-m3u.git",

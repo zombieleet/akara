@@ -6,3 +6,4 @@ app/renderer/html/*.html
 converted_media/
 _test.js
 .env
+youtube.json
