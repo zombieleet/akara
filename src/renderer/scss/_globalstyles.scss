@@ -25,3 +25,7 @@ body {
     animation-timing-function: ease-in;
     animation-fill-mode: forwards;
 }
+
+[data-dynamic-style] {
+    background: lightgrey;
+}
