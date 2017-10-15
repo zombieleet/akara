@@ -12,7 +12,8 @@
     }  = require("electron");
 
     const {
-        playlistSave
+        playlistSave,
+        setupPlaying
     } = require("../js/util.js");
 
     const {
@@ -51,41 +52,34 @@
                         ).map( el => el.parentNode);
 
                 if ( ! medialist || medialist.length  === 0 )
-                    return false;
+                    return ;
 
                 Array.from(medialist, el => {
-
-                    const path = el.getAttribute("data-full-path").replace(/^file:\/\//,"");
-                    const playlistName = el.getAttribute("data-belongsto-playlist");
-                    ////////////////////////////////////////////////
-                    // if ( list[playlistName].indexOf(path) )  { //
-                    //                                            //
-                    //     list[playlistName].filter( mList => {  //
-                    //         if ( mList !== path )              //
-                    //             return mList;                  //
-                    //     });                                    //
-                    //                                            //
-                    // }                                          //
-                    ////////////////////////////////////////////////
-
-                    let newList = list[playlistName].filter( mList => {
-                        if ( mList !== path ) {
-                            console.log(mList, path);
-                            return mList;
-                        }
-                    });
-
-                    playlistSave(playlistName, newList, false);
-
                     el.remove();
-
                 });
 
-                playNextOrPrev();
+                
+                const checkState = document.querySelector(".playlist-widget .fa-check-square-o");
+                const allPlaylist = document.querySelectorAll("li[data-full-path]");
 
-                document.querySelector(".akara-title").textContent = "Akara Media Player";
+                if ( checkState ) {
+                    checkState.classList.remove("fa-check-square-o");
+                    checkState.classList.add("fa-square-o");
+                }
+                
+                if ( medialist.length === allPlaylist.length || type === "all" ) {
+                    document.querySelector("video").src = "";
+                    document.querySelector(".akara-title").textContent = "Akara Media Player";
+                    return ;
+                }
 
-                return true;
+                if ( document.querySelector("[data-now-playing]") ) {
+                    playNextOrPrev();
+                    return ;
+                }
+
+                setupPlaying(document.querySelector("li[data-full-path]"));
+                return ;
             },
             enmerable: false,
             writable: false,
@@ -102,9 +96,9 @@
                         message: "Toggle selection mood to make multiple selection",
                         buttons: [ "Ok" ]
                     });
-                    return true;
+                    return false;
                 }
-                return false;
+                return true;
             },
             enumerable: false,
             configurable: false,
@@ -216,12 +210,15 @@
                     if ( btn === 0 ) {
                         this.__removeList("all");
                         return ;
-                    } else if ( btn === 1 ) {
+                    }
+                    
+                    if ( btn === 1 ) {
                         this.__removeList("selected");
                         return ;
-                    } else {
-                        return ;
                     }
+                    
+                    return ;
+                    
                 });
             }
         },
@@ -242,31 +239,32 @@
                 const btn = dialog.showMessageBox({
                     type: "info",
                     title: "Create Playlist",
-                    message: "Click Yes to createplaylist from selected video or No to createplaylist from all video",
-                    buttons: [ "Yes", "No", "Cancel" ]
+                    message: "Create Playlist",
+                    buttons: [ "All videos", "Selected Videos", "Cancel" ]
                 });
 
+                if ( btn === 2 )
+                    return ;
+                
                 if ( btn === 0 ) {
                     // Yes
                     Array.from(playlist, el => {
                         playlistArr.push(el.getAttribute("data-full-path"));
                     });
-                } else if ( btn === 1 ) {
-                    // No
-                    // check if anything is checked
+                }
+
+                if ( btn === 1 ) {
 
                     const isChecked = this.__isChecked();
-
-                    if ( ! isChecked ) return ;
+                    
+                    if ( ! isChecked )
+                        return ;
 
                     Array.from(playlist, el => {
                         const span = el.querySelector(".fa-check-square-o");
                         if ( span ) playlistArr.push(el.getAttribute("data-full-path"));
                     });
 
-                } else {
-                    // Cancel
-                    return ;
                 }
 
                 localStorage.setItem("akara::newplaylist", JSON.stringify(playlistArr));
@@ -324,7 +322,6 @@
             }
         }
     });
-
 
     playlistWidget.addEventListener("click", evt => {
 
