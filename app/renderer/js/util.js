@@ -9,10 +9,9 @@ const m3ureader = require("m3u8-reader");
 const xmlbuilder = require("xmlbuilder");
 const xml2js = require("xml2js");
 const fs = require("fs");
-
-//const { M3U: m3uParser } = require("playlist-parser");
-
-
+const path = require("path");
+const google = require("googleapis");
+const googleAuth = new(require("google-auth-library"));
 const {
     remote: {
         require: _require,
@@ -22,48 +21,45 @@ const {
     },
     ipcRenderer: ipc
 } = require("electron");
-
 const {
     playlist: {
         file: playlistLocation
     },
     podcast
 } = _require("./configuration.js");
-
 const {
     CONVERTED_MEDIA,
     URL_ONLINE
 } = _require("./constants.js");
-
 const {
     Magic,
     MAGIC_MIME_TYPE: _GET_MIME
 } = require("mmmagic");
-
 const { homedir } = require("os");
-
 const env = require("dotenv").load();
 const Twitter = require("twitter");
 const bBird = require("bluebird");
-
 const _OS = require("opensubtitles-api");
 const url = require("url");
 const { spawn } = require("child_process");
-
 const {
     mkdirSync ,
     existsSync,
     readFileSync,
     writeFileSync
 } = require("fs");
-
 const {
     join,
     basename,
     parse
 } = require("path");
 
-const { video, controls: { play } } = require("../js/video_control.js");
+const {
+    video,
+    controls: {
+        play
+    }
+} = require("../js/video_control.js");
 
 const OS = new _OS("OSTestUserAgentTemp");
 
@@ -76,7 +72,16 @@ const {
 
 const magic = new Magic(_GET_MIME);
 
-// get the main window only
+const {
+    installed: {
+        client_secret,
+        client_id,
+        redirect_uris: [ redirectUrl ]
+    }
+} = require(path.join(app.getAppPath(), "youtube.json"));
+
+const datadir = app.getPath("userData");
+
 const win = BrowserWindow.fromId(1);
 
 const createEl = ({path: abs_path, _path: rel_path}) => {
@@ -1034,4 +1039,41 @@ module.exports.importMpegGurl = file => {
             resolve(m3ureader(data));
         });
     });
+};
+
+module.exports.youtubeClient = bBird.promisifyAll(
+    new googleAuth.OAuth2(client_id,client_secret,redirectUrl)
+);
+
+module.exports.cache = path.join(datadir, "youtube_cache.json");
+
+module.exports.uploadVideo = auth => {
+    const youtube = google.youtube("v3");
+
+    const uploadData = decodeURIComponent(url.parse(video.getAttribute("src")).pathname);
+    
+    const tube = youtube.videos.insert({
+        auth,
+        resource: {
+            snippet: {
+                title: "Test application",
+                description: "This is a test application please ignore",
+                tags: [ "test", "app", "mosquito", "lol" ]
+            }
+            /**
+               status: {
+                 privacyStatus: "private"
+               }
+            **/
+        },
+        part: "snippet,status",
+        media: {
+            body: fs.createReadStream(uploadData)
+        }
+    }, ( err , data ) => {
+        if ( err )
+            return console.error(err);
+        console.log(data);
+    });
+    
 };
