@@ -39,7 +39,7 @@ const share = {
             label: "Youtube",
             accelerator: shortcut.youtube,
             click(mItem, { webContents }, event ) {
-                webContents.send("akara:ytube-share");
+                webContents.send("akara::ytube-share");
             }
         }
     ]
