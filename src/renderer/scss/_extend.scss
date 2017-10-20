@@ -107,3 +107,50 @@ $drop-down-left-pos: 200;
         color: white;
     }    
 }
+
+%center-absolute {
+    width: 40%;
+    height: 20%;
+    
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    padding: 50px 100px 100px 100px;
+}
+
+%modal-textarea {
+    display: block;
+    
+    width: 100%;
+    height:80px;
+    resize: none;
+
+    border-radius: 4px;
+}
+
+%modal-buttons {
+    width: 100%;
+    border: none;
+    padding: 7px;
+    margin: 10px;
+    cursor: pointer;
+    transition: .2s ease-in;
+    font-size: .9em;
+}
+
+
+%cover-view {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    
+    background: lighten($global-color,30%);
+    opacity: .75;
+}
