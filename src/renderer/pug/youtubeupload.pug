@@ -1,0 +1,22 @@
+div(class="youtubeupload-cover" hidden)
+
+div(class="youtubeupload" hidden)
+  label(class="title") Video Title
+    input(type="text" class="youtubeupload-title" placeholder="title of youtube video")
+      
+  label(class="description" for="descr") Video Description
+    textarea(class="youtubeupload-description" placeholder="description of video" id="decr")
+  
+  label(class="tags") Tags ( separate with space )
+    input(type="text" class="youtubeupload-tags")
+    
+  p privacy status  
+  label(class="private") Private
+    input(type="radio" class="youtubeupload-private" data-privacy="private")
+    
+  label(class="public") Public
+    input(type="radio" class="youtubeupload-public" data-privacy="public" checked)
+      
+  div(class="youtubeupload-btn")
+    button(class="youtubeupload-submit") Add
+    button(class="youtubeupload-cancel") Cancel
