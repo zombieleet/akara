@@ -1008,7 +1008,6 @@ module.exports.exportXspf = file => {
 };
 
 module.exports.importXspf = file => {
-    
     const parser = new xml2js.Parser();
     
     return new Promise((resolve,reject) => {
@@ -1047,24 +1046,32 @@ module.exports.youtubeClient = bBird.promisifyAll(
 
 module.exports.cache = path.join(datadir, "youtube_cache.json");
 
-module.exports.uploadVideo = auth => {
-    const youtube = google.youtube("v3");
+const uploadVideo = info => {
 
+    const {
+        auth,
+        title: { value: title },
+        description: { value: description },
+        privacyStatus,
+        tags
+    } = info;
+    
+    const youtube = google.youtube("v3");
     const uploadData = decodeURIComponent(url.parse(video.getAttribute("src")).pathname);
+
+    console.log(title,description,privacyStatus,tags);
     
     const tube = youtube.videos.insert({
         auth,
         resource: {
             snippet: {
-                title: "Test application",
-                description: "This is a test application please ignore",
-                tags: [ "test", "app", "mosquito", "lol" ]
+                title,
+                description,
+                tags
+            },
+            status: {
+                privacyStatus
             }
-            /**
-               status: {
-                 privacyStatus: "private"
-               }
-            **/
         },
         part: "snippet,status",
         media: {
@@ -1074,6 +1081,78 @@ module.exports.uploadVideo = auth => {
         if ( err )
             return console.error(err);
         console.log(data);
+    });
+    
+};
+
+
+module.exports.uploadYoutubeVideo = auth => {
+    
+    const youtubeupload = document.querySelector(".youtubeupload");
+    const youtubeAdd = document.querySelector(".youtubeupload-submit");
+    const youtubeCancel = document.querySelector(".youtubeupload-cancel");
+    const coverView = document.querySelector(".youtubeupload-cover");
+    
+    const youtubeStatus = Array.from(youtubeupload.querySelectorAll("input[type=radio]"));
+    
+    const title = document.querySelector("input[type=text]");
+    const description = document.querySelector(".youtubeupload-description");
+    
+    let tags = document.querySelector(".youtubeupload-tags");
+
+    youtubeupload.hidden = coverView.hidden = false;
+    
+    let privacyStatus;
+    
+    const btns = {
+        _removeEvents() {
+            youtubeAdd.removeEventListener("click", this.bindAdd);
+            youtubeCancel.removeEventListener("click", this.bindCancel);
+            youtubeupload.hidden = coverView.hidden = true;
+            this._removeStatus();
+        },
+        _removeStatus() {
+            youtubeStatus.forEach( status => {
+                status.removeEventListener("change", this.bindStatus);
+            });
+        },
+        status(evt) {
+            
+            let target = evt.target;
+            let _private = document.querySelector(".youtubeupload-private");
+            let _public = document.querySelector(".youtubeupload-public");
+            
+            privacyStatus = target.getAttribute("data-privacy");
+            _private.checked = _public.checked = false;
+            target.checked = true;
+            
+            return ;
+        },
+        add(evt) {
+            if ( title.value.length === 0 ||
+                 description.value.length === 0 || ! privacyStatus ) {
+                return ;
+            }
+            tags = tags.value.length > 0 ? tags.value.split(/\s{1,}/) : [];
+            uploadVideo({ auth, title, description, privacyStatus, tags});
+            this._removeEvents();
+            return ;
+        },
+        cancel(evt) {
+            this._removeEvents();
+        }
+    };
+
+    
+    btns.bindAdd = btns.add.bind(btns);
+    btns.bindCancel = btns.cancel.bind(btns);
+    btns.bindStatus = btns.status.bind(btns);
+    
+    youtubeAdd.addEventListener("click", btns.bindAdd);
+    youtubeCancel.addEventListener("click", btns.bindCancel);
+    
+    youtubeStatus.forEach( status  => {
+        status.addEventListener("change", btns.status);
     });
     
 };
