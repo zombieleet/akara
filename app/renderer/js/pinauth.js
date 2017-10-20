@@ -16,7 +16,7 @@
         tClient,
         youtubeClient,
         cache,
-        uploadVideo
+        uploadYoutubeVideo
     } = require("../js/util.js");
 
     const fs = require("fs");
@@ -44,11 +44,8 @@
                         );
                     
                     youtubeClient.credentials = token;
-                    
                     cacheToken(token);
-                    
-                    return uploadVideo(youtubeClient);
-                    
+                    return uploadYoutubeVideo(youtubeClient);
                 });
             }
         },

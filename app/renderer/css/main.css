@@ -213,6 +213,44 @@ button[type="search"], .submit-cancel-button button, .loadplaylist-load, .remove
     background: #212121;
     color: white; }
 
+.podcast-modal, .youtubeupload {
+  width: 40%;
+  height: 20%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  padding: 50px 100px 100px 100px; }
+
+.podcast-modal .podcast-modal-parent .podcast-modal-addpodcastarea, .youtubeupload textarea {
+  display: block;
+  width: 100%;
+  height: 80px;
+  resize: none;
+  border-radius: 4px; }
+
+.podcast-modal .podcast-modal-parent .podcast-modal-btn button, .youtubeupload .youtubeupload-btn button {
+  width: 100%;
+  border: none;
+  padding: 7px;
+  margin: 10px;
+  cursor: pointer;
+  transition: .2s ease-in;
+  font-size: .9em; }
+
+.cover-view, .youtubeupload-cover {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: #989898;
+  opacity: .75; }
+
 section {
   width: 100%;
   height: 100%;
@@ -612,15 +650,6 @@ table {
     margin-top: 10px; }
 
 .podcast-modal {
-  width: 40%;
-  height: 20%;
-  position: absolute;
-  margin: auto;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  padding: 50px 100px 100px 100px;
   border: 2px solid #4b4b4b;
   border-radius: 5px;
   background: #4b4b4b; }
@@ -632,25 +661,11 @@ table {
       word-break: break-word;
       line-height: 1.2;
       font-size: 10px; }
-    .podcast-modal .podcast-modal-parent .podcast-modal-addpodcastarea {
-      display: block;
-      width: 100%;
-      height: 80px;
-      resize: none;
-      border-radius: 4px; }
     .podcast-modal .podcast-modal-parent .podcast-modal-btn {
       display: flex;
       justify-content: flex-end; }
-      .podcast-modal .podcast-modal-parent .podcast-modal-btn button {
-        width: 20%;
-        border: none;
-        padding: 7px;
-        margin: 10px;
-        cursor: pointer;
-        transition: .2s ease-in;
-        font-size: .9em; }
-        .podcast-modal .podcast-modal-parent .podcast-modal-btn button:hover {
-          background-color: #ededed; }
+      .podcast-modal .podcast-modal-parent .podcast-modal-btn button:hover {
+        background-color: #ededed; }
       .podcast-modal .podcast-modal-parent .podcast-modal-btn .podcast-modal-cancel {
         margin-right: -2%; }
 
@@ -661,16 +676,6 @@ table {
   height: 100vh;
   overflow-y: auto;
   padding-top: 5px; }
-
-.cover-view {
-  width: 100%;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  background: #989898;
-  opacity: .75; }
 
 .podcaster-podcast {
   padding: 5px;
@@ -734,6 +739,60 @@ table {
 
 [data-navigate="true"] {
   background: black !important; }
+
+.youtubeupload {
+  position: fixed;
+  width: 30%;
+  height: 40%;
+  background: #4b4b4b;
+  text-align: center;
+  border: 2px solid #4b4b4b;
+  z-index: 557777777777; }
+  .youtubeupload p {
+    color: white;
+    font-weight: bolder;
+    margin-top: 12px; }
+  .youtubeupload label {
+    display: block;
+    margin-top: 25px; }
+    .youtubeupload label:last-of-type {
+      margin-left: 30px; }
+    .youtubeupload label:first-of-type {
+      margin-top: 0; }
+  .youtubeupload input {
+    margin-top: 12px; }
+  .youtubeupload input[type="text"] {
+    width: 100%;
+    height: 40px;
+    display: block;
+    border-radius: 4px;
+    margin: auto;
+    margin-top: 5px;
+    text-indent: 10px;
+    padding-top: 5px; }
+  .youtubeupload textarea {
+    width: 100%;
+    margin: auto;
+    margin-top: 12px;
+    text-indent: 10px;
+    padding-top: 5px; }
+  .youtubeupload .private,
+  .youtubeupload .public {
+    display: inline; }
+    .youtubeupload .private .youtubeupload-private,
+    .youtubeupload .private .youtubeupload-public,
+    .youtubeupload .public .youtubeupload-private,
+    .youtubeupload .public .youtubeupload-public {
+      display: inline; }
+  .youtubeupload .youtubeupload-btn {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px; }
+    .youtubeupload .youtubeupload-btn button:hover {
+      background-color: #ededed; }
+
+.youtubeupload-cover {
+  z-index: 55556666666666; }
 
 .akara-add-media {
   top: 0; }
