@@ -1,0 +1,94 @@
+
+.youtubeupload {
+
+    $text-indent: 10px;
+    $text-padding-top: 5px;
+    
+    @extend %center-absolute;
+    position: fixed;
+    width: 30%;
+    //padding-top: 12px;
+    height: 40%;
+    
+    background: $global-color;
+    text-align: center;
+
+    border: 2px solid $global-color;
+
+    z-index: 557777777777;
+    
+    p {
+        color: white;
+        font-weight: bolder;
+        margin-top: 12px;
+    }
+    label {
+        
+        display: block;
+        margin-top: 25px;
+        
+        &:last-of-type {
+            margin-left: 30px;
+        }
+
+        &:first-of-type {
+            margin-top: 0;
+        }
+    }
+
+    input {
+        margin-top: 12px;
+    }
+    
+    input[type="text"] {
+        
+        width: 100%;
+        height: 40px;
+        display: block;
+        border-radius: 4px;
+        margin: auto;
+        margin-top: 5px;
+        
+        text-indent: $text-indent;
+        padding-top: $text-padding-top;
+    }
+
+    textarea {
+        @extend %modal-textarea;
+        width: 100%;
+        margin: auto;
+        margin-top: 12px;
+        text-indent: $text-indent;
+        padding-top: $text-padding-top;
+    }
+    
+    .private,
+    .public {
+        
+        display: inline;
+        
+        .youtubeupload-private,
+        .youtubeupload-public {
+            display: inline;
+        }
+    }
+
+    .youtubeupload-btn {
+        display: flex;
+        justify-content: flex-end;
+
+        margin-top: 20px;
+        
+        button {
+            @extend %modal-buttons;
+            &:hover {
+                background-color: lighten(lightgrey, 10%);
+            }
+        }
+    }
+}
+
+.youtubeupload-cover {
+    @extend %cover-view;
+    z-index: 55556666666666;
+}
