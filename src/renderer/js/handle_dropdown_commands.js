@@ -3,6 +3,7 @@ const path = require("path");
 
 const {
     remote: {
+        ipcRenderer,
         dialog,
         app ,
         BrowserWindow,
@@ -370,6 +371,7 @@ const loadplaylist = () => {
     }, loadplaylistCb);
 };
 
+// .send("akara::ytube-share")
 
 const HandleDroped = () => ({
     addMediaFile,
