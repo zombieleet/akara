@@ -116,12 +116,15 @@ body {
   font-family: monospace; }
 
 .tool-tip {
-  border: 2px solid white;
   background: black;
   color: white;
+  opacity: .55;
   padding: 5px;
+  font-size: 15px;
+  width: 40%;
   font-weight: bolder;
   border-radius: 4px;
+  text-align: center;
   animation-name: moveToolTip;
   animation-duration: .3s;
   animation-timing-function: ease-in;
@@ -130,7 +133,7 @@ body {
 [data-dynamic-style] {
   background: lightgrey; }
 
-.akara-media .akara-load .akara-loaded > li:hover, [data-clicked="true"] {
+.akara-load .akara-loaded > li:hover, [data-clicked="true"] {
   background: #3e3e3e; }
 
 .akara-media-element,
@@ -408,16 +411,20 @@ table {
 
 .akara-playlist {
   border-bottom: 3px solid black;
-  padding: 5px;
-  font-family: tahoma; }
-  .akara-playlist .playlist-name {
-    color: white;
-    margin-left: 3px; }
+  font-family: tahoma;
+  height: 15px;
+  padding: 5px; }
+  .akara-playlist .playlist-indicator {
+    float: left; }
+    .akara-playlist .playlist-indicator .playlist-name {
+      color: white;
+      margin-left: 3px; }
   .akara-playlist .playlist-widget {
     float: right;
-    cursor: pointer; }
+    cursor: pointer;
+    height: 0; }
     .akara-playlist .playlist-widget .playlist-widget-item {
-      margin-left: 5px;
+      margin-left: 15px;
       transition: .5s background ease-in; }
     .akara-playlist .playlist-widget .playlist-widget-item:hover {
       color: #4d4d4d; }
@@ -814,7 +821,7 @@ table {
   border: 1px solid white;
   font-size: 20px;
   position: absolute;
-  z-index: 5555; }
+  z-index: 5562; }
   .akara-dropdown ul li {
     visibility: hidden;
     font-size: 1rem;
@@ -891,43 +898,49 @@ table {
     .akara-media .akara-media-cover video {
       width: 100% !important;
       height: 100% !important; }
-  .akara-media .akara-load {
-    float: left;
-    width: 30%;
-    margin-right: -8px;
+
+.akara-load {
+  float: left;
+  width: 30%;
+  margin-right: -8px;
+  height: inherit;
+  background: #252525;
+  z-index: 5555;
+  position: absolute; }
+  .akara-load .akara-loaded-dragger {
     height: inherit;
-    background: #252525;
-    /***********************/
-    /* position: relative; */
-    /* z-index: 3333;      */
-    /***********************/ }
-    .akara-media .akara-load .akara-loaded-dragger {
-      height: inherit;
-      cursor: ew-resize;
-      float: right;
-      border: 2px solid #1a1a1a;
-      resize: both; }
-    .akara-media .akara-load .akara-loaded {
-      overflow-y: auto;
-      height: inherit;
-      margin-right: 6px; }
-      .akara-media .akara-load .akara-loaded > li {
-        padding: 5px;
-        width: inherit;
-        cursor: pointer;
-        font-size: 1.2em;
-        font-family: DejaVau;
-        margin-top: 4px;
-        white-space: nowrap;
-        transition: .2s ease-in-out; }
-      .akara-media .akara-load .akara-loaded li:last-of-type {
-        margin-bottom: 100px; }
+    cursor: ew-resize;
+    float: right;
+    border: 2px solid #1a1a1a;
+    resize: both; }
+  .akara-load .akara-loaded {
+    overflow-y: auto;
+    height: inherit;
+    margin-right: 6px; }
+    .akara-load .akara-loaded > li {
+      padding: 5px;
+      width: inherit;
+      cursor: pointer;
+      font-size: 1.2em;
+      font-family: DejaVau;
+      margin-top: 4px;
+      white-space: nowrap;
+      transition: .2s ease-in-out; }
+    .akara-load .akara-loaded li:last-of-type {
+      margin-bottom: 100px; }
 
 [data-clicked="true"] {
   width: 100% !important; }
 
 [data-dbclicked="true"] span {
   margin-left: 12px; }
+
+.akara-output-process {
+  position: absolute;
+  right: 30px;
+  padding: 12px;
+  font-size: 30px;
+  margin-top: 25px; }
 
 .akara-control, .cover-on-error-src {
   position: fixed;
@@ -1063,11 +1076,15 @@ table {
   background: white;
   box-shadow: 500px 500px 500px 500px white inset !important; }
 
-[data-anim] {
-  animation-name: fullScreenVideo;
-  animation-duration: .1s;
-  animation-timing-function: ease-in;
-  animation-fill-mode: forwards;
+/* [data-anim] { */
+/*     animation-name: fullScreenVideo; */
+/*     animation-duration: .1s; */
+/*     animation-timing-function: ease-in; */
+/*     animation-fill-mode: forwards; */
+/* } */
+[data-fullscreenwidth] {
+  height: 90px;
+  width: 50%;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 80px; }

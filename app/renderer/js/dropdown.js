@@ -1,21 +1,40 @@
-( o => {
+( () => {
 
     "use strict";
 
-    let dropdownP = o.querySelector(".akara-dropdown");
+    const menuToggle = document.querySelector(".akara-menu-toggle");
+    const dropdownP = menuToggle.querySelector(".akara-dropdown");
+    const dropdownPItem = dropdownP.querySelector(".akara-dropdown-item");
+    const documentElement = document.documentElement;
 
-    let dropdownPItem = dropdownP.querySelector(".akara-dropdown-item");
-
-    o.addEventListener("click", event => {
-
+    const removeShowMenu = evt => {
+        
+        let { target } = evt;
+        
         if ( dropdownP.hidden ) {
             dropdownP.hidden = false;
             dropdownP.setAttribute("data-anim-height", "anim-height");
-        } else {
+            return ;
+        }
+
+        dropdownP.hidden = true;
+        dropdownP.removeAttribute("style");
+
+        return ;
+    };
+
+    menuToggle.addEventListener("click", removeShowMenu);
+
+    documentElement.addEventListener("click", evt => {
+        
+        if ( evt.target.classList.contains("akara-menu-toggle" ) )
+            return ;
+        
+        if ( ! dropdownP.hidden ) {
             dropdownP.hidden = true;
             dropdownP.removeAttribute("style");
         }
-
+        
     });
 
     function initSubMenuListeners() {
@@ -37,4 +56,4 @@
 
     initSubMenuListeners();
 
-})(document.querySelector(".akara-menu-toggle"));
+})();

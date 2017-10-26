@@ -5,7 +5,6 @@ const {
     video,
     controls
 } = require("../js/video_control.js");
-
 const {
     ipcRenderer: ipc,
     remote: {
@@ -19,27 +18,20 @@ const {
         }
     }
 } = require("electron");
-
-
 const {
     CURRENT_TIME
 } = _require("./constants.js");
-
 const {
     createNewWindow
 } = _require("./newwindow.js");
-
 const {
     parse
 } = require("url");
-
 const {
     basename,
     join
 } = require("path");
-
 const crypto = require("crypto");
-
 const {
     disableVideoMenuItem,
     langDetect,
@@ -53,23 +45,18 @@ const {
     removeType,
     setCurrentPlaying
 } = require("../js/util.js");
-
 const fs = require("fs");
-
 const {
     videoContextMenu
 } = _require("./menu.js");
-
 const {
     _enterfullscreen,
     _leavefullscreen
 } = require("../js/handle_dropdown_commands.js")();
-
 const akara_emit = require("../js/emitter.js");
+const mime = require("mime");
 
 let controlMouseEnterFscreen = false;
-
-const mime = require("mime");
 
 
 /**
@@ -94,9 +81,6 @@ const setTime = () => {
 
 module.exports.setTime = setTime;
 
-
-
-
 const hashedPath = path => join(
     CURRENT_TIME,
     crypto
@@ -113,11 +97,8 @@ const hashedPath = path => join(
  **/
 
 const saveCurrentTimePos = currPlaying => {
-    
     const pathToFile = hashedPath(currPlaying);
-    
     return fs.writeFileSync(pathToFile, controls.getCurrentTime());
-    
 };
 
 
@@ -131,13 +112,9 @@ const saveCurrentTimePos = currPlaying => {
  **/
 
 const getRecentPos = plItem  => {
-    
     const pathToFile = hashedPath(plItem);
-
     if ( fs.existsSync(pathToFile) )
-
         return fs.readFileSync(pathToFile);
-
     return 0;
 };
 
@@ -158,21 +135,14 @@ module.exports.updateTimeIndicator = () => {
     let timeIndicator = document.querySelector(".akara-time-current");
 
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
-
     const pNode = timeIndicator.parentNode;
-
     const elapsed = Math.round((controls.getCurrentTime()).toFixed(1));
-
     const timeIndicatorWidth = ( elapsed * pNode.clientWidth ) /
               ( controls.duration().toFixed(1)) ;
-
-    timeIndicator.setAttribute("style", `width: ${timeIndicatorWidth}px`);
-
+    
+    timeIndicator.setAttribute("style", `width: ${( timeIndicatorWidth / pNode.clientWidth)*100}%`);
     currTimeUpdate.textContent = setTime();
-
-    // src holds the full path
     saveCurrentTimePos(video.src);
-
     return true;
 };
 
@@ -180,28 +150,30 @@ module.exports.updateTimeIndicator = () => {
 
 /**
  *
- *
- * jumpToClick, move the video indicator to
- * the position where mouse event is released
- *
- **/
-
-const jumpToClick = (event,arg) => Math.
-    round(controls.duration() * ((event.clientX - event.target.offsetLeft) / arg));
-
-
-/**
- *
- *
- *
- *  handles the movement of the mouse arround the
- *    video length indicator
+ * every mouse event in the time indicator length
+ * will pass through this function to get the proper
+ * value of the current mouse location
  *
  **/
 
 const handleMovement = (event,cb) => {
     const incrDiv = document.querySelector(".akara-time-current");
-    const result = jumpToClick(event,incrDiv.parentNode.clientWidth);
+    const akControl = document.querySelector(".akara-control");
+
+    let targetsOffsets ;
+
+    
+    /**
+     * fullscreen mode will not allow proper handling of mouse events on 
+     * the control section
+     **/
+    if ( akControl.offsetLeft > 0 )
+        targetsOffsets = akControl.offsetLeft;
+    else
+        targetsOffsets = event.target.offsetLeft + event.target.offsetTop;
+    
+    const result = Math.round(controls.duration() * ( event.clientX - targetsOffsets ) / incrDiv.parentNode.clientWidth);
+    
     return cb(result);
 };
 
@@ -267,20 +239,15 @@ const createHoverTime = ({event,result}) => {
 
 
     hoverIndication.append(hoverTimeIndication);
-
     target = target.classList.contains("akara-time-length") ? target : target.parentNode;
-
     hoverIndication.setAttribute("data-hover", "true");
-
     hoverTimeIndication.textContent = hoveredLocationTime;
 
     let left = event.clientX - event.target.getBoundingClientRect().left,
         top = event.clientY - event.target.getBoundingClientRect().top;
 
     hoverIndication.setAttribute("style", `left: ${left - 15}px; top: ${top - 25}px`);
-
     return target.parentNode.insertBefore(hoverIndication,target);
-
 };
 
 
@@ -572,7 +539,10 @@ module.exports.clickedMoveToEvent = event => {
     const target = event.target;
     if ( target.classList.contains("akara-time-length")
          || target.classList.contains("akara-time-current") ) {
-        return handleMovement(event, result => video.currentTime = result);
+        return handleMovement(event, result => {
+            console.log(result);
+            video.currentTime = result;
+        });
     }
     return false;
 };
@@ -809,9 +779,8 @@ const setUpTrackElement = async (path,fileLang) => {
 
 const handleLoadSubtitle = async (path,cb) => {
 
-    if ( ! path ) return ;
-
-
+    if ( ! path )
+        return ;
 
     /**
      *
@@ -860,7 +829,6 @@ const handleLoadSubtitle = async (path,cb) => {
     // start showing the track automatically
     // add this as a config option
     if ( ! track.previousElementSibling && toggleSubOnOff )
-
         video.textTracks[0].mode = "showing";
 
     akara_emit.emit("video::subtitle:shortcut", track);
@@ -881,9 +849,9 @@ module.exports.videoLoadData = event => {
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
 
     const pathToFile = hashedPath(video.src);
-    
+
     /*if ( fs.existsSync(pathToFile) ) {
-         
+
          dialog.showMessageBox({
              title: "Resume Media File",
              type: "info",
@@ -903,14 +871,14 @@ module.exports.videoLoadData = event => {
 
              if ( btn === 2 )
                  return ;
-             
+
          });
     }*/
-    
+
     video.currentTime = Number(getRecentPos(video.src).toString());
-    
+
     //currTimeUpdate.textContent = setTime();
-    
+
     const submenu = videoContextMenu[16].submenu;
 
     // no need to remove if no subtitle was added in previous video
@@ -969,16 +937,14 @@ const ctrlBhviourInFullScreen = akaraControl => {
 };
 
 module.exports.mouseMoveOnVideo = () => {
-
+    
     const akaraControl = document.querySelector(".akara-control");
-
+    
     if ( ! document.webkitIsFullScreen )
         return false;
 
     akaraControl.hidden = false;
-
     let id = ctrlBhviourInFullScreen(akaraControl);
-
     return true;
 };
 
@@ -1004,41 +970,30 @@ module.exports.controlMouseLeave = evt => {
 };
 
 module.exports.controlDragFullScreen = evt => {
-
-    const { target: akControl } = evt;
-
-    const unexpand = akControl.querySelector(".unexpand");
-
+    
     if ( ! document.webkitIsFullScreen )
         return false;
+
+    const akControl = document.querySelector(".akara-control");
+    const unexpand = akControl.querySelector(".unexpand");
 
     // no-operation in strecth mood in fullscreen
     if ( unexpand )
         return false;
 
     const mouseMoveEventDrag = evt => {
-
         let { screenX, screenY } = evt;
-
         const { left } = akControl.getBoundingClientRect();
-
         akControl.style.position = "absolute";
         akControl.style.left = `${screenX - left - 150}px`;
         akControl.style.top = `${screenY - 25}px`;
-
         return true;
     };
 
     document.documentElement.addEventListener("mousemove", mouseMoveEventDrag);
 
     akControl.addEventListener("mouseup", () => {
-
-        console.log("up");
-        document
-            .documentElement
-            .removeEventListener(
-                "mousemove", mouseMoveEventDrag
-            );
+        document.documentElement.removeEventListener("mousemove", mouseMoveEventDrag);
     });
 
     return true;
@@ -1259,7 +1214,7 @@ module.exports.loadContextPlaylist = (videoContextMenu,playlistLocation) => {
 /**
  *
  *
- * loads all playlist items 
+ * loads all playlist items
  *
  **/
 module.exports.contextPlaylist = videoContextMenu => {
@@ -1313,6 +1268,20 @@ if ( require.main !== module ) {
         Object.assign(submenu[id], {
             checked: true
         });
+    });
+
+    akara_emit.on("akara::processStatus", (info,fin) => {
+        let outputProcess = document.querySelector(".akara-output-process");
+        outputProcess.hidden = false;
+        outputProcess.textContent = info;
+
+        if ( fin ) {
+            outputProcess.animate({
+                opacity: [ .70, .60, .50, .40, .30, .20, .10, .1 ]
+            });
+            outputProcess.hidden = true;
+            return ;
+        }
     });
 
 }

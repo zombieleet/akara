@@ -7,18 +7,12 @@ const {
         getCurrentWindow
     }
 } = require("electron");
-
 const akara_emit = require("../js/emitter.js");
-
 const video = document.querySelector("video");
-
 const akLoaded = document.querySelector(".akara-loaded");
-
 let _REPEAT_MENU_ = new Menu();
 
-let target;
-
-let _SUBTITLE_MENU_ = new Menu();
+let target, _SUBTITLE_MENU_ = new Menu();
 
 
 const buildRepeatMenu = () => {
@@ -35,7 +29,7 @@ const buildRepeatMenu = () => {
                 if ( akLoaded.hasAttribute("data-repeat") )
                     akLoaded.removeAttribute("data-repeat");
 
-                target.setAttribute("data-title","repeat one");
+                //target.setAttribute("data-title","repeat one");
             }
         },
         {
@@ -46,7 +40,7 @@ const buildRepeatMenu = () => {
                 akLoaded.setAttribute("data-repeat","repeat");
                 if ( video.loop )
                     video.loop = false;
-                target.setAttribute("data-title","repeat all");
+                //target.setAttribute("data-title","repeat all");
             }
         },
         {
@@ -57,7 +51,7 @@ const buildRepeatMenu = () => {
             click() {
                 video.loop = false;
                 akLoaded.removeAttribute("data-repeat");
-                target.setAttribute("data-title","normal");
+                //target.setAttribute("data-title","normal");
             }
         }
     ];
@@ -92,28 +86,19 @@ const controls = {
     mute() {
 
         const _mute = document.querySelector("[data-drop=_mute]");
-
         _mute.textContent = _mute.textContent.replace("Mute", " Unmute");
-
         video.muted = true;
-
         akara_emit.emit("video::volume", video.volume);
-
         return _mute.setAttribute("data-drop", "_unmute");
 
     },
     unmute() {
         // unmute video
         const _unmute = document.querySelector("[data-drop=_unmute]");
-
         _unmute.textContent = _unmute.textContent.replace("Unmute", " Mute");
-
         video.muted = false;
-
         akara_emit.emit("video::volume", video.volume);
-
         return _unmute.setAttribute("data-drop", "_mute");
-
     },
     next() {
         akara_emit.emit("video::go-to-next");
@@ -124,7 +109,6 @@ const controls = {
     volume() {
 
         if ( video.muted )
-
             return this.unmute();
 
         return this.mute();
@@ -133,19 +117,16 @@ const controls = {
 
         const changeIcon = document.querySelector(".fa-expand");
         const akControl = document.querySelector(".akara-control");
-
         const expand = akControl.querySelector(".expand");
 
         changeIcon.classList.add("fa-arrows-alt");
-
         changeIcon.classList.remove("fa-expand");
-
         changeIcon.setAttribute("data-fire","leavefullscreen");
 
-        video.setAttribute("style", "height: 100%; width: 100%;");
-
-        akControl.setAttribute("data-anim", "true");
-
+        video.style.height = "100%";
+        video.style.width = "100%";
+        
+        akControl.setAttribute("data-fullscreenwidth", "true");
         akControl.hidden = true;
 
         expand.setAttribute("style","visibility: visible;");
@@ -161,18 +142,17 @@ const controls = {
                   || akControl.querySelector(".unexpand");
 
         changeIcon.classList.add("fa-expand");
-
         changeIcon.classList.remove("fa-arrows-alt");
-
         changeIcon.setAttribute("data-fire","enterfullscreen");
 
-        video.removeAttribute("style");
+        video.style.width = null;
+        video.style.height = null;
 
-        akControl.removeAttribute("data-anim");
+        akControl.removeAttribute("data-fullscreenwidth");
         akControl.removeAttribute("style");
-        
+
         akControl.hidden = false;
-        
+
         if ( expand_unexpand ) {
             expand_unexpand.removeAttribute("style");
             expand_unexpand.classList.remove("unexpand");
@@ -231,16 +211,16 @@ const controls = {
         const akControl = document.querySelector(".akara-control");
 
         let { position, left, top } = akControl.style;
-        
+
         Object.assign(this, {
             position,
             left,
             top
         });
-        
-        akControl.removeAttribute("data-anim");
+
+        akControl.removeAttribute("data-fullscreenwidth");
         akControl.removeAttribute("style");
-        
+
         target.classList.remove("expand");
         target.classList.add("unexpand");
 
@@ -250,10 +230,10 @@ const controls = {
 
         const akControl = document.querySelector(".akara-control");
 
-        akControl.setAttribute("data-anim", "true");
+        akControl.setAttribute("data-fullscreenwidth", "true");
 
         const { position, left, top } = this;
-        
+
         Object.assign(akControl.style, {
             position,
             left,
@@ -268,14 +248,14 @@ const controls = {
 
     },
     random({ target }) {
-        
+
         const random = target;
-        
+
         video.setAttribute("data-random", "random");
         random.setAttribute("data-fire", "norandom");
     },
     norandom({ target }) {
-        
+
         const no_random = target;
 
         video.removeAttribute("data-random");

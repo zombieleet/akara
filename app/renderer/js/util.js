@@ -12,6 +12,7 @@ const fs = require("fs");
 const path = require("path");
 const google = require("googleapis");
 const googleAuth = new(require("google-auth-library"));
+const cluster = require("cluster");
 const {
     remote: {
         require: _require,
@@ -1058,8 +1059,10 @@ const uploadVideo = info => {
     
     const youtube = google.youtube("v3");
     const uploadData = decodeURIComponent(url.parse(video.getAttribute("src")).pathname);
+    
+    const fileSize = fs.statSync(uploadData).size;
 
-    console.log(title,description,privacyStatus,tags);
+    let id;
     
     const tube = youtube.videos.insert({
         auth,
@@ -1078,11 +1081,22 @@ const uploadVideo = info => {
             body: fs.createReadStream(uploadData)
         }
     }, ( err , data ) => {
-        if ( err )
+        clearInterval(id);
+        if ( err ) {
             return console.error(err);
-        console.log(data);
+        }
+        if ( data.status.uploadStatus === "uploaded" ) {
+            return akara_emit.emit("akara::processStatus", "uploaded sucessfully", true);
+        }
+        return akara_emit.emit("akara::processStatus", "uploaded was not sucesfull", true);
+        
     });
     
+    id = setInterval(() => {
+        const { _bytesDispatched: sentBytes } = tube.req.connection;
+        akara_emit.emit("akara::processStatus", `uploading ${sentBytes}/${fileSize}`);
+    },250);
+
 };
 
 
@@ -1102,7 +1116,7 @@ module.exports.uploadYoutubeVideo = auth => {
 
     youtubeupload.hidden = coverView.hidden = false;
     
-    let privacyStatus;
+    let privacyStatus = youtubeStatus[0].getAttribute("data-privacy") || youtubeStatus[1].getAttribute("data-privacy");
     
     const btns = {
         _removeEvents() {
