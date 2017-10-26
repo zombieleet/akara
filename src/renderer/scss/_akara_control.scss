@@ -1,5 +1,9 @@
 $volume-color: white;
 
+$akara-control-padding-right: 10;
+$akara-control-padding-left: 10;
+$akara-control-padding-top: 10;
+
 .akara-control,.cover-on-error-src {
 
     position: fixed;
@@ -21,9 +25,9 @@ $volume-color: white;
 }
 
 .akara-control {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 10px;
+    padding-left: $akara-control-padding-left + px;
+    padding-right: $akara-control-padding-right + px;
+    padding-top: $akara-control-padding-left + px;
 }
 
 .cover-on-error-src {
@@ -82,19 +86,12 @@ $volume-color: white;
     li.fa {
 
         cursor: pointer;
-
         margin: 10px;
-
         cursor: pointer;
-
         border-width: 12px;
-
         padding: 8px;
-
         border-radius: 50%;
-
         box-shadow: 5px 5px 20px #000 inset;
-
         transition: .2s box-shadow ease-in-out;
 
         &:hover {
@@ -149,6 +146,7 @@ $volume-color: white;
 
 }
 
+// percentage((100 - ( $akara-control-padding-left + $akara-control-padding-right) ) / 100)
 
 $cur-pad-top: 1;
 @for $i from 1 through 11 {
@@ -173,14 +171,20 @@ $cur-pad-top: 1;
     box-shadow: 500px 500px 500px 500px white inset !important;
 }
 
-[data-anim] {
-    animation-name: fullScreenVideo;
-    animation-duration: .1s;
-    animation-timing-function: ease-in;
-    animation-fill-mode: forwards;
+// emacs M+x comment-or-uncomment-region === sh*t
+/* [data-anim] { */
+/*     animation-name: fullScreenVideo; */
+/*     animation-duration: .1s; */
+/*     animation-timing-function: ease-in; */
+/*     animation-fill-mode: forwards; */
+/* } */
 
+[data-fullscreenwidth] {
+    
+    height: 90px;
+    width: 50%;
+    
     margin-left: auto;
     margin-right: auto;
-
     margin-bottom: 80px;
 }
