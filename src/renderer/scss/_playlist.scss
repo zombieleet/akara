@@ -1,20 +1,25 @@
 .akara-playlist {
     
     border-bottom: 3px solid black;
-    padding: 5px;
     font-family: tahoma;
+    height: 15px;
+    padding: 5px;
     
-    .playlist-name {
-        color: white;
-        margin-left: 3px;
+    .playlist-indicator {
+        float: left;
+        .playlist-name {
+            color: white;
+            margin-left: 3px;
+        }
     }
+    
 
     .playlist-widget {
         float: right;
         cursor: pointer;
-
+        height: 0;
         .playlist-widget-item {
-            margin-left: 5px;
+            margin-left: 15px;
             transition: .5s background ease-in;
         }
 
