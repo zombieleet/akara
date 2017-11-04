@@ -3,9 +3,9 @@
     "use strict";
 
     const {
-        ipcRenderer: ipc,
         remote: {
-            require: _require
+            require: _require,
+            getCurrentWindow
         }
     } = require("electron");
 
@@ -80,7 +80,7 @@
 
     newList.addEventListener("click", evt => div.hidden = false);
 
-    close.addEventListener("click", evt => ipc.sendSync("close-addplaylist-window"));
+    close.addEventListener("click", () => getCurrentWindow.close());
 
     closeInput.addEventListener("click", evt => div.hidden = true);
     

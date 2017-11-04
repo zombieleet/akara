@@ -3,10 +3,10 @@
     "use strict";
 
     const {
-        ipcRenderer: ipc,
         remote: {
             dialog,
             BrowserWindow,
+            getCurrentWindow,
             require: _require
         }
     } = require("electron");
@@ -332,7 +332,7 @@
         return addToExisting.appendChild(ul);
     }
 
-    close.addEventListener("click", () => ipc.send("close-createplaylist-window"));
+    close.addEventListener("click", () => getCurrentWindow.close());
 
     form.addEventListener("submit", evt => {
 
@@ -384,7 +384,7 @@
         return true;
     });
 
-    cancel.addEventListener("click", evt => ipc.sendSync("close-createplaylist-window"));
+    cancel.addEventListener("click", () =>  getCurrentWindow().close());
 
     loadList();
 

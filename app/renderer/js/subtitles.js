@@ -6,13 +6,10 @@
         ipcRenderer: ipc,
         remote: {
             BrowserWindow,
+            getCurrentWindow,
             require: _require
         }
     }  = require("electron");
-
-    const {
-        createNewWindow
-    } = _require("./newwindow.js");
 
     const {
         join
@@ -252,9 +249,7 @@
 
 
 
-    close.addEventListener("click", () => {
-        ipc.send("close-subtitle-window");
-    });
+    close.addEventListener("click", () => getCurrentWindow().close());
 
     movie.addEventListener("change", () => {
         console.log(movie.checked);

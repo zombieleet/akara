@@ -197,7 +197,7 @@
     
     cancel.addEventListener("click", () => {
         ipc.send("download::cancel");
-        ipc.send("close-download-window");
+        getCurrentWindow().close();
     });
     
     restart.addEventListener("click", () => {
@@ -210,7 +210,7 @@
         if ( ! cancel.disabled )
             ipc.send("download::cancel");
 
-        ipc.send("close-download-window");
+        getCurrentWindow().close();
 
     });
 

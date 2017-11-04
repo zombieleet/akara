@@ -17,6 +17,8 @@ const createNewWindow = (obj,html) => {
         frame: obj.frame ? true : false,
         show: false,
         maximizable: false,
+        minimizable: false,
+        resizable: false,
         center: true,
         backgroundColor: BACKGROUND_COLOR
     });

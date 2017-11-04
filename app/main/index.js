@@ -45,7 +45,7 @@ const createWindow = () => {
         });
 
         mainWindow.loadURL(`file://${APP_PATH}/app/renderer/html/index.html`);
-
+        
         mainWindow.on("ready-to-show", () => {
             mainWindow.show();
         });

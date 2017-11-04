@@ -4,9 +4,15 @@ const {
     remote: {
         Menu,
         MenuItem,
-        getCurrentWindow
+        getCurrentWindow,
+        require: _require
     }
 } = require("electron");
+
+const {
+    createNewWindow: filterWindow
+} = _require("./newwindow.js");
+
 const akara_emit = require("../js/emitter.js");
 const video = document.querySelector("video");
 const akLoaded = document.querySelector(".akara-loaded");
@@ -62,7 +68,6 @@ const buildRepeatMenu = () => {
 
     return true;
 };
-
 
 const controls = {
 
@@ -260,6 +265,16 @@ const controls = {
 
         video.removeAttribute("data-random");
         no_random.setAttribute("data-fire", "random");
+    },
+    filter() {
+        const __obj = {
+            title: "filter",
+            width: 408,
+            height: 615
+        };
+
+        let html = `${__obj.title}.html`;
+        let window = filterWindow(__obj,html);
     }
 };
 
