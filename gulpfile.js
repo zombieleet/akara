@@ -33,13 +33,13 @@ gulp.task("pug", () => {
         });
 });
 
-gulp.task("imagemin", () => {
-    return gulp.src("./src/renderer/img/**/*")
-        .pipe(imagemin([
-            imagemin.svgo({plugins: [{removeViewBox: true}]})
-        ]))
-        .pipe(gulp.dest("./app/renderer/img/"));
-});
+// gulp.task("imagemin", () => {
+//     return gulp.src("./src/renderer/img/**/*")
+//         .pipe(imagemin([
+//             imagemin.svgo({plugins: [{removeViewBox: true}]})
+//         ]))
+//         .pipe(gulp.dest("./app/renderer/img/"));
+// });
 
 gulp.task("sass", () => {
     return gulp.src("src/renderer/scss/*.scss")
@@ -56,14 +56,11 @@ gulp.task("sass", () => {
 gulp.task("watch", () => {
 
     gulp.watch(["./src/**/*.js", "!node_modules/**"], [ "eslint" ]);
-
     gulp.watch("./src/renderer/scss/*.scss", [ "sass" ]);
-
     gulp.watch("./src/renderer/pug/*.pug", [ "pug" ]);
-
     gulp.watch("./src/renderer/img", [ "imagemin" ]);
 
 });
 
 
-gulp.task("default", [ "eslint", "pug", "sass" , "imagemin", "watch" ]);
+gulp.task("default", [ "eslint", "pug", "sass" , "watch" ]);
