@@ -1,0 +1,71 @@
+.filter-body {
+    @extend %new_window_body;
+}
+
+.filter-header {
+    @extend %new_window_headers;
+}
+
+.filter {
+    width: 100%;
+    padding-left: 12px;
+}
+
+.video-filters {
+    margin-top: 12px;
+    p {
+        margin-bottom: 4px;
+    }
+    .filter-value {
+        float: left;
+    }
+    .reset {
+        float: right;
+        border: none;
+        margin-top: 8px;
+        margin-right: 15px;
+        background: black;
+        color: lighten($global-color,30%);
+        box-shadow: 1px 1px 60px $global-color inset;
+        cursor: pointer;
+    }
+}
+
+.dropshadow-filter {
+    display: none;
+}
+
+.progress-parent {
+    width: 70%;
+    background: white;
+    height: 12px;
+    float: left;
+
+    margin-top: 12px;
+
+    .progress-bar {
+        width: 0;
+        background-color: lighten($global-color,20%);
+        height: 100%;
+    }
+}
+
+.pgress-ctrl-decr {
+    float: left;
+}
+
+.pgress-ctrl-decr,
+.pgress-ctrl-incr {
+    padding: 5px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.filter-btn {
+    button {
+        @extend %buttons;
+    }
+    button:last-of-type {
+        margin-right: 45px;
+    }
+}
