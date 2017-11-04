@@ -1,0 +1,42 @@
+
+extends ./__layout.pug
+
+mixin progressFilter(type, msment , min = 0, max = 100)
+  div(class="video-filters" data-filter-type=type data-measurement=msment)
+    p= type
+    span(class="fa fa-minus-circle pgress-ctrl-decr")
+    div(class="progress-parent")
+      div(class="progress-bar" data-bar-value="0" + msment)
+    span(class="fa fa-plus-circle pgress-ctrl-incr")
+    
+    button(class="reset") default
+
+block title
+  title Filter
+
+
+block body
+  body(class="filter-body")
+    header(class="filter-header")
+      span Video Filters
+      span(class="fa fa-window-close filter-close")
+    section(class="filter")
+
+      +progressFilter("blur", "px", 0, 100)
+      +progressFilter("brightness", "" ,0, 100)
+      +progressFilter("contrast", "%", 0, 100)
+
+      div(class="dropshadow-filter")
+        p dropshadow
+
+      +progressFilter("grayscale", "%", 0, 100)
+      +progressFilter("hue-rotate", "deg", 0, 100)
+      +progressFilter("invert", "%", 0, 100)
+      +progressFilter("opacity", "%", 0, 100)
+      +progressFilter("saturate", "%", 0, 100)
+      +progressFilter("sepia", "%", 0, 100)
+      
+      div(class="filter-btn")
+        button(class="filter-close") Close
+        button(class="filter-reset") Reset
+    script(src="../js/filter.js")
