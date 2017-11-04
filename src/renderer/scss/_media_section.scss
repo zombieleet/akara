@@ -18,6 +18,7 @@ $akara-load-width: 30% ;//- $akara-media-cover-width;
         video {
             width: 100% !important;
             height: 100% !important;
+            -webkit-filter: unset;
         }
     }
 
