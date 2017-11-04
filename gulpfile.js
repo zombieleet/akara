@@ -52,6 +52,10 @@ gulp.task("sass", () => {
         });
 });
 
+gulp.task("fontawesome", () => {
+    return gulp.src("src/renderer/libs/font-awesome.min.css")
+           .pipe(gulp.dest("./app/renderer/libs/"))
+});
 
 gulp.task("watch", () => {
 
@@ -63,4 +67,4 @@ gulp.task("watch", () => {
 });
 
 
-gulp.task("default", [ "eslint", "pug", "sass" , "imagemin", "watch" ]);
+gulp.task("default", [ "eslint", "pug", "fontawesome", "sass" , "imagemin", "watch" ]);
