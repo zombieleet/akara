@@ -2,6 +2,7 @@ const gulp = require("gulp");
 const eslint = require("gulp-eslint");
 const pug = require("gulp-pug");
 const sass = require("gulp-sass");
+const fs = require("fs");
 //const gulpIf = require("gulp-if");
 const imagemin = require("gulp-imagemin");
 
@@ -34,11 +35,11 @@ gulp.task("pug", () => {
 });
 
 gulp.task("imagemin", () => {
-   return gulp.src("./src/renderer/img/**/*")
-         .pipe(imagemin([
-             imagemin.svgo({plugins: [{removeViewBox: true}]})
-         ]))
-         .pipe(gulp.dest("./app/renderer/img/"));
+    return gulp.src("./src/renderer/img/**/*")
+        .pipe(imagemin([
+            imagemin.svgo({plugins: [{removeViewBox: true}]})
+        ]))
+        .pipe(gulp.dest("./app/renderer/img/"));
 });
 
 gulp.task("sass", () => {
@@ -53,8 +54,11 @@ gulp.task("sass", () => {
 });
 
 gulp.task("fontawesome", () => {
-    return gulp.src("src/renderer/libs/font-awesome.min.css")
-           .pipe(gulp.dest("./app/renderer/libs/"))
+    gulp.src("src/renderer/libs/*")
+        .pipe(gulp.dest("./app/renderer/libs/"));
+
+    gulp.src("src/renderer/fonts/*")
+        .pipe(gulp.dest("./app/renderer/fonts/"));
 });
 
 gulp.task("watch", () => {
