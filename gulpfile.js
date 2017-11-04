@@ -33,13 +33,13 @@ gulp.task("pug", () => {
         });
 });
 
-// gulp.task("imagemin", () => {
-//     return gulp.src("./src/renderer/img/**/*")
-//         .pipe(imagemin([
-//             imagemin.svgo({plugins: [{removeViewBox: true}]})
-//         ]))
-//         .pipe(gulp.dest("./app/renderer/img/"));
-// });
+gulp.task("imagemin", () => {
+   return gulp.src("./src/renderer/img/**/*")
+         .pipe(imagemin([
+             imagemin.svgo({plugins: [{removeViewBox: true}]})
+         ]))
+         .pipe(gulp.dest("./app/renderer/img/"));
+});
 
 gulp.task("sass", () => {
     return gulp.src("src/renderer/scss/*.scss")
@@ -63,4 +63,4 @@ gulp.task("watch", () => {
 });
 
 
-gulp.task("default", [ "eslint", "pug", "sass" , "watch" ]);
+gulp.task("default", [ "eslint", "pug", "sass" , "imagemin", "watch" ]);
