@@ -138,8 +138,8 @@ module.exports.updateTimeIndicator = () => {
     const pNode = timeIndicator.parentNode;
     const elapsed = Math.round((controls.getCurrentTime()).toFixed(1));
     const timeIndicatorWidth = ( elapsed * pNode.clientWidth ) /
-              ( controls.duration().toFixed(1)) ;
-    
+          ( controls.duration().toFixed(1)) ;
+
     timeIndicator.setAttribute("style", `width: ${( timeIndicatorWidth / pNode.clientWidth)*100}%`);
     currTimeUpdate.textContent = setTime();
     saveCurrentTimePos(video.src);
@@ -162,18 +162,18 @@ const handleMovement = (event,cb) => {
 
     let targetsOffsets ;
 
-    
+
     /**
-     * fullscreen mode will not allow proper handling of mouse events on 
+     * fullscreen mode will not allow proper handling of mouse events on
      * the control section
      **/
     if ( akControl.offsetLeft > 0 )
         targetsOffsets = akControl.offsetLeft;
     else
         targetsOffsets = event.target.offsetLeft + event.target.offsetTop;
-    
+
     const result = Math.round(controls.duration() * ( event.clientX - targetsOffsets ) / incrDiv.parentNode.clientWidth);
-    
+
     return cb(result);
 };
 
@@ -212,8 +212,8 @@ module.exports.removeHoverTime = removeHoverTime;
  **/
 
 const getHumanTime = result => isNaN(result)
-          ? "00:00"
-          : `${(result/60).toFixed(2)}`.replace(/\./, ":");
+      ? "00:00"
+      : `${(result/60).toFixed(2)}`.replace(/\./, ":");
 
 
 
@@ -395,6 +395,8 @@ const disableControls = () => {
     document.querySelector(".cover-on-error-src").removeAttribute("style");
     return video.removeAttribute("src");
 };
+
+
 
 /**
  *
@@ -852,28 +854,28 @@ module.exports.videoLoadData = event => {
 
     /*if ( fs.existsSync(pathToFile) ) {
 
-         dialog.showMessageBox({
-             title: "Resume Media File",
-             type: "info",
-             message: "Resume from previous playing",
-             buttons: [ "Yes", "No", "Cancel" ]
-         }), btn => {
+      dialog.showMessageBox({
+      title: "Resume Media File",
+      type: "info",
+      message: "Resume from previous playing",
+      buttons: [ "Yes", "No", "Cancel" ]
+      }), btn => {
 
-             if ( btn === 0 ) {
-                 video.currentTime = Number(getRecentPos(video.src).toString());
-                 return ;
-             }
+      if ( btn === 0 ) {
+      video.currentTime = Number(getRecentPos(video.src).toString());
+      return ;
+      }
 
-             if ( btn === 1 ) {
-                 fs.unlinkSync(pathToFile);
-                 return ;
-             }
+      if ( btn === 1 ) {
+      fs.unlinkSync(pathToFile);
+      return ;
+      }
 
-             if ( btn === 2 )
-                 return ;
+      if ( btn === 2 )
+      return ;
 
-         });
-    }*/
+      });
+      }*/
 
     video.currentTime = Number(getRecentPos(video.src).toString());
 
@@ -937,9 +939,9 @@ const ctrlBhviourInFullScreen = akaraControl => {
 };
 
 module.exports.mouseMoveOnVideo = () => {
-    
+
     const akaraControl = document.querySelector(".akara-control");
-    
+
     if ( ! document.webkitIsFullScreen )
         return false;
 
@@ -970,7 +972,7 @@ module.exports.controlMouseLeave = evt => {
 };
 
 module.exports.controlDragFullScreen = evt => {
-    
+
     if ( ! document.webkitIsFullScreen )
         return false;
 
@@ -1244,6 +1246,53 @@ module.exports.contextPlaylist = videoContextMenu => {
 };
 
 
+
+/**
+ *
+ * sets filter for video
+ *
+ **/
+module.exports.videoSetFilter = (evt, { filterType, progressBarWidth, measurement }) => {
+
+    let filter = video.style.filter;
+    let regex = new RegExp(`${filterType}\\((\\d+|\\d+\\.\\d+)(%|px|deg|)\\)`);
+
+    if ( filter === "unset" ) {
+        video.style.filter =  `${filterType}(${progressBarWidth}${measurement})`;
+        return ;
+    }
+
+
+    if ( regex.test(filter) ) {
+        console.log("enter regex");
+        filter = filter.replace(regex, `${filterType}(${progressBarWidth}${measurement})`);
+        video.style.filter = filter;
+        return ;
+    }
+
+    video.style.filter = filter + `${filterType}(${progressBarWidth}${measurement})`;
+    return ;
+};
+
+
+
+/**
+ *
+ * reset filter to default value
+ *
+ **/
+module.exports.videoResetFilter = (evt,type) => {
+    console.log("hiasdfasdf");
+    let regex = new RegExp(`${type}\\((\\d+|\\d+\\.\\d+)(%|px|deg|)\\)`);
+    let filter = video.style.filter;
+    if ( regex.test(filter) ) {
+        console.log(regex);
+        video.style.filter = filter.replace(regex,"");
+    }
+    return ;
+};
+
+
 if ( require.main !== module ) {
 
     akara_emit.on("video::state:track", (id,mode) => {
@@ -1274,7 +1323,7 @@ if ( require.main !== module ) {
         let outputProcess = document.querySelector(".akara-output-process");
         outputProcess.hidden = false;
         outputProcess.textContent = info;
-
+        console.log("output");
         if ( fin ) {
             outputProcess.animate({
                 opacity: [ .70, .60, .50, .40, .30, .20, .10, .1 ]
