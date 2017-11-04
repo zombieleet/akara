@@ -5,8 +5,10 @@
     "scripts": {
         "start": "electron .",
         "test": "jasmine test/*",
-        "lint": "eslint *",
-        "lintfix": "eslint --fix",
+        "pug": "gulp pug",
+        "eslint": "gulp eslint",
+        "sass": "gulp sass",
+        "watch": "gulp watch",
         "postinstall": "npm rebuild && electron-rebuild -w mmmagic",
         "ffmpeg:linux-64": "node download-ffmpeg.js linux-64",
         "ffmpeg:linux-32": "node download-ffmpeg.js linux-32",
