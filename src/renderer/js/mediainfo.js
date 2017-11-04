@@ -3,9 +3,9 @@
     "use strict";
 
     const {
-        ipcRenderer: ipc,
         remote: {
-            dialog
+            dialog,
+            getCurrentWindow
         }
     } = require("electron");
 
@@ -160,17 +160,17 @@
 
         if ( Error[Symbol.hasInstance](values) ) {
             return dialog.
-                showErrorBox("Cannot Read Metadata","The Information of this media file cannot be gotten");
+                showErrorBox("Cannot Read Metadata","The Information of this media file cannot be retrieved");
         }
 
         const div = document.createElement("div");
 
         div.appendChild(retrieveValue(values));
 
-        document.querySelector(".akara-info").appendChild(div);
+        return document.querySelector(".akara-info").appendChild(div);
     };
 
-    close.addEventListener("click", () => ipc.send("close-mediainfo-window"));
+    close.addEventListener("click", () => getCurrentWindow().close());
 
     styleMetaData();
 
