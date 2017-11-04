@@ -1,14 +1,15 @@
-extends loadplaylist.pug
-
-block mainTitle
-  title RemovePlaylist
 
 block title
-  span Remove Playlist
+  title Remove Playlist
 
-block button
-  button(class="removeplaylist-load" type="submit") Remove
+block body
+  body(class="load-playlist-body remove-playlist-body")
+    header(class="loadplaylist-header removeplaylist-header")
+      span Remove Playlist
+      span(class="fa fa-window-close removeplaylist-close")
+      
+    section(class="loadplaylist removeplaylist")
 
-block script
-  script(src="../js/removeplaylist.js")
+    button(class="removeplaylist-load" type="submit") Remove
+    script(src="../js/removeplaylist.js")
   

@@ -21,6 +21,6 @@ div(class="youtubeupload" hidden)
     button(class="youtubeupload-submit") Add
     button(class="youtubeupload-cancel") Cancel
   script.
-    document.documentElement.addEventListener("click", () => {
-      console.log("hio");
+    document.querySelector(".youtubeupload").addEventListener("keyup", evt => {
+        evt.stopPropagation();
     });

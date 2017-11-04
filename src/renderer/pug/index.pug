@@ -1,11 +1,12 @@
-doctype html
-// TODO: create a template for this pug file
-html
-   head
-     title= "Akara"
-     link(rel="stylesheet", href="")
-     link(rel="stylesheet", href="../css/main.css")
-     link(rel="stylesheet", href="../libs/font-awesome.min.css")
+
+//- TODO: create a template for this pug file
+
+extends ./__layout.pug
+
+block title
+  title Akara
+
+block body
    body
       header(class="akara-title-bar")
          span(class="fa fa-ellipsis-v akara-menu-toggle")
