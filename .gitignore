@@ -8,3 +8,4 @@ _test.js
 .env
 youtube.json
 src/renderer/js/index.js
+app/renderer/js/index.js
