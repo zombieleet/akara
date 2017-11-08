@@ -360,6 +360,12 @@ const videoContextMenu = [
     {
         label: "Load Playlist",
         submenu: []
+    },
+    {
+        label: "Import Playlist",
+        click(menuItem, { webContents }, event) {
+            webContents.send("akara::playlist:import");
+        }
     }
 ];
 
