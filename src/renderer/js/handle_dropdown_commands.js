@@ -59,22 +59,13 @@ const addMediaFile = () => {
         title: "Choose media file",
         defaultPath: app.getPath("videos"),
         filters: [
-            {name: "Media" , extensions: ["mp4",
-                "flac",
-                "ogv",
-                "ogm",
-                "ogg",
-                "webm",
-                "wav",
-                "m4v",
-                "m4a",
-                "mp3",
-                "amr",
-                "avi",
-                "3gp",
-                "swf",
-                "wma",
-                "mkv"]},
+            {name: "Media" , extensions: [
+                "mp4","flac","ogv","ogm","ogg",
+                "webm","wav","m4v","m4a","mp3",
+                "amr","avi","3gp","swf","wma","mkv"
+            ]},
+            { name: "xml shareable portable format" , extensions: [ "xspf" ] },
+            { name: "media playlist format", extensions: [ "m3u8", "m3u" ] },
         ],
         properties: ["openFile", "multiSelections"]
     },addMediaCb);
@@ -117,8 +108,9 @@ const search = () => {
 
 
     akaraMedia.insertBefore(parent, akaraLoad);
-
     searchAndAppend(input,findings);
+    
+    return parent.focus();
 };
 
 
@@ -139,14 +131,12 @@ const addMediaFolder = () => {
         properties: [ "openDirectory", "multiSelections" ]
     }, folderPaths => {
 
-        if ( ! folderPaths ) return ;
-
-        let files = [];
-
+        if ( ! folderPaths )
+            return ;
+        
+        const files = [];
         folderPaths.forEach( path => iterateDir()(path).forEach( filePath => files.push(filePath) ));
-
         addMediaCb(files);
-
     });
 
 };
