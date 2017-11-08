@@ -1195,7 +1195,6 @@ module.exports.loadContextPlaylist = (videoContextMenu,playlistLocation) => {
     }
 
     if ( Error[Symbol.hasInstance](result) )
-
         return false;
 
     Object.keys(JSON.parse(result)).forEach( list => {
