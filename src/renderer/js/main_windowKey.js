@@ -33,26 +33,26 @@
 
     const video = document.querySelector("video");
 
-    const findings = document.querySelector(".findings");
+    const searchResults = document.querySelector(".findings");
 
 
-    
-    const triggerNotArrow = () => {
 
-        const findings = document.querySelector(".findings");
+    const isSearchSuccesful = () => {
 
-        if ( ! findings || ! findings.hasChildNodes() )
+        const searchResults = document.querySelector(".findings");
+
+        if ( ! searchResults || ! searchResults.hasChildNodes() )
             return false;
 
-        let el = findings.querySelector("[data-navigate=true]");
+        let el = searchResults.querySelector("[data-navigate=true]");
 
-        return [ findings, el ];
+        return [ searchResults, el ];
     };
 
 
     const handlePlaySearchResult = () => {
 
-        const val = triggerNotArrow();
+        const val = isSearchSuccesful();
 
         if ( ! val )
             return false;
@@ -66,7 +66,7 @@
         return true;
     };
 
-    
+
     /**
      *
      *
@@ -80,15 +80,16 @@
 
     const handleArrowKeys = () => {
 
-        const val = triggerNotArrow();
+        const val = isSearchSuccesful();
 
-        if ( ! val )  return false;
+        if ( ! val )
+            return false;
 
-        let [ findings, el ] = val;
+        let [ searchResults, el ] = val;
 
         if ( ! el ) {
-            findings.children[0].setAttribute("data-navigate", "true");
-            el = findings.children[0];
+            searchResults.children[0].setAttribute("data-navigate", "true");
+            el = searchResults.children[0];
         }
         return el;
     };
@@ -121,8 +122,8 @@
         key: "ArrowUp",
 
         handler() {
+            
             let el = handleArrowKeys();
-
             let prev;
 
             if ( (prev = el.previousElementSibling) ) {
@@ -143,8 +144,8 @@
         key: "ArrowDown",
 
         handler() {
+            
             let el = handleArrowKeys();
-
             let next;
 
             if ( ( next = el.nextElementSibling ) ) {
@@ -355,7 +356,7 @@
             key: track.id,
             modifier: [ "ctrlKey" ],
             handler() {
-                
+
                 const textTracks = video.textTracks;
 
                 const {
@@ -363,18 +364,18 @@
                 } = textTracks;
 
                 for ( let i = 0; i < _trackLength; i++ ) {
-                    
+
                     if ( textTracks[i].id != track.id ) {
-                        
+
                         textTracks[i].mode = "hidden";
-                        
+
                         akara_emit.emit("video::state:track", textTracks[i].id, "disable");
-                        
+
                         continue ;
                     }
-                    
+
                     textTracks[i].mode = "showing";
-                    
+
                     akara_emit.emit("video::state:track", textTracks[i].id, "enable");
                 }
             }
