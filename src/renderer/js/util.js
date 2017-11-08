@@ -379,6 +379,7 @@ module.exports.playOnDrop = () => {
 };
 
 const sendNotification = (title,message) => new Notification(title,message);
+
 module.exports.sendNotification = sendNotification;
 
 module.exports.disableVideoMenuItem = menuInst => {
@@ -387,10 +388,17 @@ module.exports.disableVideoMenuItem = menuInst => {
 
     const ccStatus = toggleSubOnOff.getAttribute("data-sub-on");
 
-    if  ( ! video.hasAttribute("src") && menuInst.label !== "Add" ) {
-        menuInst.enabled = false;
+    if  ( ! video.hasAttribute("src") ) {
+        switch(menuInst.label) {
+        case "Add": break;
+        case "Load Playlist": break;
+        case "Import Playlist": break;
+        default:
+            menuInst.enabled = false;
+        }
         return ;
     }
+    
 
     if ( menuInst.label === "Play" && ! video.paused ) {
         menuInst.enabled = false;
@@ -789,17 +797,15 @@ module.exports.renderPlayList = type => {
         return false;
 
     if ( Object.keys(list).length === 0 ) {
-
+        
         const p = document.createElement("p");
-
+        
         p.textContent = "No Playlist have been created";
-
         p.setAttribute("class", "no-loadplaylist");
-
+        
         document.querySelector("button").hidden = true;
-
         loadplaylist.appendChild(p);
-
+        
         return false;
     }
 
@@ -1009,8 +1015,7 @@ module.exports.exportXspf = file => {
 };
 
 module.exports.importXspf = file => {
-    const parser = new xml2js.Parser();
-    
+    const parser = new xml2js.Parser();    
     return new Promise((resolve,reject) => {
         
         fs.readFile(file, (err,data) => {
