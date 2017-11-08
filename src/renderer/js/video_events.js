@@ -38,7 +38,8 @@
         _setPlaybackRate,
         _enterfullscreen,
         _leavefullscreen,
-        showMediaInfoWindow
+        showMediaInfoWindow,
+        loadplaylist
     } = require("../js/handle_dropdown_commands.js")();
   
     const {
@@ -150,11 +151,14 @@
         video.style.filter = "unset";
         akara_emit.emit("akara::processStatus", `video filter unset`, true);
     });
+    ipc.on("akara::playlist:import", loadplaylist);
+    
     akaraControl.addEventListener("mousedown", controlDragFullScreen);
     akaraControl.addEventListener("mouseenter", controlMouseEnter);
     akaraControl.addEventListener("mouseleave", controlMouseLeave);
     
     akara_emit.on("video::show_subtitle", showSubtitle);
+    
     akara_emit.on("akara::playlist", videoContextMenu => {
 
         const {
