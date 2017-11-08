@@ -14,3 +14,5 @@ ffmpeg -i input.mp4 <video options> -filter split rtmp://server[:port][/app] out
 
 ffmpeg -i original.mp4 -c:v libvpx -preset slow -s 1024x576 -qmin 0 -qmax 50 -an -b:v 400K -pass 1 homepage.webm
 ffmpeg -i original.mp4 -c:v libx264 -preset slow -s 1024x576 -an -b:v 370K homepage.mp4
+11. put function specific to a section to it's on section instead of util.js
+12. fork m3u8-reader and use the forked repo as the default
