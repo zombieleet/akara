@@ -1,0 +1,11 @@
+
+div(class="default-settings-page")
+  include ./_settings-var.pug
+  ul(class="default-settings-list")
+    - for ( let settings of Object.keys(settingsItems) ) {
+      li(class="default-settings-item") #{settings}
+        ul(class="default-settings-list-item")
+          - for ( let [,sItemValue] of Object.entries(settingsItems[settings]) ) {
+            li(class="default-item") #{sItemValue.name}
+          - }
+    - }

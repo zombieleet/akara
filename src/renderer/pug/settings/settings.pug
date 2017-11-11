@@ -1,0 +1,48 @@
+extends ../__layout.pug
+
+block title
+  title Settings
+
+block link
+  link(rel="stylesheet", href="../../css/main.css")
+  link(rel="stylesheet", href="../../libs/font-awesome.min.css")
+
+block body
+  body(class="settings-body")
+    header(class="settings-header")
+      div Settings
+      div
+        ul(class="settings-window-button")
+          li(class="fa fa-window-minimize settings-min")
+          li(class="fa fa-window-maximize settings-max")
+          li(class="fa fa-window-close settings-close")
+          
+    section(class="settings")
+    
+      div(class="settings-items")
+      
+        div(class="settings-search")
+          label
+            p Filter
+            input(type="text" placeholder="quick search")
+            
+        ul(class="settings-list")
+          include ./_settings-var.pug
+          - for ( let settings of Object.keys(settingsItems) )  {
+            - let settingsClass = settings.toLowerCase().replace(/s\+/,"");
+            li(class=settingsClass + "-settings settings-list-item")= settings
+          - }
+          
+      div(class="settings-values")
+        include ./defaultsettingspage.pug
+        include ./videosettings.pug
+        include ./audiosettings.pug
+        include ./visualization.pug
+        include ./ui.pug
+        include ./playlist.pug
+        include ./subtitle.pug
+        include ./download.pug
+        include ./plugins.pug
+        include ./powermanagement.pug
+        include ./share.pug
+    script(src="../../js/settings.js")
