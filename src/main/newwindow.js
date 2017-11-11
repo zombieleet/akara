@@ -16,9 +16,9 @@ const createNewWindow = (obj,html) => {
     Object.assign(obj, {
         frame: obj.frame ? true : false,
         show: false,
-        maximizable: false,
-        minimizable: false,
-        resizable: false,
+        maximizable: obj.maximizable,
+        minimizable: obj.minimizable,
+        resizable: obj.resizable,
         center: true,
         backgroundColor: BACKGROUND_COLOR
     });
@@ -28,7 +28,6 @@ const createNewWindow = (obj,html) => {
     let urLocation;
     
     if ( url.parse(html).protocol )
-        
         urLocation = html;
     else
         urLocation = `file://${APP_PATH}/app/renderer/html/${html}`;
@@ -47,8 +46,26 @@ const createNewWindow = (obj,html) => {
 
     webContents.openDevTools();
 
-    ipc.once(`close-${obj.title}-window`, () => {
-        newWindow.close();
+    ipc.on("akara::newwindow:max", event => {
+        if ( newWindow.isMaximized() ) {
+            newWindow.unmaximize();
+            event.sender.send("akara::newwindow:isnotmin");
+        } else {
+            newWindow.maximize();
+            event.sender.send("akara::newwindow:ismax");
+        }
+    });
+
+    ipc.on("akara::newwindow:min", () => {
+        newWindow.minimize();
+    });
+
+    newWindow.on("maximize", () => {
+        newWindow.webContents.send("akara::newwindow:ismax");
+    });
+
+    newWindow.on("unmaximize", () => {
+        newWindow.webContents.send("akara::newwindow:isnotmin");
     });
 
     return newWindow;
