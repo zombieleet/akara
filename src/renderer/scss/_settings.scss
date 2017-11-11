@@ -1,0 +1,123 @@
+.settings-body {
+    @extend %new_window_body;
+}
+
+.settings-header {
+    
+    width: 100%;
+    padding-top: 10px;
+    padding-left: 5px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid white;
+
+    -webkit-app-region: drag;
+    
+    div:first-of-type {
+        float: left;
+        width: 20%;
+        font-size: 20px;
+        margin-left: 0;
+    }
+    div:last-of-type {
+        float: right;
+        margin-right: 15px;
+        ul {
+            -webkit-app-region: no-drag;
+            li {
+                margin-left: 15px;
+                cursor: pointer;
+            }
+            .settings-close {
+                transition: .2s color ease-in-out;
+                &:hover {
+                    color: red;
+                }
+            }
+        }
+    }
+}
+
+
+
+.settings {
+    width: 100%;
+}
+
+.settings-items {
+    float: left;
+    width: 20%;
+    background: darken($global-color,15%);
+}
+
+
+.settings-search {
+    border: 2px solid darken($global-color, 10%);
+    background: darken($global-color,10%);
+    $padding-top-bottom: 15;
+    $padding-left-right: 12;
+    padding: $padding-top-bottom + px $padding-left-right + px;
+    
+    width: percent(($padding-top-bottom * $padding-top-bottom) - ($padding-left-right * $padding-left-right));
+    
+    label {
+        p {
+            font-size: 20px;
+        }
+        input {
+            font-size: 20px;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            width: 90%;
+        }
+    }
+}
+
+
+.settings-list {
+    margin-top: 12px;
+    padding-left: 12px;
+    overflow-y: auto;
+    height: 1000px;
+    .settings-list-item {
+        margin-top: 20px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+}
+
+
+$settings-value-padding-left: 2;
+.settings-values {
+    height: 800px;
+    overflow-y: auto;
+    float: right;
+    padding-top: 12px;
+    padding-left: $settings-value-padding-left + px;
+    width: 80 - $settings-value-padding-left + %;
+}
+
+.default-settings-page {
+    .default-settings-list {
+        .default-settings-item {
+            font-size: 20px;
+        }
+    }
+}
+
+.default-settings-list-item {
+    width: 100%;
+    margin-bottom: 35px;
+    .default-item {
+        margin-top: 30px;
+        display: inline-block;
+        width: 20%;
+        font-size: 15px;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 3px;
+        &:hover {
+            box-shadow: 100px 100px 100px darken($global-color,20%) inset;
+        }
+    }
+}
