@@ -361,7 +361,9 @@ const loadplaylist = () => {
     }, loadplaylistCb);
 };
 
-// .send("akara::ytube-share")
+const settings = () => createNewWindow({
+    title: "Settings"
+}, "settings/settings.html");
 
 const HandleDroped = () => ({
     addMediaFile,
@@ -382,7 +384,8 @@ const HandleDroped = () => ({
     showMediaInfoWindow,
     podcast,
     saveplaylist,
-    loadplaylist
+    loadplaylist,
+    settings
 });
 
 module.exports = HandleDroped;
