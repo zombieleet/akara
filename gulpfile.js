@@ -25,7 +25,7 @@ gulp.task("eslint", () => {
 
 
 gulp.task("pug", () => {
-    return gulp.src("src/renderer/pug/*.pug")
+    return gulp.src("src/renderer/pug/**/*.pug")
         .pipe(pug())
         .on("error", error => console.log(error))
         .pipe(gulp.dest("./app/renderer/html/"))
@@ -65,7 +65,7 @@ gulp.task("watch", () => {
 
     gulp.watch(["./src/**/*.js", "!node_modules/**"], [ "eslint" ]);
     gulp.watch("./src/renderer/scss/*.scss", [ "sass" ]);
-    gulp.watch("./src/renderer/pug/*.pug", [ "pug" ]);
+    gulp.watch("./src/renderer/pug/**/*.pug", [ "pug" ]);
     gulp.watch("./src/renderer/img", [ "imagemin" ]);
 
 });
