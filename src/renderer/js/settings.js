@@ -3,14 +3,54 @@
     const {
         ipcRenderer: ipc,
         remote: {
-            getCurrentWindow
+            getCurrentWindow,
+            dialog,
+            require: _require
         }
     } = require("electron");
-    
-    
+
+    const { createNewWindow: settingsWindow } = _require("./newwindow.js");
+
+
     const settingsMin = document.querySelector(".settings-min");
     const settingsMax = document.querySelector(".settings-max");
     const settingsClose = document.querySelector(".settings-close");
+    const settingsValue = document.querySelector(".settings-values");
+
+
+
+    const handleAkaraSettings = Object.create({});
+
+
+    handleAkaraSettings.poster = () => {
+
+        const poster = {
+            title: "poster",
+            maximizable: false,
+            resizable: false,
+            minimizable: false,
+            center: true
+        };
+
+        settingsWindow(poster, "settings/audio/poster.html");
+    };
+
+
+
+    settingsValue.addEventListener("click", evt => {
+        const { target } = evt;
+
+        if ( ! target.hasAttribute("data-fire") )
+            return ;
+
+        try {
+            handleAkaraSettings[target.getAttribute("data-fire")](evt);
+        } catch(ex) {
+            console.log(ex);
+            dialog.showErrorBox("Not Yet Implemented", `${target.textContent} has not yet be implemented`);
+        }
+    });
+
 
 
     settingsClose.addEventListener("click", () => getCurrentWindow().close());
@@ -30,5 +70,6 @@
         settingsMax.classList.remove("fa-window-restore");
         settingsMax.classList.add("fa-window-maximize");
     });
-    
+
+
 })();
