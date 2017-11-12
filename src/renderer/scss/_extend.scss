@@ -105,13 +105,13 @@ $drop-down-left-pos: 200;
     &:hover {
         background: darken(lightgrey, 70%);
         color: white;
-    }    
+    }
 }
 
 %center-absolute {
     width: 40%;
     height: 20%;
-    
+
     position: absolute;
     top: 0;
     left: 0;
@@ -123,7 +123,7 @@ $drop-down-left-pos: 200;
 
 %modal-textarea {
     display: block;
-    
+
     width: 100%;
     height:80px;
     resize: none;
@@ -150,7 +150,7 @@ $drop-down-left-pos: 200;
     bottom: 0;
     right: 0;
     left: 0;
-    
+
     background: lighten($global-color,30%);
     opacity: .75;
 }
