@@ -152,6 +152,9 @@
         akara_emit.emit("akara::processStatus", `video filter unset`, true);
     });
     ipc.on("akara::playlist:import", loadplaylist);
+    ipc.on("akara::video:poster:change", (evt,poster) => {
+        video.poster = poster;
+    });
     
     akaraControl.addEventListener("mousedown", controlDragFullScreen);
     akaraControl.addEventListener("mouseenter", controlMouseEnter);
