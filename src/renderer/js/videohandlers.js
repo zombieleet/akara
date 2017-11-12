@@ -445,7 +445,12 @@ module.exports.playNextOrPrev = playNextOrPrev;
 
 module.exports.videoErrorEvent = async (evt) => {
 
-    const _src = video.getAttribute("src").replace("file://","");
+    let _src = video.getAttribute("src");
+    
+    if ( ! _src )
+        return ;
+    
+    _src = video.getAttribute("src").replace("file://","");
     const akaraLoaded = document.querySelector(".akara-loaded");
     const playlistItem = akaraLoaded.querySelector(`#${video.getAttribute("data-id")}`);
 
