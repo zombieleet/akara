@@ -52,6 +52,56 @@ const PODCAST = () => {
     return pod;
 };
 
+const requireSettingsPath = type => {
+    const jsons = [ "poster.json", "buttons.json" ];
+    const settingsPath = SETTINGS();
+    
+    return new Promise((resolve,reject) => {
+        
+        jsons.forEach( setting => {
+            
+            const jsonPath = join(settingsPath, setting);
+            
+            if ( setting === type && existsSync(jsonPath) )
+                resolve(jsonPath);
+
+            if ( setting === type && ! existsSync(jsonPath) ) {
+                
+                let objConfig = {};
+                console.log(join(APP_PATH, "app", "renderer", "img", "poster"));
+                switch(type) {
+                case "poster.json":
+                    objConfig = { poster: join(APP_PATH, "app", "renderer", "img", "posters", "default_poster.jpg") };
+                    break;
+                }
+                writeFileSync(jsonPath, JSON.stringify(objConfig));
+                resolve(jsonPath);
+            }
+        });
+    });
+};
+
+const SETTINGS = () => {
+    
+    const settings = join(USER_DATA, "settings");
+    
+    if ( existsSync(settings) )
+        return settings;
+    
+    mkdirSync(settings);
+    return settings;
+};
+
+const USER_POSTERS_LOCATION = () => {
+    const posters = join(USER_DATA, "posters");
+
+    if ( existsSync(posters) )
+        return posters;
+
+    mkdirSync(posters);
+    return posters;
+};
+
 const _CURRENT_TIME = () => {
 
     const currenttime = join(USER_DATA, "currenttime");
@@ -96,5 +146,7 @@ module.exports = {
     PLAYLIST_FILE,
     TWITTER_OAUTH,
     PODCAST,
-    FFMPEG_LOCATION
+    FFMPEG_LOCATION,
+    requireSettingsPath,
+    USER_POSTERS_LOCATION
 };
