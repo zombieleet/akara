@@ -6,6 +6,6 @@ div(class="default-settings-page")
       li(class="default-settings-item") #{settings}
         ul(class="default-settings-list-item")
           - for ( let [,sItemValue] of Object.entries(settingsItems[settings]) ) {
-            li(class="default-item") #{sItemValue.name}
+            li(class="default-item" data-fire=sItemValue.name.replace(/\s+/,"")) #{sItemValue.name}
           - }
     - }
