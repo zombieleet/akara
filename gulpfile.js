@@ -10,7 +10,7 @@ const sourcemaps = require("gulp-sourcemaps");
 
 
 gulp.task("eslint", () => {
-    return gulp.src("./src/**/*.js")
+    return gulp.src("./src/**/**/*.js")
         .pipe(eslint({
             fix: true,
             configFile: "./.eslintrc.json"
@@ -25,7 +25,7 @@ gulp.task("eslint", () => {
 
 
 gulp.task("pug", () => {
-    return gulp.src("src/renderer/pug/**/*.pug")
+    return gulp.src("src/renderer/pug/**/**/*.pug")
         .pipe(pug())
         .on("error", error => console.log(error))
         .pipe(gulp.dest("./app/renderer/html/"))
@@ -43,7 +43,7 @@ gulp.task("imagemin", () => {
 });
 
 gulp.task("sass", () => {
-    return gulp.src("src/renderer/scss/*.scss")
+    return gulp.src("src/renderer/scss/**/*.scss")
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: "extended"}).on("error", sass.logError))
         .pipe(sourcemaps.write("./maps"))
@@ -63,10 +63,10 @@ gulp.task("fontawesome", () => {
 
 gulp.task("watch", () => {
 
-    gulp.watch(["./src/**/*.js", "!node_modules/**"], [ "eslint" ]);
-    gulp.watch("./src/renderer/scss/*.scss", [ "sass" ]);
-    gulp.watch("./src/renderer/pug/**/*.pug", [ "pug" ]);
-    gulp.watch("./src/renderer/img", [ "imagemin" ]);
+    gulp.watch(["./src/**/**/*.js", "!node_modules/**"], [ "eslint" ]);
+    gulp.watch("./src/renderer/scss/**/*.scss", [ "sass" ]);
+    gulp.watch("./src/renderer/pug/**/**/*.pug", [ "pug" ]);
+    gulp.watch("./src/renderer/img/**/*", [ "imagemin" ]);
 
 });
 
