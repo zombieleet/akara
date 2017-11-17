@@ -3,6 +3,8 @@ node_modules/
 app/renderer/html/*.html
 !app/renderer/html/index.html
 *.mp4
+*.mp3
+t*.js
 converted_media/
 _test.js
 .env
