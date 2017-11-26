@@ -1,0 +1,49 @@
+extends ../__layout.pug
+
+block title
+  title Power Management
+  
+block link
+  link(rel="stylesheet", href="../../css/main.css")
+  link(rel="stylesheet", href="../../libs/font-awesome.min.css")
+
+block body
+  body(class="power-body")
+    header(class="power-header")
+      span Power Management
+      span(class="fa fa-window-close power-close")
+    
+      
+    section(class="power")
+      div(class="power-options")
+        ul(class="power-options-list")
+        
+          li(class="power-list-item" data-save="close_player_battery_low")
+            p Close Player if battery is low
+            i(class="fa fa-toggle-off toggle-off")
+            
+            
+          li(class="power-list-item" data-save="suspend_computer_battery_low")
+            p Suspend Computer if battery is low
+            i(class="fa fa-toggle-off toggle-off")
+            
+            
+          li(class="power-list-item" data-save="show_battery_icon")
+            p Show Battery Icon
+            i(class="fa fa-toggle-off toggle-off")
+            
+            
+          li(class="power-list-item" data-save="dim_screen_discharging")
+            p Dim Screen While Discharging
+            i(class="fa fa-toggle-off toggle-off")
+            
+            
+          li(class="power-list-item" data-save="brighteen_screen_charging")
+            p Brighteen Screen While Charging
+            i(class="fa fa-toggle-off toggle-off")
+            
+      
+      div(class="power-buttons")
+        button(class="power-save") Save
+        button(class="power-cancel") Cancel
+    script(src="../../js/settings/powermanagement.js")
