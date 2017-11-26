@@ -35,6 +35,19 @@
         settingsWindow(poster, "settings/audio/poster.html");
     };
 
+    handleAkaraSettings.powersettings = () => {
+        const power = {
+            title: "power",
+            // maximizable: false,
+            // resizable: false,
+            // minimizable: false,
+            width: 500,
+            height: 460,
+            center: false
+        };
+
+        settingsWindow(power, "settings/powermanagement.html");
+    };
 
 
     settingsValue.addEventListener("click", evt => {
