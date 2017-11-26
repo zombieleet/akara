@@ -74,3 +74,22 @@
         }
     }
 }
+
+.akara-battery,
+.akara-bolt {
+    float: right;
+    color: white;
+
+    position: relative;
+    right: 150px;
+    top: 15px;
+}
+
+
+.akara-battery {
+    margin-right: 12px;
+}
+
+.akara-bolt {
+    margin-right: 10px;
+}
