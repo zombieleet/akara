@@ -93,15 +93,20 @@ $drop-down-left-pos: 200;
 }
 
 %buttons {
-    border: none;
-    padding: 3px;
+
+    width: 15%;
+    margin: 50px 10px 10px 10px;
+    float: right;
+    
+    padding: 5px;
     font-size: 15px;
     cursor: pointer;
     transition: .2s background ease-in, .2s color ease-in;
-
-    position: fixed;
-    bottom: 0;
-    right: 0;
+    
+    border: none;
+    
+    border-radius: 50px;
+    
     &:hover {
         background: darken(lightgrey, 70%);
         color: white;
