@@ -53,31 +53,29 @@ const PODCAST = () => {
 };
 
 const requireSettingsPath = type => {
-    const jsons = [ "poster.json", "buttons.json" ];
+    
     const settingsPath = SETTINGS();
     
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve,reject) => {        
         
-        jsons.forEach( setting => {
-            
-            const jsonPath = join(settingsPath, setting);
-            
-            if ( setting === type && existsSync(jsonPath) )
-                resolve(jsonPath);
+        const jsonPath = join(settingsPath, type);
+        
+        if ( existsSync(jsonPath) )
+            resolve(jsonPath);
 
-            if ( setting === type && ! existsSync(jsonPath) ) {
-                
-                let objConfig = {};
-                console.log(join(APP_PATH, "app", "renderer", "img", "poster"));
-                switch(type) {
-                case "poster.json":
-                    objConfig = { poster: join(APP_PATH, "app", "renderer", "img", "posters", "default_poster.jpg") };
-                    break;
-                }
-                writeFileSync(jsonPath, JSON.stringify(objConfig));
-                resolve(jsonPath);
+        if ( ! existsSync(jsonPath) ) {
+            
+            let objConfig = {};
+
+            switch(type) {
+            case "poster.json":
+                objConfig = { poster: join(APP_PATH, "app", "renderer", "img", "posters", "default_poster.jpg") };
+                break;
+
             }
-        });
+            writeFileSync(jsonPath, JSON.stringify(objConfig));
+            resolve(jsonPath);
+        }
     });
 };
 
