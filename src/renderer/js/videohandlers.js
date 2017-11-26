@@ -5,6 +5,7 @@ const {
     video,
     controls
 } = require("../js/video_control.js");
+
 const {
     ipcRenderer: ipc,
     remote: {
@@ -18,20 +19,32 @@ const {
         }
     }
 } = require("electron");
+
+const {
+    requireSettingsPath
+} = _require("./constants.js");
+
+const { promisify } = require("bluebird");
+
 const {
     CURRENT_TIME
 } = _require("./constants.js");
+
 const {
     createNewWindow
 } = _require("./newwindow.js");
+
 const {
     parse
 } = require("url");
+
 const {
     basename,
     join
 } = require("path");
+
 const crypto = require("crypto");
+
 const {
     disableVideoMenuItem,
     langDetect,
@@ -45,15 +58,20 @@ const {
     removeType,
     setCurrentPlaying
 } = require("../js/util.js");
+
 const fs = require("fs");
+
 const {
     videoContextMenu
 } = _require("./menu.js");
+
 const {
     _enterfullscreen,
     _leavefullscreen
 } = require("../js/handle_dropdown_commands.js")();
+
 const akara_emit = require("../js/emitter.js");
+
 const mime = require("mime");
 
 let controlMouseEnterFscreen = false;
@@ -444,12 +462,12 @@ module.exports.playNextOrPrev = playNextOrPrev;
  **/
 
 module.exports.videoErrorEvent = async (evt) => {
-
-    let _src = video.getAttribute("src");
     
+    let _src = video.getAttribute("src");
+
     if ( ! _src )
         return ;
-    
+
     _src = video.getAttribute("src").replace("file://","");
     const akaraLoaded = document.querySelector(".akara-loaded");
     const playlistItem = akaraLoaded.querySelector(`#${video.getAttribute("data-id")}`);
@@ -842,6 +860,43 @@ const handleLoadSubtitle = async (path,cb) => {
 };
 
 
+const loadAlbumArt = async () => {
+
+    const posterJson = await requireSettingsPath("poster.json");
+    const posterSettings = require(posterJson);
+
+    const id3 = promisify(require("id3js"));
+
+    if ( ! posterSettings.album_art )
+        return false;
+
+    let tags;
+
+    try {
+        tags = await id3({file: parse(video.src).path , type: id3.OPEN_LOCAL});
+    } catch(ex) {
+        tags = ex;
+    }
+
+    if ( Error[Symbol.hasInstance](tags) )
+        return false;
+
+    const { v2: { image } } = tags;
+    
+    if ( ! image )
+        return false;
+
+    const typedArrayBuf = new Uint8Array(image.data);
+
+    let base64String = "";
+
+    for ( let _typedArray of typedArrayBuf ) {
+        base64String += String.fromCharCode(_typedArray);
+    }
+    
+    return `data:${image.mime};base64,${window.btoa(base64String)}`;
+};
+
 
 /**
  *
@@ -851,11 +906,14 @@ const handleLoadSubtitle = async (path,cb) => {
  **/
 
 
-module.exports.videoLoadData = event => {
-
+module.exports.videoLoadData = async (event) => {
+    
+    const posterJson = await requireSettingsPath("poster.json");
+    const posterSettings = require(posterJson);
+    
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
-
     const pathToFile = hashedPath(video.src);
+    
 
     /*if ( fs.existsSync(pathToFile) ) {
 
@@ -899,6 +957,16 @@ module.exports.videoLoadData = event => {
         });
     }
 
+        
+    let base64StringAlbum_art = await loadAlbumArt();
+    
+    if ( ! base64StringAlbum_art ) {
+        video.poster = posterSettings.poster;
+        return ;
+    }
+    
+    video.poster = base64StringAlbum_art;
+    
 };
 
 
