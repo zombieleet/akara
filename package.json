@@ -21,6 +21,7 @@
     },
     "dependencies": {
         "bluebird": "^3.5.0",
+        "brightness": "^3.0.0",
         "dotenv": "^4.0.0",
         "electron": "^1.7.9",
         "facebook-api-video-upload": "^1.2.2",
