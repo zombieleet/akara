@@ -26,6 +26,8 @@
         }
     } = require("electron");
 
+    const { requireSettingsPath } = _require("./constants.js");
+    
     const {
         addMediaFile,
         addMediaFolder,
@@ -80,7 +82,7 @@
     const {
         createNewWindow: playListWindow
     } = _require("./newwindow.js");
-
+    
     const fs = require("fs");
 
     const currTimeUpdate = document.querySelector(".akara-update-cur-time"),
@@ -88,6 +90,7 @@
         akaraVolume = document.querySelector(".akara-volume"),
         akaraControl = document.querySelector(".akara-control"),
         controlElements = akaraControl.querySelector(".akara-control-element");
+
 
 
     controlElements.addEventListener("click", fireControlButtonEvent);
@@ -132,18 +135,23 @@
     ipc.on("video-repeat", () => video.loop = true );
     ipc.on("video-no-repeat", () => video.loop = false );
     ipc.on("video-open-external", showFileLocation);
+    
     ipc.on("normal-speed", () => _setPlaybackRate(1));
     
-    //DONT-HARD-CODE-ME
-    ipc.on("fast-speed", () => _setPlaybackRate(12));
-    ipc.on("very-fast-speed", () => _setPlaybackRate(25));
-    ipc.on("slow-speed", () => _setPlaybackRate(0.7));
-    ipc.on("very-slow-speed", () => _setPlaybackRate(0.2));
+    requireSettingsPath("playbackrate.json").
+        then( playbackFile => {
+            const { fast,veryfast,slow,veryslow } = require(playbackFile);
+            ipc.on("fast-speed", () => _setPlaybackRate(fast));
+            ipc.on("very-fast-speed", () => _setPlaybackRate(veryfast));
+            ipc.on("slow-speed", () => _setPlaybackRate(slow));
+            ipc.on("very-slow-speed", () => _setPlaybackRate(veryslow));
+        });
+    
     ipc.on("subtitle::load-sub", subHandler );
     ipc.on("enter-video-fullscreen", _enterfullscreen);
     ipc.on("leave-video-fullscreen", _leavefullscreen);
     ipc.on("video-search", search);
-    ipc.on("media-info", showMediaInfoWindow);
+    //ipc.on("media-info", showMediaInfoWindow);
     ipc.on("akara::podcasturl", (evt,path,category) => addMediaCb(path,category));
     ipc.on("akara::video:filter", videoSetFilter);
     ipc.on("akara::video:filter:reset", videoResetFilter);
