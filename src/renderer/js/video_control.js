@@ -270,7 +270,7 @@ const controls = {
         const __obj = {
             title: "filter",
             width: 408,
-            height: 615
+            height: 730
         };
 
         let html = `${__obj.title}.html`;
