@@ -62,10 +62,8 @@
 }
 
 .filter-btn {
+    margin-right: 12px;
     button {
         @extend %buttons;
-    }
-    button:last-of-type {
-        margin-right: 45px;
     }
 }
