@@ -1,0 +1,53 @@
+.playback-body {
+    @extend %new_window_body;
+}
+
+.playback-header {
+    @extend %new_window_headers;
+}
+
+.playback-options {
+    
+    margin-top: 50px;
+    
+    li {
+
+        font-size: 1.2em;
+        padding: 25px;
+        width: 100%;
+        margin-bottom: 10px;
+
+        border-bottom: 2px solid lighten($global-color, 10%);
+        
+        /** 
+        clear incoming children of li
+         **/
+        clear: both;
+        
+        p {
+            width: 50%;
+            float: left;
+        }
+        input {
+            float: right;
+            margin-right: 50px;
+            margin-top: -8px;
+            padding: 5px;
+            border-radius: 12px;
+
+            border: none;
+            background-color: lighten($global-color, 10%);
+            color: white;
+        }
+    }
+}
+
+.playback-btn {
+    button {
+        @extend %buttons;
+    }
+}
+
+input {
+    width: 10%;
+}
