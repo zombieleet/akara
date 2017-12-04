@@ -71,8 +71,11 @@ const requireSettingsPath = type => {
             case "poster.json":
                 objConfig = { poster: join(APP_PATH, "app", "renderer", "img", "posters", "default_poster.jpg") };
                 break;
-
+            case "playbackrate.json":
+                objConfig = { fast: 12, veryfast: 25, slow: 0.7, veryslow: 0.2};
+                break;
             }
+
             writeFileSync(jsonPath, JSON.stringify(objConfig));
             resolve(jsonPath);
         }
