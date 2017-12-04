@@ -8,7 +8,7 @@
             require: _require
         }
     } = require("electron");
-
+    
     const { createNewWindow: settingsWindow } = _require("./newwindow.js");
 
 
@@ -16,7 +16,7 @@
     const settingsMax = document.querySelector(".settings-max");
     const settingsClose = document.querySelector(".settings-close");
     const settingsValue = document.querySelector(".settings-values");
-
+    const textSearch = document.querySelector(".search");
 
 
     const handleAkaraSettings = Object.create({});
@@ -38,17 +38,30 @@
     handleAkaraSettings.powersettings = () => {
         const power = {
             title: "power",
-            // maximizable: false,
-            // resizable: false,
-            // minimizable: false,
+            maximizable: false,
+            resizable: false,
+            minimizable: false,
             width: 500,
             height: 460,
-            center: false
+            center: true
         };
 
         settingsWindow(power, "settings/powermanagement.html");
     };
 
+    handleAkaraSettings.playbackrate = () => {
+        const playbackrate = {
+            title: "playbackrate",
+            maximizable: false,
+            resizeable: false,
+            minimizable: false,
+            width: 500,
+            height: 460,
+            center: true
+        };
+        
+        settingsWindow(playbackrate, "settings/playbackrate.html");
+    };
 
     settingsValue.addEventListener("click", evt => {
         const { target } = evt;
@@ -65,7 +78,7 @@
     });
 
 
-
+    
     settingsClose.addEventListener("click", () => getCurrentWindow().close());
     settingsMin.addEventListener("click", () => {
         ipc.send("akara::newwindow:min");
