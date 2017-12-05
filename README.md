@@ -6,7 +6,10 @@ This project is still undergoing development, at this point the application is n
 # run
 
 `npm install`
+
 `npm install -g gulp`
 
 `gulp watch`
+
+
 `npm start`
