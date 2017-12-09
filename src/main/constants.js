@@ -74,6 +74,8 @@ const requireSettingsPath = type => {
             case "playbackrate.json":
                 objConfig = { fast: 12, veryfast: 25, slow: 0.7, veryslow: 0.2};
                 break;
+            case "filter.json":
+                break;
             }
 
             writeFileSync(jsonPath, JSON.stringify(objConfig));
