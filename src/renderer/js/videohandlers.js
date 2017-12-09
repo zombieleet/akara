@@ -462,92 +462,47 @@ module.exports.playNextOrPrev = playNextOrPrev;
  **/
 
 module.exports.videoErrorEvent = async (evt) => {
-    
-    let _src = video.getAttribute("src");
 
-    if ( ! _src )
-        return ;
-
-    _src = video.getAttribute("src").replace("file://","");
+    console.log(evt.target.error.code, evt.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED);
     const akaraLoaded = document.querySelector(".akara-loaded");
     const playlistItem = akaraLoaded.querySelector(`#${video.getAttribute("data-id")}`);
 
-    // as soon as an error occur
-    // disable the controls
+    switch(evt.target.error.code) {
+    case evt.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+        if ( parse(video.src).protocol === "file:") {
+            let isMime = await getMime(video.src.replace("file://", ""));
+            if ( /^audio|^video/.test(isMime) ) {
+                disableControls();
+                return dialog.showErrorBox("Invalid file",`Cannot Play ${basename(video.src)}`);
+            }
+            // configuration prompt before converting,
+            // convert automatically.
+            // do not convert
+            const btn = dialog.showMessageBox({
+                type: "error",
+                title: "Invalid stream",
+                buttons: [ "No", "Yes" ],
+                message: `${basename(video.src)} is not valid. Would you like to convert it ?`
+            });
 
-    disableControls();
+            if ( btn === 0 )
+                return disableControls();
 
+            const path = await validateMime(video.src);
 
-
-    const isMedia = await getMime(_src);
-
-
-    /**
-     *
-     * handle bug when all playlist is remove
-     * form the playlist section
-     *
-     **/
-
-    if ( /^\s{0,}$/.test(_src) ) {
-        return playNextOrPrev();
+            if ( ! path ) {
+                disableControls();
+                return dialog.showErrorBox(
+                    "Cannot convert media file",`${video.src} was not converted`
+                );
+            }
+            // play converted or not
+            playlistItem.setAttribute("data-full-path", path);
+            setupPlaying(playlistItem);
+        }
+        break;
     }
-
-
-
-    /**
-     *
-     * if media is neither an audio or vdieo
-     *
-     **/
-    if ( ! /^audio|^video/.test(isMedia) ) {
-        dialog.showErrorBox("Invalid file",`Cannot Play ${basename(_src)}`);
-        return playNextOrPrev();
-    }
-
-
-    // possibly the codec or mime is not supported
-    // show a message to the user to convert the file or not
-
-    const btn = dialog.showMessageBox({
-        type: "error",
-        title: "Invalid stream",
-        buttons: [ "Cancel", "Convert" ],
-        message: `${basename(_src)} is not valid. Would you like to convert it ?`
-    });
-
-
-
-    /**
-     *
-     * 0 is first button which is cancel
-     *
-     **/
-
-    if ( btn === 0 )
-        return playNextOrPrev();
-
-
-    // btn is 1
-
-    playNextOrPrev();
-
-    // start conversion
-    const path = await validateMime(_src);
-
-
-    if ( ! path ) {
-        disableControls();
-        return dialog.showErrorBox(
-            "Cannot convert media file",`${_src} was not converted`
-        );
-    }
-
-    playlistItem.setAttribute("data-full-path", path);
-
-    // CONFIGURATION:- play converted video automatically
-    //     or NOT
-    setupPlaying(playlistItem);
+    
 };
 
 
@@ -882,7 +837,7 @@ const loadAlbumArt = async () => {
         return false;
 
     const { v2: { image } } = tags;
-    
+
     if ( ! image )
         return false;
 
@@ -893,7 +848,7 @@ const loadAlbumArt = async () => {
     for ( let _typedArray of typedArrayBuf ) {
         base64String += String.fromCharCode(_typedArray);
     }
-    
+
     return `data:${image.mime};base64,${window.btoa(base64String)}`;
 };
 
@@ -907,13 +862,13 @@ const loadAlbumArt = async () => {
 
 
 module.exports.videoLoadData = async (event) => {
-    
+
     const posterJson = await requireSettingsPath("poster.json");
     const posterSettings = require(posterJson);
-    
+
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
     const pathToFile = hashedPath(video.src);
-    
+
 
     /*if ( fs.existsSync(pathToFile) ) {
 
@@ -957,16 +912,16 @@ module.exports.videoLoadData = async (event) => {
         });
     }
 
-        
+
     let base64StringAlbum_art = await loadAlbumArt();
-    
+
     if ( ! base64StringAlbum_art ) {
         video.poster = posterSettings.poster;
         return ;
     }
-    
+
     video.poster = base64StringAlbum_art;
-    
+
 };
 
 
