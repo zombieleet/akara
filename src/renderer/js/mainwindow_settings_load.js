@@ -1,6 +1,7 @@
 ;( () => {
 
     const {
+        ipcRenderer: ipc,
         remote: {
             app,
             require: _require
@@ -14,6 +15,18 @@
 
     const id3 = require("id3js");
     const brightness = require("brightness");
+
+
+    const loadFilterSettings = async () => {
+        
+        const filterSettingsPath = await requireSettingsPath("filter.json");
+        const filterSettings = require(filterSettingsPath);
+        
+        Object.keys(filterSettings).forEach( filterType => {
+            let { progressBarWidth, measurement } = filterSettings[filterType];
+            ipc.sendTo(1, "akara::video:filter", { filterType, progressBarWidth, measurement });
+        });
+    };
     
     const loadPosterSettings = async () => {
         const posterJson = await requireSettingsPath("poster.json");
@@ -125,9 +138,10 @@
 
     };
 
-    window.addEventListener("DOMContentLoaded", () => {
-        loadPosterSettings();
-        loadBatterySettings();
+    window.addEventListener("DOMContentLoaded", async () => {
+        await loadPosterSettings();
+        await loadBatterySettings();
+        await loadFilterSettings();
     });
 
 })();
