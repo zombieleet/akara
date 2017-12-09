@@ -53,7 +53,7 @@
         const playbackrate = {
             title: "playbackrate",
             maximizable: false,
-            resizeable: false,
+            resizable: false,
             minimizable: false,
             width: 500,
             height: 460,
@@ -63,6 +63,18 @@
         settingsWindow(playbackrate, "settings/playbackrate.html");
     };
 
+    handleAkaraSettings.filter = () => {
+        const filter = {
+            title: "filter",
+            maximizable: false,
+            resizable: false,
+            minimizable: false,
+            width: 408,
+            height: 730
+        };
+        settingsWindow(filter, "filter.html");
+    };
+    
     settingsValue.addEventListener("click", evt => {
         const { target } = evt;
 
