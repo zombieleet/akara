@@ -17,6 +17,10 @@ const {
     CONVERTED_MEDIA
 } = require("./constants.js");
 
+const {
+    removeConvMedia
+} = require("./utils.js");
+
 const { join } = require("path");
 
 require("electron-reload")(APP_PATH, {
@@ -57,6 +61,11 @@ const createWindow = () => {
         });
         handleWebContents(mainWindow);
         handleWinState(mainWindow);
+    });
+
+    app.on("quit", () => {
+        console.log("app will quit");
+        removeConvMedia();
     });
 };
 createWindow();
