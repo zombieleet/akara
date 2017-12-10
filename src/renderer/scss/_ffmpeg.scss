@@ -1,0 +1,35 @@
+.ffmpeg-body {
+    @extend %new_window_body;
+}
+
+.ffmpeg-header {
+    @extend %new_window_headers;
+}
+
+.ffmpeg {
+    padding-top: 25px;
+    padding-left: 25px;
+
+
+    .ffmpeg-output {
+        height: 650px;
+        width: 80%;
+        margin-top: 12px;
+        background-color: white;
+        color: black;
+        line-height: 1.5;
+        padding-left: 5px;
+        box-shadow: 0 0 3px 0px lighten($global-color,20%);
+
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .ffmpeg-buttons {
+        margin-right: 104px;
+        margin-top: -25px;
+        button {
+            @extend %buttons;
+        }
+    }
+}
