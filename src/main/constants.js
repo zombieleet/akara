@@ -15,9 +15,7 @@ const {
 } = require("fs");
 
 const APP_PATH = app.getAppPath();
-
 const BACKGROUND_COLOR = "#4B4B4B";
-
 const USER_DATA = app.getPath("userData");
 
 const PLAYLIST_FILE = () => {
@@ -116,21 +114,16 @@ const _CURRENT_TIME = () => {
 
     return currenttime;
 };
+
 const CONVERTED_MEDIA = _CONVERTED_MEDIA();
-
 const DOWNLOADED_SUBTITLE = join(USER_DATA, "subtitle");
-
 const CURRENT_TIME = _CURRENT_TIME();
-
 const URL_ONLINE = "icanhazip.com/";
-
 const SIZE = 1000;
-
 const MEASUREMENT = [ "Bytes", "kB", "MB", "GB", "TB" ];
-
 const TWITTER_OAUTH = "https://api.twitter.com/oauth/authenticate";
+const FFMPEG_LOCATION = `${APP_PATH}/node_modules/.bin/`;
 
-const FFMPEG_LOCATION = `${__dirname}/node_modules/.bin/ffmpeg`;
 /*const BYTE = 8;
 const MBYTE = 1048576;
 const GBYTE = 1073741824;
