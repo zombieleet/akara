@@ -1,0 +1,21 @@
+extends ./__layout.pug
+
+block title
+  title ffmpeg
+  
+
+block body
+  body(class="ffmpeg-body")
+    header(class="ffmpeg-header")
+      span ffmpeg
+      span(class="fa fa-window-close ffmpeg-close")
+    
+    section(class="ffmpeg")
+      p ffmpeg output
+      div(class="ffmpeg-output" contenteditable)
+      
+      div(class="ffmpeg-buttons")
+        button(class="ffmpeg-clear") Clear
+        button(class="ffmpeg-cancel") Cancel
+        
+    script(src="../js/ffmpegoutput.js")
