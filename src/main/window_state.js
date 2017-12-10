@@ -24,7 +24,6 @@ const handleWinState = win => {
 
     win.on("close", () => {
         win = undefined;
-        removeConvMedia();
         app.quit();
     });
     
