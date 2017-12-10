@@ -411,7 +411,7 @@ const disableControls = () => {
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
     currTimeUpdate.innerHTML = "00:00 / 00:00";
     document.querySelector(".cover-on-error-src").removeAttribute("style");
-    return video.removeAttribute("src");
+    //return video.removeAttribute("src");
 };
 
 
@@ -462,19 +462,23 @@ module.exports.playNextOrPrev = playNextOrPrev;
  **/
 
 module.exports.videoErrorEvent = async (evt) => {
-
+    
     console.log(evt.target.error.code, evt.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED);
     const akaraLoaded = document.querySelector(".akara-loaded");
     const playlistItem = akaraLoaded.querySelector(`#${video.getAttribute("data-id")}`);
 
+    let _src = video.getAttribute("src");
+
+    disableControls();
+
+    
     switch(evt.target.error.code) {
+        
     case evt.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-        if ( parse(video.src).protocol === "file:") {
-            let isMime = await getMime(video.src.replace("file://", ""));
-            if ( /^audio|^video/.test(isMime) ) {
-                disableControls();
-                return dialog.showErrorBox("Invalid file",`Cannot Play ${basename(video.src)}`);
-            }
+        
+        if ( parse(_src).protocol === "file:") {
+
+            _src = _src.replace("file://","");
             // configuration prompt before converting,
             // convert automatically.
             // do not convert
@@ -482,22 +486,22 @@ module.exports.videoErrorEvent = async (evt) => {
                 type: "error",
                 title: "Invalid stream",
                 buttons: [ "No", "Yes" ],
-                message: `${basename(video.src)} is not valid. Would you like to convert it ?`
+                message: `${basename(_src)} is not valid. Would you like to convert it ?`
             });
+            
 
             if ( btn === 0 )
-                return disableControls();
-
-            const path = await validateMime(video.src);
-
-            if ( ! path ) {
-                disableControls();
+                return '';
+            
+            const path = await validateMime(_src);
+            
+            if ( typeof(path) === "string" ) {
                 return dialog.showErrorBox(
-                    "Cannot convert media file",`${video.src} was not converted`
+                    "Cannot convert media file", path
                 );
             }
             // play converted or not
-            playlistItem.setAttribute("data-full-path", path);
+            playlistItem.setAttribute("data-full-path", path.convpath);
             setupPlaying(playlistItem);
         }
         break;
