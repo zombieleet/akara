@@ -164,14 +164,17 @@ const togglePlist = () => {
 };
 
 
-const __videoAttribute = video => video.hasAttribute("src");
+const noMediaPlaying = () =>
+      document.querySelector(
+          ".cover-on-error-src"
+      ).hasAttribute("style");
 
 const __spitError = () =>
           dialog.showErrorBox("Cannot Carry Out Operation", "This Operation Could Not be carried out");
 
 const _play = () => {
 
-    if ( __videoAttribute(video) )
+    if ( noMediaPlaying())
 
         return play();
 
@@ -180,8 +183,7 @@ const _play = () => {
 
 const _pause = () => {
 
-    if ( __videoAttribute(video) )
-
+    if ( noMediaPlaying())
         return pause();
 
     return false;
@@ -189,7 +191,7 @@ const _pause = () => {
 
 const _mute = () => {
 
-    if ( __videoAttribute(video) )
+    if ( noMediaPlaying())
 
         return mute();
 
@@ -198,7 +200,7 @@ const _mute = () => {
 
 const _unmute = () => {
 
-    if ( __videoAttribute(video) )
+    if ( noMediaPlaying())
 
         return unmute();
 
@@ -207,7 +209,7 @@ const _unmute = () => {
 
 const _stop = function () {
 
-    if ( __videoAttribute(video) )
+    if ( noMediaPlaying())
 
         return controls.stop();
 
@@ -216,7 +218,7 @@ const _stop = function () {
 
 const _next = () => {
 
-    if ( __videoAttribute(video) )
+    if ( noMediaPlaying())
 
         return controls.next();
 
@@ -225,7 +227,7 @@ const _next = () => {
 
 const _previous = () => {
 
-    if ( __videoAttribute(video) )
+    if ( noMediaPlaying())
 
         return controls.previous();
 
@@ -233,7 +235,7 @@ const _previous = () => {
 };
 const _setPlaybackRate = (rate) => {
 
-    if ( __videoAttribute(video) )
+    if ( noMediaPlaying())
 
         return controls.setPlaybackRate(rate);
 
@@ -242,7 +244,7 @@ const _setPlaybackRate = (rate) => {
 
 const _enterfullscreen = () => {
 
-    if ( __videoAttribute(video) )
+    if ( noMediaPlaying())
         
         return controls.enterfullscreen();
 
@@ -250,7 +252,7 @@ const _enterfullscreen = () => {
 };
 const _leavefullscreen = () => {
 
-    if ( __videoAttribute(video) )
+    if ( noMediaPlaying())
 
         return controls.leavefullscreen();
 
@@ -259,7 +261,7 @@ const _leavefullscreen = () => {
 
 const incrDecrVolume = direction => {
 
-    if ( ! __videoAttribute(video) )
+    if ( ! noMediaPlaying())
 
         return false;
     
@@ -303,8 +305,7 @@ const incrDecrVolume = direction => {
 
 const showMediaInfoWindow = () => {
     
-    if ( ! __videoAttribute(video) )
-
+    if ( ! noMediaPlaying() )
         return false;
     
     const __obj = {
