@@ -30,13 +30,15 @@ const {
 } = _require("./configuration.js");
 const {
     CONVERTED_MEDIA,
-    URL_ONLINE
+    URL_ONLINE,
+    SIZE,
+    MEASUREMENT
 } = _require("./constants.js");
 const {
     Magic,
     MAGIC_MIME_TYPE: _GET_MIME
 } = require("mmmagic");
-const { homedir } = require("os");
+const { homedir , platform, arch } = require("os");
 const env = require("dotenv").load();
 const Twitter = require("twitter");
 const bBird = require("bluebird");
@@ -68,7 +70,7 @@ const { guessLanguage } = require("guesslanguage");
 const { FFMPEG_LOCATION } = _require("./constants.js");
 
 const {
-    createNewWindow: downloadWindow
+    createNewWindow
 } = _require("./newwindow.js");
 
 const magic = new Magic(_GET_MIME);
@@ -96,7 +98,7 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
     //abs_path = URL.createObjectURL( new File([ dirname(abs_path) ] , basename(abs_path)) );
 
     const { protocol } = url.parse(abs_path);
-    
+
     abs_path = abs_path.replace(new RegExp(`^${protocol}//`),"");
 
     child.setAttribute("data-full-path", url.format({
@@ -318,57 +320,136 @@ const getMime = file => new Promise((resolve,reject) => {
 
 module.exports.getMime = getMime;
 
+
+const computeByte = bytes => {
+
+    if ( bytes === 0 )
+        return `${bytes} byte`;
+
+    const idx = Math.floor(
+        Math.log(bytes) / Math.log(SIZE)
+    );
+
+    return `${( bytes / Math.pow(SIZE,idx)).toPrecision(3)} ${MEASUREMENT[idx]}`;
+};
+
+module.exports.computeByte = computeByte;
+
 module.exports.validateMime = async (path) => {
 
     const _getMime = await getMime(path);
 
     if ( ! /^audio|^video/.test(_getMime) )
-        return undefined;
+        return `${path} is not a media stream`;
 
     const canPlay = video.canPlayType(_getMime);
 
     if ( /^maybe$|^probably$/.test(canPlay) )
         return path;
 
-    sendNotification("Invalid Mime", {
-        body: "Unsupported Mime/Codec detected, this file will be converted in the background"
-    });
-
     let _fpath;
 
     try {
-        _fpath = await Convert(path);
+        _fpath = await convert(path);
     } catch(ex) {
         _fpath = ex;
     }
 
     if ( Error[Symbol.hasInstance](_fpath) )
-        path = undefined;
+        path = _fpath.message;
     else
         path = _fpath;
     return path;
 };
 
-const Convert = _path => new Promise((resolve,reject) => {
+const convert = _path => new Promise( async (resolve,reject) => {
     let result;
 
     // _fpath will contain the converted path
     const _fpath = join(CONVERTED_MEDIA,parse(_path).name + ".mp4");
 
     // if _fpath exists instead just resolve don't convert
-    if ( existsSync(_fpath) ) {
-        return resolve(_fpath);
+    if ( existsSync(_fpath) )
+        return resolve({ convpath: _fpath });
+
+    let ffmpegExecutable ;
+
+    if ( platform() !== "windows" )
+        ffmpegExecutable = `ffmpeg-${platform()}-${arch().replace("x","")}`;
+    else
+        ffmpegExecutable = `ffmpeg-${platform()}-${arch().replace("x","")}.exe`;
+
+    ffmpegExecutable = path.join(FFMPEG_LOCATION,ffmpegExecutable);
+
+    if ( ! fs.existsSync(ffmpegExecutable) )
+        reject(new Error("Cannot find ffmpeg Executable for this platform"));
+
+
+    const ffmpeg = spawn(ffmpegExecutable, ["-i", _path , "-acodec", "libmp3lame", "-vcodec", "mpeg4", "-f", "mp4", _fpath]);
+
+    //const ffmpeg = spawn(ffmpegExecutable, ["-i", _path , "-c:v", "libx264", "-preset", "slow", "-s", "1024x576" , "-an" , "-b:v" , "370k", _fpath]);
+
+    const allWindows = BrowserWindow.getAllWindows().filter( window => window.getTitle() === "ffmpeg" ? window : undefined);
+
+    let ffmpegWindow , ffmpegWin;
+
+    if ( allWindows.length ) {
+        ffmpegWin = allWindows[0];
+    } else {
+        ffmpegWindow = {
+            title: "ffmpepg",
+            minimizable: false,
+            resizeable: false,
+            maximizable: false,
+            width: 560,
+            height: 800
+        };
+        ffmpegWin = createNewWindow(ffmpegWindow, "ffmpeg.html");
     }
 
-    const ffmpeg = spawn(FFMPEG_LOCATION, ["-i", _path , "-acodec", "libmp3lame", "-vcodec", "mpeg4", "-f", "mp4", _fpath]);
+    const fileSize = fs.statSync(_path).size;
 
-    ffmpeg.stderr.on("data", data => {});
+    ffmpeg.stderr.on("data", data => {
+        const convertedSize = fs.statSync(_fpath).size;
+        ipc.sendTo(ffmpegWin.webContents.id, "akara::ffmpeg:convert", data);
+        akara_emit.emit("akara::processStatus",`converting ${computeByte(convertedSize)}/${computeByte(fileSize)}`);
+    });
 
     ffmpeg.on("close", code => {
         if ( code >= 1 )
             reject(new Error("Unable to Convert Video"));
-        resolve(_fpath);
+
+        akara_emit.emit("akara::processStatus","file conversion complete", true);
+        resolve({ convpath: _fpath });
     });
+
+    ipc.once("akara::ffmpeg:convert:kill", () => {
+
+        ffmpeg.kill();
+
+        if ( ffmpeg.killed ) {
+
+            ipc.sendTo(ffmpegWin.webContents.id, "akara::ffmpeg:convert", "this process was terminated successfully");
+
+            if ( fs.existsSync(_fpath) ) {
+                fs.unlink(_fpath, err => {
+                    if ( err ) {
+                        reject(new Error(
+                            "partially converted file to could not be deleted"
+                                + " delete it from this location " + _fpath + " to free up space"
+                                + " on your computer"
+                        ));
+                        return ;
+                    }
+                });
+                return ;
+            }
+            return ;
+        }
+
+        ipc.sendTo(ffmpegWin.webContents.id, "akara::ffmpeg:convert", "cannot kill this process");
+    });
+
 });
 
 module.exports.playOnDrop = () => {
@@ -388,7 +469,7 @@ module.exports.disableVideoMenuItem = menuInst => {
 
     const ccStatus = toggleSubOnOff.getAttribute("data-sub-on");
 
-    if  ( ! video.hasAttribute("src") ) {
+    if  ( ! document.querySelector(".cover-on-error-src").hasAttribute("style") ) {
         switch(menuInst.label) {
         case "Add": break;
         case "Load Playlist": break;
@@ -398,7 +479,7 @@ module.exports.disableVideoMenuItem = menuInst => {
         }
         return ;
     }
-    
+
 
     if ( menuInst.label === "Play" && ! video.paused ) {
         menuInst.enabled = false;
@@ -797,15 +878,15 @@ module.exports.renderPlayList = type => {
         return false;
 
     if ( Object.keys(list).length === 0 ) {
-        
+
         const p = document.createElement("p");
-        
+
         p.textContent = "No Playlist have been created";
         p.setAttribute("class", "no-loadplaylist");
-        
+
         document.querySelector("button").hidden = true;
         loadplaylist.appendChild(p);
-        
+
         return false;
     }
 
@@ -907,26 +988,26 @@ const resumeDownloading = (item,webContents) => {
 };
 
 
-module.exports.downloadWindow = () => {
+module.exports.createNewWindow = () => {
     let __obj = {
         title: "download",
         width: 365,
         height: 315
     };
-    
+
     let html = `${__obj.title}.html`;
-    
-    let window = downloadWindow(__obj,html);
+
+    let window = createNewWindow(__obj,html);
 
     return window;
 };
 
 const downloadFile = (url, window ) => {
-    
+
     window.webContents.downloadURL(url);
 
     window.webContents.session.on("will-download", (event,item,webContents) => {
-        
+
         item.setSavePath(app.getPath("downloads"));
 
         webContents.send("download::filename", item.getFilename());
@@ -972,11 +1053,11 @@ const downloadFile = (url, window ) => {
 module.exports.downloadFile = downloadFile;
 
 module.exports.exportMpegGurl = file => {
-    
+
     const m3u = m3u8.M3U.create();
-    
+
     const playlists = document.querySelectorAll(".playlist");
-    
+
     Array.from(playlists, list => {
         m3u.addPlaylistItem({
             uri: decodeURIComponent(list.getAttribute("data-full-path"))
@@ -1000,7 +1081,7 @@ module.exports.exportXspf = file => {
     const tracklist = buildRoot.ele("tracklist");
     const playlists = document.querySelectorAll(".playlist");
 
-    
+
     Array.from(playlists, list => {
         let track = tracklist.ele("track");
         track.ele("title").text(list.querySelector("span").textContent);
@@ -1008,30 +1089,30 @@ module.exports.exportXspf = file => {
             decodeURIComponent(list.getAttribute("data-full-path"))
         );
     });
-    
+
     let writeStream = fs.createWriteStream(file);
     writeStream.write(buildRoot.end({pretty: true}));
     return ;
 };
 
 module.exports.importXspf = file => {
-    const parser = new xml2js.Parser();    
+    const parser = new xml2js.Parser();
     return new Promise((resolve,reject) => {
-        
+
         fs.readFile(file, (err,data) => {
-            
+
             if ( err )
                 reject(err);
 
             parser.parseString(data, (err,result) => {
                 if ( err )
                     reject(err);
-                
+
                 let { tracklist: [ , track ] } = result.playlist;
                 ({ track } = track);
                 resolve(track);
             });
-            
+
         });
     });
 };
@@ -1061,14 +1142,14 @@ const uploadVideo = info => {
         privacyStatus,
         tags
     } = info;
-    
+
     const youtube = google.youtube("v3");
     const uploadData = decodeURIComponent(url.parse(video.getAttribute("src")).pathname);
-    
+
     const fileSize = fs.statSync(uploadData).size;
 
     let id;
-    
+
     const tube = youtube.videos.insert({
         auth,
         resource: {
@@ -1094,9 +1175,9 @@ const uploadVideo = info => {
             return akara_emit.emit("akara::processStatus", `uploaded sucessfully`, true);
         }
         return akara_emit.emit("akara::processStatus", `uploaded was not sucesfull`, true);
-        
+
     });
-    
+
     id = setInterval(() => {
         const { _bytesDispatched: sentBytes } = tube.req.connection;
         akara_emit.emit("akara::processStatus", `uploading ${sentBytes}/${fileSize}`);
@@ -1106,23 +1187,23 @@ const uploadVideo = info => {
 
 
 module.exports.uploadYoutubeVideo = auth => {
-    
+
     const youtubeupload = document.querySelector(".youtubeupload");
     const youtubeAdd = document.querySelector(".youtubeupload-submit");
     const youtubeCancel = document.querySelector(".youtubeupload-cancel");
     const coverView = document.querySelector(".youtubeupload-cover");
-    
+
     const youtubeStatus = Array.from(youtubeupload.querySelectorAll("input[type=radio]"));
-    
+
     const title = document.querySelector("input[type=text]");
     const description = document.querySelector(".youtubeupload-description");
-    
+
     let tags = document.querySelector(".youtubeupload-tags");
 
     youtubeupload.hidden = coverView.hidden = false;
-    
+
     let privacyStatus = youtubeStatus[0].getAttribute("data-privacy") || youtubeStatus[1].getAttribute("data-privacy");
-    
+
     const btns = {
         _removeEvents() {
             youtubeAdd.removeEventListener("click", this.bindAdd);
@@ -1136,15 +1217,15 @@ module.exports.uploadYoutubeVideo = auth => {
             });
         },
         status(evt) {
-            
+
             let target = evt.target;
             let _private = document.querySelector(".youtubeupload-private");
             let _public = document.querySelector(".youtubeupload-public");
-            
+
             privacyStatus = target.getAttribute("data-privacy");
             _private.checked = _public.checked = false;
             target.checked = true;
-            
+
             return ;
         },
         add(evt) {
@@ -1162,16 +1243,16 @@ module.exports.uploadYoutubeVideo = auth => {
         }
     };
 
-    
+
     btns.bindAdd = btns.add.bind(btns);
     btns.bindCancel = btns.cancel.bind(btns);
     btns.bindStatus = btns.status.bind(btns);
-    
+
     youtubeAdd.addEventListener("click", btns.bindAdd);
     youtubeCancel.addEventListener("click", btns.bindCancel);
-    
+
     youtubeStatus.forEach( status  => {
         status.addEventListener("change", btns.status);
     });
-    
+
 };
