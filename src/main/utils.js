@@ -16,9 +16,7 @@ const {
 
 const {
     CONVERTED_MEDIA,
-    DOWNLOADED_SUBTITLE,
-    MEASUREMENT,
-    SIZE
+    DOWNLOADED_SUBTITLE
 } = require("./constants.js");
 
 const checkType = path => {
@@ -68,18 +66,27 @@ const iterateDir = () => {
 };
 
 const removeConvMedia = () => {
-    if ( ! fs.existsSync(CONVERTED_MEDIA ) ) return ;
+    
+    if ( ! fs.existsSync(CONVERTED_MEDIA ) )
+        return ;
 
     fs.readdir(CONVERTED_MEDIA, (err,fpath) => {
-        if ( err ) return dialog.showErrorBox(
-            "Error","Error while reading coverted media folder"
-        );
+        
+        if ( err )
+            return dialog.showErrorBox(
+                "Error","Error while reading coverted media folder"
+            );
+
         fpath.forEach( path => {
+            
             const fullPath = join(CONVERTED_MEDIA,path);
+            
             fs.unlink(fullPath,(err,fpath) => {
-                if ( err ) return dialog.showErrorBox(
-                    `Unable to delete ${path}`,`Cannot delete converted media ${path}`
-                );
+                
+                if ( err )
+                    return dialog.showErrorBox(
+                        `Unable to delete ${path}`,`Cannot delete converted media ${path}`
+                    );
             });
         });
     });
