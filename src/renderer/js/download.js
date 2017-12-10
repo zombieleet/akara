@@ -12,13 +12,10 @@
     } = require("electron");
 
     const {
-        downloadURL
+        downloadURL,
+        computeByte
     } = require("../js/util.js");
 
-    const {
-        SIZE,
-        MEASUREMENT
-    } = _require("./constants.js");
 
     const close  = document.querySelector(".download-close");
     const filename = document.querySelector(".akara-download-filename");
@@ -35,18 +32,6 @@
     const pause = document.querySelector(".akara-download-pause");
     const resume = document.querySelector(".akara-download-resume");
     const restart = document.querySelector(".akara-download-restart");
-
-    const computeByte = bytes => {
-        
-        if ( bytes === 0 )
-            return `${bytes} byte`;
-        
-        const idx = Math.floor(
-            Math.log(bytes) / Math.log(SIZE)
-        );
-        
-        return `${( bytes / Math.pow(SIZE,idx)).toPrecision(3)} ${MEASUREMENT[idx]}`;
-    };
 
 
     /**
