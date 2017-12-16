@@ -11,7 +11,6 @@ This project is still undergoing development, at this point the application is n
 
 `npm install -g gulp`
 
-`node ./download-ffmpeg.js
-
+`node ./download-ffmpeg.js`
 
 `npm start`
