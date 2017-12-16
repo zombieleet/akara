@@ -44,7 +44,7 @@ const createNewWindow = (obj,html) => {
     //parent.setIgnoreMouseEvents(true);
     const { webContents } = newWindow;
 
-    webContents.openDevTools();
+    //webContents.openDevTools();
 
     ipc.on("akara::newwindow:max", event => {
         if ( newWindow.isMaximized() ) {

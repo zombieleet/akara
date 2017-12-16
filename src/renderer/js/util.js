@@ -1,18 +1,10 @@
 "use strict";
-
-const { request } = require("http");
 const akara_emit = require("../js/emitter.js");
-const ffmpeg = require("ffmpeg");
-const srt2vtt = require("srt2vtt");
-const m3u8 = require("m3u8");
-const m3ureader = require("m3u8-reader");
-const xmlbuilder = require("xmlbuilder");
-const xml2js = require("xml2js");
 const fs = require("fs");
 const path = require("path");
 const google = require("googleapis");
 const googleAuth = new(require("google-auth-library"));
-const cluster = require("cluster");
+
 const {
     remote: {
         require: _require,
@@ -22,40 +14,33 @@ const {
     },
     ipcRenderer: ipc
 } = require("electron");
+
 const {
     playlist: {
         file: playlistLocation
     },
     podcast
 } = _require("./configuration.js");
+
 const {
     CONVERTED_MEDIA,
     URL_ONLINE,
     SIZE,
     MEASUREMENT
 } = _require("./constants.js");
+
 const {
     Magic,
     MAGIC_MIME_TYPE: _GET_MIME
 } = require("mmmagic");
-const { homedir , platform, arch } = require("os");
+
+const os = require("os");
 const env = require("dotenv").load();
 const Twitter = require("twitter");
 const bBird = require("bluebird");
 const _OS = require("opensubtitles-api");
 const url = require("url");
-const { spawn } = require("child_process");
-const {
-    mkdirSync ,
-    existsSync,
-    readFileSync,
-    writeFileSync
-} = require("fs");
-const {
-    join,
-    basename,
-    parse
-} = require("path");
+const childProcess = require("child_process");
 
 const {
     video,
@@ -65,9 +50,6 @@ const {
 } = require("../js/video_control.js");
 
 const OS = new _OS("OSTestUserAgentTemp");
-
-const { guessLanguage } = require("guesslanguage");
-const { FFMPEG_LOCATION } = _require("./constants.js");
 
 const {
     createNewWindow
@@ -84,8 +66,6 @@ const {
 } = require(path.join(app.getAppPath(), "youtube.json"));
 
 const datadir = app.getPath("userData");
-
-const win = BrowserWindow.fromId(1);
 
 const createEl = ({path: abs_path, _path: rel_path}) => {
 
@@ -363,21 +343,25 @@ module.exports.validateMime = async (path) => {
 };
 
 const convert = _path => new Promise( async (resolve,reject) => {
+    
     let result;
+    
+    const { FFMPEG_LOCATION } = _require("./constants.js");
+   
 
     // _fpath will contain the converted path
-    const _fpath = join(CONVERTED_MEDIA,parse(_path).name + ".mp4");
+    const _fpath = path.join(CONVERTED_MEDIA,path.parse(_path).name + ".mp4");
 
     // if _fpath exists instead just resolve don't convert
-    if ( existsSync(_fpath) )
-        return resolve({ convpath: _fpath });
+    if ( fs.existsSync(_fpath) )
+        return resolve({ convpath: `${_fpath}` });
 
     let ffmpegExecutable ;
 
-    if ( platform() !== "windows" )
-        ffmpegExecutable = `ffmpeg-${platform()}-${arch().replace("x","")}`;
+    if ( os.platform() !== "windows" )
+        ffmpegExecutable = `ffmpeg-${os.platform()}-${os.arch().replace("x","")}`;
     else
-        ffmpegExecutable = `ffmpeg-${platform()}-${arch().replace("x","")}.exe`;
+        ffmpegExecutable = `ffmpeg-${os.platform()}-${os.arch().replace("x","")}.exe`;
 
     ffmpegExecutable = path.join(FFMPEG_LOCATION,ffmpegExecutable);
 
@@ -385,9 +369,10 @@ const convert = _path => new Promise( async (resolve,reject) => {
         reject(new Error("Cannot find ffmpeg Executable for this platform"));
 
 
-    const ffmpeg = spawn(ffmpegExecutable, ["-i", _path , "-acodec", "libmp3lame", "-vcodec", "mpeg4", "-f", "mp4", _fpath]);
+    //const ffmpeg = childProcess.spawn(ffmpegExecutable, ["-i", _path , "-acodec", "libmp3lame", "-vcodec", "mpeg4", "-f", "mp4", _fpath]);
+    const ffmpeg = childProcess.spawn(ffmpegExecutable, ["-i", _path, "-c:v", "libx264", "-pix_fmt", "yuv420p", "-profile:v", "baseline", "-preset", "fast", "-crf", "18", "-f", "mp4", _fpath]);
 
-    //const ffmpeg = spawn(ffmpegExecutable, ["-i", _path , "-c:v", "libx264", "-preset", "slow", "-s", "1024x576" , "-an" , "-b:v" , "370k", _fpath]);
+    //const ffmpeg = childProcess.spawn(ffmpegExecutable, ["-i", _path , "-c:v", "libx264", "-preset", "slow", "-s", "1024x576" , "-an" , "-b:v" , "370k", _fpath]);
 
     const allWindows = BrowserWindow.getAllWindows().filter( window => window.getTitle() === "ffmpeg" ? window : undefined);
 
@@ -411,15 +396,16 @@ const convert = _path => new Promise( async (resolve,reject) => {
 
     ffmpeg.stderr.on("data", data => {
         const convertedSize = fs.statSync(_fpath).size;
-        ipc.sendTo(ffmpegWin.webContents.id, "akara::ffmpeg:convert", data);
-        akara_emit.emit("akara::processStatus",`converting ${computeByte(convertedSize)}/${computeByte(fileSize)}`);
+        ipc.sendTo(ffmpegWin.webContents.id, "akara::ffmpeg:convert", data, `converting ${computeByte(convertedSize)}/${computeByte(fileSize)}`);
+        ipc.sendTo(1, "akara::ffmpeg:converting");
     });
 
     ffmpeg.on("close", code => {
+        ipc.sendTo(1, "akara::ffmpeg:converting:done");
         if ( code >= 1 )
             reject(new Error("Unable to Convert Video"));
 
-        akara_emit.emit("akara::processStatus","file conversion complete", true);
+        ipc.sendTo(ffmpegWin.webContents.id, "akara::ffmpeg:convert", undefined, "completed");
         resolve({ convpath: _fpath });
     });
 
@@ -465,6 +451,8 @@ module.exports.sendNotification = sendNotification;
 
 module.exports.disableVideoMenuItem = menuInst => {
 
+    const win = BrowserWindow.fromId(1);
+    
     const toggleSubOnOff = document.querySelector("[data-sub-on]");
 
     const ccStatus = toggleSubOnOff.getAttribute("data-sub-on");
@@ -560,8 +548,9 @@ const disableNoConnection = ( menu, match, submatch) => {
 };
 
 module.exports.langDetect = (file) => {
+    const { guessLanguage } = require("guesslanguage");
     return new Promise((resolve,reject) => {
-        guessLanguage.name(readFileSync(file).toString(), info => {
+        guessLanguage.name(fs.readFileSync(file).toString(), info => {
             resolve(info);
         });
     });
@@ -581,7 +570,9 @@ module.exports.getSubtitle = async (option) => {
 
 
 module.exports.isOnline = () => new Promise((resolve,reject) => {
-
+    
+    const { request } = require("http");
+    
     const options = {
         protocol: "http:",
         host: URL_ONLINE,
@@ -612,11 +603,12 @@ module.exports.isOnline = () => new Promise((resolve,reject) => {
 });
 
 module.exports.readSubtitleFile = path => new Promise((resolve,reject) => {
-    const _path = join(CONVERTED_MEDIA,basename(path).replace(".srt", ".vtt"));
-    const data = readFileSync(path);
+    const srt2vtt = require("srt2vtt");
+    const _path = path.join(CONVERTED_MEDIA,path.basename(path).replace(".srt", ".vtt"));
+    const data = fs.readFileSync(path);
     srt2vtt(data, (err,vttData) => {
         if ( err ) return reject(err);
-        writeFileSync(_path, vttData);
+        fs.writeFileSync(_path, vttData);
         return resolve(_path);
     });
 });
@@ -686,7 +678,7 @@ module.exports.playlistSave = (key, files, notify) => {
         [key]: savedList
     });
 
-    writeFileSync(playlistLocation, JSON.stringify(list));
+    fs.writeFileSync(playlistLocation, JSON.stringify(list));
 
     if ( ! notify )
         return ;
@@ -730,7 +722,7 @@ module.exports.playlistLoad = listName => {
 
     const validPlaylist = playlistList.filter( list => {
 
-        if ( existsSync(decodeURIComponent(list.replace(/^file:\/\//,""))) )
+        if ( fs.existsSync(decodeURIComponent(list.replace(/^file:\/\//,""))) )
             return list;
         else
             return dialog.showErrorBox("Playlist location not found",`path to ${list} was not found`);
@@ -766,7 +758,7 @@ module.exports.deletePlaylist = listName => {
     if ( Object.keys(list).length === 0 )
         list = {};
 
-    writeFileSync(playlistLocation, JSON.stringify(list));
+    fs.writeFileSync(playlistLocation, JSON.stringify(list));
 
     return true;
 };
@@ -965,7 +957,7 @@ module.exports.savepodcast = name => {
             pod[pod.length] = feed;
     });
 
-    writeFileSync(podcast, JSON.stringify(pod));
+    fs.writeFileSync(podcast, JSON.stringify(pod));
 
     return true;
 };
@@ -1053,7 +1045,8 @@ const downloadFile = (url, window ) => {
 module.exports.downloadFile = downloadFile;
 
 module.exports.exportMpegGurl = file => {
-
+    
+    const m3u8 = require("m3u8");
     const m3u = m3u8.M3U.create();
 
     const playlists = document.querySelectorAll(".playlist");
@@ -1070,6 +1063,7 @@ module.exports.exportMpegGurl = file => {
 };
 
 module.exports.exportXspf = file => {
+    const xmlbuilder = require("xmlbuilder");
     const buildRoot = xmlbuilder.create({
         playlist: {
             "@version": 1,
@@ -1096,6 +1090,7 @@ module.exports.exportXspf = file => {
 };
 
 module.exports.importXspf = file => {
+    const xml2js = require("xml2js");
     const parser = new xml2js.Parser();
     return new Promise((resolve,reject) => {
 
@@ -1118,6 +1113,7 @@ module.exports.importXspf = file => {
 };
 
 module.exports.importMpegGurl = file => {
+    const m3ureader = require("m3u8-reader");
     return new Promise((resolve,reject) => {
         fs.readFile(file, "utf8", (err,data) => {
             if ( err )

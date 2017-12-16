@@ -70,7 +70,7 @@
             resizable: false,
             minimizable: false,
             width: 408,
-            height: 730
+            height: 1000
         };
         settingsWindow(filter, "filter.html");
     };

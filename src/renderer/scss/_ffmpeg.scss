@@ -10,8 +10,17 @@
     padding-top: 25px;
     padding-left: 25px;
 
+    .ffmpeg-descr {
+        float: left;
+    }
+
+    .ffmpeg-convertedbytes {
+        position: relative;
+        left: 30px;
+    }
 
     .ffmpeg-output {
+        clear: both;
         height: 650px;
         width: 80%;
         margin-top: 12px;
@@ -27,7 +36,7 @@
 
     .ffmpeg-buttons {
         margin-right: 104px;
-        margin-top: -25px;
+        margin-top: -35px;
         button {
             @extend %buttons;
         }

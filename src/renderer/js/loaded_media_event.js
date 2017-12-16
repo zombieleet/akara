@@ -1,7 +1,18 @@
 "use strict";
 
-( ({ ipcRenderer: ipc, remote: { Menu, MenuItem, getCurrentWindow, require: _require } },ul) => {
-
+( (ul) => {
+    
+    const {
+        ipcRenderer: ipc,
+        remote: {
+            Menu,
+            MenuItem,
+            getCurrentWindow,
+            dialog,
+            require: _require
+        }
+    } = require("electron");
+    
     const {
         addMediaCb
     } = require("../js/dropdown_callbacks.js");
@@ -68,8 +79,6 @@
 
             removeType(target.parentNode,"data-clicked");
 
-            console.log(target);
-
             updatePlaylistName(target);
 
             target.setAttribute("data-clicked","true");
@@ -80,12 +89,25 @@
 
         let target = event.target;
 
-        if ( target.nodeName.toLowerCase() === "ul" ) return ;
+        if ( target.nodeName.toLowerCase() === "ul" )
+            return ;
 
         target = target.nodeName.toLowerCase() === "li" ? target : target.parentNode;
 
-        if ( ! target.hasAttribute("data-dbclicked") ) return setupPlaying(target);
-
+        if ( target.hasAttribute("data-converting") ) {
+            dialog.showMessageBox({
+                type: "info",
+                title: "Can't play this media file",
+                message: "This media file is currenlty undergoing conversion, and it can't be played",
+                buttons: [ "Ok" ]
+            });
+            return ;
+        }
+        
+        if ( ! target.hasAttribute("data-dbclicked") ) {
+            setupPlaying(target);
+            return ;
+        }
     });
 
 
@@ -176,7 +198,4 @@
     akara_emit.on("video::go-to-previous", () => prevNext("prev"));
 
 
-})(
-    require("electron"),
-    document.querySelector(".akara-loaded")
-);
+})(document.querySelector(".akara-loaded"));

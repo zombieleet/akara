@@ -62,10 +62,11 @@ const addMediaFile = () => {
             {name: "Media" , extensions: [
                 "mp4","flac","ogv","ogm","ogg",
                 "webm","wav","m4v","m4a","mp3",
-                "amr","avi","3gp","swf","wma","mkv"
+                "amr","avi","3gp","swf","wma","mkv",
+                "vob"
             ]},
             { name: "xml shareable portable format" , extensions: [ "xspf" ] },
-            { name: "media playlist format", extensions: [ "m3u8", "m3u" ] },
+            { name: "media playlist format", extensions: [ "m3u8", "m3u" ] }
         ],
         properties: ["openFile", "multiSelections"]
     },addMediaCb);

@@ -163,6 +163,17 @@
     ipc.on("akara::video:poster:change", (evt,poster) => {
         video.poster = poster;
     });
+
+    ipc.on("akara::ffmpeg:converting", () => {
+        const converting = document.querySelector(`#${video.getAttribute("data-id")}`);
+        converting.setAttribute("data-converting", "converting");
+    });
+
+    ipc.on("akara::ffmpeg:converting:done", () => {
+        const converting = document.querySelector(`#${video.getAttribute("data-id")}`);
+        converting.removeAttribute("data-converting");
+    });
+
     
     akaraControl.addEventListener("mousedown", controlDragFullScreen);
     akaraControl.addEventListener("mouseenter", controlMouseEnter);
