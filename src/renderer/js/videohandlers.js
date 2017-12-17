@@ -462,7 +462,7 @@ module.exports.playNextOrPrev = playNextOrPrev;
  **/
 
 module.exports.videoErrorEvent = async (evt) => {
-    
+
     console.log(evt.target.error.code, evt.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED);
     const akaraLoaded = document.querySelector(".akara-loaded");
     const playlistItem = akaraLoaded.querySelector(`#${video.getAttribute("data-id")}`);
@@ -471,11 +471,11 @@ module.exports.videoErrorEvent = async (evt) => {
 
     disableControls();
 
-    
+
     switch(evt.target.error.code) {
-        
+
     case evt.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-        
+
         if ( parse(_src).protocol === "file:") {
 
             _src = _src.replace("file://","");
@@ -488,13 +488,13 @@ module.exports.videoErrorEvent = async (evt) => {
                 buttons: [ "No", "Yes" ],
                 message: `${basename(_src)} is not valid. Would you like to convert it ?`
             });
-            
+
 
             if ( btn === 0 )
                 return '';
-            
+
             const path = await validateMime(_src);
-            
+
             if ( typeof(path) === "string" ) {
                 return dialog.showErrorBox(
                     "Cannot convert media file", path
@@ -506,7 +506,7 @@ module.exports.videoErrorEvent = async (evt) => {
         }
         break;
     }
-    
+
 };
 
 
@@ -824,36 +824,44 @@ const loadAlbumArt = async () => {
     const posterJson = await requireSettingsPath("poster.json");
     const posterSettings = require(posterJson);
 
-    const id3 = promisify(require("id3js"));
 
     if ( ! posterSettings.album_art )
         return false;
 
-    let tags;
 
-    try {
-        tags = await id3({file: parse(video.src).path , type: id3.OPEN_LOCAL});
-    } catch(ex) {
-        tags = ex;
-    }
+    const jsmediatags = require("jsmediatags");
 
-    if ( Error[Symbol.hasInstance](tags) )
-        return false;
+    const mediaTagReader = new jsmediatags.Reader(
+        decodeURIComponent(parse(video.src).path)
+    );
 
-    const { v2: { image } } = tags;
+    mediaTagReader.setTagsToRead(["picture"])
+        .read({
+            onSuccess({ tags }) {
 
-    if ( ! image )
-        return false;
+                if ( ! tags.picture ) {
+                    akara_emit.emit("akara::audio:albumart", undefined);
+                    return ;
+                }
+                
+                const typedArrayBuf = new Uint8Array(tags.picture.data);
 
-    const typedArrayBuf = new Uint8Array(image.data);
+                let base64String ="";
 
-    let base64String = "";
+                for ( let _typedArray of typedArrayBuf ) {
+                    base64String += String.fromCharCode(_typedArray);
+                }
 
-    for ( let _typedArray of typedArrayBuf ) {
-        base64String += String.fromCharCode(_typedArray);
-    }
+                akara_emit.emit(
+                    "akara::audio:albumart",
+                    `data:${tags.picture.format};base64,${window.btoa(base64String)}`
+                );
 
-    return `data:${image.mime};base64,${window.btoa(base64String)}`;
+            },
+            onError(error) {
+                akara_emit.emit("akara::audio:albumart", undefined);
+            }
+        });
 };
 
 
@@ -917,14 +925,15 @@ module.exports.videoLoadData = async (event) => {
     }
 
 
-    let base64StringAlbum_art = await loadAlbumArt();
+    loadAlbumArt();
 
-    if ( ! base64StringAlbum_art ) {
-        video.poster = posterSettings.poster;
-        return ;
-    }
-
-    video.poster = base64StringAlbum_art;
+    akara_emit.once("akara::audio:albumart",  base64StringAlbum_art => {
+        if ( ! base64StringAlbum_art ) {
+            video.poster = posterSettings.poster;
+            return ;
+        }
+        video.poster = base64StringAlbum_art;
+    });
 
 };
 
