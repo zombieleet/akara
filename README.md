@@ -5,11 +5,12 @@ This project is still undergoing development, at this point the application is n
 
 # run
 
+`git clone https://github.com/zombieleet/akara`
+
 `npm install`
 
 `npm install -g gulp`
 
-`gulp watch`
-
+`node ./download-ffmpeg.js`
 
 `npm start`
