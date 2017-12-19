@@ -45,24 +45,24 @@ const PODCAST = () => {
     const pod = join(USER_DATA, "podcast.json");
     if ( existsSync(pod) )
         return pod;
-    
+
     writeFileSync(pod, JSON.stringify([]));
     return pod;
 };
 
 const requireSettingsPath = type => {
-    
+
     const settingsPath = SETTINGS();
-    
-    return new Promise((resolve,reject) => {        
-        
+
+    return new Promise((resolve,reject) => {
+
         const jsonPath = join(settingsPath, type);
-        
+
         if ( existsSync(jsonPath) )
             resolve(jsonPath);
 
         if ( ! existsSync(jsonPath) ) {
-            
+
             let objConfig = {};
 
             switch(type) {
@@ -83,12 +83,12 @@ const requireSettingsPath = type => {
 };
 
 const SETTINGS = () => {
-    
+
     const settings = join(USER_DATA, "settings");
-    
+
     if ( existsSync(settings) )
         return settings;
-    
+
     mkdirSync(settings);
     return settings;
 };
@@ -115,6 +115,12 @@ const _CURRENT_TIME = () => {
     return currenttime;
 };
 
+
+( () => {
+    if ( existsSync(USER_DATA) )
+        return ;
+    mkdirSync(USER_DATA);
+})();
 const CONVERTED_MEDIA = _CONVERTED_MEDIA();
 const DOWNLOADED_SUBTITLE = join(USER_DATA, "subtitle");
 const CURRENT_TIME = _CURRENT_TIME();
