@@ -19,13 +19,11 @@ const handleWebContents = ({webContents}) => {
     webContents.on("will-navigate", (event,path) => {
 
         event.preventDefault();
-
-        let mediaPaths =  checkType(path.replace("file://",""));
         
-        if ( ! mediaPaths )
+        if ( ! path )
             return dialog.showErrorBox("Invalid File Type", `Error while reading from ${path}`);        
-        
-        webContents.send("media-droped-files", mediaPaths);
+
+        webContents.send("media-droped-files", path);
     });
 };
 
