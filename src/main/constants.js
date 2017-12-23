@@ -74,6 +74,9 @@ const requireSettingsPath = type => {
                 break;
             case "filter.json":
                 break;
+            case "share.json":
+                objConfig = { deactivate_sharing_option: "no", request_permission_before_sending_videos: "no" , "cache_expiry_date": (new Date()).valueOf()};
+                break;
             }
 
             writeFileSync(jsonPath, JSON.stringify(objConfig));

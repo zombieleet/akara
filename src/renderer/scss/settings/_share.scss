@@ -1,0 +1,47 @@
+.share-body {
+    @extend %new_window_body;
+}
+
+.share-header {
+    @extend %new_window_headers;
+}
+
+.share {
+    
+    margin-top: 50px;
+    
+    li {
+        font-size: 1.2em;
+        padding: 25px;
+        width: 100%;
+        margin-bottom: 10px;
+        border-bottom: 2px solid lighten($global-color, 10%);
+
+        p {
+            width: 80%;
+            float: left;
+        }
+
+        i,input {
+            float: right;
+            margin-right: 30px;
+            margin-top: -10px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        input {
+            font-size: 15px;
+            width: 25%;
+            margin-right: 30px;
+            margin-top: -30px;
+        }
+    }
+}
+
+.share-buttons {
+    margin-top: -20px;
+    button {
+        @extend %buttons;
+    }
+}

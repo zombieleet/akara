@@ -32,3 +32,11 @@ body {
 [data-dynamic-style] {
     background: lightgrey;
 }
+
+.toggle-off {
+    color: lighten($global-color, 20%);
+}
+
+.toggle-on {
+    color: lighten($global-color, 20%);
+}
