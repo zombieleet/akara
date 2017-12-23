@@ -13,7 +13,8 @@
     } = require("../js/dropdown_callbacks.js");
     
     const {
-        readSubtitleFile
+        readSubtitleFile,
+        uploadYoutubeVideo
     } = require("../js/util.js");
 
     const akara_emit = require("../js/emitter.js");
@@ -164,16 +165,11 @@
         video.poster = poster;
     });
 
-    ipc.on("akara::ffmpeg:converting", () => {
-        const converting = document.querySelector(`#${video.getAttribute("data-id")}`);
-        converting.setAttribute("data-converting", "converting");
+    ipc.on("akara::youtube:loggedin:share", (evt,youtubeClient) => {
+        const request = require("request");
+        youtubeClient.request = request;
+        uploadYoutubeVideo(youtubeClient);
     });
-
-    ipc.on("akara::ffmpeg:converting:done", () => {
-        const converting = document.querySelector(`#${video.getAttribute("data-id")}`);
-        converting.removeAttribute("data-converting");
-    });
-
     
     akaraControl.addEventListener("mousedown", controlDragFullScreen);
     akaraControl.addEventListener("mouseenter", controlMouseEnter);

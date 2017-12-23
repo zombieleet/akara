@@ -16,6 +16,10 @@
     } = _require("./newwindow.js");
 
     const {
+        requireSettingsPath
+    } = _require("./constants.js");
+
+    const {
         tClient,
         youtubeClient,
         cache,
@@ -31,11 +35,11 @@
     share.__pinWindow = () => {
         const obj = {
             title: "InputPin",
-            
+
             /*minimizable: false,
             maximizable: false,
             resizable: false,*/
-            
+
             width: 400,
             height: 300
 
@@ -59,9 +63,9 @@
     };
 
 
-    
+
     /** Twitter implementation starts from here **/
-    
+
     share.twitShare = async function() {
 
         let accessTokens;
@@ -89,22 +93,22 @@
             `https://api.twitter.com/oauth/authorize?oauth_token=${oauth_token}`,
             "twitter"
         );
-        
+
         return this.__pinWindow().setParentWindow(parent);
     };
-    
+
     /** Twitter implementation stops here**/
 
 
-    
 
-    
+
+
     /** youtube implementation starts from here**/
-    
+
     share.getNewToken = async function() {
-        
+
         let oauthURL;
-        
+
         try {
             oauthURL = await youtubeClient.generateAuthUrl({
                 access_type: "offline",
@@ -113,19 +117,65 @@
         } catch(ex) {
             return console.error(ex);
         }
-        console.log(this, oauthURL);
+
         const parent = this.__shareWin(oauthURL, "youtube");
         return this.__pinWindow().setParentWindow(parent);
     };
 
-    share.youtubeShare = function() {
+
+    share.shouldShare = async function() {
+
+        const shareFile = await requireSettingsPath("share.json");
+        const shareSettings = require(shareFile);
+
+
+        if ( shareSettings.request_permission_before_sending_videos === "no" )
+            return false;
+
+
+        const btn = dialog.showMessageBox({
+            title: "Request for sharing permission",
+            type: "info",
+            message: "Akara Player wants to share a video",
+            buttons: ["Send", "Dont Send", "Cancel"]
+        });
+
+        switch(btn) {
+        case 0:
+            return "SHARE_VIDEO";
+        case 1:
+            return "DONT_SHARE_VIDEO";
+        case 2:
+        default:
+            return "CANCEL";
+        }
+
+    };
+
+
+    share.youtubeShare = async function() {
+
+        const shouldShare = await this.shouldShare();
+
+        if ( shouldShare === "SHARE_VIDEO") {
+            this.getNewToken();
+            return ;
+        }
+
+        if ( shouldShare === "DONT_SHARE_VIDEO" || shouldShare === "CANCEL" )
+            return ;
 
         fs.readFile(cache, (err,token) => {
+
             if ( err )
                 return this.getNewToken();
+            console.log(token.toString());
             youtubeClient.credentials = JSON.parse(token);
+
             return uploadYoutubeVideo(youtubeClient);
+
         });
+
     };
 
 

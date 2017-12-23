@@ -143,6 +143,7 @@
     });
 
     ipc.on("media-droped-files", (event, mediaPaths) => {
+        console.log(mediaPaths);
         addMediaCb(mediaPaths);
     });
 

@@ -1,0 +1,35 @@
+extends ../__layout.pug
+
+
+block title
+  title Share Settings
+  
+block link
+  link(rel="stylesheet", href="../../css/main.css")
+  link(rel="stylesheet", href="../../libs/font-awesome.min.css")
+
+block body
+  body(class="share-body")
+    header(class="share-header")
+      span Share settings
+      span(class="fa fa-window-close share-close")
+      
+    section(class="share")
+      div(class="share-settings")
+        ul(class="share-list")
+          li(class="share-list-item" data-save="deactivate_sharing_option")
+            p Deactivate sharing option
+            i(class="fa fa-toggle-off toggle-off")
+          li(class="share-list-item" data-save="request_permission_before_sending_videos")
+            p Request Permission before sending videos
+            i(class="fa fa-toggle-off toggle-off")
+          li(class="share-list-item" data-save="cache_authentication_request")
+            p Cache Authentication Request
+            i(class="fa fa-toggle-off toggle-off")
+          li(class="share-list-item" data-save="cache_expire_date")
+            p Expirt Date of cache
+            input(type="date")
+      div(class="share-buttons")
+        button(class="share-save") Save
+        button(class="share-cancel") Cancel
+  script(src="../../js/settings/share.js")
