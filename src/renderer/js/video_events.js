@@ -13,7 +13,8 @@
     } = require("../js/dropdown_callbacks.js");
     
     const {
-        readSubtitleFile
+        readSubtitleFile,
+        uploadYoutubeVideo
     } = require("../js/util.js");
 
     const akara_emit = require("../js/emitter.js");
@@ -162,6 +163,11 @@
     ipc.on("akara::playlist:import", loadplaylist);
     ipc.on("akara::video:poster:change", (evt,poster) => {
         video.poster = poster;
+    });
+    ipc.on("akara::youtube:loggedin:share", (evt,youtubeClient) => {
+        const request = require("request");
+        youtubeClient.request = request;
+        uploadYoutubeVideo(youtubeClient);
     });
     
     akaraControl.addEventListener("mousedown", controlDragFullScreen);
