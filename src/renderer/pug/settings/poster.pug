@@ -1,0 +1,36 @@
+extends ../__layout.pug
+
+
+block title
+  title Poster
+  
+block link
+  link(rel="stylesheet", href="../../css/main.css")
+  link(rel="stylesheet", href="../../libs/font-awesome.min.css")
+  
+  
+block body
+  body(class="poster-body")
+    header(class="poster-header")
+      span Poster
+      span(class="fa fa-window-close poster-close")
+      
+    section(class="poster")
+      div(class="posters-parent")
+        ul(class="poster-list")
+         
+      
+      div(class="poster-operation")
+        button(class="poster-remove") Remove Poster
+        button(class="poster-install") Install Poster
+      
+      div(class="poster-album-art")
+        label
+           input(type="checkbox" class="poster-albumart-checkbox")
+           span use audio album art for poster
+           
+      div(class="postersetting-btn")
+        button(class="poster-submit") Save
+        button(class="poster-reset") Reset
+
+    script(src="../../js/settings/poster.js")
