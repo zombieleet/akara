@@ -32,7 +32,9 @@ const {
     CONVERTED_MEDIA,
     URL_ONLINE,
     SIZE,
-    MEASUREMENT
+    MEASUREMENT,
+    FFMPEG_LOCATION,
+    requireSettingsPath
 } = _require("./constants.js");
 const {
     Magic,
@@ -67,7 +69,6 @@ const {
 const OS = new _OS("OSTestUserAgentTemp");
 
 const { guessLanguage } = require("guesslanguage");
-const { FFMPEG_LOCATION } = _require("./constants.js");
 
 const {
     createNewWindow
@@ -464,9 +465,8 @@ const sendNotification = (title,message) => new Notification(title,message);
 module.exports.sendNotification = sendNotification;
 
 module.exports.disableVideoMenuItem = menuInst => {
-
+    
     const toggleSubOnOff = document.querySelector("[data-sub-on]");
-
     const ccStatus = toggleSubOnOff.getAttribute("data-sub-on");
 
     if  ( ! document.querySelector(".cover-on-error-src").hasAttribute("style") ) {
@@ -526,6 +526,14 @@ module.exports.disableVideoMenuItem = menuInst => {
         menuInst.visible = true;
         return ;
     }
+
+
+    requireSettingsPath("share.json")
+        .then( path => {
+            let settingsPath = require(path);
+            if ( menuInst.label === "Share" && settingsPath.deactivate_sharing_option === "yes" )
+                menuInst.enabled = false;
+        });
 };
 
 const ccState = menuInst => {
@@ -1143,6 +1151,7 @@ const uploadVideo = info => {
         tags
     } = info;
 
+
     const youtube = google.youtube("v3");
     const uploadData = decodeURIComponent(url.parse(video.getAttribute("src")).pathname);
 
@@ -1151,7 +1160,7 @@ const uploadVideo = info => {
     let id;
 
     const tube = youtube.videos.insert({
-        auth,
+        auth: info.auth,
         resource: {
             snippet: {
                 title,
@@ -1167,20 +1176,28 @@ const uploadVideo = info => {
             body: fs.createReadStream(uploadData)
         }
     }, ( err , data ) => {
-        clearInterval(id);
+        
         if ( err ) {
-            return console.error(err);
+            dialog.showErrorBox("Error while sending message", err);
+            return akara_emit.emit("akara::processStatus", `error while sending video`, true);
         }
-        if ( data.status.uploadStatus === "uploaded" ) {
+        
+        console.log(data);
+
+        if ( ! data.status )
             return akara_emit.emit("akara::processStatus", `uploaded sucessfully`, true);
-        }
+
+        if ( data.status.uploadStatus === "uploaded" )
+            return akara_emit.emit("akara::processStatus", `uploaded sucessfully`, true);
+
         return akara_emit.emit("akara::processStatus", `uploaded was not sucesfull`, true);
 
     });
 
+
     id = setInterval(() => {
         const { _bytesDispatched: sentBytes } = tube.req.connection;
-        akara_emit.emit("akara::processStatus", `uploading ${sentBytes}/${fileSize}`);
+        akara_emit.emit("akara::processStatus", `uploading ${computeByte(sentBytes)}/${computeByte(fileSize)}`);
     },250);
 
 };
@@ -1233,8 +1250,10 @@ module.exports.uploadYoutubeVideo = auth => {
                  description.value.length === 0 || ! privacyStatus ) {
                 return ;
             }
-            tags = tags.value.length > 0 ? tags.value.split(/\s{1,}/) : [];
-            uploadVideo({ auth, title, description, privacyStatus, tags});
+
+            let _tags = tags.value.length > 0 ? tags.value.split(/\s{1,}/) : [];
+
+            uploadVideo({ auth, title, description, privacyStatus, tags: _tags});
             this._removeEvents();
             return ;
         },
