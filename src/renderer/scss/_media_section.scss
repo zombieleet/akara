@@ -22,6 +22,26 @@ $akara-load-width: 30% ;//- $akara-media-cover-width;
         }
     }
 
+    .akara-media-network-state {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background: darken($global-color, 20%);
+        opacity: .80;
+
+        display: flex;
+        justify-content: center;
+
+        visibility: hidden;
+        
+        i {
+            font-size: 100px;
+            margin-left: 350px;
+            margin-top: -200px;
+            align-self: center;
+        }
+    }
+
 
 }
 
