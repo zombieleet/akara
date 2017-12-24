@@ -453,6 +453,8 @@ module.exports.sendNotification = sendNotification;
 
 module.exports.disableVideoMenuItem = menuInst => {
 
+    const win = BrowserWindow.fromId(1);
+    
     const toggleSubOnOff = document.querySelector("[data-sub-on]");
     const ccStatus = toggleSubOnOff.getAttribute("data-sub-on");
 
