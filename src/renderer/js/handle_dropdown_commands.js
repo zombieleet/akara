@@ -335,9 +335,9 @@ const podWinOption = {
     width: 800,
     height: 530,
     title: "podcast",
-    maximizable: false,
-    minimizable: false,
-    resizable: false
+    maximizable: true,
+    minimizable: true,
+    resizable: true
 };
 
 const podcast = () => createNewWindow(podWinOption, "podcast.html");

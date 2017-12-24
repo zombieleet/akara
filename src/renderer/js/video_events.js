@@ -77,7 +77,9 @@
         controlMouseLeave,
         videoEndedEvent,
         videoSetFilter,
-        videoResetFilter
+        videoResetFilter,
+        mediaProgress,
+        mediaWating
     } = require("../js/videohandlers.js");
 
     const {
@@ -107,8 +109,13 @@
     video.addEventListener("loadedmetadata", () => {
         currTimeUpdate.textContent = setTime();
     });
+    
     video.addEventListener("error", videoErrorEvent);
     video.addEventListener("contextmenu", contextMenuEvent);
+    video.addEventListener("progress", mediaProgress);
+    video.addEventListener("seeking", mediaProgress);
+
+    video.addEventListener("waiting", mediaWating);
     
     jumpToSeekElement.addEventListener("click", clickedMoveToEvent);
     jumpToSeekElement.addEventListener("mousemove", mouseMoveShowCurrentTimeEvent);
@@ -153,7 +160,9 @@
     ipc.on("leave-video-fullscreen", _leavefullscreen);
     ipc.on("video-search", search);
     //ipc.on("media-info", showMediaInfoWindow);
-    ipc.on("akara::podcasturl", (evt,path,category) => addMediaCb(path,category));
+    ipc.on("akara::podcast:play",
+           (evt,path,category) => addMediaCb(path,category));
+    
     ipc.on("akara::video:filter", videoSetFilter);
     ipc.on("akara::video:filter:reset", videoResetFilter);
     ipc.on("akara::video:filter:reset:all",  () => {

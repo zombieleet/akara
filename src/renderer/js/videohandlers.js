@@ -468,7 +468,7 @@ module.exports.videoErrorEvent = async (evt) => {
     const playlistItem = akaraLoaded.querySelector(`#${video.getAttribute("data-id")}`);
 
     let _src = video.getAttribute("src");
-
+    
     disableControls();
 
 
@@ -502,9 +502,13 @@ module.exports.videoErrorEvent = async (evt) => {
             }
             // play converted or not
             playlistItem.setAttribute("data-full-path", path.convpath);
-            setupPlaying(playlistItem);
+            return setupPlaying(playlistItem);
+        } else {
+            return dialog.showErrorBox(
+                "Unsupported media file",
+                "Requested Media File cannot be played"
+            );
         }
-        break;
     }
 
 };
@@ -522,7 +526,8 @@ module.exports.videoErrorEvent = async (evt) => {
 module.exports.clickedMoveToEvent = event => {
     const target = event.target;
     if ( target.classList.contains("akara-time-length")
-         || target.classList.contains("akara-time-current") ) {
+         || target.classList.contains("akara-time-current")
+         || target.classList.contains("akara-time-buffered") ) {
         return handleMovement(event, result => {
             console.log(result);
             video.currentTime = result;
@@ -585,7 +590,9 @@ module.exports.mouseMoveShowCurrentTimeEvent = event => {
     let target = event.target;
 
     if ( target.classList.contains("akara-time-length")
-         || target.classList.contains("akara-time-current") ) {
+         || target.classList.contains("akara-time-current")
+         || target.classList.contains("akara-time-buffered")
+       ) {
 
         let isOverExists = document.querySelector("[data-hover=true]");
         if ( isOverExists ) {
@@ -1332,6 +1339,51 @@ module.exports.videoResetFilter = (evt,type) => {
     return ;
 };
 
+
+module.exports.mediaProgress = evt => {
+    
+    // if ( video.buffered.length === 0 )
+    //     return ;
+    
+    const networkState = document.querySelector(".akara-media-network-state");
+
+    console.log(video.readyState);
+
+    switch(video.readyState) {
+    case video.HAVE_ENOUGH_DATA:
+    case video.HAVE_FUTURE_DATA:
+    case video.HAVE_CURRENT_DATA:
+    case video.HAVE_METADATA:
+        networkState.style.visibility = "hidden";
+        break;
+    case video.HAVE_NOTHING:
+        networkState.style.visibility = "visible";
+        break;
+    }
+    
+
+    const bufferedLength = document.querySelector(".akara-time-buffered");
+    const pNode = bufferedLength.parentNode;
+    
+    
+    for ( let i = 0 ; i < video.buffered.length ; i++ ) {
+        
+        const elapsed = Math.round(video.buffered.end(i)).toFixed(1);
+        const timeIndicationWidth = ( elapsed * pNode.clientWidth ) /
+              ( controls.duration().toFixed(1));
+
+        bufferedLength.style.width = (timeIndicationWidth / pNode.clientWidth) * 100 + "%";
+    }
+};
+
+module.exports.mediaWaiting = evt => {
+    console.log(video.readyState, video.networkState);
+
+    if ( video.networkState === 2 )
+        console.log("network state downloading");
+    else
+        console.log(evt.networkState);
+};
 
 if ( require.main !== module ) {
 
