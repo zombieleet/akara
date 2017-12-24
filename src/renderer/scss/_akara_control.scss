@@ -60,6 +60,17 @@ $akara-control-padding-top: 10;
             width: 0;
             background: darken($global-color,10%);
             height: inherit;
+            cursor: inherit;
+            position: relative;
+            z-index: 5555;
+        }
+
+        .akara-time-buffered {
+            width: 0;
+            background: lighten($global-color, 15%);
+            height: inherit;
+            cursor: inherit;
+            margin-top: -11.55px;
         }
 
     }
