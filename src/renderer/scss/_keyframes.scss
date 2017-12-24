@@ -89,3 +89,12 @@
         width: 50%;
     }
 }
+
+@keyframes viewanimation {
+    from {
+        opacity: .3;
+    }
+    to {
+        opacity: .80;
+    }
+}
