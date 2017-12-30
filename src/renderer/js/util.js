@@ -454,7 +454,7 @@ module.exports.sendNotification = sendNotification;
 module.exports.disableVideoMenuItem = menuInst => {
 
     const win = BrowserWindow.fromId(1);
-    
+
     const toggleSubOnOff = document.querySelector("[data-sub-on]");
     const ccStatus = toggleSubOnOff.getAttribute("data-sub-on");
 
@@ -950,7 +950,7 @@ module.exports.tClient = bBird.promisifyAll(
 );
 
 
-module.exports.savepodcast = name => {
+const savepodcast = name => {
 
     const pod = require(podcast);
 
@@ -971,12 +971,26 @@ module.exports.savepodcast = name => {
     return true;
 };
 
+module.exports.savepodcast = savepodcast;
+
 module.exports.loadpodcast = () => {
     const pod = require(podcast);
     return pod.length > 0 ? pod : [];
 };
 
+module.exports.removepodcast = podtoremove => {
 
+    let pod = require(podcast);
+
+    if ( ! pod.includes(podtoremove) )
+        return false;
+
+    pod = pod.filter( _pods => _pods !== podtoremove);
+
+    fs.writeFileSync(podcast, JSON.stringify(pod));
+
+    return true;
+};
 
 const resumeDownloading = (item,webContents) => {
     console.log("resume");
