@@ -2,7 +2,8 @@
 
     const {
         loadpodcast,
-        savepodcast
+        savepodcast,
+        removepodcast
     } = require("../js/util.js");
 
     const {
@@ -10,6 +11,8 @@
         remote: {
             dialog,
             getCurrentWindow,
+            Menu,
+            MenuItem,
             require: _require
         }
     } = require("electron");
@@ -26,15 +29,15 @@
     const podcastKey = new(require("../js/keyevents.js"));
     const podcastFuncs = document.querySelector("section");
     const close = document.querySelector(".podcast-close");
-    
 
 
-    
+
+
     /**
-       build widgets and also handle events related 
+       build widgets and also handle events related
        to each podcast created by a podcaster
     **/
-    
+
     const podcast = Object.defineProperties( {} , {
 
         __addpodcastModal: {
@@ -142,7 +145,60 @@
             }
         },
         podcastremove: {
-            value: () => {}
+            value: () => {
+                const podWidg = document.querySelectorAll(".podcastload-main > li");
+
+                Array.from(podWidg, channel => {
+                    
+                    const checked = channel.querySelector(".fa-check-circle");
+                    
+                    if ( ! checked )
+                        return ;                    
+
+                    removepodcast(channel.getAttribute("data-url"));
+                    channel.remove();
+                });
+            }
+        },
+        podcastcheck: {
+            value: () => {
+                const checkMenus = [
+                    {
+                        label: "checkall",
+                        click() {
+                            const podWidg = document.querySelector(".podcastload-main");
+                            Array.from(podWidg.querySelectorAll(".fa-circle-o"))
+                                .forEach( notchecked => {
+                                    notchecked.classList.remove("fa-circle-o");
+                                    notchecked.classList.add("fa-check-circle");
+                                });
+                        },
+                        accelerator: ""
+                    } ,
+                    {
+                        label: "uncheckall",
+                        click() {
+                            const podWidg = document.querySelector(".podcastload-main");
+                            Array.from(podWidg.querySelectorAll(".fa-check-circle"))
+                                .forEach( checked => {
+                                    checked.classList.remove("fa-check-circle");
+                                    checked.classList.add("fa-circle-o");
+                                });
+                        },
+                        accelerator: ""
+                    }
+                ];
+
+                const menu = new Menu();
+
+                menu.clear();
+
+                checkMenus.forEach( _menu => {
+                    menu.append(new MenuItem(_menu));
+                });
+
+                menu.popup({async: true});
+            }
         },
         podcasthome: {
             value() {
@@ -163,22 +219,22 @@
 
                 if( podcastSection.getAttribute("data-view") === type )
                     return ;
-                
+
                 podcastSection.setAttribute("data-view", type);
 
                 if ( podcastMain.hasAttribute("data-view-anim") )
                     podcastMain.removeAttribute("data-view-anim");
 
-                
+
                 podcastMain.style.opacity = 0;
-                
+
                 setTimeout( () => {
                     podcastMain.setAttribute("data-view-anim", "animation");
                 },50);
             }
         },
         podcastgrid: {
-            
+
             value() {
                 this.__views("grid");
             }
@@ -190,7 +246,7 @@
         }
     });
 
-    
+
     /**
        widgets that handles operation on the podcaster channel
      **/
@@ -239,7 +295,21 @@
             }
         },
         download: {
-            value() {
+            value(evt) {
+            }
+        },
+        "circle-o": {
+            value(evt) {
+                const target = evt.target;
+                target.classList.toggle("fa-check-circle");
+                target.classList.toggle("fa-circle-o");
+            }
+        },
+        "times-circle": {
+            value(evt) {
+                const channel = evt.target.parentNode.parentNode;
+                removepodcast(channel.getAttribute("data-url"));
+                channel.remove();
             }
         }
     });
@@ -255,10 +325,14 @@
 
     };
 
-    
+
     const podcastRemoveEvent = evt =>
           evt.parentNode.parentNode.remove();
 
+
+    /**
+       widgets located at the podcast channel podcasts
+     **/
     const podAudioWidget = () => {
 
         let widgetP = document.createElement("div");
@@ -284,11 +358,11 @@
     };
 
 
-    
+
     /**
        append all the podcasters podcast to the DOMA
      **/
-    
+
     const appendPodcastToDOM = ({ episodes }) => {
 
         const podcastParent = document.querySelector(".podcastload-podcaster");
@@ -322,10 +396,10 @@
 
 
     /**
-       fire up this spinner when searching the internet 
+       fire up this spinner when searching the internet
        for podcasters podcast
     **/
-    
+
     const spinOnPodLoad = () => {
 
         let podcasterSection = document.querySelector(".podcastload-podcaster");
@@ -363,7 +437,7 @@
     };
 
 
-    
+
     /**
        build the podcasters channel widget,
        handlers for this widget are bound to podcastNameWidgetHandler Object
@@ -372,7 +446,7 @@
     const podcastsChannelWidget = () => {
         const pwidget = document.createElement("ul");
         // folder === open
-        const channelWidgets = [ "folder" ,  "play" , "download" ];
+        const channelWidgets = [ "folder" ,  "play" , "download", "circle-o", "times-circle" ];
 
 
         pwidget.setAttribute("class", "podcast-name-widgets");
@@ -390,11 +464,11 @@
 
 
 
-    
+
     /**
        build all saved podcast channel
      **/
-    
+
     const createPodcast = podcasts => {
 
         const podcastLoadMain = document.querySelector(".podcastload-main");
@@ -437,10 +511,12 @@
         try {
             podcast[method]();
         } catch(ex) {
+            console.log(ex);
             console.log("%s not implemented yet", method);
         };
 
     });
+
 
     close.addEventListener("click", () => getCurrentWindow().close());
 
