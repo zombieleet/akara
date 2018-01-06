@@ -1,8 +1,14 @@
 
 .akara-title-bar {
-    height: 50px;
-    border-bottom: 2px solid white;
-    -webkit-app-region: drag;
+
+    @extend %window-headers;
+
+    height: 30px;
+
+    .window-title {
+        left: 50px;
+    }
+    
     .akara-menu-toggle {
 
         color: black;
@@ -22,56 +28,6 @@
         padding: 5px 13px;
 
         -webkit-app-region: no-drag;
-
-
-    }
-    .akara-title {
-
-        color: white;
-        float: left;
-
-        position: fixed;
-        left: 50px;
-
-        width: 30%;
-
-        white-space: nowrap;
-        overflow: hidden;
-
-        text-overflow: ellipsis;
-
-        font: {
-            size: 1.5em;
-        }
-        padding-top: 12px;
-        padding-left: 12px;
-    }
-
-    .akara-window-state {
-        float: right;
-        -webkit-app-region: no-drag;
-        > ul {
-            margin-top: 7px;
-            > li {
-                display: inline;
-                color: white;
-
-                padding: 5px;
-
-                margin-left: 20px;
-                border-radius: 50%;
-
-                cursor: pointer;
-            }
-
-
-            > li:last-of-type {
-                transition: .3s color;
-                &:hover {
-                    color: darkred;
-                }
-            }
-        }
     }
 }
 
@@ -87,9 +43,9 @@
 
 
 .akara-battery {
-    margin-right: 12px;
+    margin-right: 50px;
 }
 
 .akara-bolt {
-    margin-right: 10px;
+    margin-right: 30px;
 }

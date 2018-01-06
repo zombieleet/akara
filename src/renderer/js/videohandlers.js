@@ -24,8 +24,6 @@ const {
     requireSettingsPath
 } = _require("./constants.js");
 
-const { promisify } = require("bluebird");
-
 const {
     CURRENT_TIME
 } = _require("./constants.js");
@@ -34,14 +32,9 @@ const {
     createNewWindow
 } = _require("./newwindow.js");
 
-const {
-    parse
-} = require("url");
+const url = require("url");
 
-const {
-    basename,
-    join
-} = require("path");
+const path = require("path");
 
 const crypto = require("crypto");
 
@@ -99,11 +92,11 @@ const setTime = () => {
 
 module.exports.setTime = setTime;
 
-const hashedPath = path => join(
+const hashedPath = filePath => path.join(
     CURRENT_TIME,
     crypto
         .createHash("md5")
-        .update(path)
+        .update(filePath)
         .digest("hex")
 );
 /**
@@ -346,11 +339,11 @@ const __checkPlayStateAndNotify = () => {
     if ( video.__status === "paused" ) {
         video.__status = undefined;
         return sendNotification("Resuming", {
-            body: decodeURIComponent(basename(parse(video.src).path))
+            body: decodeURIComponent(path.basename(url.parse(video.src).path))
         });
     }
     return sendNotification("Now Playing", {
-        body: decodeURIComponent(basename(parse(video.src).path))
+        body: decodeURIComponent(path.basename(url.parse(video.src).path))
     });
 
 };
@@ -476,7 +469,7 @@ module.exports.videoErrorEvent = async (evt) => {
 
     case evt.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
 
-        if ( parse(_src).protocol === "file:") {
+        if ( url.parse(_src).protocol === "file:") {
 
             _src = _src.replace("file://","");
             // configuration prompt before converting,
@@ -486,22 +479,22 @@ module.exports.videoErrorEvent = async (evt) => {
                 type: "error",
                 title: "Invalid stream",
                 buttons: [ "No", "Yes" ],
-                message: `${basename(_src)} is not valid. Would you like to convert it ?`
+                message: `${path.basename(_src)} is not valid. Would you like to convert it ?`
             });
 
 
             if ( btn === 0 )
                 return '';
 
-            const path = await validateMime(_src);
+            const filePath = await validateMime(_src);
 
-            if ( typeof(path) === "string" ) {
+            if ( typeof(filePath) === "string" ) {
                 return dialog.showErrorBox(
-                    "Cannot convert media file", path
+                    "Cannot convert media file", filePath
                 );
             }
             // play converted or not
-            playlistItem.setAttribute("data-full-path", path.convpath);
+            playlistItem.setAttribute("data-full-path", filePath.convpath);
             return setupPlaying(playlistItem);
         } else {
             return dialog.showErrorBox(
@@ -737,14 +730,14 @@ module.exports.handleVolumeChange = event => {
  * setup track element with necessary attributes
  *
  **/
-const setUpTrackElement = async (path,fileLang) => {
+const setUpTrackElement = async (filePath,fileLang) => {
     const __tracks = video.querySelectorAll("track");
     const track = document.createElement("track");
-    const subtitle = path;
+    const subtitle = filePath;
 
-    fileLang = fileLang || await langDetect(path);
+    fileLang = fileLang || await langDetect(filePath);
 
-    let lang = fileLang ? fileLang : `No Lang ${basename(path).substr(0, 7)}`;
+    let lang = fileLang ? fileLang : `No Lang ${path.basename(filePath).substr(0, 7)}`;
 
     track.setAttribute("src", subtitle);
     track.setAttribute("label", lang);
@@ -768,9 +761,9 @@ const setUpTrackElement = async (path,fileLang) => {
  *
  **/
 
-const handleLoadSubtitle = async (path,cb) => {
+const handleLoadSubtitle = async (filePath,cb) => {
 
-    if ( ! path )
+    if ( ! filePath )
         return ;
 
     /**
@@ -780,20 +773,20 @@ const handleLoadSubtitle = async (path,cb) => {
      *
      **/
 
-    [ path ] = Array.isArray(path) ? path : [ path ];
+    [ filePath ] = Array.isArray(filePath) ? filePath : [ filePath ];
 
 
-    if ( /x-subrip$/.test(mime.lookup(path)) )
-        path = await cb(path);
+    if ( /x-subrip$/.test(mime.lookup(filePath)) )
+        filePath = await cb(filePath);
 
-    const { track, lang } = await setUpTrackElement(path);
+    const { track, lang } = await setUpTrackElement(filePath);
 
     sendNotification("Subtitle", {
         body: "Subtitle have been successfully added"
     });
 
     video.appendChild(track);
-
+    
     const { submenu } = videoContextMenu[16].submenu[1];
 
     submenu.push({
@@ -839,7 +832,7 @@ const loadAlbumArt = async () => {
     const jsmediatags = require("jsmediatags");
 
     const mediaTagReader = new jsmediatags.Reader(
-        decodeURIComponent(parse(video.src).path)
+        decodeURIComponent(url.parse(video.src).path)
     );
 
     mediaTagReader.setTagsToRead(["picture"])
@@ -1210,8 +1203,8 @@ module.exports.subHandler = ( event, from, fPath ) => {
 
         val = fPath;
 
-    handleLoadSubtitle(val, async (path) => {
-        const result = await readSubtitleFile(path);
+    handleLoadSubtitle(val, async (filePath) => {
+        const result = await readSubtitleFile(filePath);
         return result;
     });
 

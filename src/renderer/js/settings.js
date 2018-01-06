@@ -11,10 +11,12 @@
     
     const { createNewWindow: settingsWindow } = _require("./newwindow.js");
 
+    const { handleWindowButtons } = require("../js/util.js");
 
-    const settingsMin = document.querySelector(".settings-min");
-    const settingsMax = document.querySelector(".settings-max");
-    const settingsClose = document.querySelector(".settings-close");
+
+    const settingsMin = document.querySelector(".window-min");
+    const settingsMax = document.querySelector(".window-max");
+    const settingsClose = document.querySelector(".window-close");
     const settingsValue = document.querySelector(".settings-values");
     const textSearch = document.querySelector(".search");
 
@@ -86,6 +88,19 @@
         };
         settingsWindow(share, "settings/share.html");
     };
+
+    handleAkaraSettings.volume = () => {
+        const volume = {
+            title: "volume",
+            maximizable: false,
+            resizeable: false,
+            minimizable: false,
+            width: 500,
+            height: 450,
+            center: true
+        };
+        settingsWindow(volume, "settings/volume.html");
+    };
     
     settingsValue.addEventListener("click", evt => {
         const { target } = evt;
@@ -101,26 +116,6 @@
         }
     });
 
-
-    
-    settingsClose.addEventListener("click", () => getCurrentWindow().close());
-    
-    settingsMin.addEventListener("click", () => {
-        ipc.send("akara::newwindow:min");
-    });
-    settingsMax.addEventListener("click", () => {
-        ipc.send("akara::newwindow:max");
-    });
-
-    ipc.on("akara::newwindow:ismax", () => {
-        settingsMax.classList.remove("fa-window-maximize");
-        settingsMax.classList.add("fa-window-restore");
-    });
-
-    ipc.on("akara::newwindow:isnotmin", () => {
-        settingsMax.classList.remove("fa-window-restore");
-        settingsMax.classList.add("fa-window-maximize");
-    });
-
+    handleWindowButtons({ close: settingsClose, min: settingsMin, max: settingsMax });
 
 })();

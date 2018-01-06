@@ -159,3 +159,54 @@ $drop-down-left-pos: 200;
     background: lighten($global-color,30%);
     opacity: .75;
 }
+
+%window-headers {
+    height: 20px;
+    width: 100%;
+    padding-top: 10px;
+    padding-left: 5px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid white;
+    -webkit-app-region: drag;
+
+    .window-title {
+        color: white;
+        float: left;
+
+        position: fixed;
+        left: 20px;
+
+        width: 30%;
+
+        white-space: nowrap;
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        font: {
+            size: 1.5em;
+        }
+        padding-top: 12px;
+        padding-left: 12px;
+    }
+
+    .window-state-buttons {
+        float: right;
+        margin-right: 15px;
+        .window-buttons {
+            -webkit-app-region: no-drag;
+            li {
+                margin-left: 15px;
+                cursor: pointer;
+                color: white;
+            }
+
+            .window-close {
+                transition: .2s color ease-in-out;
+                &:hover {
+                    color: red;
+                }
+            }
+        }
+    }    
+}

@@ -77,6 +77,9 @@ const requireSettingsPath = type => {
             case "share.json":
                 objConfig = { deactivate_sharing_option: "no", request_permission_before_sending_videos: "no" , "cache_expiry_date": (new Date()).valueOf()};
                 break;
+            case "volume.json":
+                objConfig = { volume_default_level: 50, volume_max_level: 70, volume_warn_exceed_max: true };
+                break;
             }
 
             writeFileSync(jsonPath, JSON.stringify(objConfig));

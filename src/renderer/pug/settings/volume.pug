@@ -1,0 +1,44 @@
+extends ../__layout.pug
+
+
+block title
+  title Volume Manager
+  
+block link
+  link(rel="stylesheet", href="../../css/main.css")
+  link(rel="stylesheet", href="../../libs/font-awesome.min.css")  
+  
+block body
+  body(class="volume-body")
+    header(class="volume-header")
+      span Volume Manager
+      span(class="fa fa-window-close volume-close")
+      
+    section(class="volume")
+      div(class="volume-options")
+        ul(class="volume-options-list")
+        
+          li(class="volume-list-item" data-save="volume_default_level")
+            p Default Volume Level
+            input(type="number" max="100" min="0" class="volume-setting-option")
+            
+            
+          li(class="volume-list-item" data-save="volume_max_level")
+            p Maxmium Volume Level
+            input(type="number" max="100" min="0" class="volume-setting-option")
+            
+            
+          li(class="volume-list-item" data-save="volume_warn_exceed_max")
+            p Warn When Volume Exceeds Max
+            i(class="fa fa-toggle-off toggle-off volume-setting-option")
+            
+            
+          li(class="volume-list-item" data-save="brighteen_screen_charging")
+            p Brighteen Screen While Charging
+            //i(class="fa fa-toggle-off toggle-off")
+            
+      
+      div(class="volume-buttons")
+        button(class="volume-save") Save
+        button(class="volume-cancel") Cancel
+    script(src="../../js/settings/volume.js")

@@ -100,7 +100,7 @@
                 width: 30%;
                 float: right;
                 
-                margin-right: -21%;
+                margin-right: -15%;
                 
                 > li {
                     display: inline;
@@ -150,7 +150,9 @@
                 justify-content: center;
                 align-self: flex-end;
 
-                position: absolute;
+                position: relative;
+
+                left: -100px;
                 
             }
         }

@@ -2,9 +2,9 @@
 
 ( ({ ipcRenderer: ipc }) => {
 
-    const akaraMin = document.querySelector(".akara-min");
-    const akaraMax = document.querySelector(".akara-max");
-    const akaraClose = document.querySelector(".akara-close");
+    const akaraMin = document.querySelector(".window-min");
+    const akaraMax = document.querySelector(".window-max");
+    const akaraClose = document.querySelector(".window-close");
 
 
 
@@ -28,6 +28,10 @@
     ipc.on("window-is-not-max", () => {
         akaraMax.classList.remove("fa-window-restore");
         akaraMax.classList.add("fa-window-maximize");
+    });
+
+    ipc.on("akara::quiting", () => {
+        localStorage.removeItem("DONT_SHOW_VOLUME_WARNING");
     });
     
 })(require("electron"));

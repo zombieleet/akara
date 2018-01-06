@@ -65,6 +65,7 @@ const createWindow = () => {
 
     app.on("quit", () => {
         console.log("app will quit");
+        mainWindow.webContents.send("akara::quiting");
         removeConvMedia();
     });
 };

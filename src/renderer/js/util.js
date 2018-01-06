@@ -6,13 +6,14 @@ const google = require("googleapis");
 const googleAuth = new(require("google-auth-library"));
 
 const {
+    ipcRenderer: ipc,
     remote: {
         require: _require,
         BrowserWindow,
+        getCurrentWindow,
         dialog,
         app
-    },
-    ipcRenderer: ipc
+    }
 } = require("electron");
 
 const {
@@ -145,6 +146,7 @@ module.exports.removeClass = removeClass;
 
 const setCurrentPlaying = target => {
 
+    const jsmediatags = require("jsmediatags");
 
     /**
      *
@@ -169,10 +171,33 @@ const setCurrentPlaying = target => {
 
     updatePlaylistName(target);
 
-    document.querySelector(".akara-title").textContent =  target.querySelector("span").textContent;
+    console.log(target,decodeURIComponent(url.parse(target.getAttribute("data-full-path")).path));
+
+
+    const mediaTagReader = new jsmediatags.Reader(
+        decodeURIComponent(url.parse(target.getAttribute("data-full-path")).path)
+    );
+
+    const mediaTitle = document.querySelector(".window-title");
+    
+    mediaTagReader.setTagsToRead()
+        .read({
+            onSuccess({ tags }) {
+
+                if ( ! tags.title ) {
+                    mediaTitle.textContent = target.querySelector("span").textContent;
+                    return ;
+                }
+
+                mediaTitle.textContent = tags.title;
+            },
+            onError(error) {
+                mediaTitle.textContent = target.querySelector("span").textContent;
+            }
+        });
+
 
     video.setAttribute("data-id", target.getAttribute("id"));
-
     video.setAttribute("src", target.getAttribute("data-full-path"));
 
     return ;
@@ -454,7 +479,7 @@ module.exports.sendNotification = sendNotification;
 module.exports.disableVideoMenuItem = menuInst => {
 
     const win = BrowserWindow.fromId(1);
-    
+
     const toggleSubOnOff = document.querySelector("[data-sub-on]");
     const ccStatus = toggleSubOnOff.getAttribute("data-sub-on");
 
@@ -950,7 +975,7 @@ module.exports.tClient = bBird.promisifyAll(
 );
 
 
-module.exports.savepodcast = name => {
+const savepodcast = name => {
 
     const pod = require(podcast);
 
@@ -971,12 +996,26 @@ module.exports.savepodcast = name => {
     return true;
 };
 
+module.exports.savepodcast = savepodcast;
+
 module.exports.loadpodcast = () => {
     const pod = require(podcast);
     return pod.length > 0 ? pod : [];
 };
 
+module.exports.removepodcast = podtoremove => {
 
+    let pod = require(podcast);
+
+    if ( ! pod.includes(podtoremove) )
+        return false;
+
+    pod = pod.filter( _pods => _pods !== podtoremove);
+
+    fs.writeFileSync(podcast, JSON.stringify(pod));
+
+    return true;
+};
 
 const resumeDownloading = (item,webContents) => {
     console.log("resume");
@@ -1272,3 +1311,27 @@ module.exports.uploadYoutubeVideo = auth => {
     });
 
 };
+
+module.exports.handleWindowButtons = ( { close, min, max } ) => {
+    
+    close.addEventListener("click", () => getCurrentWindow().close());
+    
+    min.addEventListener("click", () => {
+        ipc.send("akara::newwindow:min");
+    });
+    
+    max.addEventListener("click", () => {
+        ipc.send("akara::newwindow:max");
+    });
+
+    ipc.on("akara::newwindow:ismax", () => {
+        max.classList.remove("fa-window-maximize");
+        max.classList.add("fa-window-restore");
+    });
+
+    ipc.on("akara::newwindow:isnotmin", () => {
+        max.classList.remove("fa-window-restore");
+        max.classList.add("fa-window-maximize");
+    });
+};
+
