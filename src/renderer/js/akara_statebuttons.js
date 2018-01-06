@@ -29,6 +29,10 @@
         akaraMax.classList.remove("fa-window-restore");
         akaraMax.classList.add("fa-window-maximize");
     });
+
+    ipc.on("akara::quiting", () => {
+        localStorage.removeItem("DONT_SHOW_VOLUME_WARNING");
+    });
     
 })(require("electron"));
 
