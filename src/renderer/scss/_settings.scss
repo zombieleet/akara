@@ -3,38 +3,7 @@
 }
 
 .settings-header {
-    
-    width: 100%;
-    padding-top: 10px;
-    padding-left: 5px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid white;
-
-    -webkit-app-region: drag;
-    
-    div:first-of-type {
-        float: left;
-        width: 20%;
-        font-size: 20px;
-        margin-left: 0;
-    }
-    div:last-of-type {
-        float: right;
-        margin-right: 15px;
-        ul {
-            -webkit-app-region: no-drag;
-            li {
-                margin-left: 15px;
-                cursor: pointer;
-            }
-            .settings-close {
-                transition: .2s color ease-in-out;
-                &:hover {
-                    color: red;
-                }
-            }
-        }
-    }
+    @extend %window-headers;
 }
 
 
