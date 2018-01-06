@@ -311,9 +311,11 @@ const showMediaInfoWindow = () => {
     
     const __obj = {
         title: "mediainfo",
-        parent: BrowserWindow.fromId(1),
         height: 773,
-        width: 608
+        width: 608,
+        maximizable: true,
+        minimizable: true,
+        resizable: true
     };
     
     const html = `${__obj.title}.html`;
