@@ -145,6 +145,7 @@ module.exports.removeClass = removeClass;
 
 const setCurrentPlaying = target => {
 
+    const jsmediatags = require("jsmediatags");
 
     /**
      *
@@ -169,10 +170,31 @@ const setCurrentPlaying = target => {
 
     updatePlaylistName(target);
 
-    document.querySelector(".akara-title").textContent =  target.querySelector("span").textContent;
+    console.log(target,decodeURIComponent(url.parse(target.getAttribute("data-full-path")).path));
+
+
+    const mediaTagReader = new jsmediatags.Reader(
+        decodeURIComponent(url.parse(target.getAttribute("data-full-path")).path)
+    );
+
+    mediaTagReader.setTagsToRead()
+        .read({
+            onSuccess({ tags }) {
+
+                if ( ! tags.title ) {
+                    document.querySelector(".akara-title").textContent =  target.querySelector("span").textContent;
+                    return ;
+                }
+
+                document.querySelector(".akara-title").textContent = tags.title;
+            },
+            onError(error) {
+                document.querySelector(".akara-title").textContent =  target.querySelector("span").textContent;
+            }
+        });
+
 
     video.setAttribute("data-id", target.getAttribute("id"));
-
     video.setAttribute("src", target.getAttribute("data-full-path"));
 
     return ;
