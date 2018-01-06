@@ -4,10 +4,15 @@ block title
  title Media Info
 
 block body
-   body(class="media-info")
-      header(class="akara-media-info")
-          span Media Info
-          span(class="fa fa-window-close media-close")
-      section(class="akara-info")
+   body(class="media-body")
+      header(class="media-header")
+          div(class="window-title") Media Info
+          div(class="window-state-buttons")
+            ul(class="window-buttons")
+              li(class="fa fa-window-minimize window-min")
+              li(class="fa fa-window-maximize window-max")
+              li(class="fa fa-window-close window-close")
+              
+      section(class="media")
       
       script(src="../js/mediainfo.js")
