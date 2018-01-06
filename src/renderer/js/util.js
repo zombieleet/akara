@@ -6,13 +6,14 @@ const google = require("googleapis");
 const googleAuth = new(require("google-auth-library"));
 
 const {
+    ipcRenderer: ipc,
     remote: {
         require: _require,
         BrowserWindow,
+        getCurrentWindow,
         dialog,
         app
-    },
-    ipcRenderer: ipc
+    }
 } = require("electron");
 
 const {
@@ -177,19 +178,21 @@ const setCurrentPlaying = target => {
         decodeURIComponent(url.parse(target.getAttribute("data-full-path")).path)
     );
 
+    const mediaTitle = document.querySelector(".window-title");
+    
     mediaTagReader.setTagsToRead()
         .read({
             onSuccess({ tags }) {
 
                 if ( ! tags.title ) {
-                    document.querySelector(".akara-title").textContent =  target.querySelector("span").textContent;
+                    mediaTitle.textContent = target.querySelector("span").textContent;
                     return ;
                 }
 
-                document.querySelector(".akara-title").textContent = tags.title;
+                mediaTitle.textContent = tags.title;
             },
             onError(error) {
-                document.querySelector(".akara-title").textContent =  target.querySelector("span").textContent;
+                mediaTitle.textContent = target.querySelector("span").textContent;
             }
         });
 
@@ -1308,3 +1311,27 @@ module.exports.uploadYoutubeVideo = auth => {
     });
 
 };
+
+module.exports.handleWindowButtons = ( { close, min, max } ) => {
+    
+    close.addEventListener("click", () => getCurrentWindow().close());
+    
+    min.addEventListener("click", () => {
+        ipc.send("akara::newwindow:min");
+    });
+    
+    max.addEventListener("click", () => {
+        ipc.send("akara::newwindow:max");
+    });
+
+    ipc.on("akara::newwindow:ismax", () => {
+        max.classList.remove("fa-window-maximize");
+        max.classList.add("fa-window-restore");
+    });
+
+    ipc.on("akara::newwindow:isnotmin", () => {
+        max.classList.remove("fa-window-restore");
+        max.classList.add("fa-window-maximize");
+    });
+};
+
