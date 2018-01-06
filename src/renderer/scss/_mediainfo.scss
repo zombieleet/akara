@@ -1,50 +1,7 @@
-
-.media-info {
+.media-body {
     @extend %new_window_body;
 }
 
-.akara-media-info {
-    @extend %new_window_headers;
-}
-
-.akara-info {
-    width: 100%;
-    overflow-y: auto;
-    div {
-        color: black;
-        width: 100%;
-        ul {
-            padding-top: 20px;
-            margin-left: 12px;
-            li {
-                
-                margin-top: 20px;
-                font-size: 15px;
-
-                border-bottom: 2px solid black;
-                padding-bottom: 12px;
-
-                span:first-of-type:after {
-                    content: ":"
-                }
-
-                span:first-of-type {
-                    border: 1px solid white;
-                    padding: 7px;
-                    background-color: lighten($global-color,50%);
-                }
-                
-                span:last-of-type {
-                    margin-left: 30px;
-                }
-            }
-        }
-    }
-}
-
-.media-has-deep {
-    margin-left: 0 !important;
-}
-.akara-media-deep {
-    margin-left: 30px;
+.media-header {
+    @extend %window-headers;
 }
