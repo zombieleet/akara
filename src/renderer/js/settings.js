@@ -86,6 +86,19 @@
         };
         settingsWindow(share, "settings/share.html");
     };
+
+    handleAkaraSettings.volume = () => {
+        const volume = {
+            title: "volume",
+            maximizable: false,
+            resizeable: false,
+            minimizable: false,
+            width: 500,
+            height: 450,
+            center: true
+        };
+        settingsWindow(volume, "settings/volume.html");
+    };
     
     settingsValue.addEventListener("click", evt => {
         const { target } = evt;
