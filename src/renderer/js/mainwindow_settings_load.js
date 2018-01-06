@@ -120,7 +120,7 @@
 
         if ( batterySettings.show_battery_icon === "on" ) {
 
-            let akaraWinState = document.querySelector(".akara-window-state");
+            let akaraWinState = document.querySelector(".window-state-buttons");
 
             let batIcon = document.createElement("i"),
                 bolt;
