@@ -1,0 +1,64 @@
+.volume-body {
+    @extend %new_window_body;
+}
+
+
+.volume-header {
+    @extend %new_window_headers;
+}
+
+.volume {
+    .volume-options {
+        overflow-y: auto;
+        overflow-x: hidden;
+        .volume-options-list {
+            //background: lighten($global-color,10%);
+            height: 100%;
+            padding-top: 20px;
+
+            .volume-list-item {
+                font-size: 1.2em;
+                padding: 25px;
+                width: 100%;
+                border-bottom: 2px solid lighten($global-color,10%);
+                p {
+                    width: 70%;
+                    float: left;
+                }
+                i,input,button {
+                    float: right;
+                    margin-right: 30px;
+                    margin-top: -10px;
+                    font-size: 30px;
+                    cursor: pointer;
+                }
+
+
+                input {
+
+
+                    font-size: initial;
+                    
+                    margin-top: -8px;
+                    padding: 5px;
+                    border-radius: 12px;
+
+                    border: none;
+                    background-color: lighten($global-color, 10%);
+                    color: white;
+                }
+                
+            }
+
+            li:first-of-type {
+                margin-top: 12px;
+            }
+        }
+    }
+}
+
+.volume-buttons {
+    button {
+        @extend %buttons;
+    }
+}
