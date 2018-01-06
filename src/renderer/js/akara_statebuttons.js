@@ -2,9 +2,9 @@
 
 ( ({ ipcRenderer: ipc }) => {
 
-    const akaraMin = document.querySelector(".akara-min");
-    const akaraMax = document.querySelector(".akara-max");
-    const akaraClose = document.querySelector(".akara-close");
+    const akaraMin = document.querySelector(".window-min");
+    const akaraMax = document.querySelector(".window-max");
+    const akaraClose = document.querySelector(".window-close");
 
 
 
