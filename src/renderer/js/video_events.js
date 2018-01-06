@@ -181,7 +181,13 @@
     ipc.on("enter-video-fullscreen", _enterfullscreen);
     ipc.on("leave-video-fullscreen", _leavefullscreen);
     ipc.on("video-search", search);
-    //ipc.on("media-info", showMediaInfoWindow);
+    
+    ipc.on("media-info", showMediaInfoWindow);
+    
+    ipc.on("akara::video::currentplaying", evt => {
+        evt.sender.send("akara::video::currentplaying:src", video.src);
+    });
+    
     ipc.on("akara::podcast:play",
            (evt,path,category) => addMediaCb(path,category));
 
