@@ -42,6 +42,7 @@ const env = require("dotenv").load();
 const Twitter = require("twitter");
 const bBird = require("bluebird");
 const _OS = require("opensubtitles-api");
+const jsmediatags = require("jsmediatags");
 const url = require("url");
 const childProcess = require("child_process");
 
@@ -146,7 +147,6 @@ module.exports.removeClass = removeClass;
 
 const setCurrentPlaying = target => {
 
-    const jsmediatags = require("jsmediatags");
 
     /**
      *
@@ -647,24 +647,81 @@ module.exports.readSubtitleFile = path => new Promise((resolve,reject) => {
     });
 });
 
-module.exports.getMetaData = async () => {
+module.exports.getMetaData = async (sourceFile) => {
+    
+    // const fluentFfmpeg = require("fluent-ffmpeg");
 
-    const url = decodeURIComponent(
-        localStorage.getItem("currplaying")
-    ).replace("file://","");
+    // let ffprobeLocation;
+    
+    // if ( os.platform() !== "windows" )
+    //     ffprobeLocation = `ffprobe-${os.platform()}-${os.arch().replace("x","")}`;
+    // else
+    //     ffprobeLocation = `ffprobe-${os.platform()}-${os.arch().replace("x","")}.exe`;
 
-    const metadata = new ffmpeg(url);
+    // ffprobeLocation = path.join(FFMPEG_LOCATION,ffprobeLocation);
+    
+    // fluentFfmpeg.setFfprobePath(ffprobeLocation);
 
-    let result;
 
-    try {
-        ({ metadata: result }= await metadata);
-        localStorage.removeItem("currplaying");
-    } catch(ex) {
-        console.log(ex);
-        result = ex;
-    }
-    return result;
+    // const ffmetadata = require("ffmetadata");
+
+    // ffmetadata.read(sourceFile, (err,data) => {
+    //     console.log("ffmetadata");
+    //     if ( err )
+    //         return console.log(err);
+    //     console.log(data);
+    // });
+    
+    // fluentFfmpeg.ffprobe(sourceFile, (err,metadata) => {
+    //     console.log("fluent");
+    //     if ( err )
+    //         return console.log(err);
+    //     return console.log(metadata);
+    // });
+
+    
+    // const mediaTagReader = new jsmediatags.Reader(sourceFile);
+    
+    
+    // mediaTagReader.setTagsToRead()
+    //     .read({
+    //         onSuccess(tag) {
+    //             console.log(tag);
+    //         },
+    //         onError(error) {
+    //             console.log(error);
+    //         }
+    //     });
+
+
+    const ffmpeg = require("ffmpeg");
+
+    ffmpeg(sourceFile, (err,media) => {
+        if ( err )
+            return console.log(err);
+        return console.log(media.metadata);
+    });
+
+    
+    
+
+   
+    // const url = decodeURIComponent(
+    //     localStorage.getItem("currplaying")
+    // ).replace("file://","");
+
+    // const metadata = new ffmpeg(url);
+
+    // let result;
+
+    // try {
+    //     ({ metadata: result }= await metadata);
+    //     localStorage.removeItem("currplaying");
+    // } catch(ex) {
+    //     console.log(ex);
+    //     result = ex;
+    // }
+    // return result;
 };
 
 const makeDynamic = (el,i) => {
