@@ -4,6 +4,8 @@
 
     const mime = require("mime");
 
+    const url = require("url");
+
     const {
         video
     } = require("../js/video_control.js");
@@ -184,8 +186,27 @@
     
     ipc.on("media-info", showMediaInfoWindow);
     
-    ipc.on("akara::video::currentplaying", evt => {
-        evt.sender.send("akara::video::currentplaying:src", video.src);
+    ipc.on("akara::video::currentplaying", (evt,winid) => {
+
+        ipc.sendTo(winid, "akara::video::currentplaying:src", video.src);
+        
+        // const jsmediaTags = require("jsmediatags");
+        
+        // const mediaTagReader = new jsmediaTags.Reader(
+        //     decodeURIComponent(url.parse(video.src).path)
+        // );
+
+        // mediaTagReader.setTagsToRead()
+        //     .read({
+        //         onSuccess({ tags }) {
+        //             console.log(tags);
+        //             ipc.sendTo(winid, "akara::video::currentplaying:src", tags);
+        //         },
+        //         onError(error) {
+        //             ipc.sendTo(winid, "akara::video::currentplaying:src", error);
+        //         }
+        //     });
+        
     });
     
     ipc.on("akara::podcast:play",
