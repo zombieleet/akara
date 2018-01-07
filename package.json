@@ -10,14 +10,7 @@
         "sass": "gulp sass",
         "watch": "gulp",
         "postinstall": "npm rebuild && electron-rebuild -w mmmagic",
-        "ffmpeg:linux-64": "node download-ffmpeg.js linux-64",
-        "ffmpeg:linux-32": "node download-ffmpeg.js linux-32",
-        "ffmpeg:linux-armhf": "node download-ffmpeg.js linux-armhf",
-        "ffmpeg:linux-armel": "node download-ffmpeg.js linux-armel",
-        "ffmpeg:osx": "node download-ffmpeg.js osx",
-        "ffmpeg:win-32": "node download-ffmpeg.js win-32",
-        "ffmpeg:win-64": "node download-ffmpeg.js win-64",
-        "ffmpeg:download": "node download-ffmpeg.js"
+        "ffmpeg::download": "node download-ffmpeg.js"
     },
     "dependencies": {
         "babel-polyfill": "^6.26.0",
@@ -26,8 +19,10 @@
         "datauri": "^1.0.5",
         "dotenv": "^4.0.0",
         "electron": "^1.7.9",
+        "extract-zip": "^1.6.6",
         "facebook-api-video-upload": "^1.2.2",
         "ffmpeg": "0.0.4",
+        "fluent-ffmpeg": "^2.1.2",
         "google-auth-library": "^0.11.0",
         "googleapis": "^22.2.0",
         "guesslanguage": "^0.2.0",
