@@ -2,36 +2,54 @@ const ffbinaries = require("ffbinaries");
 
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
+const assert = require("assert");
+const wait = require("wait.for-es6");
+
+var extractZip = require('extract-zip');
 
 const DESTINATION = `${__dirname}/node_modules/.bin/`;
 
+const binaries = [ "ffmpeg", "ffprobe" ];
+
+const args = process.argv.slice(2);
+
 const platforms = [ "linux-64", "linux-32", "linux-armhf", "linux-armel", "osx", "win-32", "win-64" ];
 
-function downloadBin() {
+function * downloadBin() {
 
-    platforms.forEach( plat => {
+    const cache_dir = path.join(os.homedir(), ".ffbinaries-cache");
+
+
+    for ( let platform of platforms ) {
         
-        ffbinaries.downloadFiles("ffmpeg",{ platform: plat, quiet: false, destination: DESTINATION }, (err,data) => {
+        for ( let binary of binaries ) {
             
-            console.log("Downloaded %s for %s " , JSON.stringify(data), plat);
+            let data = yield wait.for(ffbinaries.downloadFiles, binary, { platform , quiet: false, destination: DESTINATION });
+
+            console.log(data);
             
-            let _path = path.join(DESTINATION,"ffmpeg") ;
+            let ffpath = path.join(DESTINATION, binary);
             
-            if ( ! fs.existsSync(_path) )
-                _path = path.join(DESTINATION,"ffmpeg.exe");
-            
-            fs.rename(
-                _path,
-                _path.endsWith(".exe")
-                    ? path.join(DESTINATION,`ffmpeg-${plat}.exe`)
-                    : path.join(DESTINATION,`ffmpeg-${plat}`) 
-                    ,
-                err => {
-                    console.log( err ? err : "renamed");
+            if ( fs.existsSync(ffpath) ) {
+                fs.rename(ffpath, path.join(DESTINATION, `${binary}-${platform}`) , err => {
+                    console.log( err ? err : "renamed succesfully");
                 });
-        }); 
-    });
+                continue;
+            }
+            
+            ffpath = path.join(DESTINATION, `${binary}.exe`);
+            
+            if ( fs.existsSync(ffpath) ) {
+                fs.rename(ffpath, path.join(DESTINATION, `${binary}-${platform}.exe`) , err => {
+                    console.log( err ? err : "renamed succesfully");
+                });
+                continue ;
+            }
+            
+        };
+    }
     
 }
 
-downloadBin();
+wait.launchFiber(downloadBin);
