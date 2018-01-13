@@ -647,81 +647,17 @@ module.exports.readSubtitleFile = path => new Promise((resolve,reject) => {
     });
 });
 
-module.exports.getMetaData = async (sourceFile) => {
+module.exports.getMetaData = (sourceFile) => {
     
-    // const fluentFfmpeg = require("fluent-ffmpeg");
-
-    // let ffprobeLocation;
-    
-    // if ( os.platform() !== "windows" )
-    //     ffprobeLocation = `ffprobe-${os.platform()}-${os.arch().replace("x","")}`;
-    // else
-    //     ffprobeLocation = `ffprobe-${os.platform()}-${os.arch().replace("x","")}.exe`;
-
-    // ffprobeLocation = path.join(FFMPEG_LOCATION,ffprobeLocation);
-    
-    // fluentFfmpeg.setFfprobePath(ffprobeLocation);
-
-
-    // const ffmetadata = require("ffmetadata");
-
-    // ffmetadata.read(sourceFile, (err,data) => {
-    //     console.log("ffmetadata");
-    //     if ( err )
-    //         return console.log(err);
-    //     console.log(data);
-    // });
-    
-    // fluentFfmpeg.ffprobe(sourceFile, (err,metadata) => {
-    //     console.log("fluent");
-    //     if ( err )
-    //         return console.log(err);
-    //     return console.log(metadata);
-    // });
-
-    
-    // const mediaTagReader = new jsmediatags.Reader(sourceFile);
-    
-    
-    // mediaTagReader.setTagsToRead()
-    //     .read({
-    //         onSuccess(tag) {
-    //             console.log(tag);
-    //         },
-    //         onError(error) {
-    //             console.log(error);
-    //         }
-    //     });
-
-
     const ffmpeg = require("ffmpeg");
-
-    ffmpeg(sourceFile, (err,media) => {
-        if ( err )
-            return console.log(err);
-        return console.log(media.metadata);
+    
+    return new Promise((resolve,reject) => {
+        ffmpeg(sourceFile, (err,media) => {
+            if ( err )
+                return reject(err);
+            return resolve(media.metadata);
+        });
     });
-
-    
-    
-
-   
-    // const url = decodeURIComponent(
-    //     localStorage.getItem("currplaying")
-    // ).replace("file://","");
-
-    // const metadata = new ffmpeg(url);
-
-    // let result;
-
-    // try {
-    //     ({ metadata: result }= await metadata);
-    //     localStorage.removeItem("currplaying");
-    // } catch(ex) {
-    //     console.log(ex);
-    //     result = ex;
-    // }
-    // return result;
 };
 
 const makeDynamic = (el,i) => {
@@ -1370,8 +1306,23 @@ module.exports.uploadYoutubeVideo = auth => {
 };
 
 module.exports.handleWindowButtons = ( { close, min, max } ) => {
+
+
+    const ismax = () => {
+        max.classList.remove("fa-window-maximize");
+        max.classList.add("fa-window-restore");
+    };
+
+    const isnotmin = () => {
+        max.classList.remove("fa-window-restore");
+        max.classList.add("fa-window-maximize");
+    };
     
-    close.addEventListener("click", () => getCurrentWindow().close());
+    close.addEventListener("click", () => {
+        ipc.removeListener("akara::newwindow:ismax", ismax);
+        ipc.removeListener("akara::newwindow:isnotmin", isnotmin);
+        getCurrentWindow().close();
+    });
     
     min.addEventListener("click", () => {
         ipc.send("akara::newwindow:min");
@@ -1381,14 +1332,7 @@ module.exports.handleWindowButtons = ( { close, min, max } ) => {
         ipc.send("akara::newwindow:max");
     });
 
-    ipc.on("akara::newwindow:ismax", () => {
-        max.classList.remove("fa-window-maximize");
-        max.classList.add("fa-window-restore");
-    });
+    ipc.on("akara::newwindow:ismax", ismax);
 
-    ipc.on("akara::newwindow:isnotmin", () => {
-        max.classList.remove("fa-window-restore");
-        max.classList.add("fa-window-maximize");
-    });
+    ipc.on("akara::newwindow:isnotmin", isnotmin);
 };
-
