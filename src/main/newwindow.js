@@ -24,20 +24,21 @@ const createNewWindow = (obj,html) => {
     });
 
     let newWindow = new BrowserWindow(obj);
-    
+
     let urLocation;
-    
+
     if ( url.parse(html).protocol )
         urLocation = html;
     else
         urLocation = `file://${APP_PATH}/app/renderer/html/${html}`;
-    
+
     newWindow.loadURL(urLocation);
-    
-    newWindow.on("closed", () => {
-        newWindow = undefined;
+
+    newWindow.once("closed", () => {
+        newWindow = null;
     });
-    newWindow.on("ready-to-show", () => {
+
+    newWindow.once("ready-to-show", () => {
         newWindow.show();
     });
 
@@ -47,7 +48,7 @@ const createNewWindow = (obj,html) => {
     //webContents.openDevTools();
 
     ipc.on("akara::newwindow:max", event => {
-        newWindow = BrowserWindow.fromWebContents(event.sender);
+        //newWindow = BrowserWindow.fromWebContents(event.sender);
         if ( newWindow.isMaximized() ) {
             newWindow.unmaximize();
             event.sender.send("akara::newwindow:isnotmin");
