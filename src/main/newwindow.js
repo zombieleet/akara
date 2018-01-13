@@ -48,7 +48,7 @@ const createNewWindow = (obj,html) => {
     //webContents.openDevTools();
 
     ipc.on("akara::newwindow:max", event => {
-        //newWindow = BrowserWindow.fromWebContents(event.sender);
+        newWindow = BrowserWindow.fromWebContents(event.sender);
         if ( newWindow.isMaximized() ) {
             newWindow.unmaximize();
             event.sender.send("akara::newwindow:isnotmin");
