@@ -5,3 +5,58 @@
 .media-header {
     @extend %window-headers;
 }
+
+.media {
+
+    .media-info {
+
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        height: 80%;
+
+        margin-top: 30px;
+        margin-left: 10px;
+
+        font-size: 20px;
+
+        .media-info-submeta {
+            clear: left;
+            padding: 15px;
+            border-bottom: 2px solid darken($global-color,20%);
+            .media-info-type {
+                float: left;
+            }
+            .media-info-input {
+                margin-top: -3px;
+                margin-left: 10px;
+                width: 250px;
+                //font-size: 20px;
+                height: 20px;
+            }
+        }
+    }
+}
+
+
+.media-spinner {
+
+    margin-top: -500px;
+
+    height: 100%;
+    text-align: center;
+
+    p {
+        font-size: 1.5em;
+        margin-top: 12px;
+    }
+}
+
+.toggler {
+    margin-left: 5px;
+}
+
+
+.media-info-mini,.media-info-max {
+    margin-left: 50px;
+}
