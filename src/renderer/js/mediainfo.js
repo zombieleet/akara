@@ -248,12 +248,61 @@
         spin.remove();
 
         if ( Error[Symbol.hasInstance](result) ) {
-            return console.log(result);
+            console.log(result);
+            return ;
         }
+
+        processMediaTags({
+            url: decodeURIComponent(url.parse(data).path),
+            //url: decodeURIComponent(url.parse(localStorage.getItem("mediatest")).path),
+            onSuccess({ tags }) {
+
+                if ( ! tags.picture )
+                    return ;
+
+                const typedArrayBuf = new Uint8Array(tags.picture.data);
+
+                let base64String = "";
+
+                for ( let _typedArray of typedArrayBuf ) {
+                    base64String += String.fromCodePoint(_typedArray);
+                }
+
+                const fs = require("fs");
+
+                fs.writeFileSync("/root/ttt.jpg", base64String);
+                fs.writeFileSync("/root/inspect.txt", window.btoa(base64String));
+
+                const albumArtContainer = document.createElement("div");
+                const albumArt = new Image();
+
+                albumArtContainer.setAttribute("class", "media-info-album_art_container");
+                albumArt.setAttribute("class", "media-info-album_art");
+
+                albumArt.src = `data:${tags.picture.format};base64,${window.btoa(base64String)}`;
+                albumArt.draggable = false;
+
+
+                albumArt.addEventListener("contextmenu", albumArtEventHandler);
+                albumArt.addEventListener("click", albumArtEventHandler);
+
+
+                albumArtContainer.appendChild(albumArt);
+
+                mediaInfo.insertBefore(albumArtContainer,mediaInfo.children[0]);
+
+                return ;
+
+            },
+            onError(error) {
+                return ;
+            }
+        });
+
 
         processMetadata(result);
 
-        return true;
+        return ;
     });
 
 
