@@ -42,7 +42,7 @@ const env = require("dotenv").load();
 const Twitter = require("twitter");
 const bBird = require("bluebird");
 const _OS = require("opensubtitles-api");
-const jsmediatags = require("jsmediatags");
+
 const url = require("url");
 const childProcess = require("child_process");
 
@@ -171,30 +171,27 @@ const setCurrentPlaying = target => {
 
     updatePlaylistName(target);
 
-    console.log(target,decodeURIComponent(url.parse(target.getAttribute("data-full-path")).path));
-
-
-    const mediaTagReader = new jsmediatags.Reader(
-        decodeURIComponent(url.parse(target.getAttribute("data-full-path")).path)
-    );
 
     const mediaTitle = document.querySelector(".window-title");
-    
-    mediaTagReader.setTagsToRead()
-        .read({
-            onSuccess({ tags }) {
 
-                if ( ! tags.title ) {
-                    mediaTitle.textContent = target.querySelector("span").textContent;
-                    return ;
-                }
+    processMediaTags({
 
-                mediaTitle.textContent = tags.title;
-            },
-            onError(error) {
+        url: decodeURIComponent(url.parse(target.getAttribute("data-full-path")).path),
+
+        onSuccess({ tags }) {
+
+            if ( ! tags.title ) {
                 mediaTitle.textContent = target.querySelector("span").textContent;
+                return ;
             }
-        });
+
+            mediaTitle.textContent = tags.title;
+        },
+        onError() {
+            mediaTitle.textContent = target.querySelector("span").textContent;
+        }
+
+    });
 
 
     video.setAttribute("data-id", target.getAttribute("id"));
@@ -648,9 +645,9 @@ module.exports.readSubtitleFile = path => new Promise((resolve,reject) => {
 });
 
 module.exports.getMetaData = (sourceFile) => {
-    
+
     const ffmpeg = require("ffmpeg");
-    
+
     return new Promise((resolve,reject) => {
         ffmpeg(sourceFile, (err,media) => {
             if ( err )
@@ -1317,17 +1314,17 @@ module.exports.handleWindowButtons = ( { close, min, max } ) => {
         max.classList.remove("fa-window-restore");
         max.classList.add("fa-window-maximize");
     };
-    
+
     close.addEventListener("click", () => {
         ipc.removeListener("akara::newwindow:ismax", ismax);
         ipc.removeListener("akara::newwindow:isnotmin", isnotmin);
         getCurrentWindow().close();
     });
-    
+
     min.addEventListener("click", () => {
         ipc.send("akara::newwindow:min");
     });
-    
+
     max.addEventListener("click", () => {
         ipc.send("akara::newwindow:max");
     });
@@ -1335,4 +1332,65 @@ module.exports.handleWindowButtons = ( { close, min, max } ) => {
     ipc.on("akara::newwindow:ismax", ismax);
 
     ipc.on("akara::newwindow:isnotmin", isnotmin);
+};
+
+
+const processMediaTags = (options) => {
+
+    const jsmediatags = require("jsmediatags");
+
+    const { onSuccess, onError, url } = options;
+
+    console.log(options);
+
+    const mediaTagReader = new jsmediatags.Reader(url);
+
+    mediaTagReader.setTagsToRead().read({
+        onSuccess,
+        onError
+    });
+
+};
+
+module.exports.processMediaTags = processMediaTags;
+
+
+module.exports.downloadAlbumArt = art => {
+
+    dialog.showSaveDialog({
+
+        defaultPath: app.getPath("downloads"),
+        title: "where to save albumart?"
+
+    }, location => {
+
+        if ( ! location ) {
+            dialog.showErrorBox("cannot get location","specify location again");
+            return ;
+        }
+
+        const date = new Date();
+
+        //const date_time = `${date.toLocaleDateString()}_${date.toLocaleTimeString()}`;
+
+        art = art.replace(/.*?,/,"");
+
+        fs.writeFile(
+            location,
+            window.atob(art),
+            (err,buf) => {
+                if ( err ) {
+                    console.log(err);
+                    dialog.showErrorBox("album not download", "Unable to download album art");
+                    return ;
+                }
+                sendNotification("Download Complete",{
+                    body: "Album Art have been saved to " + location
+                });
+                return ;
+            });
+
+        return ;
+
+    });
 };
