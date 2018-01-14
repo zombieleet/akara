@@ -6,7 +6,10 @@
         ipcRenderer: ipc,
         remote: {
             dialog,
-            getCurrentWindow
+            getCurrentWindow,
+            Menu,
+            MenuItem,
+            nativeImage
         }
     } = require("electron");
 
@@ -14,7 +17,9 @@
 
     const {
         handleWindowButtons,
-        getMetaData
+        getMetaData,
+        processMediaTags,
+        downloadAlbumArt
     } = require("../js/util.js");
 
     const mediaMin = document.querySelector(".window-min");
