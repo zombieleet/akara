@@ -10,6 +10,7 @@
     // TODO: move makeFullScreen to handle_dropdown_command
     const {
         addMediaFile,
+        addMediaFolder,
         search,
         _play,
         _pause,
@@ -159,7 +160,7 @@
 
     /**
      *
-     * shortcut key to handles
+     * shortcut key to handle
      *   opening of media file
      *
      **/
@@ -167,6 +168,19 @@
         key: "f",
         modifier: ["altKey"],
         handler: addMediaFile
+    });
+
+    
+    /**
+     *
+     * shortcut key to handle
+     *   opening of folder
+     *
+     **/
+    mainWindowKey.register({
+        key: "f",
+        modifier: [ "altKey", "shiftKey" ],
+        handler: addMediaFolder
     });
 
 
@@ -220,7 +234,7 @@
         modifier: [ "ctrlKey" ],
         handler: search
     });
-
+    
     mainWindowKey.register({
         key: "ArrowUp",
         modifier: [ "ctrlKey" ],
