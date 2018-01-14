@@ -205,15 +205,40 @@
 
     };
 
-    ipc.sendTo(1, "akara::video::currentplaying", getCurrentWindow().webContents.id);
+    const albumArtEventHandler = () => {
 
-    ipc.on("akara::video::currentplaying:src", async ( evt, data ) => {
+        const imageMenu = new Menu();
+
+        imageMenu.clear();
+
+        imageMenu.append(new MenuItem({
+            label: "Download Art",
+            accelerator: "Ctrl + D",
+            click: () => {
+                const img = document.querySelector(".media-info-album_art");
+                downloadAlbumArt(img.src);
+            }
+        }));
+
+        imageMenu.popup({ async: true });
+    };
+
+
+    ipc.sendTo(1, "akara::video::currentplaying",
+               getCurrentWindow().webContents.id,
+               localStorage.getItem("akara::mediainfo:playlist_section")
+               ? true
+               : false
+              );
+
+    ipc.once("akara::video::currentplaying:src", async ( evt, data ) => {
 
         let result;
 
         let spin = spinner();
 
         try {
+
             result = await getMetaData(decodeURIComponent(url.parse(data).path));
             //result = await getMetaData(decodeURIComponent(url.parse(localStorage.getItem("mediatest")).path));
         } catch(ex) {
