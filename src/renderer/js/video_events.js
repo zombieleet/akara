@@ -186,27 +186,15 @@
     
     ipc.on("media-info", showMediaInfoWindow);
     
-    ipc.on("akara::video::currentplaying", (evt,winid) => {
-
+    ipc.on("akara::video::currentplaying", (evt,winid,fromPlist) => {
+        
+        if ( fromPlist ) {
+            ipc.sendTo(winid, "akara::video::currentplaying:src", localStorage.getItem("akara::mediainfo:playlist_section"));
+            localStorage.removeItem("akara::mediainfo:playlist_section");
+            return ;
+        }
+        
         ipc.sendTo(winid, "akara::video::currentplaying:src", video.src);
-        
-        // const jsmediaTags = require("jsmediatags");
-        
-        // const mediaTagReader = new jsmediaTags.Reader(
-        //     decodeURIComponent(url.parse(video.src).path)
-        // );
-
-        // mediaTagReader.setTagsToRead()
-        //     .read({
-        //         onSuccess({ tags }) {
-        //             console.log(tags);
-        //             ipc.sendTo(winid, "akara::video::currentplaying:src", tags);
-        //         },
-        //         onError(error) {
-        //             ipc.sendTo(winid, "akara::video::currentplaying:src", error);
-        //         }
-        //     });
-        
     });
     
     ipc.on("akara::podcast:play",
