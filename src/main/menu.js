@@ -95,17 +95,12 @@ const videoListMenu = [
         }
     },
     {
-        label: "Repeat All",
-        accelerator: "CtrlOrCommand+Alt+r",
-        click(menuItem, { webContents }, event) {
-        }
-    },
-    {
         type: "separator"
     },
     {
-        label: "Shuffle",
+        label: "Media Info",
         click(menuItem, { webContents }, event) {
+            webContents.send("akara::mediainfo");
         }
     },
     {

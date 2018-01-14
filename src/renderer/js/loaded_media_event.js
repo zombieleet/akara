@@ -40,7 +40,11 @@
         controls,
         video
     } = require("../js/video_control.js");
-
+    
+    let {
+        showMediaInfoWindow
+    } = require("../js/handle_dropdown_commands.js")();
+    
     const akara_emit = require("../js/emitter.js");
 
 
@@ -195,8 +199,15 @@
         addPlaylistWindow(obj,"addplaylist.html");
 
     });
+
+    ipc.on("akara::mediainfo", () => {
+        localStorage.setItem("akara::mediainfo:playlist_section", currentTarget.getAttribute("data-full-path"));
+        showMediaInfoWindow();
+    });
+    
     akara_emit.on("video::go-to-next", () => prevNext("next"));
     akara_emit.on("video::go-to-previous", () => prevNext("prev"));
 
+    
 
 })(document.querySelector(".akara-loaded"));
