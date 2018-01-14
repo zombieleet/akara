@@ -49,7 +49,8 @@ const {
     sendNotification,
     removeClass,
     removeType,
-    setCurrentPlaying
+    setCurrentPlaying,
+    processMediaTags
 } = require("../js/util.js");
 
 const fs = require("fs");
@@ -461,7 +462,7 @@ module.exports.videoErrorEvent = async (evt) => {
     const playlistItem = akaraLoaded.querySelector(`#${video.getAttribute("data-id")}`);
 
     let _src = video.getAttribute("src");
-    
+
     disableControls();
 
 
@@ -786,7 +787,7 @@ const handleLoadSubtitle = async (filePath,cb) => {
     });
 
     video.appendChild(track);
-    
+
     const { submenu } = videoContextMenu[16].submenu[1];
 
     submenu.push({
@@ -828,40 +829,36 @@ const loadAlbumArt = async () => {
     if ( ! posterSettings.album_art )
         return false;
 
+    processMediaTags({
 
-    const jsmediatags = require("jsmediatags");
+        url: decodeURIComponent(url.parse(video.src).path),
 
-    const mediaTagReader = new jsmediatags.Reader(
-        decodeURIComponent(url.parse(video.src).path)
-    );
+        onSuccess({ tags }) {
 
-    mediaTagReader.setTagsToRead(["picture"])
-        .read({
-            onSuccess({ tags }) {
-
-                if ( ! tags.picture ) {
-                    akara_emit.emit("akara::audio:albumart", undefined);
-                    return ;
-                }
-                
-                const typedArrayBuf = new Uint8Array(tags.picture.data);
-
-                let base64String ="";
-
-                for ( let _typedArray of typedArrayBuf ) {
-                    base64String += String.fromCharCode(_typedArray);
-                }
-
-                akara_emit.emit(
-                    "akara::audio:albumart",
-                    `data:${tags.picture.format};base64,${window.btoa(base64String)}`
-                );
-
-            },
-            onError(error) {
+            if ( ! tags.picture ) {
                 akara_emit.emit("akara::audio:albumart", undefined);
+                return ;
             }
-        });
+
+            const typedArrayBuf = new Uint8Array(tags.picture.data);
+
+            let base64String ="";
+
+            for ( let _typedArray of typedArrayBuf ) {
+                base64String += String.fromCharCode(_typedArray);
+            }
+
+            akara_emit.emit(
+                "akara::audio:albumart",
+                `data:${tags.picture.format};base64,${window.btoa(base64String)}`
+            );
+
+        },
+        onError(error) {
+            akara_emit.emit("akara::audio:albumart", undefined);
+        }
+    });
+
 };
 
 
@@ -1334,10 +1331,10 @@ module.exports.videoResetFilter = (evt,type) => {
 
 
 module.exports.mediaProgress = evt => {
-    
+
     // if ( video.buffered.length === 0 )
     //     return ;
-    
+
     const networkState = document.querySelector(".akara-media-network-state");
 
     console.log(video.readyState);
@@ -1353,14 +1350,14 @@ module.exports.mediaProgress = evt => {
         networkState.style.visibility = "visible";
         break;
     }
-    
+
 
     const bufferedLength = document.querySelector(".akara-time-buffered");
     const pNode = bufferedLength.parentNode;
-    
-    
+
+
     for ( let i = 0 ; i < video.buffered.length ; i++ ) {
-        
+
         const elapsed = Math.round(video.buffered.end(i)).toFixed(1);
         const timeIndicationWidth = ( elapsed * pNode.clientWidth ) /
               ( controls.duration().toFixed(1));
@@ -1419,4 +1416,3 @@ if ( require.main !== module ) {
     });
 
 }
-
