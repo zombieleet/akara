@@ -366,8 +366,11 @@ const loadplaylist = () => {
 };
 
 const settings = () => createNewWindow({
-    title: "Settings"
-}, "settings/settings.html");
+    title: "Settings",
+    minimizable: true,
+    maximizable: true,
+    resizable: true
+}, "setting.html");
 
 const HandleDroped = () => ({
     addMediaFile,
