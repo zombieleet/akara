@@ -116,3 +116,7 @@ $akara-load-width: 30% ;//- $akara-media-cover-width;
     font-size: 30px;
     margin-top: 25px;
 }
+
+[data-drag="dragenter"] {
+    box-shadow: 0 0 5px -1px $global-color;
+}
