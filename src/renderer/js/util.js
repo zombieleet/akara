@@ -71,12 +71,12 @@ const {
 
 const datadir = app.getPath("userData");
 
-const createEl = ({path: abs_path, _path: rel_path}) => {
+const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
 
     let lengthOfSib = document.querySelector(".akara-loaded").childElementCount;
 
-    const child = document.createElement("li");
-    const childchild = document.createElement("span");
+    const playlistItem = document.createElement("li");
+    const playlistItemContent = document.createElement("span");
 
     // nonsence
     //abs_path = URL.createObjectURL( new File([ dirname(abs_path) ] , basename(abs_path)) );
@@ -85,22 +85,104 @@ const createEl = ({path: abs_path, _path: rel_path}) => {
 
     abs_path = abs_path.replace(new RegExp(`^${protocol}//`),"");
 
-    child.setAttribute("data-full-path", url.format({
+    playlistItem.setAttribute("data-full-path", url.format({
         protocol: protocol ? protocol.replace(":","") : "file",
         slashes: "/",
         pathname: abs_path
     }));
 
-    child.setAttribute("id", `_${lengthOfSib++}`);
+    playlistItem.setAttribute("id", `_${lengthOfSib++}`);
 
-    child.classList.add("playlist");
-    childchild.textContent = rel_path;
-    child.appendChild(childchild);
+    playlistItem.draggable = true;
 
-    return child;
+
+    playlistItem.addEventListener("dragstart", (evt) => {
+        window.__draggingElement = evt.target;
+    });
+
+
+    playlistItem.addEventListener("drag", evt => {
+        console.log(" offsetY ", evt.offsetY);
+    });
+
+    playlistItem.addEventListener("dragenter", evt => {
+        
+        let target = evt.target;
+
+        if ( HTMLSpanElement[Symbol.hasInstance](target) ) {
+            target = target.parentNode;
+        }
+
+        target.setAttribute("data-drag", "dragenter");
+        
+        const playlistItemParent = target.parentNode;
+        const _tmpId = window.__draggingElement.id;
+        
+        window.__draggingElement.id = target.id;
+        target.id = _tmpId;
+        
+        playlistItemParent.insertBefore(target, window.__draggingElement);
+
+        const videoId = video.getAttribute("data-id");
+
+        if ( _tmpId === videoId ) {
+            video.setAttribute("data-id", window.__draggingElement.id);
+            return ;
+        }
+
+        if ( window.__draggingElement.id === videoId ) {
+            video.setAttribute("data-id", target.id);
+            return;
+        }
+
+        return ;
+        
+    });
+
+    playlistItem.addEventListener("dragleave", evt => {
+        let target = evt.target;
+
+        if ( HTMLSpanElement[Symbol.hasInstance](target) ) {
+            target = target.parentNode;
+        }
+
+        target.removeAttribute("data-drag", "dragenter");
+    });
+    
+    playlistItem.addEventListener("dragover", evt => {
+
+        let target = evt.target;
+
+        if ( HTMLSpanElement[Symbol.hasInstance](target) ) {
+            target = target.parentNode;
+        }
+
+        let playlistItemParent = playlistItem.parentNode;
+
+        //console.log(__draggingElement);
+        
+        
+        // if ( ! __draggingElement )
+        //     return ;
+        
+
+        
+        
+        //playlistItemParent.insertBefore(__draggingElement,target);
+        
+    });
+
+
+    playlistItem.classList.add("playlist");
+
+    playlistItemContent.textContent = rel_path;
+
+    playlistItem.appendChild(playlistItemContent);
+
+    return playlistItem;
 };
 
-module.exports.createEl = createEl;
+module.exports.createPlaylistItem = createPlaylistItem;
 
 const removeType = (pNode,...types) => {
     Array.from(pNode.children, el => {
