@@ -3,11 +3,21 @@ extends ./__layout.pug
 block title
   title Podcast
   
+block link
+  link(rel="stylesheet", href="../css/main.css")
+  link(rel="stylesheet", href="../libs/font-awesome.min.css")
+  
 block body
+
   body(class="podcast-body")
     header(class="podcast-header")
-      span Podcast
-      span(class="fa fa-window-close podcast-close")
+      div(class="window-title") Podcast
+      div(class="window-state-buttons")
+        ul(class="window-buttons")
+          li(class="fa fa-window-minimize window-min")
+          li(class="fa fa-window-maximize window-max")
+          li(class="fa fa-window-close window-close")
+      
     section(class="podcast" data-view="grid")
         div(class="podcast-view-list")
           span(class="podcasthome")
