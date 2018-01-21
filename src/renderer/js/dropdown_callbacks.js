@@ -15,7 +15,7 @@ const path = require("path");
 
 const {
     setupPlaying,
-    createEl,
+    createPlaylistItem,
     playOnDrop,
     importMpegGurl,
     exportMpegGurl,
@@ -23,7 +23,7 @@ const {
     exportXspf
 } = require("../js/util.js");
 
-console.log(createEl);
+console.log(createPlaylistItem);
 
 const {
     remote: {
@@ -100,7 +100,7 @@ const addMediaCb = (paths,forPlaylist) => {
 
         const decodedPath = decodeURIComponent(path);
         const _path = basename(decodedPath);
-        const createdElement = createEl({path,_path});
+        const createdElement = createPlaylistItem({path,_path});
 
         createdElement.setAttribute("data-belongsto-playlist", forPlaylist ? forPlaylist.split(" ").join("|") : "general" );
 
