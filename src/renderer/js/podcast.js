@@ -3,7 +3,8 @@
     const {
         loadpodcast,
         savepodcast,
-        removepodcast
+        removepodcast,
+        handleWindowButtons
     } = require("../js/util.js");
 
     const {
@@ -28,7 +29,10 @@
 
     const podcastKey = new(require("../js/keyevents.js"));
     const podcastFuncs = document.querySelector("section");
-    const close = document.querySelector(".podcast-close");
+
+    const min = document.querySelector(".window-min");
+    const max = document.querySelector(".window-max");
+    const close = document.querySelector(".window-close");
 
 
 
@@ -149,11 +153,11 @@
                 const podWidg = document.querySelectorAll(".podcastload-main > li");
 
                 Array.from(podWidg, channel => {
-                    
+
                     const checked = channel.querySelector(".fa-check-circle");
-                    
+
                     if ( ! checked )
-                        return ;                    
+                        return ;
 
                     removepodcast(channel.getAttribute("data-url"));
                     channel.remove();
