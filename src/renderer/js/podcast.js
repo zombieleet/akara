@@ -115,16 +115,34 @@
 
                 let podcasts = value.split(",");
 
-                if ( ! savepodcast(podcasts) )
+                const _savepodcast = savepodcast(podcasts, (err,succ,obj) => {
 
-                    return dialog.showMessageBox(
-                        "Error while saving podccast feed",
-                        "check your podcast list for improper input"
-                    );
+                    if ( ! err && ! succ ) {
+                        console.log("processing ", obj.name, " ", obj.link);
+                        return;
+                    }
 
-                createPodcast(podcasts);
+                    if ( err && ! err.code ) {
+                        console.log(err);
+                        return ;
+                    }
 
-                return this.__removeModal();
+                    if ( err.code === "PODCAST_NO_LOAD" ) {
+                        console.log("cannot load ", err.podcastLink);
+                        return ;
+                    }
+
+                    console.log(succ);
+
+                    //createPodcast(podcasts);
+
+                    this.__removeModal();
+
+                    return ;
+
+                });
+
+
             }
         },
         __cancelPodcast: {
@@ -374,6 +392,7 @@
 
         for ( let episode of episodes ) {
             const li = document.createElement("li");
+            const span = document.createElement("span");
             const { title: podTitle } = episode;
 
             li.setAttribute("class", "podcast-audio");
@@ -382,14 +401,16 @@
             li.setAttribute("podcast-filesize", episode.enclosure.filesize);
             li.setAttribute("podcast-url", episode.enclosure.url);
 
-            li.textContent = podTitle.length > 48 ?
+            span.setAttribute("class", "podcast-title");
+
+            span.textContent = podTitle.length > 48 ?
                 podTitle.replace(
                     new RegExp(podTitle.substr(48 + 1, podTitle.length)), "..."
                 )
                 : podTitle;
 
+            li.appendChild(span);
             li.appendChild(podAudioWidget());
-
             ul.appendChild(li);
         }
         podcastParent.appendChild(ul);
@@ -522,16 +543,18 @@
 
     close.addEventListener("click", () => getCurrentWindow().close());
 
+    handleWindowButtons({ close, min, max});
+
     window.addEventListener("DOMContentLoaded", evt => {
 
         const podcasts = loadpodcast();
 
-        let podload = document.querySelector(".podcastload");
+        let podload = document.querySelector(".podcastload-main");
 
         if ( ! podcasts.length ) {
             let nopod = document.createElement("p");
             nopod.classList.add("nopoadcast");
-            nopod.innerHTML = "No podcast has been added yet";
+            nopod.innerHTML = "You don't have any podcast";
             podload.appendChild(nopod);
             return ;
         }

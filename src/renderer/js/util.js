@@ -106,7 +106,7 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
     });
 
     playlistItem.addEventListener("dragenter", evt => {
-        
+
         let target = evt.target;
 
         if ( HTMLSpanElement[Symbol.hasInstance](target) ) {
@@ -114,13 +114,13 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
         }
 
         target.setAttribute("data-drag", "dragenter");
-        
+
         const playlistItemParent = target.parentNode;
         const _tmpId = window.__draggingElement.id;
-        
+
         window.__draggingElement.id = target.id;
         target.id = _tmpId;
-        
+
         playlistItemParent.insertBefore(target, window.__draggingElement);
 
         const videoId = video.getAttribute("data-id");
@@ -136,7 +136,7 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
         }
 
         return ;
-        
+
     });
 
     playlistItem.addEventListener("dragleave", evt => {
@@ -148,7 +148,7 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
 
         target.removeAttribute("data-drag", "dragenter");
     });
-    
+
     playlistItem.addEventListener("dragover", evt => {
 
         let target = evt.target;
@@ -160,16 +160,16 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
         let playlistItemParent = playlistItem.parentNode;
 
         //console.log(__draggingElement);
-        
-        
+
+
         // if ( ! __draggingElement )
         //     return ;
-        
 
-        
-        
+
+
+
         //playlistItemParent.insertBefore(__draggingElement,target);
-        
+
     });
 
 
@@ -1047,25 +1047,90 @@ module.exports.tClient = bBird.promisifyAll(
 );
 
 
-const savepodcast = name => {
+const savepodcast = async (podcasturl,callback) => {
 
     const pod = require(podcast);
+    const http = require("http");
+    const podson = require("podson");
 
-    if ( Array.isArray(name) )
+    if ( Array.isArray(podcasturl) )
         ;
-    else if ( typeof(name) === "string" )
-        name = [ name ];
+    else if ( typeof(podcasturl) === "string" )
+        podcasturl = [ podcasturl ];
     else
-        return false;
+        return callback("first argument is not a string or an array",null);
 
-    name.forEach( feed => {
-        if ( pod.indexOf(feed) === -1 )
-            pod[pod.length] = feed;
+    let errs = [];
+    let succ = [];
+
+
+
+    akara_emit.on("akara::podcast:image", ({ description: { description } , title, language, owner, categories, image }) => {
+
+        Object.assign(pod[title],{
+            title,
+            description,
+            language,
+            owner,
+            categories,
+            image
+        });
+
+        //fs.writeFileSync(podcast, JSON.stringify(pod));
+
+        callback(null,succ);
     });
+    
 
-    fs.writeFileSync(podcast, JSON.stringify(pod));
+    for ( let pod__ of podcasturl ) {
 
-    return true;
+        let result;
+
+        try {
+            result = await podson.getPodcast(pod__);
+        } catch(ex) {
+            errs.push(pod__);
+            continue;
+        }
+
+        if ( Object.keys(pod).indexOf(pod__) === -1 ) {
+
+            succ.push(pod__);
+
+            http.get(result.image, res => {
+
+                let buff_ = "";
+
+                res.on("body", buf => {
+                    buff_ += buf;
+                    callback(null,null,{ name: result.name, link: pod__ });
+                });
+                
+                res.on("end", () => {
+                    result.image = buff_;
+                    akara_emit.emit("akara::podcast:image", result);
+                });
+
+            });
+            break;
+        }
+    }
+
+
+    for ( let errpod of errs ) {
+        const err = new(class PODCAST_ERROR extends Error {
+            constructor(code,podcastLink,message,fileName,lineNumber) {
+                super(message,fileName,lineNumber);
+                this.code = code;
+                this.podcastLink = podcastLink;
+            }
+        })("PODCAST_NO_LOAD", errpod, "cannot load podcast");
+        
+        setTimeout(() => {
+            callback(err,null);
+        },500);
+    }
+
 };
 
 module.exports.savepodcast = savepodcast;
@@ -1082,7 +1147,10 @@ module.exports.removepodcast = podtoremove => {
     if ( ! pod.includes(podtoremove) )
         return false;
 
-    pod = pod.filter( _pods => _pods !== podtoremove);
+    pod = pod.filter( _pods => {
+        console.log(_pods, podtoremove);
+        return _pods !== podtoremove;
+    });
 
     fs.writeFileSync(podcast, JSON.stringify(pod));
 
