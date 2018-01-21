@@ -3,14 +3,12 @@
 }
 
 .podcast-header {
-    @extend %new_window_headers;
+    @extend %window-headers;
 }
-
 
 .podcast {
 
     padding: 15px;
-
 
     .podcast-view-list {
         width: 40%;
@@ -65,8 +63,9 @@
         .nopoadcast {
             background: none;
             line-height: 2;
-            font-size: 13px;
-            margin-top: 50px;
+            font-size: 30px;
+            margin-top: 10px;
+            text-align: center;
         }
 
         > li {
@@ -185,10 +184,12 @@
     border-radius: 5px;
     background: $global-color;
 
+    height: 200px;
+    
     .podcast-modal-parent {
 
         width: 100%;
-
+        
         .podcast-modal-info {
             margin-bottom: 10px;
             width: 100%;
@@ -196,7 +197,7 @@
             word-break: break-word;
 
             line-height: 1.2;
-            font-size: 10px;
+            font-size: 15px;
         }
 
         .podcast-modal-addpodcastarea {
@@ -252,24 +253,52 @@
 }
 
 .podcaster-podcast {
-
+    
     padding: 5px;
     padding-bottom: 20px;
 
     > li {
-        padding: 10px;
+
+        //display: flex;
+        clear: both;
+        width: 99%;
+
+        margin-left: 8px;
+        
         background: $global-color;
         box-shadow: 0px 1px 9px 0px rgba(238, 238, 238, 0.14);
         margin-top: 5px;
         cursor: pointer;
         color: white;
 
-        font: {
-            weight: 400;
-            size: 1em;
+        padding-top: 16px;
+        padding-bottom: 30px;
+
+        .podcast-title {
+            float: left;
+            font: {
+                weight: 400;
+                size: 1em;
+            }
+            text-overflow: ellipsis;
+            margin-left: 13px;
         }
 
-        text-overflow: ellipsis;
+        .podaudio-widget {
+            
+            display: inline-flex;
+            justify-content: flex-end;
+            
+            float: right;
+            width: 50%;
+            
+            margin-right: 12px;
+            
+            i:not(:first-of-type) {
+                margin-left: 5px;
+            }
+        }
+
     }
 
     > li:last-of-type {
@@ -281,9 +310,6 @@
 .podcast-spinner {
     height: 100%;
     text-align: center;
-    i {
-        margin-top: 20%;
-    }
     p {
         font-size: 3em;
         opacity: .13;
@@ -292,16 +318,11 @@
     }
 }
 
-.podaudio-widget {
-    float: right;
-    margin-right: -5%;
-    width: 10%;
-    i:not(:first-of-type) {
-        margin-left: 5px;
-    }
-}
-
 
 .podcastload-podcaster {
     display: none;
+    height: 1000px;
+    overflow-y: auto;
+    width: 100%;
+    margin-left: -12px;
 }
