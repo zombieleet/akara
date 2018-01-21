@@ -46,7 +46,7 @@ const PODCAST = () => {
     if ( existsSync(pod) )
         return pod;
 
-    writeFileSync(pod, JSON.stringify([]));
+    writeFileSync(pod, JSON.stringify({}));
     return pod;
 };
 
