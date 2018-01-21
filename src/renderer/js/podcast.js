@@ -78,9 +78,7 @@
 
                 addpodcastAdd.textContent = "Add";
                 addpodcastCancel.textContent = "Cancel";
-                info.textContent = `Use a comma ( , ) to separate multiple podcast feed
-                                    for example free.feedburner.com/love,free.feedburner.com/hate
-                                   `;
+                info.textContent = "input podcast url, separate each urls with comma";
 
 
                 podcastBtns.appendChild(addpodcastAdd);
