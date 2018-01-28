@@ -110,8 +110,10 @@
 
                 const { value }  = this.addpodcastArea;
 
-                if ( value.length === 0 )
-                    return console.error("shit ass adding");
+                if ( value.length === 0 ) {
+                    console.error("shit ass adding");
+                    return ;
+                }
 
                 let podcasts = value.split(",");
 
@@ -141,10 +143,7 @@
                         return ;
                     }
 
-
-                    console.log(succ);
-
-                    //createPodcast(podcasts);
+                    appendChannelToDom(succ);
 
                     spin.remove();
 
@@ -399,7 +398,7 @@
 
 
     /**
-       append all the podcasters podcast to the DOMA
+       append all the podcasters podcast to the DOM
      **/
 
     const appendPodcastToDOM = ({ episodes },_savedpod) => {
@@ -423,7 +422,7 @@
             li.setAttribute("podcast-url", episode.enclosure.url);
 
             _savedpod.episode = episode;
-            
+
             li.setAttribute("podcast-metadata", JSON.stringify(_savedpod));
 
             span.setAttribute("class", "podcast-title");
@@ -468,16 +467,13 @@
         podcastLoadMain.style.display = "none";
 
         let spin = document.createElement("i");
-        let loadText = document.createElement("p");
 
         spinner = document.createElement("div");
         spinner.setAttribute("class", "podcast-spinner");
 
         spin.setAttribute("class", "fa fa-spinner fa-pulse fa-5x");
-        loadText.textContent = "Loading...";
 
         spinner.appendChild(spin);
-        spinner.appendChild(loadText);
 
         podcasterSection.appendChild(spinner);
 
@@ -517,47 +513,51 @@
        build all saved podcast channel
      **/
 
+    const appendChannelToDom = pod => {
+        
+        const podcastLoadMain = document.querySelector(".podcastload-main");
+        
+        const { description, image, title, owner, language, podlink, categories } = pod;
+
+        // remove me after
+        if ( ! title )
+            return ;
+
+        let li = document.createElement("li");
+        let p = document.createElement("p");
+        let podcastImage = new Image();
+
+        podcastImage.src = image;
+        podcastImage.setAttribute("class", "podcast-image");
+
+        li.setAttribute("data-url", podlink);
+        li.setAttribute("data-podcast", title);
+        li.setAttribute("data-podcast-descr", description.long);
+        li.setAttribute("data-podcast-categories", categories.join(" "));
+
+        p.setAttribute("class", "podcaster-podcast-name");
+        p.textContent = title;
+
+        li.appendChild(p);
+        li.appendChild(podcastImage);
+
+        li.appendChild(podcastsChannelWidget());
+
+        podcastLoadMain.appendChild(li);
+
+    };
+    
+    
     const createPodcast = podcasts => {
 
-        const podcastLoadMain = document.querySelector(".podcastload-main");
         const nopod = document.querySelector(".nopoadcast");
 
         console.log(podcasts);
-        
+
         if ( nopod )
             nopod.remove();
-        
-        Object.keys(podcasts).forEach( pod => {
-            
-            const { description, image, title, owner, language, podlink, categories } = podcasts[pod];
 
-            // remove me after
-            if ( ! title )
-                return ;
-
-            let li = document.createElement("li");
-            let p = document.createElement("p");
-            let podcastImage = new Image();
-
-            podcastImage.src = image;
-            podcastImage.setAttribute("class", "podcast-image");
-            
-            li.setAttribute("data-url", podlink);
-            li.setAttribute("data-podcast", title);
-            li.setAttribute("data-podcast-descr", description.long);
-            li.setAttribute("data-podcast-categories", categories.join(" "));
-
-            p.setAttribute("class", "podcaster-podcast-name");
-            p.textContent = title;
-
-            li.appendChild(p);
-            li.appendChild(podcastImage);
-
-            li.appendChild(podcastsChannelWidget());
-
-            podcastLoadMain.appendChild(li);
-
-        });
+        Object.keys(podcasts).forEach( pod => appendChannelToDom(podcasts[pod]));
     };
 
     podcastFuncs.addEventListener("click", evt => {
