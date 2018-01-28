@@ -44,7 +44,7 @@
 }
 
 %podcastload-main[data-view="list"] {
-    
+
     .podcastload-main {
 
         clear: both;
@@ -93,21 +93,25 @@
                 float: left;
                 margin-top: -0.5%;
             }
-            
+
+            .podcast-image {
+                display: none;
+            }
+
             .podcast-name-widgets {
-                
+
                 width: 30%;
                 float: right;
-                
+
                 margin-right: -15%;
-                
+
                 > li {
                     display: inline;
                     padding: 7px;
                     cursor: pointer;
-                    
+
                     transition: .2s background ease-in-out;
-                    
+
                     &:hover {
                         color: lighten($global-color, 10%);
                     }
@@ -121,7 +125,7 @@
 
 
 %podcastload-main[data-view="grid"] {
-    
+
     .podcastload-main {
 
         margin-top: 23px;
@@ -141,21 +145,29 @@
                 white-space: nowrap;
                 overflow: hidden;
             }
+
+            .podcast-image {
+                display: block;
+                height: 100px;
+                margin: auto;
+                margin-left: -150px;
+            }
+
             .podcast-name-widgets {
-                
+
                 clear: right;
                 display: flex;
-                
+
                 justify-content: center;
                 align-self: flex-end;
 
                 position: relative;
 
                 left: -100px;
-                
+
             }
         }
-        
+
     }
 }
 
@@ -185,11 +197,11 @@
     background: $global-color;
 
     height: 200px;
-    
+
     .podcast-modal-parent {
 
         width: 100%;
-        
+
         .podcast-modal-info {
             margin-bottom: 10px;
             width: 100%;
@@ -253,7 +265,7 @@
 }
 
 .podcaster-podcast {
-    
+
     padding: 5px;
     padding-bottom: 20px;
 
@@ -264,7 +276,7 @@
         width: 99%;
 
         margin-left: 8px;
-        
+
         background: $global-color;
         box-shadow: 0px 1px 9px 0px rgba(238, 238, 238, 0.14);
         margin-top: 5px;
@@ -285,15 +297,15 @@
         }
 
         .podaudio-widget {
-            
+
             display: inline-flex;
             justify-content: flex-end;
-            
+
             float: right;
             width: 50%;
-            
+
             margin-right: 12px;
-            
+
             i:not(:first-of-type) {
                 margin-left: 5px;
             }
