@@ -197,8 +197,11 @@
         ipc.sendTo(winid, "akara::video::currentplaying:src", video.src);
     });
     
-    ipc.on("akara::podcast:play",
-           (evt,path,category) => addMediaCb(path,category));
+    ipc.on("akara::podcast:play", (evt,podmetadata,category) => {
+        const { episode: { enclosure: { url } } } = JSON.parse(podmetadata);
+        localStorage.setItem("podcast-metadata", podmetadata);
+        addMediaCb(url,category);
+    });
 
     ipc.on("akara::video:filter", videoSetFilter);
     ipc.on("akara::video:filter:reset", videoResetFilter);
