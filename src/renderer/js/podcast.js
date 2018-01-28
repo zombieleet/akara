@@ -169,6 +169,20 @@
                 return this.podcastModal.remove();
             }
         },
+
+        __currentSection: {
+            value() {
+
+                let podWidg = document.querySelector(".podcastload-main");
+
+                if ( podWidg.style.display === "none" ) {
+                    podWidg = document.querySelector(".podcaster-podcast");
+                }
+
+                return podWidg;
+            }
+        },
+
         podcastadd: {
 
             value() {
@@ -176,8 +190,9 @@
             }
         },
         podcastremove: {
-            value: () => {
-                const podWidg = document.querySelectorAll(".podcastload-main > li");
+            value() {
+
+                const podWidg = this.__currentSection().querySelectorAll("> li");
 
                 Array.from(podWidg, channel => {
 
@@ -191,32 +206,44 @@
                 });
             }
         },
+
         podcastcheck: {
-            value: () => {
+
+            value() {
+
+                const self = this;
+
+                console.log(self);
+
                 const checkMenus = [
                     {
                         label: "checkall",
                         click() {
-                            const podWidg = document.querySelector(".podcastload-main");
+
+                            let podWidg = self.__currentSection();
+
                             Array.from(podWidg.querySelectorAll(".fa-circle-o"))
                                 .forEach( notchecked => {
                                     notchecked.classList.remove("fa-circle-o");
                                     notchecked.classList.add("fa-check-circle");
                                 });
                         },
-                        accelerator: ""
+                        accelerator: "Alt+C"
                     } ,
                     {
                         label: "uncheckall",
                         click() {
-                            const podWidg = document.querySelector(".podcastload-main");
+
+                            let podWidg = self.__currentSection();
+
                             Array.from(podWidg.querySelectorAll(".fa-check-circle"))
                                 .forEach( checked => {
                                     checked.classList.remove("fa-check-circle");
                                     checked.classList.add("fa-circle-o");
                                 });
+
                         },
-                        accelerator: ""
+                        accelerator: "Alt+Shift+C"
                     }
                 ];
 
@@ -283,13 +310,14 @@
      **/
 
     const podcastNameWidgetHandler = Object.defineProperties( {} , {
-        folder: {
-            async value(evt,appendToDom = true) {
 
+        folder: {
+
+            async value(evt,appendToDom = true) {
 
                 const { podcast } = _require("./configuration.js");
                 const pod = require(podcast);
-                
+
                 let podLink = evt.target.parentNode.parentNode.getAttribute("data-url");
                 let result;
 
@@ -304,8 +332,9 @@
                     result = ex;
                 }
 
-                if ( spin )
+                if ( spin ) {
                     spin.remove();
+                }
 
                 if ( Error[Symbol.hasInstance](result) ) {
 
@@ -355,7 +384,7 @@
     const podcastPlayEvent = ({target}) => {
         //const podcasturl = target.parentNode.parentNode.getAttribute("podcast-url");
         const podcastmetadata = target.parentNode.parentNode.getAttribute("podcast-metadata");
-        
+
         ipc.sendTo(1, "akara::podcast:play",podcastmetadata, "podder");
     };
 
