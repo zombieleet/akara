@@ -26,6 +26,7 @@ const {
 console.log(createPlaylistItem);
 
 const {
+    ipcRenderer: ipc,
     remote: {
         dialog
     }
@@ -42,14 +43,14 @@ const loadMpegGurlFormat = async (path) => {
 
     if ( Error[Symbol.hasInstance](result) )
         return dialog.showErrorBox("Invalid Format", "Cannot process requested playlist");
-    
+
     return addMediaCb(result);
 };
 
 const loadXspfFormat = async (path) => {
 
     let result = [];
-    
+
     try {
         const tracks = await importXspf(path);
         for ( let _track of tracks ) {
@@ -91,7 +92,7 @@ const addMediaCb = (paths,forPlaylist) => {
     paths.forEach( async (path) => {
 
         const mimeType = mime.lookup(path);
-        
+
         if ( /mpegurl/.test(mimeType) )
             return loadMpegGurlFormat(path);
 
@@ -106,7 +107,13 @@ const addMediaCb = (paths,forPlaylist) => {
 
         mediaPathParent.appendChild(createdElement);
 
+        if ( forPlaylist === "podder" ) {
+            createdElement.setAttribute("podcast-metadata", localStorage.getItem("podcast-metadata"));
+            localStorage.removeItem("podcast-metadata");
+        }
+        
         return playOnDrop();
+        
     });
 };
 

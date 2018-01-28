@@ -115,6 +115,13 @@
 
                 let podcasts = value.split(",");
 
+                let modalDiv = document.querySelector(".podcast-modal");
+                let spin = document.createElement("spin");
+
+                spin.setAttribute("class", "fa fa-spinner fa-pulse fa-5x");
+
+                modalDiv.appendChild(spin);
+
                 const _savepodcast = savepodcast(podcasts, (err,succ,obj) => {
 
                     if ( ! err && ! succ ) {
@@ -122,19 +129,24 @@
                         return;
                     }
 
-                    if ( err && ! err.code ) {
+                    if ( err ) {
+
+                        if ( err.code === "PODCAST_NO_LOAD" ) {
+                            console.log("cannot load ", err.podcastLink);
+                            return ;
+                        }
+
                         console.log(err);
+
                         return ;
                     }
 
-                    if ( err.code === "PODCAST_NO_LOAD" ) {
-                        console.log("cannot load ", err.podcastLink);
-                        return ;
-                    }
 
                     console.log(succ);
 
                     //createPodcast(podcasts);
+
+                    spin.remove();
 
                     this.__removeModal();
 
@@ -175,7 +187,7 @@
                     if ( ! checked )
                         return ;
 
-                    removepodcast(channel.getAttribute("data-url"));
+                    removepodcast(channel.getAttribute("data-podcast"));
                     channel.remove();
                 });
             }
@@ -275,6 +287,10 @@
         folder: {
             async value(evt,appendToDom = true) {
 
+
+                const { podcast } = _require("./configuration.js");
+                const pod = require(podcast);
+                
                 let podLink = evt.target.parentNode.parentNode.getAttribute("data-url");
                 let result;
 
@@ -302,8 +318,9 @@
                     );
                 }
 
-                if ( appendToDom )
-                    return appendPodcastToDOM(result);
+                if ( appendToDom ) {
+                    return appendPodcastToDOM(result, pod[result.title]);
+                }
 
                 return result;
             }
@@ -328,7 +345,7 @@
         "times-circle": {
             value(evt) {
                 const channel = evt.target.parentNode.parentNode;
-                removepodcast(channel.getAttribute("data-url"));
+                removepodcast(channel.getAttribute("data-podcast"));
                 channel.remove();
             }
         }
@@ -337,8 +354,10 @@
 
 
     const podcastPlayEvent = ({target}) => {
-        const podcasturl = target.parentNode.parentNode.getAttribute("podcast-url");
-        ipc.sendTo(1, "akara::podcast:play", [ podcasturl ], "podder");
+        //const podcasturl = target.parentNode.parentNode.getAttribute("podcast-url");
+        const podcastmetadata = target.parentNode.parentNode.getAttribute("podcast-metadata");
+        
+        ipc.sendTo(1, "akara::podcast:play",podcastmetadata, "podder");
     };
 
     const podcastDownloadEvent = () => {
@@ -383,7 +402,7 @@
        append all the podcasters podcast to the DOMA
      **/
 
-    const appendPodcastToDOM = ({ episodes }) => {
+    const appendPodcastToDOM = ({ episodes },_savedpod) => {
 
         const podcastParent = document.querySelector(".podcastload-podcaster");
         const ul = podcastParent.querySelector(".podcaster-podcast") || document.createElement("ul");
@@ -395,11 +414,17 @@
             const span = document.createElement("span");
             const { title: podTitle } = episode;
 
+            delete episode.image;
+
             li.setAttribute("class", "podcast-audio");
             li.setAttribute("podcast-duration", episode.duration);
             li.setAttribute("podcast-title", episode.title);
             li.setAttribute("podcast-filesize", episode.enclosure.filesize);
             li.setAttribute("podcast-url", episode.enclosure.url);
+
+            _savedpod.episode = episode;
+            
+            li.setAttribute("podcast-metadata", JSON.stringify(_savedpod));
 
             span.setAttribute("class", "podcast-title");
 
@@ -497,23 +522,36 @@
         const podcastLoadMain = document.querySelector(".podcastload-main");
         const nopod = document.querySelector(".nopoadcast");
 
-
+        console.log(podcasts);
+        
         if ( nopod )
             nopod.remove();
+        
+        Object.keys(podcasts).forEach( pod => {
+            
+            const { description, image, title, owner, language, podlink, categories } = podcasts[pod];
 
-        podcasts.forEach( podLink => {
+            // remove me after
+            if ( ! title )
+                return ;
 
-            let { name: podcaster } = path.parse(podLink);
             let li = document.createElement("li");
             let p = document.createElement("p");
+            let podcastImage = new Image();
 
-            li.setAttribute("data-url", podLink);
-            li.setAttribute("data-podcast", podcaster);
+            podcastImage.src = image;
+            podcastImage.setAttribute("class", "podcast-image");
+            
+            li.setAttribute("data-url", podlink);
+            li.setAttribute("data-podcast", title);
+            li.setAttribute("data-podcast-descr", description.long);
+            li.setAttribute("data-podcast-categories", categories.join(" "));
 
             p.setAttribute("class", "podcaster-podcast-name");
-            p.textContent = podcaster[0].toUpperCase() + podcaster.substr(1,podcaster.length);
+            p.textContent = title;
 
             li.appendChild(p);
+            li.appendChild(podcastImage);
 
             li.appendChild(podcastsChannelWidget());
 
@@ -548,10 +586,9 @@
     window.addEventListener("DOMContentLoaded", evt => {
 
         const podcasts = loadpodcast();
-
         let podload = document.querySelector(".podcastload-main");
 
-        if ( ! podcasts.length ) {
+        if ( ! Object.keys(podcasts).length ) {
             let nopod = document.createElement("p");
             nopod.classList.add("nopoadcast");
             nopod.innerHTML = "You don't have any podcast";
