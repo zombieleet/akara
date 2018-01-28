@@ -1050,8 +1050,10 @@ module.exports.tClient = bBird.promisifyAll(
 const savepodcast = async (podcasturl,callback) => {
 
     const pod = require(podcast);
-    const http = require("http");
     const podson = require("podson");
+    const base64Img = require("base64-img");
+
+    let conhttp_s = require("http");
 
     if ( Array.isArray(podcasturl) )
         ;
@@ -1065,22 +1067,24 @@ const savepodcast = async (podcasturl,callback) => {
 
 
 
-    akara_emit.on("akara::podcast:image", ({ description: { description } , title, language, owner, categories, image }) => {
+    akara_emit.on("akara::podcast:image", ({ description , title, language, owner, categories, image, podlink }) => {
 
-        Object.assign(pod[title],{
+
+        pod[title] = {
             title,
             description,
             language,
             owner,
             categories,
-            image
-        });
+            image,
+            podlink
+        };
 
-        //fs.writeFileSync(podcast, JSON.stringify(pod));
+        fs.writeFileSync(podcast, JSON.stringify(pod));
 
-        callback(null,succ);
+        callback(null,pod[title]);
     });
-    
+
 
     for ( let pod__ of podcasturl ) {
 
@@ -1088,30 +1092,28 @@ const savepodcast = async (podcasturl,callback) => {
 
         try {
             result = await podson.getPodcast(pod__);
+            console.log(result, "try --- catch ");
         } catch(ex) {
             errs.push(pod__);
             continue;
         }
 
-        if ( Object.keys(pod).indexOf(pod__) === -1 ) {
-
-            succ.push(pod__);
-
-            http.get(result.image, res => {
-
-                let buff_ = "";
-
-                res.on("body", buf => {
-                    buff_ += buf;
-                    callback(null,null,{ name: result.name, link: pod__ });
-                });
-                
-                res.on("end", () => {
-                    result.image = buff_;
-                    akara_emit.emit("akara::podcast:image", result);
-                });
-
+        if ( Object.keys(pod).indexOf(result.title) === -1 ) {
+            
+            result.podlink = pod__;
+            
+            if ( ! result.image || result.image.length === 0 ) {
+                akara_emit.emit("akara::podcast:image", result);
+                continue;
+            }
+            
+            callback(null,null,{ name: result.name, link: pod__ });
+            
+            base64Img.requestBase64(result.image, (err,res,body) => {
+                result.image = body;
+                akara_emit.emit("akara::podcast:image", result);
             });
+
             break;
         }
     }
@@ -1125,7 +1127,7 @@ const savepodcast = async (podcasturl,callback) => {
                 this.podcastLink = podcastLink;
             }
         })("PODCAST_NO_LOAD", errpod, "cannot load podcast");
-        
+
         setTimeout(() => {
             callback(err,null);
         },500);
@@ -1137,20 +1139,23 @@ module.exports.savepodcast = savepodcast;
 
 module.exports.loadpodcast = () => {
     const pod = require(podcast);
-    return pod.length > 0 ? pod : [];
+    console.log(pod);
+    return Object.keys(pod).length > 0 ? pod : {};
 };
 
 module.exports.removepodcast = podtoremove => {
 
     let pod = require(podcast);
 
-    if ( ! pod.includes(podtoremove) )
+    if ( ! Object.keys(pod).includes(podtoremove) )
         return false;
 
-    pod = pod.filter( _pods => {
-        console.log(_pods, podtoremove);
-        return _pods !== podtoremove;
-    });
+
+    for ( let _pods of Object.keys(pod) ) {
+        if ( _pods === podtoremove )
+            delete pod[podtoremove];
+    }
+    
 
     fs.writeFileSync(podcast, JSON.stringify(pod));
 
@@ -1524,6 +1529,7 @@ module.exports.downloadAlbumArt = art => {
         //const date_time = `${date.toLocaleDateString()}_${date.toLocaleTimeString()}`;
 
         art = art.replace(/.*?,/,"");
+        art = art.replace(/\s/g,"");
 
         fs.writeFile(
             location,
