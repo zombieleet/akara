@@ -1113,8 +1113,6 @@ const savepodcast = async (podcasturl,callback) => {
                 result.image = body;
                 akara_emit.emit("akara::podcast:image", result);
             });
-
-            break;
         }
     }
 
