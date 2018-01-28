@@ -879,34 +879,7 @@ module.exports.videoLoadData = async (event) => {
     const pathToFile = hashedPath(video.src);
 
 
-    /*if ( fs.existsSync(pathToFile) ) {
-
-      dialog.showMessageBox({
-      title: "Resume Media File",
-      type: "info",
-      message: "Resume from previous playing",
-      buttons: [ "Yes", "No", "Cancel" ]
-      }), btn => {
-
-      if ( btn === 0 ) {
-      video.currentTime = Number(getRecentPos(video.src).toString());
-      return ;
-      }
-
-      if ( btn === 1 ) {
-      fs.unlinkSync(pathToFile);
-      return ;
-      }
-
-      if ( btn === 2 )
-      return ;
-
-      });
-      }*/
-
     video.currentTime = Number(getRecentPos(video.src).toString());
-
-    //currTimeUpdate.textContent = setTime();
 
     const submenu = videoContextMenu[16].submenu;
 
@@ -922,6 +895,16 @@ module.exports.videoLoadData = async (event) => {
     }
 
 
+    const playlistParent = document.querySelector(".akara-loaded");
+    const currentItemPlaying = playlistParent.querySelector(`#${video.getAttribute("data-id")}`);
+    
+    if ( currentItemPlaying.getAttribute("data-belongsto-playlist") === "podder" ) {
+        const { podcast } = _require("./configuration.js");
+        const pod = require(podcast);
+        video.poster = JSON.parse(currentItemPlaying.getAttribute("podcast-metadata")).image;
+        return ;
+    }
+    
     loadAlbumArt();
 
     akara_emit.once("akara::audio:albumart",  base64StringAlbum_art => {
