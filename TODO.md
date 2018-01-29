@@ -20,3 +20,4 @@ ffmpeg -i Videos/gulps/part15/15-01-softbodies-part1-vertexweight-mobile.mp4 -c 
 
 13. go to each settings window pug file and make the similar list inerface modular
 14. decrease or increase system sound
+15. add grid and list settings for podcast episodes
