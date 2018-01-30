@@ -1,0 +1,62 @@
+.ui_button-body {
+    @extend %new_window_body;
+}
+
+.ui_button-header {
+    @extend %window-headers;
+}
+
+._ui_button_ {
+    width: 100%;
+}
+
+
+.ui_button {
+    margin-top: 20px;
+    
+    
+    .ui_button-parent {
+        
+        padding: 20px;
+        
+        .ui_button-list {
+            
+            display: inline-block;
+            width: 300px;
+            margin-top: 10px;
+            padding: 20px;
+            height: 300px;
+            margin-left: 7px;
+
+            box-shadow: 0 0 6px -2px darken($global-color,12%);
+            
+            > p {
+                font-size: 1.5em;
+                margin-top: 12px;
+                margin-bottom: 12px;
+            }
+            
+            > div {
+                
+                margin-left: 20px;
+                display: inline-flex;
+                justify-content: center;
+                padding: 15px;
+                width: 15%;
+                //margin-left: 25px;
+                margin-top: 10px;
+                cursor: pointer;
+
+                box-shadow: 0 0 6px -2px darken($global-color,12%);
+
+                transition: .3s background-color ease-in-out ;
+                
+                &:hover {
+                    background-color: black;
+                    opacity: .1;
+                }
+                
+            }
+        }
+    }
+}
