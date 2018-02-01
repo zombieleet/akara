@@ -80,6 +80,23 @@ const requireSettingsPath = type => {
             case "volume.json":
                 objConfig = { volume_default_level: 50, volume_max_level: 70, volume_warn_exceed_max: true };
                 break;
+            case "uibuttons.json":
+                objConfig = {
+                    ["control-buttons"]: {
+                        play: "fa-play",
+                        pause: "fa-pause",
+                        stop: "fa-stop",
+                        forward: "fa-forward",
+                        backward: "fa-backward",
+                        volume_up: "fa-volume-up",
+                        repeat: "fa-repeat",
+                        random: "fa-random",
+                        expand: "fa-expand",
+                        CUSTOM_FONT: false,
+                        IMAGE_FONT: false
+                    }
+                };
+                break;
             }
 
             writeFileSync(jsonPath, JSON.stringify(objConfig));
@@ -135,6 +152,8 @@ const SIZE = 1000;
 const MEASUREMENT = [ "Bytes", "kB", "MB", "GB", "TB" ];
 const TWITTER_OAUTH = "https://api.twitter.com/oauth/authenticate";
 const FFMPEG_LOCATION = `${APP_PATH}/node_modules/.bin/`;
+
+
 
 /*const BYTE = 8;
 const MBYTE = 1048576;
