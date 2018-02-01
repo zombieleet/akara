@@ -53,10 +53,50 @@
                 
                 &:hover {
                     background-color: black;
-                    opacity: .1;
                 }
                 
             }
+        }
+    }
+}
+
+
+.fnt_parent {
+    
+    background: white;
+    border: 2px solid ;
+
+    height: 120px;
+    width: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    
+    color: $global-color;
+
+    box-shadow:  0 0 10px -1px darken($global-color,12%);
+    
+    > li {
+        width: 40px;
+        margin: 4px;
+        margin-top: 10px;
+        text-align: center;
+        &:hover {
+            opacity: .75;
+        }
+    }
+
+    [data-fnt_add="add_more"] {
+        width: 100%;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    [data-fnt_add="add_more_btn"] {
+        width: 100%;
+        > input {
+            width: 80%;
+            text-align: center;
         }
     }
 }
