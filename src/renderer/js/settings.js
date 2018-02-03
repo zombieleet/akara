@@ -8,7 +8,7 @@
             require: _require
         }
     } = require("electron");
-    
+
     const { createNewWindow: settingsWindow } = _require("./newwindow.js");
 
     const { handleWindowButtons } = require("../js/util.js");
@@ -101,7 +101,24 @@
         };
         settingsWindow(volume, "settings/volume.html");
     };
-    
+
+
+    handleAkaraSettings.buttons = () => {
+
+        const button = {
+            title: "ui buttons",
+            maximizable: true,
+            resizable: true,
+            minimizable: true,
+            width: 500,
+            height: 450,
+            center: true
+        };
+
+        settingsWindow(button, "settings/ui_button.html");
+
+    };
+
     settingsValue.addEventListener("click", evt => {
         const { target } = evt;
 

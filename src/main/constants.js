@@ -80,6 +80,74 @@ const requireSettingsPath = type => {
             case "volume.json":
                 objConfig = { volume_default_level: 50, volume_max_level: 70, volume_warn_exceed_max: true };
                 break;
+            case "custom_uibuttons.json":
+                objConfig = {
+                    ["control-buttons"]: {
+                        play: [],
+                        pause: [],
+                        stop: [],
+                        forward: [],
+                        backward: [],
+                        volume_up: [],
+                        repeat: [],
+                        random: [],
+                        expand: []
+                    },
+
+                    ["media-buttons"]:{
+                        play: [],
+                        pause: [],
+                        check: [],
+                        uncheck: []
+                    },
+
+                    ["podcast-buttons"]: {
+                        play: [],
+                        home: [],
+                        grid: [],
+                        list: [],
+                        uncheck: [],
+                        folder: [],
+                        times: [],
+                        close: [],
+                        download: []
+                    }
+
+                };
+                break;
+            case "uibuttons.json":
+                objConfig = {
+                    ["control-buttons"]: {
+                        play: "fa-play",
+                        pause: "fa-pause",
+                        stop: "fa-stop",
+                        forward: "fa-forward",
+                        backward: "fa-backward",
+                        volume_up: "fa-volume-up",
+                        repeat: "fa-repeat",
+                        random: "fa-random",
+                        expand: "fa-expand"
+                    },
+                    ["media-buttons"]:{
+                        play: "fa-play",
+                        pause: "fa-pause",
+                        check: "fa-check-square-o",
+                        uncheck: "fa-square-o"
+
+                    },
+                    ["podcast-buttons"]: {
+                        play: "fa-play",
+                        home: "fa-home",
+                        grid: "fa-th-large",
+                        list: "fa-list",
+                        uncheck: "fa-square-o",
+                        times: "fa-times-circle",
+                        folder: "fa-folder",
+                        close: "fa-window-close",
+                        download: "fa-download"
+                    }
+                };
+                break;
             }
 
             writeFileSync(jsonPath, JSON.stringify(objConfig));
@@ -135,6 +203,8 @@ const SIZE = 1000;
 const MEASUREMENT = [ "Bytes", "kB", "MB", "GB", "TB" ];
 const TWITTER_OAUTH = "https://api.twitter.com/oauth/authenticate";
 const FFMPEG_LOCATION = `${APP_PATH}/node_modules/.bin/`;
+
+
 
 /*const BYTE = 8;
 const MBYTE = 1048576;
