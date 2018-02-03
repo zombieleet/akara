@@ -28,8 +28,30 @@
     const uiButtonClose = document.querySelector(".window-close");
     const uiButtonsParent = document.querySelector(".ui_button-parent");
 
-    const saveFont = evt => {
+    const saveFont = async (evt) => {
 
+        const target = evt.target;
+        let pNode = target.parentNode;
+        let imgNode = false;
+
+        if ( HTMLImageElement[Symbol.hasInstance](target) ) {
+            imgNode = pNode;
+            pNode = pNode.parentNode;
+        }
+
+        let uibuttons = await requireSettingsPath("uibuttons.json");
+        let uibuttonsSettings = require(uibuttons);
+
+        let iconType = pNode.parentNode;
+        let category = iconType.parentNode.getAttribute("data-category");
+
+        iconType = iconType.querySelector("[data-icon_type]").getAttribute("data-icon_type");
+
+        uibuttonsSettings[category][iconType] = imgNode
+            ? imgNode.getAttribute("data-fnt_type")
+            : target.getAttribute("data-fnt_type");
+
+        fs.writeFileSync(uibuttons, JSON.stringify(uibuttonsSettings));
     };
 
     const addnewFont = evt => {
@@ -80,7 +102,8 @@
                         let fntchild = document.createElement("li");
                         let addMoreChild = document.querySelector("[data-fnt_add=add_more]");
 
-                        fntchild.setAttribute("data-fnt_type", "fnt_image");
+                        fntchild.setAttribute("data-fnt_image", "fnt_image");
+                        fntchild.setAttribute("data-fnt_type", data);
                         fntchild.appendChild(image);
 
 
@@ -162,6 +185,8 @@
 
         fntparent.classList.add("fnt_parent");
 
+        console.log(uibuttonsSettings);
+        
         FONTS[fonttype].forEach( fnt => {
 
             const fntchild = document.createElement("li");
@@ -176,18 +201,23 @@
             fntparent.appendChild(fntchild);
 
         });
-
+        console.log(customUIButtonsSettings);
         customUIButtonsSettings[category][fonttype].forEach( datauri => {
 
             let image = new Image();
             let fntchild = document.createElement("li");
             let addMoreChild = document.querySelector("[data-fnt_add=add_more]");
 
+            if ( datauri === uibuttonsSettings[category][fonttype] ) {
+                fntchild.setAttribute("data-fnt_active", "true");
+            }
+
             image.src = datauri;
             image.width = 20;
             image.height = 20;
 
-            fntchild.setAttribute("data-fnt_type", "fnt_image");
+            fntchild.setAttribute("data-fnt_image", "fnt_image");
+            fntchild.setAttribute("data-fnt_type", datauri);
             fntchild.addEventListener("click", saveFont);
             fntchild.appendChild(image);
             fntparent.appendChild(fntchild);
@@ -229,7 +259,7 @@
 
 
         if ( fntparent )
-            ;//fntparent.remove();
+            fntparent.remove();
     });
 
 
