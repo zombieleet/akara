@@ -66,8 +66,8 @@
     background: white;
     border: 2px solid ;
 
-    height: 120px;
-    width: 150px;
+    height: 150px;
+    width: 200px;
     overflow-y: auto;
     overflow-x: hidden;
     
@@ -97,6 +97,12 @@
         > input {
             width: 80%;
             text-align: center;
+        }
+    }
+
+    [data-fnt_type="fnt_image"] {
+        > img {
+            border-radius: 50%;
         }
     }
 }
