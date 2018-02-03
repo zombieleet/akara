@@ -80,6 +80,21 @@ const requireSettingsPath = type => {
             case "volume.json":
                 objConfig = { volume_default_level: 50, volume_max_level: 70, volume_warn_exceed_max: true };
                 break;
+            case "custom_uibuttons.json":
+                objConfig = {
+                    ["control-buttons"]: {
+                        play: [],
+                        pause: [],
+                        stop: [],
+                        forward: [],
+                        backward: [],
+                        volume_up: [],
+                        repeat: [],
+                        random: [],
+                        expand: []
+                    }
+                };
+                break;
             case "uibuttons.json":
                 objConfig = {
                     ["control-buttons"]: {
@@ -92,7 +107,7 @@ const requireSettingsPath = type => {
                         repeat: "fa-repeat",
                         random: "fa-random",
                         expand: "fa-expand",
-                        CUSTOM_FONT: false,
+                        UNICODE_FONT: false,
                         IMAGE_FONT: false
                     }
                 };
