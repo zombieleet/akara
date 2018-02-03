@@ -154,7 +154,7 @@
 
         let uibuttons = await requireSettingsPath("uibuttons.json");
         let customUIButtons = await requireSettingsPath("custom_uibuttons.json");
-        
+
         let customUIButtonsSettings = require(customUIButtons);
         let uibuttonsSettings = require(uibuttons);
 
@@ -178,7 +178,7 @@
         });
 
         customUIButtonsSettings[category][fonttype].forEach( datauri => {
-            
+
             let image = new Image();
             let fntchild = document.createElement("li");
             let addMoreChild = document.querySelector("[data-fnt_add=add_more]");
@@ -186,13 +186,13 @@
             image.src = datauri;
             image.width = 20;
             image.height = 20;
-            
+
             fntchild.setAttribute("data-fnt_type", "fnt_image");
             fntchild.addEventListener("click", saveFont);
             fntchild.appendChild(image);
             fntparent.appendChild(fntchild);
         });
-        
+
         const fntchild = document.createElement("li");
 
         fntchild.setAttribute("data-fnt_add", "add_more");
