@@ -29,6 +29,8 @@
             margin-left: 7px;
 
             box-shadow: 0 0 6px -2px darken($global-color,12%);
+
+            vertical-align: top;
             
             > p {
                 font-size: 1.5em;
@@ -101,9 +103,13 @@
         }
     }
 
-    [data-fnt_type="fnt_image"] {
+    [data-fnt_image="fnt_image"] {
         > img {
             border-radius: 50%;
         }
+    }
+
+    [data-fnt_active="true"] {
+        border-bottom: 2px solid darken($global-color,12%);
     }
 }
