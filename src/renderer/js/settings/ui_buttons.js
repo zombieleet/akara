@@ -21,28 +21,28 @@
     } = require("../../js/util.js");
 
     const base64Img = require("base64-img");
-    
+    const fs = require("fs");
+
     const uiButtonMin = document.querySelector(".window-min");
     const uiButtonMax = document.querySelector(".window-max");
     const uiButtonClose = document.querySelector(".window-close");
-
     const uiButtonsParent = document.querySelector(".ui_button-parent");
 
     const saveFont = evt => {
-        
+
     };
 
     const addnewFont = evt => {
-        
+
         const target = evt.target;
         const pNode = target.parentNode;
 
         const button = document.createElement("button");
         const input = document.createElement("input");
-        
+
         input.type = "text";
         input.placeholder = "unicode value";
-        
+
         button.textContent = "Browse Image";
 
         [ input, button ].forEach( addMore => {
@@ -59,10 +59,10 @@
             }, file => {
                 if ( ! file )
                     return ;
-                file.forEach( f => {
-                    
-                    base64Img.base64(f, async (err,data) => {
-                        
+                file.forEach( iconfile => {
+
+                    base64Img.base64(iconfile, async (err,data) => {
+
                         if ( err ) {
                             console.log(err);
                             return ;
@@ -73,37 +73,63 @@
                         let customUIButtons = require(customUIButtonsPath);
                         let iconType = pNode.parentNode;
                         let category = iconType.parentNode.getAttribute("data-category");
-                        
+
                         let image = new Image();
+
+
                         let fntchild = document.createElement("li");
                         let addMoreChild = document.querySelector("[data-fnt_add=add_more]");
-                        
+
                         fntchild.setAttribute("data-fnt_type", "fnt_image");
                         fntchild.appendChild(image);
 
 
                         iconType = iconType.querySelector("[data-icon_type]").getAttribute("data-icon_type");
-                        
+
                         image.src = data;
                         image.width = 20;
                         image.height = 20;
-                        
+
+                        //let allDataURIs = customUIButtons[category][iconType];
+
+                        // if ( allDataURIs.length > 0 ) {
+
+                        //     allDataURIs.forEach( dt => {
+                        //         newURIs.push(dt);
+                        //         if ( data !== dt ) {
+                        //             addMoreChild.insertAdjacentElement("afterend", fntchild);
+                        //         }
+                        //     });
+
                         addMoreChild.insertAdjacentElement("afterend", fntchild);
                         customUIButtons[category][iconType].push(data);
+                        fs.writeFileSync(customUIButtonsPath, JSON.stringify(customUIButtons));
+
+                        // } else {
+
+                        //         newURIs.push(data);
+                        //         addMoreChild.insertAdjacentElement("afterend", fntchild);
+
+
+                        //         customUIButtons[category][iconType] = newURIs;
+                        //         fs.writeFileSync(customUIButtonsPath, JSON.stringify(customUIButtons));
+
+                        //     }
+
                         return ;
                     });
-                    
+
                 });
             });
         });
-        
+
         evt.target.style.display = "none";
-        
+
     };
-    
-    
+
+
     uiButtonsParent.addEventListener("mousemove", async (evt) => {
-        
+
         let target = evt.target;
         let pNode ;
 
@@ -119,35 +145,54 @@
 
         if ( pNode.querySelector(".fnt_parent") )
             return ;
-        
+
         const fonttype = target.getAttribute("data-icon_type");
         const category = pNode.parentNode.getAttribute("data-category");
-        
+
         if ( ! fonttype || ! category )
             return ;
 
-        const uibuttons = await requireSettingsPath("uibuttons.json");
-        const uibuttonsSettings = require(uibuttons);
+        let uibuttons = await requireSettingsPath("uibuttons.json");
+        let customUIButtons = await requireSettingsPath("custom_uibuttons.json");
+        
+        let customUIButtonsSettings = require(customUIButtons);
+        let uibuttonsSettings = require(uibuttons);
 
         const fntparent = document.createElement("ul");
-        
+
         fntparent.classList.add("fnt_parent");
-        
+
         FONTS[fonttype].forEach( fnt => {
 
             const fntchild = document.createElement("li");
-                       
+
             if ( fnt === uibuttonsSettings[category][fonttype] ) {
                 fntchild.setAttribute("data-fnt_active", "true");
             }
-            
+
             fntchild.setAttribute("class", `fa ${fnt}`);
             fntchild.setAttribute("data-fnt_type", fnt);
             fntchild.addEventListener("click", saveFont);
             fntparent.appendChild(fntchild);
-            
+
         });
 
+        customUIButtonsSettings[category][fonttype].forEach( datauri => {
+            
+            let image = new Image();
+            let fntchild = document.createElement("li");
+            let addMoreChild = document.querySelector("[data-fnt_add=add_more]");
+
+            image.src = datauri;
+            image.width = 20;
+            image.height = 20;
+            
+            fntchild.setAttribute("data-fnt_type", "fnt_image");
+            fntchild.addEventListener("click", saveFont);
+            fntchild.appendChild(image);
+            fntparent.appendChild(fntchild);
+        });
+        
         const fntchild = document.createElement("li");
 
         fntchild.setAttribute("data-fnt_add", "add_more");
@@ -157,20 +202,20 @@
         fntparent.style.position = "absolute";
         fntparent.style.left = evt.clientX + "px";
         fntparent.style.top = evt.clientY + "px";
-        
+
         fntparent.appendChild(fntchild);
         pNode.insertBefore(fntparent, target);
-        
+
 
     });
-    
+
 
     uiButtonsParent.addEventListener("mouseout", evt => {
-        
+
         const target = evt.target;
         const fntparent = document.querySelector(".fnt_parent");
-        
-        if ( HTMLDivElement[Symbol.hasInstance](target) || target.nodeName.toLowerCase() === "i") 
+
+        if ( HTMLDivElement[Symbol.hasInstance](target) || target.nodeName.toLowerCase() === "i")
             return;
 
         if ( target.classList.contains("fnt_parent") || target.parentNode.classList.contains("fnt_parent") )
@@ -181,12 +226,12 @@
 
         if ( HTMLImageElement[Symbol.hasInstance](target) )
             return ;
-        
-        
+
+
         if ( fntparent )
-            fntparent.remove();
+            ;//fntparent.remove();
     });
-    
+
 
     handleWindowButtons({ close: uiButtonClose, min: uiButtonMin, max: uiButtonMax });
 
