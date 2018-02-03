@@ -92,7 +92,27 @@ const requireSettingsPath = type => {
                         repeat: [],
                         random: [],
                         expand: []
+                    },
+
+                    ["media-buttons"]:{
+                        play: [],
+                        pause: [],
+                        check: [],
+                        uncheck: []
+                    },
+
+                    ["podcast-buttons"]: {
+                        play: [],
+                        home: [],
+                        grid: [],
+                        list: [],
+                        uncheck: [],
+                        folder: [],
+                        times: [],
+                        close: [],
+                        download: []
                     }
+
                 };
                 break;
             case "uibuttons.json":
@@ -106,9 +126,25 @@ const requireSettingsPath = type => {
                         volume_up: "fa-volume-up",
                         repeat: "fa-repeat",
                         random: "fa-random",
-                        expand: "fa-expand",
-                        UNICODE_FONT: false,
-                        IMAGE_FONT: false
+                        expand: "fa-expand"
+                    },
+                    ["media-buttons"]:{
+                        play: "fa-play",
+                        pause: "fa-pause",
+                        check: "fa-check-square-o",
+                        uncheck: "fa-square-o"
+
+                    },
+                    ["podcast-buttons"]: {
+                        play: "fa-play",
+                        home: "fa-home",
+                        grid: "fa-th-large",
+                        list: "fa-list",
+                        uncheck: "fa-square-o",
+                        times: "fa-times-circle",
+                        folder: "fa-folder",
+                        close: "fa-window-close",
+                        download: "fa-download"
                     }
                 };
                 break;
