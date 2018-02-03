@@ -20,16 +20,16 @@
         handleWindowButtons
     } = require("../../js/util.js");
 
-
-
+    const base64Img = require("base64-img");
+    
     const uiButtonMin = document.querySelector(".window-min");
     const uiButtonMax = document.querySelector(".window-max");
     const uiButtonClose = document.querySelector(".window-close");
 
     const uiButtonsParent = document.querySelector(".ui_button-parent");
 
-
     const saveFont = evt => {
+        
     };
 
     const addnewFont = evt => {
@@ -60,7 +60,39 @@
                 if ( ! file )
                     return ;
                 file.forEach( f => {
-                    console.log(f);
+                    
+                    base64Img.base64(f, async (err,data) => {
+                        
+                        if ( err ) {
+                            console.log(err);
+                            return ;
+                        }
+
+
+                        let customUIButtonsPath = await requireSettingsPath("custom_uibuttons.json");
+                        let customUIButtons = require(customUIButtonsPath);
+                        let iconType = pNode.parentNode;
+                        let category = iconType.parentNode.getAttribute("data-category");
+                        
+                        let image = new Image();
+                        let fntchild = document.createElement("li");
+                        let addMoreChild = document.querySelector("[data-fnt_add=add_more]");
+                        
+                        fntchild.setAttribute("data-fnt_type", "fnt_image");
+                        fntchild.appendChild(image);
+
+
+                        iconType = iconType.querySelector("[data-icon_type]").getAttribute("data-icon_type");
+                        
+                        image.src = data;
+                        image.width = 20;
+                        image.height = 20;
+                        
+                        addMoreChild.insertAdjacentElement("afterend", fntchild);
+                        customUIButtons[category][iconType].push(data);
+                        return ;
+                    });
+                    
                 });
             });
         });
@@ -134,6 +166,7 @@
     
 
     uiButtonsParent.addEventListener("mouseout", evt => {
+        
         const target = evt.target;
         const fntparent = document.querySelector(".fnt_parent");
         
@@ -144,6 +177,9 @@
             return ;
 
         if ( HTMLInputElement[Symbol.hasInstance](target) || HTMLButtonElement[Symbol.hasInstance](target) )
+            return ;
+
+        if ( HTMLImageElement[Symbol.hasInstance](target) )
             return ;
         
         
