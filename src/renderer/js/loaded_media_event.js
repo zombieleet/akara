@@ -1,7 +1,7 @@
 "use strict";
 
 ( (ul) => {
-    
+
     const {
         ipcRenderer: ipc,
         remote: {
@@ -12,7 +12,7 @@
             require: _require
         }
     } = require("electron");
-    
+
     const {
         addMediaCb
     } = require("../js/dropdown_callbacks.js");
@@ -37,16 +37,20 @@
     } = _require("./menu.js");
 
     const {
+        iterateDir
+    } = _require("./utils.js");
+
+    const {
         controls,
         video
     } = require("../js/video_control.js");
-    
+
     let {
         showMediaInfoWindow
     } = require("../js/handle_dropdown_commands.js")();
-    
-    const akara_emit = require("../js/emitter.js");
 
+    const akara_emit = require("../js/emitter.js");
+    const fs = require("fs");
 
     const {
         play,
@@ -107,7 +111,7 @@
             });
             return ;
         }
-        
+
         if ( ! target.hasAttribute("data-dbclicked") ) {
             setupPlaying(target);
             return ;
@@ -133,22 +137,24 @@
             menuInst = new MenuItem(contextMenu);
 
             if ( /^Play$|^Pause$|Repeat/.test(menuInst.label) )
-
                 disableMenuItem(menuInst,target,video);
 
             menu.append(menuInst);
         });
-
-
         menu.popup(getCurrentWindow(), { async: true });
-
-
         currentTarget = target;
     });
 
     ipc.on("media-droped-files", (event, mediaPaths) => {
-        console.log(mediaPaths);
-        addMediaCb(mediaPaths);
+        mediaPaths = decodeURIComponent(mediaPaths.replace("file://", ""));
+        if ( fs.statSync(mediaPaths).isFile() ) {
+            addMediaCb(mediaPaths);
+            return ;
+        }
+        let files = [];
+        iterateDir()(mediaPaths).forEach( fPath => files.push(fPath));
+        addMediaCb(files);
+        return ;
     });
 
     ipc.on("remove-target-hit", () => removeTarget(currentTarget,video));
@@ -204,10 +210,10 @@
         localStorage.setItem("akara::mediainfo:playlist_section", currentTarget.getAttribute("data-full-path"));
         showMediaInfoWindow();
     });
-    
+
     akara_emit.on("video::go-to-next", () => prevNext("next"));
     akara_emit.on("video::go-to-previous", () => prevNext("prev"));
 
-    
+
 
 })(document.querySelector(".akara-loaded"));
