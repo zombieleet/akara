@@ -13,13 +13,28 @@ const {
     createNewWindow: filterWindow
 } = _require("./newwindow.js");
 
+const ff = require("../js/util.js");
+
 const akara_emit = require("../js/emitter.js");
 const video = document.querySelector("video");
 const akLoaded = document.querySelector(".akara-loaded");
 let _REPEAT_MENU_ = new Menu();
-
 let target, _SUBTITLE_MENU_ = new Menu();
 
+
+const applyButtonConfig = (element,section,type) => {
+
+    let font = JSON.parse(localStorage.getItem(section))[type];
+
+    if ( /data:image\//.test(font) ) {
+        element.style.backgroundImage = `url(${font})`;
+        element.setAttribute("data-image_icon", "image");
+    } else {
+        element.classList.add("fa");
+        element.classList.add(font);
+    }
+
+};
 
 const buildRepeatMenu = () => {
 
@@ -120,35 +135,32 @@ const controls = {
     },
     enterfullscreen() {
 
-        const changeIcon = document.querySelector(".fa-expand");
+        const enterfscreen = document.querySelector("[data-fire=enterfullscreen]");
         const akControl = document.querySelector(".akara-control");
         const expand = akControl.querySelector(".expand");
 
-        changeIcon.classList.add("fa-arrows-alt");
-        changeIcon.classList.remove("fa-expand");
-        changeIcon.setAttribute("data-fire","leavefullscreen");
-
+        enterfscreen.setAttribute("data-fire","leavefullscreen");
         video.style.height = "100%";
         video.style.width = "100%";
-        
         akControl.setAttribute("data-fullscreenwidth", "true");
         akControl.hidden = true;
-
         expand.setAttribute("style","visibility: visible;");
+
+        enterfscreen.removeAttribute("class");
+        
+        applyButtonConfig(enterfscreen,"control-buttons","leavefullscreen");
 
         return video.webkitRequestFullScreen();
     },
     leavefullscreen() {
 
-        const changeIcon = document.querySelector(".fa-arrows-alt");
+        const leavefscreen = document.querySelector("[data-fire=leavefullscreen]");
         const akControl = document.querySelector(".akara-control");
 
-        const expand_unexpand = akControl.querySelector(".expand")
-                  || akControl.querySelector(".unexpand");
+        const expandUnexpandControl = akControl.querySelector(".expand")
+              || akControl.querySelector(".unexpand");
 
-        changeIcon.classList.add("fa-expand");
-        changeIcon.classList.remove("fa-arrows-alt");
-        changeIcon.setAttribute("data-fire","enterfullscreen");
+        leavefscreen.setAttribute("data-fire","enterfullscreen");
 
         video.style.width = null;
         video.style.height = null;
@@ -157,12 +169,16 @@ const controls = {
         akControl.removeAttribute("style");
 
         akControl.hidden = false;
-
-        if ( expand_unexpand ) {
-            expand_unexpand.removeAttribute("style");
-            expand_unexpand.classList.remove("unexpand");
-            expand_unexpand.classList.add("expand");
+        
+        leavefscreen.removeAttribute("class");
+        
+        if ( expandUnexpandControl ) {
+            expandUnexpandControl.removeAttribute("style");
+            expandUnexpandControl.classList.remove("unexpand");
+            expandUnexpandControl.classList.add("expand");
         }
+
+        applyButtonConfig(leavefscreen,"control-buttons","enterfullscreen");
 
         return document.webkitCancelFullScreen();
     },
@@ -226,18 +242,21 @@ const controls = {
         akControl.removeAttribute("data-fullscreenwidth");
         akControl.removeAttribute("style");
 
-        target.classList.remove("expand");
-        target.classList.add("unexpand");
 
+        target.removeAttribute("class");
+        target.classList.add("unexpand");
         target.setAttribute("data-fire", "unexpand");
+
+        applyButtonConfig(target,"control-buttons","unexpand");
+
+
     },
     unexpand({ target }) {
 
         const akControl = document.querySelector(".akara-control");
+        const { position, left, top } = this;
 
         akControl.setAttribute("data-fullscreenwidth", "true");
-
-        const { position, left, top } = this;
 
         Object.assign(akControl.style, {
             position,
@@ -245,17 +264,15 @@ const controls = {
             top
         });
 
-        target.classList.remove("unexpand");
-
+        target.removeAttribute("class");
         target.classList.add("expand");
-
         target.setAttribute("data-fire", "expand");
+
+        applyButtonConfig(target,"control-buttons","expand");
 
     },
     random({ target }) {
-
         const random = target;
-
         video.setAttribute("data-random", "random");
         random.setAttribute("data-fire", "norandom");
     },
@@ -278,9 +295,11 @@ const controls = {
     }
 };
 
+
 buildRepeatMenu();
 
 module.exports = {
     video,
-    controls
+    controls,
+    applyButtonConfig
 };

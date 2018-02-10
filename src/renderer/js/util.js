@@ -48,6 +48,7 @@ const childProcess = require("child_process");
 
 const {
     video,
+    applyButtonConfig,
     controls: {
         play
     }
@@ -1099,16 +1100,16 @@ const savepodcast = async (podcasturl,callback) => {
         }
 
         if ( Object.keys(pod).indexOf(result.title) === -1 ) {
-            
+
             result.podlink = pod__;
-            
+
             if ( ! result.image || result.image.length === 0 ) {
                 akara_emit.emit("akara::podcast:image", result);
                 continue;
             }
-            
+
             callback(null,null,{ name: result.name, link: pod__ });
-            
+
             base64Img.requestBase64(result.image, (err,res,body) => {
                 result.image = body;
                 akara_emit.emit("akara::podcast:image", result);
@@ -1153,7 +1154,7 @@ module.exports.removepodcast = podtoremove => {
         if ( _pods === podtoremove )
             delete pod[podtoremove];
     }
-    
+
 
     fs.writeFileSync(podcast, JSON.stringify(pod));
 
@@ -1548,3 +1549,28 @@ module.exports.downloadAlbumArt = art => {
 
     });
 };
+
+
+module.exports.applyButtonConfig = applyButtonConfig;
+
+module.exports.UIBUTTON = async (type,buttonName) => {
+    
+    let uibuttonPath = await requireSettingsPath("uibuttons.json");
+    let uibutton = require(uibuttonPath);
+    
+    if ( Array.isArray(buttonName) )
+        ;
+    else
+        buttonName = [ buttonName ];
+
+    let buttonsObj = { };
+    
+    for ( let button of buttonName ) {
+        Object.assign(buttonsObj, {
+            [button]: uibutton[type][button]
+        });
+    }
+
+    return buttonsObj;
+};
+

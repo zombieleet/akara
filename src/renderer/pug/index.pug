@@ -80,9 +80,10 @@ block body
          div(class="window-state-buttons")
 
             ul(class="window-buttons")
-               li(class="fa fa-window-minimize window-min")
-               li(class="fa fa-window-maximize window-max")
-               li(class="fa fa-window-close window-close")
+               li(data-winop="minimize")
+               li(data-winop="maximize")
+               li(data-winop="close")
+               
       include list_loaded.pug
       include youtubeupload.pug
       script(src="../js/mainwindow_settings_load.js")

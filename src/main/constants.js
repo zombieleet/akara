@@ -86,12 +86,17 @@ const requireSettingsPath = type => {
                         play: [],
                         pause: [],
                         stop: [],
-                        forward: [],
-                        backward: [],
-                        volume_up: [],
+                        next: [],
+                        previous: [],
+                        volume: [],
+                        filter: [],
                         repeat: [],
                         random: [],
-                        expand: []
+                        subtitle: [],
+                        expand: [],
+                        unexpand: [],
+                        enterfullscreen: [],
+                        leavefullscreen: []
                     },
 
                     ["media-buttons"]:{
@@ -111,6 +116,12 @@ const requireSettingsPath = type => {
                         times: [],
                         close: [],
                         download: []
+                    },
+
+                    ["window-buttons"]: {
+                        close: [],
+                        minimize: [],
+                        maximize: []
                     }
 
                 };
@@ -121,12 +132,17 @@ const requireSettingsPath = type => {
                         play: "fa-play",
                         pause: "fa-pause",
                         stop: "fa-stop",
-                        forward: "fa-forward",
-                        backward: "fa-backward",
-                        volume_up: "fa-volume-up",
+                        next: "fa-forward",
+                        previous: "fa-backward",
+                        volume: "fa-volume-up",
+                        filter: "fa-filter",
                         repeat: "fa-repeat",
                         random: "fa-random",
-                        expand: "fa-expand"
+                        subtitle: "fa-cc",
+                        expand: "fa-arrows-h",
+                        unexpand: "fa-exchange",
+                        leavefullscreen: "fa-compress",
+                        enterfullscreen: "fa-expand"
                     },
                     ["media-buttons"]:{
                         play: "fa-play",
@@ -145,6 +161,11 @@ const requireSettingsPath = type => {
                         folder: "fa-folder",
                         close: "fa-window-close",
                         download: "fa-download"
+                    },
+                    ["window-buttons"]: {
+                        close: "fa-window-close",
+                        minimize: "fa-window-minimize",
+                        maximize: "fa-window-maximize"
                     }
                 };
                 break;
