@@ -22,7 +22,7 @@ body {
     font-weight: bolder;
     border-radius: 4px;
     text-align: center;
-    
+
     animation-name: moveToolTip;
     animation-duration: .3s;
     animation-timing-function: ease-in;
@@ -39,4 +39,22 @@ body {
 
 .toggle-on {
     color: lighten($global-color, 70%);
+}
+
+.window-buttons {
+    height: 50px;
+    [data-image_icon="image"] {
+
+        display: inline;
+
+        background-position: center;
+        background-repeat: no-repeat;
+
+        padding-left: 25px !important;
+        padding-top: 0.5em !important;
+
+        position: relative;
+        top: 12px;
+
+    }
 }
