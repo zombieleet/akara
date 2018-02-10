@@ -1,4 +1,4 @@
-"use strict";
+
 const {
     BrowserWindow,
     ipcMain: ipc
@@ -68,6 +68,20 @@ const createNewWindow = (obj,html) => {
 
     newWindow.on("unmaximize", event => {
         newWindow.webContents.send("akara::newwindow:isnotmin");
+    });
+
+    webContents.on("will-navigate", (evt,fpath) => {
+
+        evt.preventDefault();
+
+        let content = webContents.getTitle().replace(/\s+/,"");
+
+        if ( content !== "CreatePlaylist" )
+            return ;
+
+        webContents.send("akara::playlist:droplist", fpath);
+
+        return;
     });
 
     return newWindow;
