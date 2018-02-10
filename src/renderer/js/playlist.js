@@ -58,7 +58,7 @@
                     el.remove();
                 });
 
-                
+
                 const checkState = document.querySelector(".playlist-widget .fa-check-square-o");
                 const allPlaylist = document.querySelectorAll("li[data-full-path]");
 
@@ -66,7 +66,7 @@
                     checkState.classList.remove("fa-check-square-o");
                     checkState.classList.add("fa-square-o");
                 }
-                
+
                 if ( medialist.length === allPlaylist.length || type === "all" ) {
                     document.querySelector("video").src = "";
                     document.querySelector(".akara-title").textContent = "Akara Media Player";
@@ -144,21 +144,19 @@
 
                 let target = evt.target;
 
-                target = target.nodeName.toLowerCase() === "ul" ? undefined : target;
+                target = target.nodeName.toLowerCase() === "ul"
+                    ? undefined
+                    : target;
 
-                if ( ! target ) return false;
+                if ( ! target )
+                    return false;
 
                 if ( target.nodeName.toLowerCase() === "li" ) {
-
                     const span = target.querySelector("span");
-
                     this.__setCheckState(span);
-
                     return true;
                 }
-
                 this.__setCheckState(target);
-
                 return true;
             },
             enumerable: false,
@@ -169,9 +167,7 @@
             value(akaraLoaded) {
 
                 this.__bindedEvent = this.__selectModeEventHandler.bind(this);
-
                 akaraLoaded.addEventListener("click",this.__bindedEvent);
-
                 Array.from(akaraLoaded.children, el => {
                     const span = el.querySelector("span");
                     span.setAttribute("class", "fa fa-square-o");
@@ -186,7 +182,6 @@
             value(akaraLoaded) {
 
                 akaraLoaded.removeEventListener("click",this.__bindedEvent);
-
                 Array.from(akaraLoaded.children, el => {
                     const span = el.querySelector("span");
                     span.removeAttribute("class");
@@ -206,19 +201,15 @@
                     message: `Remove Playlist from current playlist`,
                     buttons: [ "Remove All", "Remove Selected", "Cancel" ]
                 }, btn => {
-
                     if ( btn === 0 ) {
                         this.__removeList("all");
                         return ;
                     }
-                    
                     if ( btn === 1 ) {
                         this.__removeList("selected");
                         return ;
                     }
-                    
                     return ;
-                    
                 });
             }
         },
@@ -229,7 +220,10 @@
                 const obj = {
                     width: 671,
                     height: 385,
-                    title: "createplaylist"
+                    title: "createplaylist",
+                    minimizable: true,
+                    resizable: true,
+                    maximizable: true
                 };
 
                 const playlist = document.querySelectorAll("[data-full-path]");
@@ -245,7 +239,7 @@
 
                 if ( btn === 2 )
                     return ;
-                
+
                 if ( btn === 0 ) {
                     // Yes
                     Array.from(playlist, el => {
@@ -256,7 +250,7 @@
                 if ( btn === 1 ) {
 
                     const isChecked = this.__isChecked();
-                    
+
                     if ( ! isChecked )
                         return ;
 
