@@ -21,20 +21,20 @@
 
 
     const loadVolumeSettings = async () => {
-        
+
         const volumeSettingPath = await requireSettingsPath("volume.json");
         const volumeSettings = require(volumeSettingPath);
-        
+
 
         const akaraVolume = document.querySelector(".akara-volume");
         const allVolumeSet = Array.prototype.slice.call(akaraVolume.querySelectorAll("[data-volume-set=true]"));
 
         const volumeInFloat = parseFloat((volumeSettings.volume_default_level / 100).toPrecision(1));
-        
+
         let lastVolumeSet = allVolumeSet[allVolumeSet.length - 1];
         let lastVolumeSetVolumeValue = parseFloat(lastVolumeSet.getAttribute("data-volume-controler"));
 
-        
+
         if ( volumeInFloat < lastVolumeSetVolumeValue ) {
             lastVolumeSet.removeAttribute("data-volume-set");
             while ( lastVolumeSet.previousElementSibling ) {
@@ -46,10 +46,10 @@
                 }
                 break;
             }
-            
-            
+
+
         } else if ( volumeInFloat > lastVolumeSetVolumeValue ) {
-            
+
             while ( lastVolumeSet.nextElementSibling ) {
                 if ( volumeInFloat !== lastVolumeSetVolumeValue ) {
                     lastVolumeSet = lastVolumeSet.nextElementSibling;
@@ -63,20 +63,20 @@
 
         lowHighVolume(volumeInFloat);
         document.querySelector("video").volume = volumeInFloat;
-        
+
     };
 
     const loadFilterSettings = async () => {
-        
+
         const filterSettingsPath = await requireSettingsPath("filter.json");
         const filterSettings = require(filterSettingsPath);
-        
+
         Object.keys(filterSettings).forEach( filterType => {
             let { progressBarWidth, measurement } = filterSettings[filterType];
             ipc.sendTo(1, "akara::video:filter", { filterType, progressBarWidth, measurement });
         });
     };
-    
+
     const loadPosterSettings = async () => {
         const posterJson = await requireSettingsPath("poster.json");
         const posterSettings = require(posterJson);
@@ -153,7 +153,7 @@
 
             if ( ! bolt )
                 return ;
-            
+
             if ( battery.charging ) {
                 bolt.style.display = "inline";
             } else {
@@ -178,7 +178,7 @@
             let batLow = battery.close_player_battery_low === "on"
                 ? true
                 : false;
-            
+
             if ( batLow && ( battery.level * 100  === 20 ) ) {
                 app.quit();
             }
