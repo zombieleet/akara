@@ -37,18 +37,18 @@
     /**
      *
      *
-     * hide or show pause resume and restart 
+     * hide or show pause resume and restart
      *  buttons
      *
      *
      **/
-    
+
     const hide = ({_pause,_resume,_restart}) => {
         pause.hidden = _pause;
         resume.hidden = _resume;
         restart.hidden = _restart;
     };
-    
+
 
 
     /**
@@ -58,7 +58,7 @@
      *  whenever the state of the download is updated
      *
      **/
-    
+
     ipc.on("download::state", (event,state) => {
 
         downloadState.textContent = state === "progressing"
@@ -91,21 +91,21 @@
         }
     });
 
-    
+
     /**
      *
      *
-     * download::gottenByte event listener will be trigerred 
+     * download::gottenByte event listener will be trigerred
      * each time a byte is downloaded
      *
      **/
 
-    
+
     ipc.on("download::gottenByte", (event,bytes) => {
         currentByte.textContent = computeByte(bytes);
     });
 
-    
+
     /**
      *
      *
@@ -119,7 +119,7 @@
         filename.textContent = fname;
     });
 
-    
+
     /**
      *
      *
@@ -128,19 +128,19 @@
      *  bytes contains the totalbyte of the file
      *
      **/
-    
+
     ipc.on("download::totalbyte", (event,bytes) => {
-        
+
         /**
          * when byte is 0 don't do a percent download
          * just do an unknown byte download
          **/
-        
+
         if ( bytes === 0 ) {
             totalByte.setAttribute("style", "display: hidden;");
             return ;
         }
-        
+
         totalByte.textContent = computeByte(bytes);
     });
 
@@ -148,14 +148,14 @@
     ipc.on("akara::downloadPath", (evt,url,cb) => {
         downloadURL(url,getCurrentWindow(),cb);
     });
-    
+
     /**
      *
-     * download::computePercent calculates 
+     * download::computePercent calculates
      * the percentage of receivedByte to totalByte
      *
      **/
-    
+
     ipc.on("download::computePercent", (event,rByte,tByte) => {
 
         if ( tByte === 0 ) {
@@ -167,24 +167,24 @@
         if ( unknownByte.hasAttribute("data-unknown-byte") ) {
             unknownByte.removeAttribute("data-unknown-byte");
         }
-        
+
         const percent = ( ( rByte / tByte ) * 100 ) + "%";
         downByPercent.textContent = percent;
         downByte.setAttribute("style", `width: ${percent}; padding: 3px; display: block`);
-        
+
     });
 
-    
+
     resume.addEventListener("click", () => {
         ipc.send("download::resume");
     });
 
-    
+
     cancel.addEventListener("click", () => {
         ipc.send("download::cancel");
         getCurrentWindow().close();
     });
-    
+
     restart.addEventListener("click", () => {
         ipc.send("download::restart");
     });
