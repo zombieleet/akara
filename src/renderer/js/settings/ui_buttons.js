@@ -30,14 +30,19 @@
 
     const saveFont = async (evt) => {
 
-        const target = evt.target;
+        let target = evt.target;
         let pNode = target.parentNode;
-        let imgNode = false;
+
+        let isImage = false;
 
         if ( HTMLImageElement[Symbol.hasInstance](target) ) {
-            imgNode = pNode;
+            isImage = true;
+            target = pNode;
             pNode = pNode.parentNode;
         }
+
+        if ( target.hasAttribute("data-fnt_image") )
+            isImage = true;
 
         let uibuttons = await requireSettingsPath("uibuttons.json");
         let uibuttonsSettings = require(uibuttons);
@@ -47,11 +52,38 @@
 
         iconType = iconType.querySelector("[data-icon_type]").getAttribute("data-icon_type");
 
-        uibuttonsSettings[category][iconType] = imgNode
-            ? imgNode.getAttribute("data-fnt_type")
-            : target.getAttribute("data-fnt_type");
+        uibuttonsSettings[category][iconType] = target.getAttribute("data-fnt_type");
 
         fs.writeFileSync(uibuttons, JSON.stringify(uibuttonsSettings));
+
+        for ( let el of Array.from(pNode.children) ) {
+            if ( el.hasAttribute("data-fnt_active") ) {
+                el.removeAttribute("data-fnt_active");
+                /**
+                   uncomment this break statement
+                   when support for removing double datauris is added
+                 **/
+                //break;
+            }
+        }
+
+        target.setAttribute("data-fnt_active", "true");
+        iconType = pNode.parentNode;
+
+        let icon = iconType.querySelector("[data-icon_type]");
+
+        if ( isImage ) {
+            icon.style.backgroundImage = `url(${target.querySelector("img").src})`;
+            icon.setAttribute("data-image_icon", "image");
+            icon.removeAttribute("class");
+            return ;
+        }
+
+
+        icon.setAttribute("class", `${target.className}`);
+        icon.removeAttribute("data-image_icon");
+        icon.removeAttribute("style");
+
     };
 
     const addnewFont = evt => {
@@ -90,14 +122,12 @@
                             return ;
                         }
 
-
                         let customUIButtonsPath = await requireSettingsPath("custom_uibuttons.json");
                         let customUIButtons = require(customUIButtonsPath);
                         let iconType = pNode.parentNode;
                         let category = iconType.parentNode.getAttribute("data-category");
 
                         let image = new Image();
-
 
                         let fntchild = document.createElement("li");
                         let addMoreChild = document.querySelector("[data-fnt_add=add_more]");
@@ -106,38 +136,15 @@
                         fntchild.setAttribute("data-fnt_type", data);
                         fntchild.appendChild(image);
 
-
                         iconType = iconType.querySelector("[data-icon_type]").getAttribute("data-icon_type");
 
                         image.src = data;
                         image.width = 20;
                         image.height = 20;
 
-                        //let allDataURIs = customUIButtons[category][iconType];
-
-                        // if ( allDataURIs.length > 0 ) {
-
-                        //     allDataURIs.forEach( dt => {
-                        //         newURIs.push(dt);
-                        //         if ( data !== dt ) {
-                        //             addMoreChild.insertAdjacentElement("afterend", fntchild);
-                        //         }
-                        //     });
-
                         addMoreChild.insertAdjacentElement("afterend", fntchild);
                         customUIButtons[category][iconType].push(data);
                         fs.writeFileSync(customUIButtonsPath, JSON.stringify(customUIButtons));
-
-                        // } else {
-
-                        //         newURIs.push(data);
-                        //         addMoreChild.insertAdjacentElement("afterend", fntchild);
-
-
-                        //         customUIButtons[category][iconType] = newURIs;
-                        //         fs.writeFileSync(customUIButtonsPath, JSON.stringify(customUIButtons));
-
-                        //     }
 
                         return ;
                     });
@@ -151,7 +158,7 @@
     };
 
 
-    uiButtonsParent.addEventListener("mousemove", async (evt) => {
+    uiButtonsParent.addEventListener("click", async (evt) => {
 
         let target = evt.target;
         let pNode ;
@@ -185,13 +192,11 @@
 
         fntparent.classList.add("fnt_parent");
 
-        console.log(uibuttonsSettings);
-        
         FONTS[fonttype].forEach( fnt => {
 
             const fntchild = document.createElement("li");
 
-            if ( fnt === uibuttonsSettings[category][fonttype] ) {
+            if ( uibuttonsSettings[category][fonttype] === fnt ) {
                 fntchild.setAttribute("data-fnt_active", "true");
             }
 
@@ -201,14 +206,14 @@
             fntparent.appendChild(fntchild);
 
         });
-        console.log(customUIButtonsSettings);
+
         customUIButtonsSettings[category][fonttype].forEach( datauri => {
 
             let image = new Image();
             let fntchild = document.createElement("li");
             let addMoreChild = document.querySelector("[data-fnt_add=add_more]");
 
-            if ( datauri === uibuttonsSettings[category][fonttype] ) {
+            if ( uibuttonsSettings[category][fonttype] === datauri ) {
                 fntchild.setAttribute("data-fnt_active", "true");
             }
 
@@ -236,7 +241,6 @@
         fntparent.appendChild(fntchild);
         pNode.insertBefore(fntparent, target);
 
-
     });
 
 
@@ -260,6 +264,55 @@
 
         if ( fntparent )
             fntparent.remove();
+    });
+
+
+    window.addEventListener("DOMContentLoaded", async () => {
+
+        let uibuttons = await requireSettingsPath("uibuttons.json");
+        let customUIButtons = await requireSettingsPath("custom_uibuttons.json");
+
+        let customUIButtonsSettings = require(customUIButtons);
+        let uibuttonsSettings = require(uibuttons);
+
+        Object.keys(uibuttonsSettings).forEach( category => {
+
+            let category__ = document.querySelector(`[data-category=${category}]`);
+
+            Object.keys(uibuttonsSettings[category]).forEach(iconType => {
+
+                let button_item = document.createElement(`div`);
+                let font = document.createElement(`i`);
+                let icon = uibuttonsSettings[category][iconType];
+
+                let isUri = false;
+
+                let datauris = customUIButtonsSettings[category][iconType];
+
+                button_item.setAttribute("class", `${category}-item`);
+                font.setAttribute("data-icon_type", iconType);
+                font.setAttribute("data-tooltip", "true");
+
+                button_item.appendChild(font);
+                category__.appendChild(button_item);
+
+                datauris.forEach( uri => {
+
+                    if ( icon !== uri )
+                        return ;
+
+                    font.style.backgroundImage = `url(${icon})`;
+                    font.setAttribute("data-image_icon", "image");
+
+                    isUri = true;
+
+                });
+
+                if ( ! isUri )
+                    font.setAttribute("class", `fa ${icon}`);
+
+            });
+        });
     });
 
 
