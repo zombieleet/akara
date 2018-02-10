@@ -3,7 +3,7 @@
 }
 
 .playlist-header {
-    @extend %new_window_headers;
+    @extend %window-headers;
 }
 
 .create-playlist {
@@ -59,39 +59,6 @@
 
 }
 
-.submit-cancel-button {
-
-    clear: both;
-    float: right;
-
-
-    position: absolute;
-    
-    bottom: 50px;
-    right: 50px;
-    button {
-        
-        /* margin: 12px; */
-        /* cursor: pointer; */
-        /* border: none; */
-        /* padding: 20px; */
-
-        /* font-size: 1.1em; */
-
-        /* font-family: tahoma; */
-
-        /* transition: .2s background, color ease-in, .2s color ease-in; */
-        /* &:hover { */
-        /*     background: black; */
-        /*     color: white; */
-        /* } */
-        @extend %buttons;
-    }
-
-    button:first-of-type {
-        right: 90px;
-    }
-}
 
 %list {
     background: lighten(lightgrey,20%);
@@ -107,7 +74,7 @@
 
 
     line-height: 1.5;
-    
+
     p {
         a {
             cursor: pointer;
@@ -121,13 +88,13 @@
 }
 
 [data-playlist="playlist"] {
-    
+
     @extend %list;
-    
+
     p {
-        
+
         width: 80%;
-        
+
         text-overflow: ellipsis;
         overflow: hidden;
 
@@ -138,7 +105,7 @@
 }
 
 .create-playlist-item {
-    
+
     border: 2px solid lighten(gray,60%);
     padding: 15px 15px 25px 15px;
     margin-top: 12px;
@@ -168,4 +135,18 @@
 [data-saveList="saveList"] {
     @extend [data-playlist="playlist"];
     cursor: pointer;
+}
+
+
+.submit-cancel-button {
+    clear: both;
+    float: right;
+    position: fixed;
+    top: 400px;
+    left: 0;
+    right: 35px;
+    button {
+        @extend %buttons;
+        width: 120px;
+    }
 }
