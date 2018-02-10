@@ -2,9 +2,13 @@
 
 ( ({ ipcRenderer: ipc }) => {
 
-    const akaraMin = document.querySelector(".window-min");
-    const akaraMax = document.querySelector(".window-max");
-    const akaraClose = document.querySelector(".window-close");
+    const akaraMin = document.querySelector("[data-winop=minimize]");
+    const akaraMax = document.querySelector("[data-winop=maximize]");
+    const akaraClose = document.querySelector("[data-winop=close]");
+
+    const {
+        applyButtonConfig
+    } = require("../js/util.js");
 
 
 
@@ -21,13 +25,15 @@
     });
 
     ipc.on("window-is-max", () => {
-        akaraMax.classList.remove("fa-window-maximize");
-        akaraMax.classList.add("fa-window-restore");
+        // dont restore back to max
+        akaraMax.removeAttribute("class");
+        applyButtonConfig(akaraMax, "window-buttons", "maximize");
     });
 
     ipc.on("window-is-not-max", () => {
-        akaraMax.classList.remove("fa-window-restore");
-        akaraMax.classList.add("fa-window-maximize");
+        // restore back to max
+        akaraMax.removeAttribute("class");
+        applyButtonConfig(akaraMax, "window-buttons", "maximize");
     });
 
     ipc.on("akara::quiting", () => {
