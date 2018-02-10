@@ -80,7 +80,9 @@
 
     newList.addEventListener("click", evt => div.hidden = false);
 
-    close.addEventListener("click", () => getCurrentWindow.close());
+    close.addEventListener("click", () => {
+        getCurrentWindow().close();
+    });
 
     closeInput.addEventListener("click", evt => div.hidden = true);
     
