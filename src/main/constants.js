@@ -116,6 +116,12 @@ const requireSettingsPath = type => {
                         times: [],
                         close: [],
                         download: []
+                    },
+
+                    ["window-buttons"]: {
+                        close: [],
+                        minimize: [],
+                        maximize: []
                     }
 
                 };
@@ -155,6 +161,11 @@ const requireSettingsPath = type => {
                         folder: "fa-folder",
                         close: "fa-window-close",
                         download: "fa-download"
+                    },
+                    ["window-buttons"]: {
+                        close: "fa-window-close",
+                        minimize: "fa-window-minimize",
+                        maximize: "fa-window-maximize"
                     }
                 };
                 break;
