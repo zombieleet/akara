@@ -1,4 +1,3 @@
-"use strict";
 
 const fs = require("fs");
 
@@ -52,7 +51,6 @@ const iterateDir = () => {
             });
 
             if ( dirs.length !== 0 )
-
                 dirIt(dirs.pop());
 
             return files;
@@ -66,23 +64,23 @@ const iterateDir = () => {
 };
 
 const removeConvMedia = () => {
-    
+
     if ( ! fs.existsSync(CONVERTED_MEDIA ) )
         return ;
 
     fs.readdir(CONVERTED_MEDIA, (err,fpath) => {
-        
+
         if ( err )
             return dialog.showErrorBox(
                 "Error","Error while reading coverted media folder"
             );
 
         fpath.forEach( path => {
-            
+
             const fullPath = join(CONVERTED_MEDIA,path);
-            
+
             fs.unlink(fullPath,(err,fpath) => {
-                
+
                 if ( err )
                     return dialog.showErrorBox(
                         `Unable to delete ${path}`,`Cannot delete converted media ${path}`
