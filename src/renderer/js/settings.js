@@ -14,9 +14,9 @@
     const { handleWindowButtons } = require("../js/util.js");
 
 
-    const settingsMin = document.querySelector(".window-min");
-    const settingsMax = document.querySelector(".window-max");
-    const settingsClose = document.querySelector(".window-close");
+    const settingsMin = document.querySelector("[data-winop=minimize]");
+    const settingsMax = document.querySelector("[data-winop=maximize]");
+    const settingsClose = document.querySelector("[data-winop=close]");
     const settingsValue = document.querySelector(".settings-values");
     const textSearch = document.querySelector(".search");
 

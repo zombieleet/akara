@@ -30,9 +30,9 @@
     const podcastKey = new(require("../js/keyevents.js"));
     const podcastFuncs = document.querySelector("section");
 
-    const min = document.querySelector(".window-min");
-    const max = document.querySelector(".window-max");
-    const close = document.querySelector(".window-close");
+    const min = document.querySelector("[data-winop=minimize]");
+    const max = document.querySelector("[data-winop=maximize]");
+    const close = document.querySelector("[data-winop=close]");
 
 
 
@@ -610,8 +610,6 @@
 
     close.addEventListener("click", () => getCurrentWindow().close());
 
-    handleWindowButtons({ close, min, max});
-
     window.addEventListener("DOMContentLoaded", evt => {
 
         const podcasts = loadpodcast();
@@ -650,5 +648,8 @@
                 podcast.__savePodcast();
         }
     });
+
+
+    handleWindowButtons({ close, min, max});
 
 })();

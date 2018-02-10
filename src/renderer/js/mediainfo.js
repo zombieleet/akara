@@ -22,9 +22,9 @@
         downloadAlbumArt
     } = require("../js/util.js");
 
-    const mediaMin = document.querySelector(".window-min");
-    const mediaMax = document.querySelector(".window-max");
-    const mediaClose = document.querySelector(".window-close");
+    const mediaMin = document.querySelector("[data-winop=minimize]");
+    const mediaMax = document.querySelector("[data-winop=maximize]");
+    const mediaClose = document.querySelector("[data-winop=close]");
     const mediaInfo = document.querySelector(".media-info");
 
     const spinner = () => {

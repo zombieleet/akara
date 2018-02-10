@@ -23,9 +23,9 @@
     const base64Img = require("base64-img");
     const fs = require("fs");
 
-    const uiButtonMin = document.querySelector(".window-min");
-    const uiButtonMax = document.querySelector(".window-max");
-    const uiButtonClose = document.querySelector(".window-close");
+    const uiButtonMin = document.querySelector("[data-winop=minimize]");
+    const uiButtonMax = document.querySelector("[data-winop=maximize");
+    const uiButtonClose = document.querySelector("[data-winop=close]");
     const uiButtonsParent = document.querySelector(".ui_button-parent");
 
     const saveFont = async (evt) => {
