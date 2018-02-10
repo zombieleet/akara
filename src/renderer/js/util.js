@@ -1458,15 +1458,24 @@ module.exports.uploadYoutubeVideo = auth => {
 
 module.exports.handleWindowButtons = ( { close, min, max } ) => {
 
-
+    applyButtonConfig(max,"window-buttons", "maximize");
+    applyButtonConfig(min, "window-buttons", "minimize");
+    applyButtonConfig(close, "window-buttons", "close");
+    
     const ismax = () => {
-        max.classList.remove("fa-window-maximize");
-        max.classList.add("fa-window-restore");
+        // restore 
+        max.removeAttribute("class");
+        applyButtonConfig(max,"window-buttons", "maxmize");
+        // max.classList.remove("fa-window-maximize");
+        // max.classList.add("fa-window-restore");
     };
 
     const isnotmin = () => {
-        max.classList.remove("fa-window-restore");
-        max.classList.add("fa-window-maximize");
+        // maximize
+        max.removeAttribute("class");
+        applyButtonConfig(max,"window-buttons", "maximize");
+        // max.classList.remove("fa-window-restore");
+        // max.classList.add("fa-window-maximize");
     };
 
     close.addEventListener("click", () => {
