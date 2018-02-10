@@ -3,29 +3,35 @@ extends ./__layout.pug
 
 block title
   title Create Playlist
-  
+
 block body
   body(class="create-playlist-body")
     header(class="playlist-header")
-      span Create Playlist
-      span(class="fa fa-window-close create-playlist-close")
+      div(class="window-title") Create Playlist
+      div(class="window-state-buttons")
+        ul(class="window-buttons")
+          li(data-winop="minimize")
+          li(data-winop="maximize")
+          li(data-winop="close")
+
+
     section(class="create-playlist")
-    
+
       form(class="create-playlist-form")
-      
-        label(for="create-playlist-name") 
+
+        label(for="create-playlist-name")
           i Playlist Name:
-          
+
         input(type="text" placeholder="Playlist Name" id="create-playlist-name" class="create-playlist-input")
-        
+
         div(class="media-playlist-container")
           div(class="add-playlist")
-          
+
           div(class="add-to-existing-playlist")
-          
-          
+
+
         div(class="submit-cancel-button")
            button(type="submit" class="create-playlist-submit") Submit
            button(type="cancel" class="create-playlist-cancel") Cancel
-          
+
     script(src="../js/createplaylist.js")
