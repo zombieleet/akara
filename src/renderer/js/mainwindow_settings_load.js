@@ -13,6 +13,12 @@
         requireSettingsPath
     } = _require("./constants.js");
 
+    const {
+        UIBUTTON,
+        applyButtonConfig
+    } = require("../js/util.js");
+
+
     const { lowHighVolume } = require("../js/videohandlers.js");
     const { controls } = require("../js/video_control.js");
 
@@ -187,11 +193,50 @@
 
     };
 
+
+    const loadUISettingButton = async (section, buttonsToLoad, getBy) => {
+
+        let uibutton = await UIBUTTON(section, buttonsToLoad);
+
+        Object.keys(uibutton).forEach( button => {
+
+            const uibutt = document.querySelector(`[${getBy}=${button}]`);
+            const font = uibutton[button];
+
+            if ( ! font ||  ! uibutt )
+                return ;
+
+            localStorage.setItem(section, JSON.stringify(uibutton));
+
+            if ( /data:image\//.test(font) ) {
+
+                uibutt.style.backgroundImage = `url(${font})`;
+                uibutt.setAttribute("data-image_icon", "image");
+
+            } else {
+                uibutt.classList.add("fa");
+                uibutt.classList.add(`${font}`);
+            }
+
+        });
+    };
+
+
+
     window.addEventListener("DOMContentLoaded", async () => {
         await loadPosterSettings();
         await loadBatterySettings();
         await loadFilterSettings();
         await loadVolumeSettings();
+        await loadUISettingButton("control-buttons", [
+            "play", "pause", "stop", "next", "previous", "volume",
+            "expand", "unexpand", "filter", "repeat", "random",
+            "subtitle", "enterfullscreen", "leavefullscreen"
+        ], "data-fire");
+
+        await loadUISettingButton("window-buttons", [
+            "close", "minimize", "maximize"
+        ], "data-winop");
     });
 
 })();
