@@ -10,6 +10,11 @@
     @extend .loadplaylist;
 }
 
-.removeplaylist-load {
-    @extend .loadplaylist-load;
+.removeplaylist-btn {
+    .remove-btn {
+        @extend %buttons;
+        float: right;
+        width: 19%;
+        margin-top: 0;
+    }
 }
