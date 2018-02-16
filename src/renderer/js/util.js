@@ -17,13 +17,6 @@ const {
 } = require("electron");
 
 const {
-    playlist: {
-        file: playlistLocation
-    },
-    podcast
-} = _require("./configuration.js");
-
-const {
     CONVERTED_MEDIA,
     URL_ONLINE,
     SIZE,
@@ -31,6 +24,12 @@ const {
     FFMPEG_LOCATION,
     requireSettingsPath
 } = _require("./constants.js");
+
+const  {
+    playlist: {
+        file: playlistLocation
+    }
+} = _require("./configuration.js");
 
 const {
     Magic,
@@ -769,6 +768,8 @@ module.exports.makeDynamic = makeDynamic;
 
 module.exports.playlistSave = (key, files, notify) => {
 
+
+
     const list = require(playlistLocation);
 
     let savedList = list[key] || [];
@@ -813,11 +814,10 @@ module.exports.playlistSave = (key, files, notify) => {
 module.exports.playlistLoad = listName => {
 
     if ( typeof(listName) !== "string" )
-
         throw TypeError(`expected string as listName but got ${typeof(listName)}`);
 
-    const list = require(playlistLocation);
 
+    const list = require(playlistLocation);
 
     if ( ! listName in list )
         return dialog.showErrorBox(
@@ -971,62 +971,50 @@ module.exports.renderPlayList = type => {
 
     const loadplaylist = document.querySelector(`.${type}`);
 
+    if ( ! loadplaylist ) {
+        return new Error(`wrong argument`,`specified argument as class ${type} cannot be located in the dom`);
+    }
+
     const list = require(playlistLocation);
 
-    if ( ! loadplaylist )
-        return false;
-
     if ( Object.keys(list).length === 0 ) {
-
         const p = document.createElement("p");
-
         p.textContent = "No Playlist have been created";
         p.setAttribute("class", "no-loadplaylist");
-
         document.querySelector("button").hidden = true;
         loadplaylist.appendChild(p);
-
         return false;
     }
 
-    const ul = document.createElement("ul");
+    let ul = document.querySelector(".append-list");
+    if ( ul )
+        return false;
+
+    ul = document.createElement("ul");
+    ul.setAttribute("class", "append-list");
 
     let  noP = loadplaylist.querySelector(".no-loadplaylist");
-
     if ( noP )
-
         noP.remove();
 
     noP = undefined;
 
-    let i = 0;
-
     for ( let __list of Object.keys(list) ) {
-
         const li = document.createElement("li");
         const p = document.createElement("p");
-
         const numlist = document.createElement("span");
-
         p.textContent = __list;
-
         numlist.textContent = `${list[__list].length} files`;
-
-        i = makeDynamic(li,i);
-
         li.setAttribute("class", "loadplaylist-item");
-
         li.setAttribute("data-capture", __list);
-
-
         li.appendChild(p);
         li.appendChild(numlist);
         ul.appendChild(li);
     }
 
     loadplaylist.appendChild(ul);
-
-    return selectMultipe(ul);
+    selectMultipe(ul);
+    return true;
 };
 
 const updatePlaylistName = target => {
@@ -1050,6 +1038,7 @@ module.exports.tClient = bBird.promisifyAll(
 
 const savepodcast = async (podcasturl,callback) => {
 
+    const { podcast } = _require("./configuration.js");
     const pod = require(podcast);
     const podson = require("podson");
     const base64Img = require("base64-img");
@@ -1066,11 +1055,7 @@ const savepodcast = async (podcasturl,callback) => {
     let errs = [];
     let succ = [];
 
-
-
     akara_emit.on("akara::podcast:image", ({ description , title, language, owner, categories, image, podlink }) => {
-
-
         pod[title] = {
             title,
             description,
@@ -1080,9 +1065,7 @@ const savepodcast = async (podcasturl,callback) => {
             image,
             podlink
         };
-
         fs.writeFileSync(podcast, JSON.stringify(pod));
-
         callback(null,pod[title]);
     });
 
@@ -1137,13 +1120,14 @@ const savepodcast = async (podcasturl,callback) => {
 module.exports.savepodcast = savepodcast;
 
 module.exports.loadpodcast = () => {
+    const { podcast } = _require("./configuration.js");
     const pod = require(podcast);
-    console.log(pod);
     return Object.keys(pod).length > 0 ? pod : {};
 };
 
 module.exports.removepodcast = podtoremove => {
 
+    const { podcast } = _require("./configuration.js");
     let pod = require(podcast);
 
     if ( ! Object.keys(pod).includes(podtoremove) )
@@ -1461,9 +1445,9 @@ module.exports.handleWindowButtons = ( { close, min, max } ) => {
     applyButtonConfig(max,"window-buttons", "maximize");
     applyButtonConfig(min, "window-buttons", "minimize");
     applyButtonConfig(close, "window-buttons", "close");
-    
+
     const ismax = () => {
-        // restore 
+        // restore
         max.removeAttribute("class");
         applyButtonConfig(max,"window-buttons", "maxmize");
         // max.classList.remove("fa-window-maximize");
@@ -1563,17 +1547,17 @@ module.exports.downloadAlbumArt = art => {
 module.exports.applyButtonConfig = applyButtonConfig;
 
 module.exports.UIBUTTON = async (type,buttonName) => {
-    
+
     let uibuttonPath = await requireSettingsPath("uibuttons.json");
     let uibutton = require(uibuttonPath);
-    
+
     if ( Array.isArray(buttonName) )
         ;
     else
         buttonName = [ buttonName ];
 
     let buttonsObj = { };
-    
+
     for ( let button of buttonName ) {
         Object.assign(buttonsObj, {
             [button]: uibutton[type][button]
@@ -1582,4 +1566,3 @@ module.exports.UIBUTTON = async (type,buttonName) => {
 
     return buttonsObj;
 };
-
