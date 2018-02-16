@@ -1,78 +1,41 @@
 .addplaylist-body {
     @extend %new_window_body;
 }
+
 .addplaylist-header {
     @extend %new_window_headers;
 }
 
 .addplaylist {
-    padding: 15px;
+    @extend .loadplaylist;
+}
 
-    a {
-        cursor: pointer;
-        &:hover {
-            color: lighten(darkgrey, 5%);
-            text-decoration: underline;
-        }
+.addplaylist-btn {
+    .add-btn {
+        @extend %buttons;
+        float: right;
+        width: 19%;
+        margin-top: 0;
     }
-    input {
-        @extend %form-input;
-        display: inline;
-        width: 60%;
-    }
-    i {
-        color: white;
-        padding: 5px;
-        border-radius: 100%;
+}
 
-        background: black;
-        transition: .2s background ease-in;
+.addplaylist-newlist,
+.addplaylist-inputnew,
+.addplaylist-btnnew {
+    display: flex;
+    justify-content: center;
+    margin: 15px auto !important;
+}
 
-        margin-left: 10px;
+.addplaylist-inputnew {
+    width: 30%;
+    padding: 5px;
+    border-radius: 12px;
+    border: none;
+}
 
-        cursor: pointer;
 
-        &:hover {
-            background: lighten(black, 40%);
-        }
-    }
-    select {
-        margin-top: 12px;
-        padding: 15px;
-        width: 60%;
-        display: block;
-        border: 0.5px solid lightgrey;
-
-        overflow: auto;
-        option {
-            padding: 15px;
-            background: lightgrey;
-            p:first-letter {
-                text-transform: uppercase;
-            }
-        }
-    }
-
-    .submitaddplaylist {
-        padding: 20px;
-        width: 20%;
-
-        font-size: 17px;
-
-        margin-top: 12px;
-
-        position: absolute;
-        right: 23px;
-
-        border: none;
-
-        cursor: pointer;
-
-        transition: .2s background,color ease-in;
-        &:hover {
-            background: darken(lightgrey,70%);
-            color: white;
-        }
-    }
-
+.addplaylist-btnnew {
+    @extend %buttons;
+    float: initial;
 }
