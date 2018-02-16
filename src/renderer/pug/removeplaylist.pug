@@ -4,13 +4,14 @@ block title
   title Remove Playlist
 
 block body
-  body(class="load-playlist-body remove-playlist-body")
-    header(class="loadplaylist-header removeplaylist-header")
+  body(class="remove-playlist-body")
+    header(class="removeplaylist-header")
       span Remove Playlist
-      span(class="fa fa-window-close removeplaylist-close")
-      
-    section(class="loadplaylist removeplaylist")
+      span(class="fa fa-window-close" data-winop="close")
 
-    button(class="removeplaylist-load" type="submit") Remove
+    section(class="removeplaylist")
+
+    div(class="removeplaylist-btn")
+      button(class="remove-btn" type="submit") Remove
+
     script(src="../js/removeplaylist.js")
-  
