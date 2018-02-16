@@ -5,6 +5,7 @@
     const {
         remote: {
             require: _require,
+            dialog,
             getCurrentWindow
         }
     } = require("electron");
@@ -16,76 +17,85 @@
     } = _require("./configuration.js");
 
     const {
-        playlistSave
+        playlistSave,
+        renderPlayList
     } = require("../js/util.js");
 
     const list = require(playlistLocation);
 
-    const section = document.querySelector(".addplaylist");
-    const button = document.querySelector("button");
+    const addplaylist = document.querySelector(".addplaylist");
+    const addbtn = document.querySelector(".add-btn");
     const close = document.querySelector(".addplaylist-close");
-    const div = document.querySelector(".addplaylist-newlist");
 
-    const input = div.querySelector("input");
-    const closeInput = div.querySelector(".addplaylist-close-input");
 
-    const newList = document.querySelector("a");
+    const requestAddingNewList = () => {
 
-    function loadSavedPlaylist() {
+        const rendered = renderPlayList("addplaylist");
 
-        const savedList = Object.keys(list);
+        if ( ! rendered && ! Error[Symbol.hasInstance](rendered) ) {
 
-        const select = document.createElement("select");
+            const addNew = document.createElement("a");
+            addNew.setAttribute("class", "addplaylist-newlist");
 
-        for ( let __list of savedList ) {
-            const option = document.createElement("option");
-            const p = document.createElement("p");
+            addNew.textContent = "new list";
 
-            option.setAttribute("value", __list);
+            addNew.addEventListener("click", () => {
+                const inputNew = document.createElement("input");
+                const btnNew = document.createElement("button");
 
-            let content = __list.match(/./);
+                inputNew.setAttribute("class", "addplaylist-inputnew");
+                btnNew.setAttribute("class", "addplaylist-btnnew");
 
-            option.textContent = content["input"].
-                replace(
-                    content[0],content[0].toUpperCase()
-                );
+                btnNew.textContent = "add";
 
-            select.appendChild(option);
+                btnNew.addEventListener("click", () => {
+
+                    if ( /^\s{0,}$/.test(inputNew.value) ) {
+                        dialog.showErrorBox("invalid input","type in the new playlist name in input box");
+                        return ;
+                    }
+
+                    playlistSave(inputNew.value, [ localStorage.getItem("akara::addplaylist") ], true);
+
+                    addNew.remove();
+                    inputNew.remove();
+                    btnNew.remove();
+
+                    requestAddingNewList();
+
+                });
+
+                addplaylist.appendChild(inputNew);
+                addplaylist.appendChild(btnNew);
+
+                addNew.style.display = "none";
+            });
+
+            addplaylist.appendChild(addNew);
         }
+    };
 
-        select.multiple = true;
-        section.insertBefore(select, button);
-    }
+    addbtn.addEventListener("click", () => {
 
+        const selection = document.querySelectorAll("[data-load]");
 
-    button.addEventListener("click", evt => {
+        if ( selection.length === 0 )
+            return ;
 
-        const options = document.querySelectorAll("select option");
-        const value = localStorage.getItem("akara::addplaylist");
-
-        if ( ! div.hidden && ! /^\s+$|^\s$/.test(input.value) ) {
-            playlistSave(input.value,[value]);
-        }
-
-        Array.from(options, el => {
-            if ( el.selected ) {
-                const key = el.getAttribute("value");
-                playlistSave(key,[ value ]);
-            }
+        Array.from(selection, el => {
+            const listName = el.getAttribute("data-capture");
+            playlistSave(listName, [ localStorage.getItem("akara::addplaylist")  ], true);
         });
 
-        localStorage.removeItem("akara::addplaylist");
+        addplaylist.querySelector(".append-list").remove();
+        renderPlayList("addplaylist");
     });
 
-
-    newList.addEventListener("click", evt => div.hidden = false);
 
     close.addEventListener("click", () => {
         getCurrentWindow().close();
     });
 
-    closeInput.addEventListener("click", evt => div.hidden = true);
-    
-    loadSavedPlaylist();
+    window.addEventListener("DOMContentLoaded", requestAddingNewList);
 
 })();
