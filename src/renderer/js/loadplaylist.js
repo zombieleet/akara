@@ -16,13 +16,12 @@
         renderPlayList
     } = require("../js/util.js");
 
-    const button = document.querySelector("button");
-
-    const close = document.querySelector(".loadplaylist-close");
+    const loadBtn = document.querySelector(".load-btn");
+    const close = document.querySelector("[data-winop=close]");
 
     close.addEventListener("click", evt => getCurrentWindow().close());
 
-    button.addEventListener("click", evt => {
+    loadBtn.addEventListener("click", evt => {
 
         const selection = document.querySelectorAll("[data-load]");
 
@@ -39,10 +38,11 @@
             ipc.sendTo(1,"akara::loadplaylist", filteredPlaylistName , playlistName);
 
         });
-
         return true ;
     });
 
-    renderPlayList("loadplaylist");
+    window.addEventListener("DOMContentLoaded", () => {
+        renderPlayList("loadplaylist");
+    });
 
 })();
