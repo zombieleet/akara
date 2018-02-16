@@ -3,14 +3,16 @@ extends ./__layout.pug
 
 block title
   title Load Playlist
-  
-block body
-  body(class="load-playlist-body remove-playlist-body")
-    header(class="loadplaylist-header removeplaylist-header")
-      span Load Playlist
-      span(class="fa fa-window-close loadplaylist-close removeplaylist-close")
-      
-    section(class="loadplaylist removeplaylist")
 
-    button(class="loadplaylist-load" type="submit") Load
+block body
+  body(class="load-playlist-body")
+    header(class="loadplaylist-header")
+      span Load Playlist
+      span(class="fa fa-window-close" data-winop="close")
+
+    section(class="loadplaylist")
+
+    div(class="loadplaylist-btn")
+      button(class="load-btn" type="submit") Load
+
     script(src="../js/loadplaylist.js")
