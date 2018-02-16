@@ -194,8 +194,8 @@
     ipc.on("add-toplaylist-hit", () => {
 
         const obj = {
-            width: 626,
-            height: 400,
+            width: 408,
+            height: 527,
             title: "addplaylist",
             parent: getCurrentWindow()
         };
