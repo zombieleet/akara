@@ -1,5 +1,5 @@
 ; ( () => {
-    
+
     "use strict";
 
     const {
@@ -14,34 +14,48 @@
         }
     } = require("electron");
 
-    const close = document.querySelector(".removeplaylist-close");
+    const akara_emit = require("../js/emitter.js");
 
-    const button = document.querySelector("button");
+    const close = document.querySelector("[data-winop=close]");
+    const removeBtn = document.querySelector(".remove-btn");
 
     close.addEventListener("click", evt => getCurrentWindow().close());
 
-    button.addEventListener("click", evt => {
+    removeBtn.addEventListener("click", evt => {
 
         const selection = document.querySelectorAll("[data-load]");
 
-        if ( ! selection )
-            return false;
+        if ( selection.length === 0 )
+            return ;
+
+        let len = selection.length;
 
         Array.from(selection, el => {
 
             const listName = el.getAttribute("data-capture");
+            const isDelete = deletePlaylist(listName);
 
-            if ( ! deletePlaylist(listName) )
-                return dialog.showErrorBox(
+            if ( isDelete ) {
+                el.remove();
+                --len;
+                return ;
+            }
+            dialog.showErrorBox(
                     "cannot find playlist",
-                    `${listName} could not be located for deletion`
-                );
-
-            getCurrentWindow().close();
-            
-            return true ;
+                `${listName} could not be located for deletion`
+            );
+            return ;
         });
+
+        if ( ! len ) {
+            renderPlayList("removeplaylist");
+            return ;
+        }
+
     });
 
-    renderPlayList("removeplaylist");
+    window.addEventListener("DOMContentLoaded", () => {
+        renderPlayList("removeplaylist");
+    });
+
 })();
