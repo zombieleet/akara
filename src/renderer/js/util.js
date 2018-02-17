@@ -621,12 +621,10 @@ module.exports.disableVideoMenuItem = menuInst => {
     }
 
 
-    requireSettingsPath("share.json")
-        .then( path => {
-            let settingsPath = require(path);
-            if ( menuInst.label === "Share" && settingsPath.deactivate_sharing_option === "yes" )
-                menuInst.enabled = false;
-        });
+    if ( menuInst.label === "Share" && localStorage.getItem("share::deactivate") === "yes" ) {
+        menuInst.enabled = false;
+        return;
+    }
 };
 
 const ccState = menuInst => {

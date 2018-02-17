@@ -68,11 +68,16 @@
         Array.from(shareItem, _toggle => {
             
             const parent = _toggle.parentNode;
+            const dataSaveType = parent.getAttribute("data-save");
             
             if ( _toggle.classList.contains("toggle-off") )
-                shareSettings[parent.getAttribute("data-save")] = "no";
+                shareSettings[dataSaveType] = "no";
             else
-                shareSettings[parent.getAttribute("data-save")] = "yes";
+                shareSettings[dataSaveType] = "yes";
+
+            if ( dataSaveType === "deactivate_sharing_option" ) {
+                localStorage.setItem("share::deactivate", shareSettings[dataSaveType]);
+            }
         });
 
 
