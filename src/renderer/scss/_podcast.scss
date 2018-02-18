@@ -53,7 +53,7 @@
         margin-top: 50px;
 
         width: 97%;
-        height: 1000px;
+        height: 737px;
 
         overflow-y: auto;
         overflow-x: hidden;
@@ -124,60 +124,171 @@
 }
 
 
+.podcastload-podcaster {
+    display: none;
+    height: 737px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 97%;
+    box-shadow: 0px 1px 6px 0px darken(lighten($global-color, 50%), 55%);
+    margin-left: 1px;
+}
+
+
+%podcastload-podcaster[data-view="list"] {
+    .podcastload-podcaster {
+        .podcaster-podcast {
+
+            padding: 5px;
+            //padding-bottom: 20px;
+            padding-left: 0;
+            padding-bottom: 1px;
+
+            > li {
+
+                //display: flex;
+                clear: both;
+                width: 99%;
+
+                margin-left: 8px;
+
+                background: $global-color;
+                box-shadow: 0px 1px 9px 0px rgba(238, 238, 238, 0.14);
+                margin-top: 5px;
+                cursor: pointer;
+                color: white;
+
+                padding-top: 16px;
+                padding-bottom: 30px;
+
+                .podcast-title {
+                    float: left;
+                    font: {
+                        weight: 400;
+                        size: 1em;
+                    }
+                    text-overflow: ellipsis;
+                    margin-left: 13px;
+                }
+                .podcast-image {
+                    display: none;
+                }
+                .podaudio-widget {
+
+                    display: inline-flex;
+                    justify-content: flex-end;
+
+                    float: right;
+                    width: 50%;
+
+                    margin-right: 12px;
+
+                    i:not(:first-of-type) {
+                        margin-left: 5px;
+                    }
+                }
+
+            }
+
+            > li:last-of-type {
+                margin-bottom: 100px;
+            }
+        }
+    }
+}
+
+
+%grid-li {
+    display: inline-flex;
+    justify-content: center;
+    width: 200px;
+    height: 200px;
+    margin: 20px;
+}
+
+%grid-title {
+    display: flex;
+    clear: left;
+    height: 12px;
+    width: 100%;
+    word-wrap: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+%grid-image {
+    display: block;
+    height: 100px;
+    margin: auto;
+    margin-left: -150px;
+}
+
+%grid-widgets {
+    clear: right;
+    display: flex;
+    justify-content: center;
+    align-self: flex-end;
+    position: relative;
+    left: -100px;
+}
+
 %podcastload-main[data-view="grid"] {
-
     .podcastload-main {
-
         margin-top: 23px;
-
+        width: 91%;
+        padding-left: 80px;
         > li {
-            display: inline-flex;
-            justify-content: center;
-            width: 200px;
-            height: 200px;
-            margin: 20px;
+            @extend %grid-li;
             .podcaster-podcast-name {
-                display: flex;
-                clear: left;
-                height: 12px;
-                width: 100%;
-                word-wrap: break-word;
-                white-space: nowrap;
-                overflow: hidden;
+                @extend %grid-title;
             }
 
             .podcast-image {
-                display: block;
-                height: 100px;
-                margin: auto;
-                margin-left: -150px;
+                @extend %grid-image;
             }
 
             .podcast-name-widgets {
-
-                clear: right;
-                display: flex;
-
-                justify-content: center;
-                align-self: flex-end;
-
-                position: relative;
-
-                left: -100px;
-
+                @extend %grid-widgets;
             }
         }
 
     }
 }
 
+%podcastload-podcaster[data-view="grid"] {
+    .podcastload-podcaster {
+        .podcaster-podcast {
+            padding-left: 80px;
+            > li {
+                @extend %grid-li;
+                .podcast-title {
+                    @extend %grid-title;
+                    text-overflow: ellipsis;
+                }
+                .podcast-image {
+                    @extend %grid-image;
+                    position: relative;
+                    left: 35px;
+                }
+                .podaudio-widget {
+                    @extend %grid-widgets;
+                    left: -52px;
+                }
+            }
+        }
+    }
+}
+
 [data-view="list"] {
     @extend %podcastload-main[data-view="list"];
+    @extend %podcastload-podcaster[data-view="list"];
 }
 
 [data-view="grid"] {
     @extend %podcastload-main[data-view="list"];
     @extend %podcastload-main[data-view="grid"];
+    @extend %podcastload-podcaster[data-view="list"];
+    @extend %podcastload-podcaster[data-view="grid"];
 }
 
 [data-view-anim="animation"] {
@@ -264,60 +375,6 @@
 
 }
 
-.podcaster-podcast {
-
-    padding: 5px;
-    padding-bottom: 20px;
-
-    > li {
-
-        //display: flex;
-        clear: both;
-        width: 99%;
-
-        margin-left: 8px;
-
-        background: $global-color;
-        box-shadow: 0px 1px 9px 0px rgba(238, 238, 238, 0.14);
-        margin-top: 5px;
-        cursor: pointer;
-        color: white;
-
-        padding-top: 16px;
-        padding-bottom: 30px;
-
-        .podcast-title {
-            float: left;
-            font: {
-                weight: 400;
-                size: 1em;
-            }
-            text-overflow: ellipsis;
-            margin-left: 13px;
-        }
-
-        .podaudio-widget {
-
-            display: inline-flex;
-            justify-content: flex-end;
-
-            float: right;
-            width: 50%;
-
-            margin-right: 12px;
-
-            i:not(:first-of-type) {
-                margin-left: 5px;
-            }
-        }
-
-    }
-
-    > li:last-of-type {
-        margin-bottom: 100px;
-    }
-}
-
 
 .podcast-spinner {
     height: 100%;
@@ -326,13 +383,4 @@
     i {
         font-size: 90px;
     }
-}
-
-
-.podcastload-podcaster {
-    display: none;
-    height: 1000px;
-    overflow-y: auto;
-    width: 100%;
-    margin-left: -12px;
 }
