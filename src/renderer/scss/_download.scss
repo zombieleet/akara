@@ -21,21 +21,33 @@
     }
 
     .akara-total-byte {
-        width: 100%;
+        width: 70%;
         background-color: white;
         margin-top: 20px;
-        padding: 3px;
+        margin-left: 50px;
+        padding-top: 12px;
         .akara-download-meter {
-            width: 0%;
+            width: 0;
             background-color: lighten($global-color,20%);
+            padding-top: 12px;
+            margin-top: -12px;
             display: none;
         }
         .akara-unknown-download-meter {
-            //display: none;
+            display: none;
             width: 12%;
+            padding-top: 12px;
+            margin-top: -12px;
             background-color: darken($global-color,30%);
+            
         }
     }
+    .akara-downloading-percent {
+        display: flex;
+        justify-content: center;
+        margin-top: 12px;
+    }
+    
     .akara-bytes {
         width: 100%;
         display: flex;
@@ -55,21 +67,21 @@
         margin-top: 12px;
     }
 
-    .download-control-button {
-        width: 100%;
-        position: fixed;
-        bottom: 0;
-        button {
-            width: 50%;
-            font-size: 18px;
-            border: 2px solid lighten(black,70%);
-            cursor: pointer;
-            padding: 10px;
-            &:disabled {
-                cursor: not-allowed;
-            }
-        }
-    }
+    // .download-control-button {
+    //     width: 100%;
+    //     position: fixed;
+    //     bottom: 0;
+    //     button {
+    //         width: 50%;
+    //         font-size: 18px;
+    //         border: 2px solid lighten(black,70%);
+    //         cursor: pointer;
+    //         padding: 10px;
+    //         &:disabled {
+    //             cursor: not-allowed;
+    //         }
+    //     }
+    // }
 }
 
 [data-unknown-byte="true"] {
@@ -79,4 +91,16 @@
     animation-iteration-count: infinite;
 
     padding: 3px;
+}
+
+.download-control-button {
+    button {
+        @extend %buttons;
+        &:disabled {
+            cursor: not-allowed;
+            &:hover {
+                background: initial;
+            }
+        }
+    }
 }
