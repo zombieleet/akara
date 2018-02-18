@@ -12,8 +12,9 @@
     } = require("electron");
 
     const {
-        downloadURL,
-        computeByte
+        downloadFile,
+        computeByte,
+        resumeDownloading
     } = require("../js/util.js");
 
 
@@ -66,25 +67,29 @@
             : state;
 
         switch(state) {
-        case "paused":
-            hide({_pause:true,_resume:false,_restart:true});
-            break;
-        case "cancelled":
-            // close download window
-            ipc.send("close-download-window");
-            break;
-        case "resumed":
-            hide({_pause:false,_resume:true,_restart:true});
-            break;
-        case "noResume":
-            hide({_pause:true,_resume:true,_restart:false});
-            break;
+        // case "interrupted":
+        //     pause.hidden = true;
+        //     cancel.hidden = true;
+        //     resume.hidden = true;
+        //     restart.hidden = false;
+        //     break;
         case "progressing":
             pause.disabled = false;
+            cancel.disabled = false;
+            resume.hidden = true;
+            restart.hidden = true;
             break;
         case "completed":
             pause.disabled = true;
             cancel.disabled = true;
+            resume.hidden = false;
+            restart.hidden = false;
+            break;
+        case "cancelled":
+            restart.hidden = false;
+            resume.hidden = true;
+            pause.hidden = false;
+            cancel.hidden = true;
             break;
         default:
             // do nothing
@@ -106,18 +111,18 @@
     });
 
 
-    /**
-     *
-     *
-     *
-     * download::filename event is trigerred whenever
-     *  the downloads starts, fname is the name of the file
-     *
-     **/
+    // /**
+    //  *
+    //  *
+    //  *
+    //  * download::filename event is trigerred whenever
+    //  *  the downloads starts, fname is the name of the file
+    //  *
+    //  **/
 
-    ipc.on("download::filename", (event,fname) => {
-        filename.textContent = fname;
-    });
+    // ipc.on("download::filename", (event,fname) => {
+    //     filename.textContent = fname;
+    // });
 
 
     /**
@@ -145,9 +150,9 @@
     });
 
 
-    ipc.on("akara::downloadPath", (evt,url,cb) => {
-        downloadURL(url,getCurrentWindow(),cb);
-    });
+    // ipc.on("akara::downloadPath", (evt,url,cb) => {
+    //     downloadURL(url,getCurrentWindow(),cb);
+    // });
 
     /**
      *
@@ -168,39 +173,55 @@
             unknownByte.removeAttribute("data-unknown-byte");
         }
 
-        const percent = ( ( rByte / tByte ) * 100 ) + "%";
-        downByPercent.textContent = percent;
-        downByte.setAttribute("style", `width: ${percent}; padding: 3px; display: block`);
+        const percent = Math.trunc(( ( rByte / tByte ) * 100 ));
+        const percentWidth = percent + "%";
+        downByPercent.textContent = percentWidth;
+        downByte.setAttribute("style", `width: ${percentWidth};display: block`);
 
     });
 
 
-    resume.addEventListener("click", () => {
-        ipc.send("download::resume");
-    });
+    // resume.addEventListener("click", () => {
+    //     ipc.send("download::resume");
+    // });
 
 
-    cancel.addEventListener("click", () => {
-        ipc.send("download::cancel");
-        getCurrentWindow().close();
-    });
+    // cancel.addEventListener("click", () => {
+    //     ipc.send("download::cancel");
+    //     getCurrentWindow().close();
+    // });
 
-    restart.addEventListener("click", () => {
-        ipc.send("download::restart");
-    });
 
-    close.addEventListener("click", () => {
-        // the cancel button will only be disabled
-        //   if download is completed
-        if ( ! cancel.disabled )
-            ipc.send("download::cancel");
+    async function downloadDomEvents(item) {
 
-        getCurrentWindow().close();
+        pause.addEventListener("click", () => {
+            item.pause();
+        });
 
-    });
+        close.addEventListener("click", () => {
+            // the cancel button will only be disabled
+            //   if download is completed
+            if ( ! cancel.disabled ) {
+                item.cancel();
+            }
+            getCurrentWindow().close();
+        });
 
-    pause.addEventListener("click", () => {
-        ipc.send("download::pause");
+
+        restart.addEventListener("click", () => {
+            downloadFile(item.getURL(),getCurrentWindow());
+        });
+
+        resume.addEventListener("click", () => {
+            resumeDownloading(item,getCurrentWindow().webContents);
+        });
+
+        filename.textContent = item.getFilname();
+    };
+
+    ipc.on("download::started", async (event,item) => {
+        console.log(item);
+        await downloadDomEvents(item);
     });
 
 })();
