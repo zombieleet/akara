@@ -1155,7 +1155,7 @@ module.exports.removepodcast = podtoremove => {
     return true;
 };
 
-const resumeDownloading = (item,webContents) => {
+const resumeDownloading = module.exports.resumeDownloading = (item,webContents) => {
     console.log("resume");
     if ( item.canResume() ) {
         item.resume();
@@ -1166,7 +1166,7 @@ const resumeDownloading = (item,webContents) => {
 };
 
 
-module.exports.createNewWindow = () => {
+module.exports.downloadWindow = () => {
     let __obj = {
         title: "download",
         width: 365,
@@ -1188,7 +1188,9 @@ const downloadFile = (url, window ) => {
 
         item.setSavePath(app.getPath("downloads"));
 
-        webContents.send("download::filename", item.getFilename());
+        // webContents.send("download::filename", item.getFilename());
+        console.log(item);
+        webContents.send("download::started", item);
 
         item.on("updated", (event,state) => {
 
@@ -1196,34 +1198,16 @@ const downloadFile = (url, window ) => {
 
             if ( state === "interrupted" )
                 resumeDownloading(item,webContents);
-            console.log(item);
+
             webContents.send("download::gottenByte", item.getReceivedBytes());
             webContents.send("download::computePercent", item.getReceivedBytes(), item.getTotalBytes());
         });
-
 
         item.once("done", (event,state) => {
             webContents.send("download::state", state);
             akara_emit.emit("download::complete", item.getSavePath());
         });
 
-        ipc.on("download::cancel", () => {
-            console.log("canceled");
-            webContents.send("download::state", "canceled");
-            item.cancel();
-        });
-
-        ipc.on("download::pause", () => {
-            console.log("paused");
-            item.pause();
-            webContents.send("download::state", "paused");
-        });
-
-        ipc.on("download::resume", () => resumeDownloading(item,webContents));
-        ipc.on("download::restart", () => {
-            webContents.send("download::state", "restarting");
-            downloadFile(url,window);
-        });
         webContents.send("download::totalbyte", item.getTotalBytes());
     });
 };
@@ -1526,7 +1510,7 @@ module.exports.downloadAlbumArt = art => {
             return ;
         }
 
-        // const date = new Date();        
+        // const date = new Date();
         // const filename = `akaraplayer-${date.toLocaleDateString()}_${date.toLocaleTimeString()}`;
 
         base64Img.img( art , path.dirname(location) , path.basename(location) , ( err, filePath ) => {
