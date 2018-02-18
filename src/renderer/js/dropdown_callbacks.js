@@ -109,11 +109,12 @@ const addMediaCb = (paths,forPlaylist) => {
 
         if ( forPlaylist === "podder" ) {
             createdElement.setAttribute("podcast-metadata", localStorage.getItem("podcast-metadata"));
+            createdElement.querySelector("span").textContent = JSON.parse(localStorage.getItem("podcast-metadata")).episode.title;
             localStorage.removeItem("podcast-metadata");
         }
-        
+
         return playOnDrop();
-        
+
     });
 };
 
