@@ -142,7 +142,7 @@
 
         td.addEventListener("click", () => {
 
-            let win= downloadWindow();
+            let win = downloadWindow();
 
             downloadFile(__url,win);
 
