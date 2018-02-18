@@ -4,7 +4,9 @@
         loadpodcast,
         savepodcast,
         removepodcast,
-        handleWindowButtons
+        handleWindowButtons,
+        downloadWindow,
+        downloadFile
     } = require("../js/util.js");
 
     const {
@@ -315,8 +317,8 @@
 
             async value(evt,appendToDom = true) {
 
-                const { podcast } = _require("./configuration.js");
-                const pod = require(podcast);
+                const { podcast: _podcastPodcast } = _require("./configuration.js");
+                const pod = require(_podcastPodcast);
 
                 let podLink = evt.target.parentNode.parentNode.getAttribute("data-url");
                 let result;
@@ -347,7 +349,7 @@
                 }
 
                 if ( appendToDom ) {
-                    return appendPodcastToDOM(result, pod[result.title]);
+                    return appendPodcastToDOM(result, pod);
                 }
 
                 return result;
@@ -384,12 +386,14 @@
     const podcastPlayEvent = ({target}) => {
         //const podcasturl = target.parentNode.parentNode.getAttribute("podcast-url");
         const podcastmetadata = target.parentNode.parentNode.getAttribute("podcast-metadata");
-
         ipc.sendTo(1, "akara::podcast:play",podcastmetadata, "podder");
     };
 
-    const podcastDownloadEvent = () => {
-
+    const podcastDownloadEvent = ({target}) => {
+        const podcastmetadata = target.parentNode.parentNode.getAttribute("podcast-metadata");
+        const { episode: { enclosure: { url } } } = JSON.parse(podcastmetadata);
+        const win = downloadWindow();
+        downloadFile(url, win);
     };
 
 
@@ -430,18 +434,21 @@
        append all the podcasters podcast to the DOM
      **/
 
-    const appendPodcastToDOM = ({ episodes },_savedpod) => {
+    const appendPodcastToDOM = (result,podB) => {
 
         const podcastParent = document.querySelector(".podcastload-podcaster");
         const ul = podcastParent.querySelector(".podcaster-podcast") || document.createElement("ul");
+        const { episodes, title } = result;
+        const _savedpod = podB[title];
 
         ul.setAttribute("class", "podcaster-podcast");
 
         for ( let episode of episodes ) {
             const li = document.createElement("li");
             const span = document.createElement("span");
+            const image = new Image();
             const { title: podTitle } = episode;
-
+            
             delete episode.image;
 
             li.setAttribute("class", "podcast-audio");
@@ -462,7 +469,12 @@
                 )
                 : podTitle;
 
+            image.setAttribute("class", "podcast-image");
+            
+            image.src =_savedpod.image;
+
             li.appendChild(span);
+            li.appendChild(image);
             li.appendChild(podAudioWidget());
             ul.appendChild(li);
         }
@@ -543,9 +555,9 @@
      **/
 
     const appendChannelToDom = pod => {
-        
+
         const podcastLoadMain = document.querySelector(".podcastload-main");
-        
+
         const { description, image, title, owner, language, podlink, categories } = pod;
 
         // remove me after
@@ -575,8 +587,8 @@
         podcastLoadMain.appendChild(li);
 
     };
-    
-    
+
+
     const createPodcast = podcasts => {
 
         const nopod = document.querySelector(".nopoadcast");
