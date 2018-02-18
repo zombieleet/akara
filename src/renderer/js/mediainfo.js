@@ -268,11 +268,6 @@
                     base64String += String.fromCodePoint(_typedArray);
                 }
 
-                const fs = require("fs");
-
-                fs.writeFileSync("/root/ttt.jpg", base64String);
-                fs.writeFileSync("/root/inspect.txt", window.btoa(base64String));
-
                 const albumArtContainer = document.createElement("div");
                 const albumArt = new Image();
 
