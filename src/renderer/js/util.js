@@ -36,6 +36,7 @@ const {
     MAGIC_MIME_TYPE: _GET_MIME
 } = require("mmmagic");
 
+const base64Img = require("base64-img");
 const os = require("os");
 const env = require("dotenv").load();
 const Twitter = require("twitter");
@@ -472,7 +473,7 @@ const convert = _path => new Promise( async (resolve,reject) => {
     ffmpegExecutable = path.join(FFMPEG_LOCATION,ffmpegExecutable);
 
     if ( ! fs.existsSync(ffmpegExecutable) )
-        reject(new Error("Cannot find ffmpeg Executable for this platform"));
+        return reject(new Error("Cannot find ffmpeg Executable for this platform"));
 
 
     //const ffmpeg = childProcess.spawn(ffmpegExecutable, ["-i", _path , "-acodec", "libmp3lame", "-vcodec", "mpeg4", "-f", "mp4", _fpath]);
@@ -551,7 +552,21 @@ module.exports.playOnDrop = () => {
     return setupPlaying(firstVideoList);
 };
 
-const sendNotification = (title,message) => new Notification(title,message);
+const sendNotification = (options) => {
+    const notifier = require("node-notifier");
+    options.sound = true;
+    options.icon = options.icon ? options.icon : "/root/Picture/pics.jpg" ;
+
+    try {
+        notifier.notify(options);
+    } catch(ex) {
+        console.log(ex.message, ex.code);
+        if ( ex.code === "E2BIG" ) {
+            options.icon = "/root/Pictures/pics.jpg";
+            notifier.notify(options);
+        }
+    }
+};
 
 module.exports.sendNotification = sendNotification;
 
@@ -789,9 +804,7 @@ module.exports.playlistSave = (key, files, notify) => {
     if ( ! notify )
         return ;
 
-    sendNotification("Playlist Saved", {
-        body: "Playlist is saved"
-    });
+    sendNotification({title: "Playlist", message: "Playlist have been saved"});
 
     return ;
 
@@ -1039,7 +1052,6 @@ const savepodcast = async (podcasturl,callback) => {
     const { podcast } = _require("./configuration.js");
     const pod = require(podcast);
     const podson = require("podson");
-    const base64Img = require("base64-img");
 
     let conhttp_s = require("http");
 
@@ -1514,27 +1526,22 @@ module.exports.downloadAlbumArt = art => {
             return ;
         }
 
-        const date = new Date();
+        // const date = new Date();        
+        // const filename = `akaraplayer-${date.toLocaleDateString()}_${date.toLocaleTimeString()}`;
 
-        //const date_time = `${date.toLocaleDateString()}_${date.toLocaleTimeString()}`;
+        base64Img.img( art , path.dirname(location) , path.basename(location) , ( err, filePath ) => {
 
-        art = art.replace(/.*?,/,"");
-        art = art.replace(/\s/g,"");
+            if ( err )
+                return dialog.showErrorBox("Cannot Download Art", "An Error was encountered when download album art");
 
-        fs.writeFile(
-            location,
-            window.atob(art),
-            (err,buf) => {
-                if ( err ) {
-                    console.log(err);
-                    dialog.showErrorBox("album not download", "Unable to download album art");
-                    return ;
-                }
-                sendNotification("Download Complete",{
-                    body: "Album Art have been saved to " + location
-                });
-                return ;
+            return sendNotification({
+                title: "Art Downloaded",
+                message: `Album is located at ${filePath}`,
+                icon: filePath
             });
+
+        });
+
 
         return ;
 
