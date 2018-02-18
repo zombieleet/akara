@@ -339,12 +339,17 @@ const __checkPlayStateAndNotify = () => {
 
     if ( video.__status === "paused" ) {
         video.__status = undefined;
-        return sendNotification("Resuming", {
-            body: decodeURIComponent(path.basename(url.parse(video.src).path))
+        return sendNotification({
+            title: "Resuming",
+            message: "Resuming Media" + decodeURIComponent(path.basename(url.parse(video.src).path)),
+            icon: video.poster
         });
     }
-    return sendNotification("Now Playing", {
-        body: decodeURIComponent(path.basename(url.parse(video.src).path))
+
+    return sendNotification({
+        title: "Playing",
+        message: "Now Playing" + decodeURIComponent(path.basename(url.parse(video.src).path)),
+        icon: video.poster
     });
 
 };
@@ -782,8 +787,9 @@ const handleLoadSubtitle = async (filePath,cb) => {
 
     const { track, lang } = await setUpTrackElement(filePath);
 
-    sendNotification("Subtitle", {
-        body: "Subtitle have been successfully added"
+    sendNotification({
+        title: "Subtitle",
+        message: "Subtitle have been successfully added"
     });
 
     video.appendChild(track);
