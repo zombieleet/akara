@@ -1,15 +1,16 @@
-
 const path = require("path");
 
 const {
+    ipcRenderer: ipc,
     remote: {
-        ipcRenderer,
         dialog,
         app ,
         BrowserWindow,
+        getCurrentWindow,
         require: _require
     }
 } = require("electron");
+
 
 const akara_emit = require("../js/emitter.js");
 
@@ -21,6 +22,10 @@ const {
     video,
     controls
 } = require("../js/video_control.js");
+
+const {
+    subHandler
+} = require("../js/videohandlers.js");
 
 const {
     addMediaCb,
@@ -110,7 +115,7 @@ const search = () => {
 
     akaraMedia.insertBefore(parent, akaraLoad);
     searchAndAppend(input,findings);
-    
+
     return parent.focus();
 };
 
@@ -134,7 +139,7 @@ const addMediaFolder = () => {
 
         if ( ! folderPaths )
             return ;
-        
+
         const files = [];
         folderPaths.forEach( path => iterateDir()(path).forEach( filePath => files.push(filePath) ));
         addMediaCb(files);
@@ -165,18 +170,14 @@ const togglePlist = () => {
 };
 
 
-const noMediaPlaying = () =>
-      document.querySelector(
-          ".cover-on-error-src"
-      ).hasAttribute("style");
+const noMediaPlaying = () => document.querySelector(".cover-on-error-src").hasAttribute("style");
 
 const __spitError = () =>
           dialog.showErrorBox("Cannot Carry Out Operation", "This Operation Could Not be carried out");
 
 const _play = () => {
 
-    if ( noMediaPlaying())
-
+    if ( noMediaPlaying() )
         return play();
 
     return false;
@@ -184,7 +185,7 @@ const _play = () => {
 
 const _pause = () => {
 
-    if ( noMediaPlaying())
+    if ( noMediaPlaying() )
         return pause();
 
     return false;
@@ -192,8 +193,7 @@ const _pause = () => {
 
 const _mute = () => {
 
-    if ( noMediaPlaying())
-
+    if ( noMediaPlaying() )
         return mute();
 
     return false;
@@ -201,8 +201,7 @@ const _mute = () => {
 
 const _unmute = () => {
 
-    if ( noMediaPlaying())
-
+    if ( noMediaPlaying() )
         return unmute();
 
     return false;
@@ -210,8 +209,7 @@ const _unmute = () => {
 
 const _stop = function () {
 
-    if ( noMediaPlaying())
-
+    if ( noMediaPlaying() )
         return controls.stop();
 
     return false;
@@ -219,8 +217,7 @@ const _stop = function () {
 
 const _next = () => {
 
-    if ( noMediaPlaying())
-
+    if ( noMediaPlaying() )
         return controls.next();
 
     return false;
@@ -237,7 +234,6 @@ const _previous = () => {
 const _setPlaybackRate = (rate) => {
 
     if ( noMediaPlaying())
-
         return controls.setPlaybackRate(rate);
 
     return false;
@@ -246,7 +242,6 @@ const _setPlaybackRate = (rate) => {
 const _enterfullscreen = () => {
 
     if ( noMediaPlaying())
-        
         return controls.enterfullscreen();
 
     return false;
@@ -262,32 +257,22 @@ const _leavefullscreen = () => {
 
 const incrDecrVolume = direction => {
 
-    if ( ! noMediaPlaying())
-
+    if ( ! noMediaPlaying() )
         return false;
-    
-    let volumeElements = document.querySelectorAll("[data-volume-set=true]");
 
+    let volumeElements = document.querySelectorAll("[data-volume-set=true]");
     let currentVolume = volumeElements[volumeElements.length - 1];
     
-    
-    if ( direction === "next" &&
-         currentVolume.nextElementSibling ) {
-
+    if ( direction === "next" && currentVolume.nextElementSibling ) {
+        
         let _currentVolume = currentVolume.nextElementSibling;
-
-             
         _currentVolume.setAttribute("data-volume-set", "true");
-
         video.volume = _currentVolume.getAttribute("data-volume-controler");
         
     } else if ( direction === "prev" && currentVolume.previousElementSibling ) {
         
-        currentVolume
-            .removeAttribute("data-volume-set");
-        
-        video.volume = currentVolume
-            .previousElementSibling.getAttribute("data-volume-controler");
+        currentVolume.removeAttribute("data-volume-set");
+        video.volume = currentVolume.previousElementSibling.getAttribute("data-volume-controler");
         
     } else {
         /**
@@ -301,14 +286,11 @@ const incrDecrVolume = direction => {
     }
 
     akara_emit.emit("video::volume", video.volume);
-    
 };
 
 const showMediaInfoWindow = () => {
-    
     if ( ! noMediaPlaying() )
         return false;
-    
     const __obj = {
         title: "mediainfo",
         height: 773,
@@ -317,11 +299,8 @@ const showMediaInfoWindow = () => {
         minimizable: true,
         resizable: true
     };
-    
     const html = `${__obj.title}.html`;
-    
     createNewWindow(__obj,html);
-
     return true;
 };
 
@@ -372,6 +351,16 @@ const settings = () => createNewWindow({
     resizable: true
 }, "setting.html");
 
+
+const loadsub = () => {
+    if ( noMediaPlaying() )
+        getCurrentWindow().webContents.send("subtitle::load-sub", "computer");
+};
+const onlinesub = () => {
+    if ( navigator.isOnline && noMediaPlaying() )
+        getCurrentWindow().webContents.send("subtitle::load-sub", "net");
+};
+
 const HandleDroped = () => ({
     addMediaFile,
     addMediaFolder,
@@ -392,7 +381,9 @@ const HandleDroped = () => ({
     podcast,
     saveplaylist,
     loadplaylist,
-    settings
+    settings,
+    loadsub,
+    onlinesub
 });
 
 module.exports = HandleDroped;
