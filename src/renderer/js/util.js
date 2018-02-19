@@ -728,10 +728,10 @@ module.exports.isOnline = () => new Promise((resolve,reject) => {
     req.end();
 });
 
-module.exports.readSubtitleFile = path => new Promise((resolve,reject) => {
+module.exports.readSubtitleFile = fPath => new Promise((resolve,reject) => {
     const srt2vtt = require("srt2vtt");
-    const _path = path.join(CONVERTED_MEDIA,path.basename(path).replace(".srt", ".vtt"));
-    const data = fs.readFileSync(path);
+    const _path = path.join(CONVERTED_MEDIA,path.basename(fPath).replace(".srt", ".vtt"));
+    const data = fs.readFileSync(fPath);
     srt2vtt(data, (err,vttData) => {
         if ( err ) return reject(err);
         fs.writeFileSync(_path, vttData);
