@@ -903,14 +903,14 @@ module.exports.videoLoadData = async (event) => {
 
     const playlistParent = document.querySelector(".akara-loaded");
     const currentItemPlaying = playlistParent.querySelector(`#${video.getAttribute("data-id")}`);
-    
+
     if ( currentItemPlaying.getAttribute("data-belongsto-playlist") === "podder" ) {
         const { podcast } = _require("./configuration.js");
         const pod = require(podcast);
         video.poster = JSON.parse(currentItemPlaying.getAttribute("podcast-metadata")).image;
         return ;
     }
-    
+
     loadAlbumArt();
 
     akara_emit.once("akara::audio:albumart",  base64StringAlbum_art => {
@@ -1186,7 +1186,6 @@ module.exports.subHandler = ( event, from, fPath ) => {
         return subHandlerNet();
 
     if ( from === "net" && fPath )
-
         val = fPath;
 
     handleLoadSubtitle(val, async (filePath) => {
@@ -1210,7 +1209,6 @@ module.exports.loadContextPlaylist = (videoContextMenu,playlistLocation) => {
     let { submenu } = videoContextMenu[28];
 
     if ( submenu.length > 0 )
-
         submenu = [];
 
     let result ;
@@ -1250,13 +1248,11 @@ module.exports.contextPlaylist = videoContextMenu => {
     const akLoaded = document.querySelectorAll(".playlist");
 
     if ( akLoaded.length === 0 )
-
         return false;
 
     let { submenu } = videoContextMenu[27];
 
     if ( submenu.length > 0 )
-
         submenu = [];
 
 
