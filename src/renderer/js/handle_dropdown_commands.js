@@ -360,6 +360,18 @@ const onlinesub = () => {
     if ( navigator.isOnline && noMediaPlaying() )
         getCurrentWindow().webContents.send("subtitle::load-sub", "net");
 };
+const screenshot = () => {
+    const __obj = {
+        title: "screenshot",
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        width: 700,
+        height: 300
+    };
+    const html = `${__obj.title}.html`;
+    createNewWindow(__obj,html);
+};
 
 const HandleDroped = () => ({
     addMediaFile,
@@ -383,7 +395,8 @@ const HandleDroped = () => ({
     loadplaylist,
     settings,
     loadsub,
-    onlinesub
+    onlinesub,
+    screenshot
 });
 
 module.exports = HandleDroped;
