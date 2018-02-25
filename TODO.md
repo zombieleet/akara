@@ -25,3 +25,4 @@ ffmpeg -i Videos/gulps/part15/15-01-softbodies-part1-vertexweight-mobile.mp4 -c 
 17. validate unicode values
 18. unicode values as font
 19. convert image uploaded to data-uri
+settinings for context menu icons
