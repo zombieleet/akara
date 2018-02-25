@@ -1,0 +1,54 @@
+.screenshot-body {
+    @extend %new_window_body;
+}
+
+.screenshot-header {
+    @extend %new_window_headers;
+}
+
+.screenshot {
+    padding: 40px;
+    font-size: 1.5em;
+    .screenshot-select-capture {
+        float: left;
+        width: 40%;
+        form {
+            label {
+                display: block;
+                margin-top: 12px;
+                span {
+                    vertical-align: top;
+                    position: relative;
+                    top: 1.8px;
+                }
+            }
+        }
+    }
+
+    .screenshot-delay {
+        float: right;
+        margin-right: 70px;
+        input {
+            margin-top: 12px;
+            width: 15%;
+            border: none;
+            border-radius: 12px;
+            padding-left: 12px;
+            &:disabled {
+                background: lighten($global-color,20%);
+            }
+        }
+    }
+
+    .screenshot-button {
+        clear: both;
+        margin-right: 50px;
+        button {
+            @extend %buttons;
+            /* &:first-of-type {
+               float: left;
+               } */
+
+        }
+    }
+}
