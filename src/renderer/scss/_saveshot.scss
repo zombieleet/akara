@@ -1,0 +1,61 @@
+.saveshot-body {
+    @extend %new_window_body;
+}
+
+.saveshot-header {
+    @extend %new_window_headers;
+}
+
+.saveshot {
+    padding: 25px;
+    font-size: 1.5em;
+    .saveshot-img {
+        float: left;
+        width: 35%;
+        img {
+            width: 100%;
+        }
+    }
+
+    .saveshot-path {
+        float: right;
+        width: 50%;
+        margin-right: 40px;
+        p {
+            display: inline;
+        }
+        input {
+            margin-left: 20px;
+            width: 80%;
+            padding: 10px;
+            width: 60%;
+            //border-radius: 12px;
+        }
+        button {
+            display: block;
+            margin-left: 26.2%;
+            margin-top: 5%;
+            width: 71.55%;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            padding: 10px;
+
+            text-decoration: italics;
+
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow-x: hidden;
+            
+            box-shadow: 5px 5px 30px 12px lighten($global-color,20%) inset;
+        }
+    }
+
+    .saveshot-buttons {
+        clear: both;
+        margin-right: 60px;
+        .saveshot-save {
+            @extend %buttons;
+        }
+    }
+}

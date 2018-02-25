@@ -15,15 +15,15 @@ block body
           form(class="screenshot-possible-region")
 
             label
-              input(type="radio" class="screenhot-region" id="entireScreen" name="screenshot_region")
+              input(type="radio" class="entireScreen" name="screenshot_region" checked)
               span Entire Screen
 
             label
-              input(type="radio" class="screenshot-region" name="screenshot_region")
+              input(type="radio" class="activeWindow" name="screenshot_region")
               span Active Window
 
             label
-              input(type="radio" class="screenshot-region" name="screenshot_region")
+              input(type="radio" class="selectRegion" name="screenshot_region")
               span Select Region
 
       div(class="screenshot-delay")
