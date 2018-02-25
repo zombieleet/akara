@@ -1,0 +1,26 @@
+extends ./__layout.pug
+
+block title
+  title Save Screenshot
+
+block body
+  body(class="saveshot-body")
+    header(class="saveshot-header")
+      span Screenshot
+      span(class="fa fa-window-close saveshot-close")
+
+    section(class="saveshot")
+
+      div(class="saveshot-img")
+
+      div(class="saveshot-path")
+
+        label
+          p Name:
+          input(type="text" class="saveshot-name")
+        button(class="saveshot-set_path") Browse path to save screenshot
+
+      div(class="saveshot-buttons")
+        button(class="saveshot-save") Save
+
+    script(src="../js/savescreenshot.js")
