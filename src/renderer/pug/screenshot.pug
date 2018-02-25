@@ -1,0 +1,37 @@
+extends ./__layout.pug
+
+block title
+  title Screenshot
+
+block body
+  body(class="screenshot-body")
+    header(class="screenshot-header")
+      span Screenshot
+      span(class="fa fa-window-close screenshot-close")
+
+    section(class="screenshot")
+      div(class="screenshot-select-capture")
+        p(class="screenhot-region-text") Choose Region
+          form(class="screenshot-possible-region")
+
+            label
+              input(type="radio" class="screenhot-region" id="entireScreen" name="screenshot_region")
+              span Entire Screen
+
+            label
+              input(type="radio" class="screenshot-region" name="screenshot_region")
+              span Active Window
+
+            label
+              input(type="radio" class="screenshot-region" name="screenshot_region")
+              span Select Region
+
+      div(class="screenshot-delay")
+        p(class="screenshot-delay-text") Capture Before Seconds
+        input(type="number" max="30" min="1" value="1" disabled)
+        span(class="screenshot-delay-sec") seconds
+
+      div(class="screenshot-button")
+        button(class="screenshot-cancel") Cancel
+        button(class="screenshot-ok") Ok
+  script(src="../js/screenshot.js")
