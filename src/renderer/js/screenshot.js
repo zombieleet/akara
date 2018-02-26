@@ -4,6 +4,7 @@
         desktopCapturer,
         ipcRenderer: ipc,
         remote : {
+            BrowserWindow,
             getCurrentWindow,
             dialog,
             screen,
@@ -21,6 +22,7 @@
     const screenshotCancel = document.querySelector(".screenshot-cancel");
     const windowClose = document.querySelector(".screenshot-close");
     const screenshotOk = document.querySelector(".screenshot-ok");
+    const screenshotTimeout = document.querySelector(".screenshot-delay-ms");
 
     const savePath = () => {
         const chooseSavePathWindow = {
@@ -37,11 +39,11 @@
     };
 
 
-    const screenshot = (types,thumbnailSize) => {
+    const screenshot = (options,checkType) => {
 
         getCurrentWindow().minimize();
-
-        desktopCapturer.getSources({ types, thumbnailSize }, (error, sources) => {
+        //{ types, thumbnailSize }
+        desktopCapturer.getSources(options, (error, sources) => {
 
             if ( error ) {
                 dialog.showErrorBox("cannot take screenshot", error);
@@ -50,15 +52,14 @@
 
             sources.forEach( source => {
 
-                if ( source.name !== "Akara" )
+                if ( ! checkType(source) )
                     return ;
-
-                ipc.once("akara::screenshot:get_file", evt => {
-                    console.log(source.thumbnail.toPng());
-                    const childWindowId = getCurrentWindow().getChildWindows()[0].webContents.id;
-                    ipc.sendTo(childWindowId,"akara::screenshot:send_file", source.thumbnail.toPng());
-                });
-                savePath();
+                
+                if ( ! screenshotTimeout.disabled ) {
+                    setTimeout( savePath, screenshotTimeout.valueAsNumber * 1000);
+                    return ;
+                }
+                
             });
 
         });
@@ -68,16 +69,54 @@
     const handleScreenShot = Object.defineProperties( {} , {
         entireScreen: {
             value() {
-                const screenSize = screen.getPrimaryDisplay().workAreaSize;
-                const maxDimension = Math.max(screenSize.width, screenSize.height);
-                screenshot(["window"], {
-                    width: maxDimension * window.devicePixelRatio,
-                    height: maxDimension * window.devicePixelRatio
+                screenshot({ types: ["screen"]}, source => {
+
+                    if ( source.name !== "Entire screen" )
+                        return false;
+
+                    ipc.once("akara::screenshot:get_file", evt => {
+                        const childWindowId = getCurrentWindow().getChildWindows()[0].webContents.id;
+                        ipc.sendTo(childWindowId,"akara::screenshot:send_file", source.thumbnail.toPng());
+                    });
+                    return true;
                 });
             }
         },
         activeWindow: {
             value() {
+
+                // const screenSize = screen.getPrimaryDisplay().workAreaSize;
+                // const maxDimension = Math.max(screenSize.width, screenSize.height);
+
+                // const thumbnailSize = {
+                //     width: maxDimension * window.devicePixelRatio,
+                //     height: maxDimension * window.devicePixelRatio
+                // };
+
+                screenshot({ types: ["window"], thumbnailSize: { width: 100, height: 300 } } , source => {
+
+                    if ( source.name !== "Akara" )
+                        return false;
+
+                    ipc.once("akara::screenshot:get_file", evt => {
+
+                        let screenshotWindow ;
+
+                        for ( screenshotWindow of BrowserWindow.getAllWindows() ) {
+                            if ( screenshotWindow.isFocused() === true )
+                                break;
+                        }
+
+                        const childWindowId = getCurrentWindow().getChildWindows()[0].webContents.id;
+
+                        screenshotWindow.capturePage( nImage => {
+                            ipc.sendTo(childWindowId,"akara::screenshot:send_file", nImage.toPng());
+                        });
+
+                    });
+
+                    return true;
+                });
             }
         },
         selectRegion: {
@@ -85,8 +124,6 @@
             }
         }
     });
-
-
 
     screenshotCancel.addEventListener("click", () => {
         getCurrentWindow().close();
