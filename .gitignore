@@ -7,8 +7,6 @@ app/renderer/html/*.html
 t*.js
 converted_media/
 _test.js
-.env
-youtube.json
 src/renderer/js/index.js
 app/
 testtest.json
