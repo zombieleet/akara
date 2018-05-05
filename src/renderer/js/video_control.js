@@ -138,17 +138,22 @@ const controls = {
         const enterfscreen = document.querySelector("[data-fire=enterfullscreen]");
         const akControl = document.querySelector(".akara-control");
         const expand = akControl.querySelector(".expand");
+        //const unexpand = akControl.querySelector(".unexpand");
 
         enterfscreen.setAttribute("data-fire","leavefullscreen");
         video.style.height = "100%";
         video.style.width = "100%";
         akControl.setAttribute("data-fullscreenwidth", "true");
         akControl.hidden = true;
+
         expand.setAttribute("style","visibility: visible;");
 
         enterfscreen.removeAttribute("class");
-        
+
         applyButtonConfig(enterfscreen,"control-buttons","leavefullscreen");
+
+        this.unexpand({ target: expand});
+
 
         return video.webkitRequestFullScreen();
     },
@@ -169,9 +174,9 @@ const controls = {
         akControl.removeAttribute("style");
 
         akControl.hidden = false;
-        
+
         leavefscreen.removeAttribute("class");
-        
+
         if ( expandUnexpandControl ) {
             expandUnexpandControl.removeAttribute("style");
             expandUnexpandControl.classList.remove("unexpand");
