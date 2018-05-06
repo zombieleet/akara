@@ -26,6 +26,7 @@ module.exports.download = [ "fa-download", "fa-cloud-download" ];
 
 module.exports.minimize = [ "fa-window-minimize", "fa-minus", "fa-minus-circle", "fa-minus-square-o" ];
 module.exports.maximize = [ "fa-window-maximize" , "fa-square", "fa-square-o" ];
+module.exports.restore = [ "fa-window-restore" ];
 
 
 module.exports.filter = [ "fa-filter" ];

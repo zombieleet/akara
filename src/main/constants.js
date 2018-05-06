@@ -81,6 +81,10 @@ const requireSettingsPath = type => {
                 objConfig = { volume_default_level: 50, volume_max_level: 70, volume_warn_exceed_max: true };
                 break;
             case "custom_uibuttons.json":
+                /*
+                 * holds user custom fonts
+                 *
+                 */
                 objConfig = {
                     ["control-buttons"]: {
                         play: [],
@@ -112,21 +116,38 @@ const requireSettingsPath = type => {
                         grid: [],
                         list: [],
                         uncheck: [],
+                        check: [],
                         folder: [],
                         times: [],
                         close: [],
-                        download: []
+                        download: [],
+                        add: []
                     },
 
                     ["window-buttons"]: {
                         close: [],
                         minimize: [],
-                        maximize: []
+                        maximize: [],
+                        restore: []
+                    },
+
+                    [ "playlist-buttons" ]: {
+                        delete: [],
+                        load: [],
+                        add: [],
+                        uncheck: [],
+                        check: [],
+                        times: []
                     }
 
                 };
                 break;
             case "uibuttons.json":
+                /*
+                  *
+                  * default fonts
+                  *
+                 */
                 objConfig = {
                     ["control-buttons"]: {
                         play: "fa-play",
@@ -157,15 +178,26 @@ const requireSettingsPath = type => {
                         grid: "fa-th-large",
                         list: "fa-list",
                         uncheck: "fa-square-o",
+                        check: "fa-check-square",
                         times: "fa-times-circle",
                         folder: "fa-folder",
                         close: "fa-window-close",
+                        add: "fa-plus-square",
                         download: "fa-download"
                     },
                     ["window-buttons"]: {
                         close: "fa-window-close",
                         minimize: "fa-window-minimize",
-                        maximize: "fa-window-maximize"
+                        maximize: "fa-window-maximize",
+                        restore: "fa-window-restore"
+                    },
+                    ["playlist-buttons"]: {
+                        delete: "fa-trash",
+                        load: "fa-file-powerpoint-o",
+                        add: "fa-plus-square",
+                        times: "fa-times-circle",
+                        check: "fa-check-square",
+                        uncheck: "fa-square-o"
                     }
                 };
                 break;
