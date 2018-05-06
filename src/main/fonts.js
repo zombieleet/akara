@@ -42,6 +42,11 @@ module.exports.unexpand = [ "fa-exchange" ];
 module.exports.enterfullscreen = [ "fa-expand" ];
 module.exports.leavefullscreen = [ "fa-compress" ];
 
+module.exports.delete = [ "fa-trash" ];
+module.exports.load = [ "fa-file-powerpoint-o" ];
+module.exports.add = [ "fa-plus-square", "fa-plus-circle" ];
+
+
 
 
 // module.exports = {
