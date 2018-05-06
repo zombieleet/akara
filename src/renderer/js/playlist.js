@@ -34,6 +34,10 @@
     } = require("../js/dropdown_callbacks.js");
 
     const {
+        applyButtonConfig
+    } = require("../js/video_control.js");
+
+    const {
         playNextOrPrev
     } = require("../js/videohandlers.js");
 
@@ -48,7 +52,7 @@
                 let medialist = type === "all"
                         ? document.querySelectorAll("li[data-full-path]")
                         : Array.from(
-                            document.querySelectorAll("li[data-full-path] .fa-check-square-o")
+                            document.querySelectorAll("li[data-full-path] [data__is__checked=true]")
                         ).map( el => el.parentNode);
 
                 if ( ! medialist || medialist.length  === 0 )
@@ -59,12 +63,14 @@
                 });
 
 
-                const checkState = document.querySelector(".playlist-widget .fa-check-square-o");
+                const checkState = document.querySelector(".playlist-widget [data-playlist-op=check]");
                 const allPlaylist = document.querySelectorAll("li[data-full-path]");
 
                 if ( checkState ) {
-                    checkState.classList.remove("fa-check-square-o");
-                    checkState.classList.add("fa-square-o");
+                    const akaraLoaded = document.querySelector(".akara-loaded");
+                    applyButtonConfig(checkState, "playlist-buttons", "uncheck");
+                    checkState.setAttribute("data-playlist-op", "uncheck");
+                    this.__turnOffSelectMode(akaraLoaded);
                 }
 
                 if ( medialist.length === allPlaylist.length || type === "all" ) {
@@ -87,7 +93,7 @@
         },
         __isChecked: {
             value() {
-                const isChecked = document.querySelector(".akara-loaded li .fa-check-square-o");
+                const isChecked = document.querySelector(".akara-loaded li [data__is__checked=true]");
 
                 if ( ! isChecked ) {
                     dialog.showMessageBox({
@@ -125,14 +131,24 @@
         __setCheckState: {
             value(target) {
 
-                if ( target.classList.contains("fa-square-o") ) {
-                    target.classList.remove("fa-square-o");
-                    target.classList.add("fa-check-square-o");
+                if ( target.getAttribute("data__is__checked") === "false" ) {
+                    applyButtonConfig(target, "playlist-buttons", "check");
+                    target.setAttribute("data__is__checked", "true");
                     return ;
                 }
-                target.classList.remove("fa-check-square-o");
-                target.classList.add("fa-square-o");
+                
+                applyButtonConfig(target, "playlist-buttons", "uncheck");
+                target.setAttribute("data__is__checked", "false");
                 return ;
+                
+                // if ( target.classList.contains("fa-square-o") ) {
+                //     target.classList.remove("fa-square-o");
+                //     target.classList.add("fa-check-square-o");
+                //     return ;
+                // }
+                // target.classList.remove("fa-check-square-o");
+                // target.classList.add("fa-square-o");
+                // return ;
             },
             enumerable: false,
             configurable: false,
@@ -170,7 +186,8 @@
                 akaraLoaded.addEventListener("click",this.__bindedEvent);
                 Array.from(akaraLoaded.children, el => {
                     const span = el.querySelector("span");
-                    span.setAttribute("class", "fa fa-square-o");
+                    applyButtonConfig(span, "playlist-buttons", "uncheck");
+                    span.setAttribute("data__is__checked", "false");
                 });
             },
             enumerable: false,
@@ -186,7 +203,6 @@
                     const span = el.querySelector("span");
                     span.removeAttribute("class");
                 });
-
             },
             enumerable: false,
             configurable: false,
@@ -288,17 +304,31 @@
 
                 const akaraLoaded = document.querySelector(".akara-loaded");
 
-                if ( akaraLoaded.children.length === 0 ) return false;
+                // no media file added
+                if ( akaraLoaded.children.length === 0 )
+                    return false;
 
-                if ( target.classList.contains("fa-square-o") ) {
-                    target.classList.remove("fa-square-o");
-                    target.classList.add("fa-check-square-o");
+
+                if ( target.getAttribute("data-playlist-op") === "uncheck" ) {
+                    target.setAttribute("data-playlist-op", "check");
+                    applyButtonConfig(target, "playlist-buttons", "check");
                     return this.__turnOnSelectMode(akaraLoaded);
                 }
 
-                target.classList.remove("fa-check-square-o");
-                target.classList.add("fa-square-o");
-                return this.__turnOffSelectMode(akaraLoaded);
+                target.setAttribute("data-playlist-op", "uncheck");
+                applyButtonConfig(target, "playlist-buttons", "uncheck");
+                return this.__turnOffSelectMode(akaraLoaded,target);
+                
+                // if ( target.classList.contains("fa-square-o") ) {
+                //     target.classList.remove("fa-square-o");
+                //     target.classList.add("fa-check-square-o");
+                //     return this.__turnOnSelectMode(akaraLoaded);
+                // }
+
+                // target.classList.remove("fa-check-square-o");
+                // target.classList.add("fa-square-o");
+                
+                // return this.__turnOffSelectMode(akaraLoaded);
             }
         },
 
