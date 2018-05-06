@@ -29,11 +29,18 @@ const applyButtonConfig = (element,section,type) => {
     if ( /data:image\//.test(font) ) {
         element.style.backgroundImage = `url(${font})`;
         element.setAttribute("data-image_icon", "image");
-    } else {
-        element.classList.add("fa");
-        element.classList.add(font);
+        return ;
     }
+        
+    Array.from(element.classList, _class_ => {
+        if ( _class_ === "fa" || /^fa-*/.test(_class_) )
+            element.classList.remove(_class_);
+    });
+    
+    element.classList.add("fa");
+    element.classList.add(font);
 
+    return ;
 };
 
 const buildRepeatMenu = () => {
