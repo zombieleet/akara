@@ -1440,25 +1440,22 @@ module.exports.handleWindowButtons = ( { close, min, max } ) => {
     applyButtonConfig(min, "window-buttons", "minimize");
     applyButtonConfig(close, "window-buttons", "close");
 
+    // restore
     const ismax = () => {
-        // restore
         max.removeAttribute("class");
-        applyButtonConfig(max,"window-buttons", "maxmize");
-        // max.classList.remove("fa-window-maximize");
-        // max.classList.add("fa-window-restore");
+        applyButtonConfig(max,"window-buttons", "restore");
     };
 
-    const isnotmin = () => {
-        // maximize
+    // maximize
+    const isnotmax = () => {
         max.removeAttribute("class");
+        console.log("max");
         applyButtonConfig(max,"window-buttons", "maximize");
-        // max.classList.remove("fa-window-restore");
-        // max.classList.add("fa-window-maximize");
     };
 
     close.addEventListener("click", () => {
         ipc.removeListener("akara::newwindow:ismax", ismax);
-        ipc.removeListener("akara::newwindow:isnotmin", isnotmin);
+        ipc.removeListener("akara::newwindow:isnotmax", isnotmax);
         getCurrentWindow().close();
     });
 
@@ -1472,7 +1469,7 @@ module.exports.handleWindowButtons = ( { close, min, max } ) => {
 
     ipc.on("akara::newwindow:ismax", ismax);
 
-    ipc.on("akara::newwindow:isnotmin", isnotmin);
+    ipc.on("akara::newwindow:isnotmax", isnotmax);
 };
 
 
@@ -1535,7 +1532,8 @@ module.exports.downloadAlbumArt = art => {
 
 module.exports.applyButtonConfig = applyButtonConfig;
 
-module.exports.UIBUTTON = async (type,buttonName) => {
+
+const UIBUTTON = async (type,buttonName) => {
 
     let uibuttonPath = await requireSettingsPath("uibuttons.json");
     let uibutton = require(uibuttonPath);
@@ -1554,4 +1552,31 @@ module.exports.UIBUTTON = async (type,buttonName) => {
     }
 
     return buttonsObj;
+};
+
+module.exports.loadUISettingButton = async (section, buttonsToLoad, getBy) => {
+    
+    let uibutton = await UIBUTTON(section, buttonsToLoad);
+    
+    Object.keys(uibutton).forEach( button => {
+
+        const uibutt = document.querySelector(`[${getBy}=${button}]`);
+        const font = uibutton[button];
+
+        if ( ! font ||  ! uibutt )
+            return ;
+
+        localStorage.setItem(section, JSON.stringify(uibutton));
+
+        if ( /data:image\//.test(font) ) {
+
+            uibutt.style.backgroundImage = `url(${font})`;
+            uibutt.setAttribute("data-image_icon", "image");
+
+        } else {
+            uibutt.classList.add("fa");
+            uibutt.classList.add(`${font}`);
+        }
+
+    });
 };

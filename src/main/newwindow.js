@@ -51,7 +51,7 @@ const createNewWindow = (obj,html) => {
         newWindow = BrowserWindow.fromWebContents(event.sender);
         if ( newWindow.isMaximized() ) {
             newWindow.unmaximize();
-            event.sender.send("akara::newwindow:isnotmin");
+            event.sender.send("akara::newwindow:isnotmax");
         } else {
             newWindow.maximize();
             event.sender.send("akara::newwindow:ismax");
@@ -67,7 +67,7 @@ const createNewWindow = (obj,html) => {
     });
 
     newWindow.on("unmaximize", event => {
-        newWindow.webContents.send("akara::newwindow:isnotmin");
+        newWindow.webContents.send("akara::newwindow:isnotmax");
     });
 
     webContents.on("will-navigate", (evt,fpath) => {
