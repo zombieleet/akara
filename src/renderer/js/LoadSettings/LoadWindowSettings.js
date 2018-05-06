@@ -14,7 +14,7 @@
     } = _require("./constants.js");
 
     const {
-        UIBUTTON,
+        loadUISettingButton,
         applyButtonConfig
     } = require("../js/util.js");
 
@@ -194,35 +194,6 @@
     };
 
 
-    const loadUISettingButton = async (section, buttonsToLoad, getBy) => {
-
-        let uibutton = await UIBUTTON(section, buttonsToLoad);
-
-        Object.keys(uibutton).forEach( button => {
-
-            const uibutt = document.querySelector(`[${getBy}=${button}]`);
-            const font = uibutton[button];
-
-            if ( ! font ||  ! uibutt )
-                return ;
-
-            localStorage.setItem(section, JSON.stringify(uibutton));
-
-            if ( /data:image\//.test(font) ) {
-
-                uibutt.style.backgroundImage = `url(${font})`;
-                uibutt.setAttribute("data-image_icon", "image");
-
-            } else {
-                uibutt.classList.add("fa");
-                uibutt.classList.add(`${font}`);
-            }
-
-        });
-    };
-
-
-
     window.addEventListener("DOMContentLoaded", async () => {
         await loadPosterSettings();
         await loadBatterySettings();
@@ -235,8 +206,12 @@
         ], "data-fire");
 
         await loadUISettingButton("window-buttons", [
-            "close", "minimize", "maximize"
+            "close", "minimize", "maximize", "restore"
         ], "data-winop");
+
+        await loadUISettingButton("playlist-buttons", [
+            "delete", "load", "add", "check", "times", "uncheck"
+        ], "data-playlist-op");
     });
 
 })();
