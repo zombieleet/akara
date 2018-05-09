@@ -137,7 +137,8 @@ const requireSettingsPath = type => {
                         add: [],
                         uncheck: [],
                         check: [],
-                        times: []
+                        times: [],
+                        play: []
                     }
 
                 };
@@ -197,7 +198,8 @@ const requireSettingsPath = type => {
                         add: "fa-plus-square",
                         times: "fa-times-circle",
                         check: "fa-check-square",
-                        uncheck: "fa-square-o"
+                        uncheck: "fa-square-o",
+                        play: "fa-play-circle"
                     }
                 };
                 break;
