@@ -49,6 +49,7 @@ const childProcess = require("child_process");
 const {
     video,
     applyButtonConfig,
+    getButtonConfig,
     controls: {
         play
     }
@@ -185,16 +186,6 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
 
 module.exports.createPlaylistItem = createPlaylistItem;
 
-const removeType = (pNode,...types) => {
-    Array.from(pNode.children, el => {
-        types.forEach( type => el.hasAttribute(type)
-            ? el.removeAttribute(type)
-            : "");
-    });
-};
-
-module.exports.removeType = removeType;
-
 
 /**
  *
@@ -206,15 +197,24 @@ module.exports.removeType = removeType;
  *
  *
  **/
-const removeClass = (parentNode, ...types) => {
+const removeCurrentPlayingStyles = parentNode => {
+
     Array.from(parentNode.children, el => {
-        for ( let i of types ) {
-            if ( el.classList.contains(i) ) el.classList.remove(i);
+        
+        if ( el.hasAttribute("data-image_icon") ) {
+            el.style.backgroundImage = null;
+            el.removeAttribute("data-image_icon");
+        } else {
+            el.classList.remove(getButtonConfig("playlist-buttons", "play")); 
+            el.classList.remove("fa");
         }
+
+        el.removeAttribute("data-dbclicked");
+        el.removeAttribute("data-now-playing");
+        el.removeAttribute("data-clicked");
+        
     });
 };
-
-module.exports.removeClass = removeClass;
 
 
 
@@ -239,21 +239,16 @@ const setCurrentPlaying = target => {
      **/
 
     if ( target.childElementCount === 0 ) {
-
         const loaded = document.querySelector(".akara-loaded");
-
         target = loaded.querySelector(`#${target.getAttribute("id")}`);
-
     }
 
     target.setAttribute("data-dbclicked", "true");
     target.setAttribute("data-now-playing", "true");
     target.setAttribute("data-clicked", "true");
-    target.classList.add("fa");
-    target.classList.add("fa-play-circle");
-
+    
+    applyButtonConfig(target, "playlist-buttons", "play");
     updatePlaylistName(target);
-
 
     const mediaTitle = document.querySelector(".window-title");
 
@@ -285,6 +280,14 @@ const setCurrentPlaying = target => {
 
 module.exports.setCurrentPlaying = setCurrentPlaying;
 
+
+/**
+ *
+ * removes a media file
+ * from the playlist section
+ *
+ **/
+
 const removeTarget = (target,video) => {
 
     target = target.nodeName.toLowerCase() === "li" ? target : target.parentNode;
@@ -298,11 +301,9 @@ const removeTarget = (target,video) => {
             video.src = "";
 
             const play = document.querySelector("[data-fire=play]");
-
             const pause = document.querySelector("[data-fire=pause]");
 
             pause.classList.add("akara-display");
-
             play.classList.remove("akara-display");
 
             document.querySelector(".akara-title").textContent = "Akara Media Player";
@@ -363,15 +364,9 @@ module.exports.disableMenuItem = disableMenuItem;
  *
  **/
 const setupPlaying = target => {
-
     const loaded = document.querySelector(".akara-loaded");
-
-    removeClass(loaded,"fa","fa-play-circle");
-
-    removeType(loaded,"data-dbclicked","data-now-playing","data-clicked");
-
+    removeCurrentPlayingStyles(loaded);
     setCurrentPlaying(target);
-
     return play();
 };
 

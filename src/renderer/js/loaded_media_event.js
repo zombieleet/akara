@@ -19,9 +19,7 @@
 
     const {
         removeTarget,
-        removeType,
         setCurrentPlaying,
-        removeClass,
         disableMenuItem,
         setupPlaying,
         prevNext,
@@ -84,11 +82,11 @@
         target = target.nodeName.toLowerCase() === "li" ? target : target.parentNode;
 
         if ( ! target.hasAttribute("data-clicked") ) {
-
-            removeType(target.parentNode,"data-clicked");
-
+            Array.from(target.parentNode.children, el => {
+                if ( el.hasAttribute("data-clicked") )
+                    el.removeAttribute("data-clicked");
+            });
             updatePlaylistName(target);
-
             target.setAttribute("data-clicked","true");
         }
     });
