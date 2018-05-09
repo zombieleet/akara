@@ -112,47 +112,60 @@
 
                 const { value }  = this.addpodcastArea;
 
-                if ( value.length === 0 ) {
-                    console.error("shit ass adding");
-                    return ;
-                }
+                // if ( value.length === 0 ) {
+                //     console.error("shit ass adding");
+                //     return ;
+                // }
 
                 let podcasts = value.split(",");
-
                 let modalDiv = document.querySelector(".podcast-modal");
+                let spinDiv = document.createElement("div");
                 let spin = document.createElement("spin");
+                let logMessage = document.createElement("p");
 
-                spin.setAttribute("class", "fa fa-spinner fa-pulse fa-5x");
+                spinDiv.setAttribute("class", "podcast-spin-saving");
+                logMessage.setAttribute("class", "podcast-spin-log");
 
-                modalDiv.appendChild(spin);
+                spinDiv.appendChild(spin);
+                spinDiv.appendChild(logMessage);
+
+
+                // apply ui button fonts here
+                spin.setAttribute("class", "fa fa-spinner fa-pulse fa-5x podcast-spinning-save");
+
+                modalDiv.appendChild(spinDiv);
+
+                const removeSpinner = ({isDone}) => {
+                    if ( ! isDone )
+                        return ;
+                    setTimeout( () => {
+                        spinDiv.remove();
+                        spinDiv = null;
+                    },5000);
+                };
 
                 const _savepodcast = savepodcast(podcasts, (err,succ,obj) => {
 
                     if ( ! err && ! succ ) {
-                        console.log("processing ", obj.name, " ", obj.link);
+                        logMessage.textContent = `processing ${obj.name} ${obj.link}`;
+                        removeSpinner(obj);
                         return;
                     }
 
                     if ( err ) {
-
                         if ( err.code === "PODCAST_NO_LOAD" ) {
-                            console.log("cannot load ", err.podcastLink);
+                            logMessage.textContent = `cannot load ${err.podcastLink}`;
+                            removeSpinner(err);
                             return ;
                         }
-
-                        console.log(err);
-
+                        logMessage.textContent = err;
                         return ;
                     }
 
                     appendChannelToDom(succ);
-
-                    spin.remove();
-
+                    spinDiv.remove();
                     this.__removeModal();
-
                     return ;
-
                 });
 
 
@@ -448,7 +461,7 @@
             const span = document.createElement("span");
             const image = new Image();
             const { title: podTitle } = episode;
-            
+
             delete episode.image;
 
             li.setAttribute("class", "podcast-audio");
@@ -470,7 +483,7 @@
                 : podTitle;
 
             image.setAttribute("class", "podcast-image");
-            
+
             image.src =_savedpod.image;
 
             li.appendChild(span);
