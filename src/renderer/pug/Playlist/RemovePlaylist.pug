@@ -1,8 +1,10 @@
-extends ./__layout.pug
+extends ../__layout.pug
 
 block title
   title Remove Playlist
 
+include ./PlaylistLayout.pug
+  
 block body
   body(class="remove-playlist-body")
     header(class="removeplaylist-header")
@@ -14,4 +16,4 @@ block body
     div(class="removeplaylist-btn")
       button(class="remove-btn" type="submit") Remove
 
-    script(src="../js/removeplaylist.js")
+    script(src="../../js/Playlist/RemovePlaylist.js")

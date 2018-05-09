@@ -22,7 +22,7 @@
         playlistSave,
         makeDynamic,
         handleWindowButtons
-    } = require("../js/util.js");
+    } = require("../../js/util.js");
 
     const {
         iterateDir

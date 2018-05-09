@@ -1,8 +1,10 @@
 
-extends ./__layout.pug
+extends ../__layout.pug
 
 block title
   title Load Playlist
+  
+include ./PlaylistLayout.pug  
 
 block body
   body(class="load-playlist-body")
@@ -15,4 +17,4 @@ block body
     div(class="loadplaylist-btn")
       button(class="load-btn" type="submit") Load
 
-    script(src="../js/loadplaylist.js")
+    script(src="../../js/Playlist/LoadPlaylist.js")

@@ -1,8 +1,10 @@
 
-extends ./__layout.pug
+extends ../__layout.pug
 
 block title
   title Create Playlist
+  
+include ./PlaylistLayout.pug  
 
 block body
   body(class="create-playlist-body")
@@ -34,4 +36,4 @@ block body
            button(type="submit" class="create-playlist-submit") Submit
            button(type="cancel" class="create-playlist-cancel") Cancel
 
-    script(src="../js/createplaylist.js")
+    script(src="../../js/Playlist/CreatePlaylist.js")

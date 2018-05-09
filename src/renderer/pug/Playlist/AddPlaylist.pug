@@ -1,9 +1,11 @@
 
-extends ./__layout.pug
+extends ../__layout.pug
 
 block title
   title Add Playlist
-
+  
+include ./PlaylistLayout.pug
+  
 block body
 
   body(class="addplaylist-body")
@@ -15,4 +17,4 @@ block body
 
     div(class="addplaylist-btn")
       button(class="add-btn" type="submit") Add
-    script(src="../js/addplaylist.js")
+    script(src="../../js/Playlist/AddPlaylist.js")

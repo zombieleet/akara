@@ -5,7 +5,7 @@
     const {
         deletePlaylist,
         renderPlayList
-    } = require("../js/util.js");
+    } = require("../../js/util.js");
 
     const {
         remote: {
@@ -14,7 +14,7 @@
         }
     } = require("electron");
 
-    const akara_emit = require("../js/emitter.js");
+    const akara_emit = require("../../js/emitter.js");
 
     const close = document.querySelector("[data-winop=close]");
     const removeBtn = document.querySelector(".remove-btn");

@@ -6,11 +6,13 @@
 @import "subtitle.scss";
 @import "download.scss";
 @import "mediainfo.scss";
-@import "playlist.scss";
-@import "createplaylist.scss";
-@import "loadplaylist.scss";
-@import "addplaylist.scss";
-@import "removeplaylist.scss";
+
+@import "./Playlist/Playlist.scss";
+@import "./Playlist/CreatePlaylist.scss";
+@import "./Playlist/LoadPlaylist.scss";
+@import "./Playlist/AddPlaylist.scss";
+@import "./Playlist/RemovePlaylist.scss";
+
 @import "inputpin.scss";
 @import "podcast.scss";
 @import "filter.scss";

@@ -11,6 +11,11 @@
     } = require("../js/util.js");
 
 
+    window.addEventListener("DOMContentLoaded", () => {
+        applyButtonConfig(akaraMax,"window-buttons", "maximize");
+        applyButtonConfig(akaraMin, "window-buttons", "minimize");
+        applyButtonConfig(akaraClose, "window-buttons", "close");
+    });
 
     akaraMin.addEventListener("click", () => {
         ipc.send("window-minimize");
@@ -39,8 +44,5 @@
     ipc.on("akara::quiting", () => {
         localStorage.removeItem("DONT_SHOW_VOLUME_WARNING");
     });
-    
+
 })(require("electron"));
-
-
-

@@ -14,7 +14,7 @@
     const {
         playlistSave,
         setupPlaying
-    } = require("../js/util.js");
+    } = require("../../js/util.js");
 
     const {
         createNewWindow: playListWindow
@@ -31,15 +31,15 @@
 
     const {
         addMediaCb
-    } = require("../js/dropdown_callbacks.js");
+    } = require("../../js/dropdown_callbacks.js");
 
     const {
         applyButtonConfig
-    } = require("../js/video_control.js");
+    } = require("../../js/video_control.js");
 
     const {
         playNextOrPrev
-    } = require("../js/videohandlers.js");
+    } = require("../../js/videohandlers.js");
 
     const playlistWidget = document.querySelector(".playlist-widget");
 
@@ -113,16 +113,7 @@
         __playlistLoad: {
 
             value(evt,playlists,playlistName) {
-
                 addMediaCb(playlists,playlistName);
-
-                // dirty hack to retrieve handle
-                // using this.__playlistLoad
-                // seems not to work
-                // const handler = ipc._events[ipc.eventNames()[ipc.eventNames().indexOf("akara::loadplaylist")]];
-
-                // ipc.removeListener("akara::loadplaylist", handler);
-
             },
             enumerable: false,
             writable: false,
@@ -140,15 +131,6 @@
                 applyButtonConfig(target, "playlist-buttons", "uncheck");
                 target.setAttribute("data__is__checked", "false");
                 return ;
-                
-                // if ( target.classList.contains("fa-square-o") ) {
-                //     target.classList.remove("fa-square-o");
-                //     target.classList.add("fa-check-square-o");
-                //     return ;
-                // }
-                // target.classList.remove("fa-check-square-o");
-                // target.classList.add("fa-square-o");
-                // return ;
             },
             enumerable: false,
             configurable: false,
@@ -279,7 +261,7 @@
 
                 localStorage.setItem("akara::newplaylist", JSON.stringify(playlistArr));
 
-                playListWindow(obj, "createplaylist.html");
+                playListWindow(obj, "Playlist/CreatePlaylist.html");
             }
         },
 
@@ -294,7 +276,7 @@
                     title: "loadplaylist"
                 };
 
-                playListWindow(obj, "loadplaylist.html");
+                playListWindow(obj, "Playlist/LoadPlaylist.html");
 
             }
         },
@@ -318,17 +300,6 @@
                 target.setAttribute("data-playlist-op", "uncheck");
                 applyButtonConfig(target, "playlist-buttons", "uncheck");
                 return this.__turnOffSelectMode(akaraLoaded,target);
-                
-                // if ( target.classList.contains("fa-square-o") ) {
-                //     target.classList.remove("fa-square-o");
-                //     target.classList.add("fa-check-square-o");
-                //     return this.__turnOnSelectMode(akaraLoaded);
-                // }
-
-                // target.classList.remove("fa-check-square-o");
-                // target.classList.add("fa-square-o");
-                
-                // return this.__turnOffSelectMode(akaraLoaded);
             }
         },
 
@@ -342,7 +313,7 @@
                     title: "removeplaylist"
                 };
 
-                playListWindow(obj, "removeplaylist.html");
+                playListWindow(obj, "Playlist/RemovePlaylist.html");
             }
         }
     });
