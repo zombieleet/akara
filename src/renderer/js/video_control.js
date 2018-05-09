@@ -24,7 +24,7 @@ let target, _SUBTITLE_MENU_ = new Menu();
 
 const applyButtonConfig = (element,section,type) => {
 
-    let font = JSON.parse(localStorage.getItem(section))[type];
+    let font = getButtonConfig(section,type);
 
     if ( /data:image\//.test(font) ) {
         element.style.backgroundImage = `url(${font})`;
@@ -33,7 +33,7 @@ const applyButtonConfig = (element,section,type) => {
     }
         
     Array.from(element.classList, _class_ => {
-        if ( _class_ === "fa" || /^fa-*/.test(_class_) )
+        if ( _class_ === "fa" || _class_ === font )
             element.classList.remove(_class_);
     });
     
@@ -42,6 +42,8 @@ const applyButtonConfig = (element,section,type) => {
 
     return ;
 };
+
+const getButtonConfig = (section,type) => JSON.parse(localStorage.getItem(section))[type];
 
 const buildRepeatMenu = () => {
 
@@ -313,5 +315,6 @@ buildRepeatMenu();
 module.exports = {
     video,
     controls,
-    applyButtonConfig
+    applyButtonConfig,
+    getButtonConfig
 };
