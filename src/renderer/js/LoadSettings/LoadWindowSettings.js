@@ -210,7 +210,8 @@
         ], "data-winop");
 
         await loadUISettingButton("playlist-buttons", [
-            "delete", "load", "add", "check", "times", "uncheck"
+            "delete", "load", "add", "check", "times", "uncheck",
+            "play"
         ], "data-playlist-op");
     });
 
