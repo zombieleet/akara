@@ -200,19 +200,19 @@ module.exports.createPlaylistItem = createPlaylistItem;
 const removeCurrentPlayingStyles = parentNode => {
 
     Array.from(parentNode.children, el => {
-        
+
         if ( el.hasAttribute("data-image_icon") ) {
             el.style.backgroundImage = null;
             el.removeAttribute("data-image_icon");
         } else {
-            el.classList.remove(getButtonConfig("playlist-buttons", "play")); 
+            el.classList.remove(getButtonConfig("playlist-buttons", "play"));
             el.classList.remove("fa");
         }
 
         el.removeAttribute("data-dbclicked");
         el.removeAttribute("data-now-playing");
         el.removeAttribute("data-clicked");
-        
+
     });
 };
 
@@ -246,7 +246,7 @@ const setCurrentPlaying = target => {
     target.setAttribute("data-dbclicked", "true");
     target.setAttribute("data-now-playing", "true");
     target.setAttribute("data-clicked", "true");
-    
+
     applyButtonConfig(target, "playlist-buttons", "play");
     updatePlaylistName(target);
 
@@ -1081,7 +1081,6 @@ const savepodcast = async (podcasturl,callback) => {
 
         try {
             result = await podson.getPodcast(pod__);
-            console.log(result, "try --- catch ");
         } catch(ex) {
             errs.push(pod__);
             continue;
@@ -1550,9 +1549,9 @@ const UIBUTTON = async (type,buttonName) => {
 };
 
 module.exports.loadUISettingButton = async (section, buttonsToLoad, getBy) => {
-    
+
     let uibutton = await UIBUTTON(section, buttonsToLoad);
-    
+
     Object.keys(uibutton).forEach( button => {
 
         const uibutt = document.querySelector(`[${getBy}=${button}]`);
