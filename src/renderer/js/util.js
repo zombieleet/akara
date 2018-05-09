@@ -1095,7 +1095,11 @@ const savepodcast = async (podcasturl,callback) => {
                 continue;
             }
 
-            callback(null,null,{ name: result.name, link: pod__ });
+            callback(null,null, {
+                name: result.name,
+                link: pod__,
+                isDone: podcasturl[podcasturl.length - 1] === pod__ ? true : false
+            });
 
             base64Img.requestBase64(result.image, (err,res,body) => {
                 result.image = body;
@@ -1106,19 +1110,13 @@ const savepodcast = async (podcasturl,callback) => {
 
 
     for ( let errpod of errs ) {
-        const err = new(class PODCAST_ERROR extends Error {
-            constructor(code,podcastLink,message,fileName,lineNumber) {
-                super(message,fileName,lineNumber);
-                this.code = code;
-                this.podcastLink = podcastLink;
-            }
-        })("PODCAST_NO_LOAD", errpod, "cannot load podcast");
-
-        setTimeout(() => {
-            callback(err,null);
-        },500);
+        const err = {
+            podcastLink: errpod ,
+            code: "PODCAST_NO_LOAD",
+            isDone: errs[errs.length - 1] === errpod ? true : false
+        };
+        setTimeout( () => callback(err,null), Math.floor(2000 * Math.random(2000)) * 2);
     }
-
 };
 
 module.exports.savepodcast = savepodcast;
