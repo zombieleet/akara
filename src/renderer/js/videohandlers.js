@@ -47,8 +47,6 @@ const {
     readSubtitleFile,
     playlistLoad,
     sendNotification,
-    removeClass,
-    removeType,
     setCurrentPlaying,
     processMediaTags
 } = require("../js/util.js");
