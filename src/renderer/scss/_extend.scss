@@ -94,7 +94,7 @@ $drop-down-left-pos: 200;
 
 %buttons {
 
-    width: 15%;
+    width: 100px;
     margin: 50px 10px 10px 10px;
     float: right;
     
@@ -104,9 +104,8 @@ $drop-down-left-pos: 200;
     transition: .2s background ease-in, .2s color ease-in;
     
     border: none;
-    
-    border-radius: 50px;
-    
+    border-radius:12px;
+    background: lighten(black,40%);
     &:hover {
         background: darken(lightgrey, 70%);
         color: white;
@@ -137,12 +136,14 @@ $drop-down-left-pos: 200;
 }
 
 %modal-buttons {
-    width: 100%;
+    width: 100px;
     border: none;
+    border-radius: 12px;
     padding: 7px;
     margin: 10px;
     cursor: pointer;
     transition: .2s ease-in;
+    background: lighten(black,40%);
     font-size: .9em;
 }
 
