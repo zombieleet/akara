@@ -331,11 +331,11 @@
 
             display: flex;
             justify-content: flex-end;
-
+            margin-right: 3px;
             button {
                 @extend %modal-buttons;
                 &:hover {
-                    background-color: lighten(lightgrey, 10%);
+                    background-color: lighten(black, 50%);
                 }
             }
             .podcast-modal-cancel {
@@ -382,5 +382,24 @@
 
     i {
         font-size: 90px;
+    }
+}
+
+
+.podcast-spin-saving {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: black;
+    opacity: .7;
+    .podcast-spinning-save {
+        margin-left: 45%;
+        margin-top: 14%;
+    }
+    .podcast-spin-log {
+        text-align: center;
+        margin-top: 5%;
     }
 }
