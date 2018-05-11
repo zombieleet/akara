@@ -1,0 +1,33 @@
+extends ../__layout.pug
+
+block title
+  title ShortCut Keys
+
+block link
+  link(rel="stylesheet" href="../../css/main.css")
+  link(rel="stylesheet" href="../../libs/font-awesome.min.css")
+
+block body
+  body(class="shortcut-body")
+    header(class="shortcut-header")
+      div(class="window-title") Shortcut
+      div(class="window-state-buttons")
+        ul(class="window-buttons")
+          li(data-winop="minimize")
+          li(data-winop="maximize")
+          li(data-winop="close")
+
+    section(class="shortcutkey")
+      div(class="shortcutkey_settings")
+        ul(class="shortcutkey_list")
+          li(class="shortcut_item" data-active="active" data-show-set="video") Video
+          li(class="shortcut_item" data-active="noactive" data-show-set="audio") Audio
+          li(class="shortcut_item" data-active="noactive" data-show-set="podcast") Podcast
+          li(class="shortcut_item" data-active="noactive" data-show-set="subtitle") Subtitle
+          li(class="shortcut_item" data-active="noactive" data-show-set="window") Window
+          li(class="shortcut_item" data-active="noactive" data-show-set="settings") Settings
+          li(class="shortcut_item" data-active="noactive" data-show-set="other") Other
+      
+      div(class="shortcut_show_settings")
+
+    script(src="../../js/settings/shortcutkeys.js")
