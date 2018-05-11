@@ -1,0 +1,94 @@
+.shortcut-body {
+    @extend %new_window_body;
+}
+
+
+.shortcut-header {
+    @extend %window-headers;
+}
+
+.shortcutkey {
+    width: 100%;
+    .shortcutkey_settings {
+        float: left;
+        width: 11%;
+        height: 100%;
+        font-size: 20px;
+        .shortcutkey_list {
+            padding: 12px;
+            padding-top: 0;
+            .shortcut_item {
+                cursor: pointer;
+                padding-top: 12px;
+                padding-bottom: 12px;
+                &:not(:first-of-type) {
+                    margin-top: 50px;
+                }
+            }
+        }
+    }
+
+    .shortcut_show_template {
+        float: right;
+        width: 88%;
+        height: 70%;
+        //border: 2px solid blue;
+    }
+}
+
+
+
+.shortcut_key_list {
+    width: 70%;
+    margin-left: 20%;
+    padding: 30px;
+    height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    .shortcut_key_item {
+        border: 2px solid lighten($global-color,10%);
+        border-radius: 30px;
+        padding-top: 12px;
+        padding-bottom: 24px;
+        cursor: pointer;
+        transition: .1s ease-in background, .2s ease-in border-color;
+        &:hover {
+            background: darken($global-color,10%);
+            border-color: darken($global-color,15%);
+        }
+        &:not(:first-of-type) {
+            margin-top: 30px;
+        }
+        .shortcut_key_name {
+            float: left;
+            margin-left: 12px;
+        }
+        .shortcut_key_value {
+            float: right;
+            margin-right: 20px;
+        }
+    }
+}
+
+[data-modify-shortcut="modify"] {
+    background: darken($global-color,10%);
+    border-color: darken($global-color,15%) !important;
+}
+
+[data-modify-invalid="invalid"] {
+    background: red;
+    border-color: red !important;
+    &:hover {
+        background: red !important;
+        border-color: red !important;
+    }
+}
+
+[data-modify-valid="valid"] {
+    background: green;
+    border-color: green !important;
+    &:hover {
+        background: green !important;
+        border-color: green !important;
+    }
+}
