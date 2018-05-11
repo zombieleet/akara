@@ -14,6 +14,12 @@ const {
     writeFileSync
 } = require("fs");
 
+const {
+    video,
+    audio,
+    subtitle
+} = require("./shortcut.js");
+
 const APP_PATH = app.getAppPath();
 const BACKGROUND_COLOR = "#4B4B4B";
 const USER_DATA = app.getPath("userData");
@@ -79,6 +85,9 @@ const requireSettingsPath = type => {
                 break;
             case "volume.json":
                 objConfig = { volume_default_level: 50, volume_max_level: 70, volume_warn_exceed_max: true };
+                break;
+            case "shortcut.json":
+                objConfig = { video , audio , subtitle };
                 break;
             case "custom_uibuttons.json":
                 /*
