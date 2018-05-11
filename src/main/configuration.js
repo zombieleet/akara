@@ -5,7 +5,6 @@ const {
     USER_POSTERS_LOCATION
 } = require("./constants.js");
 
-const SHORTCUT_KEYS = require("./shotcutkeys.json");
 
 const playlistFile = PLAYLIST_FILE();
 const podcast = PODCAST();
@@ -16,6 +15,5 @@ module.exports = {
         file: playlistFile
     },
     podcast,
-    shortcut: SHORTCUT_KEYS,
     posters
 };
