@@ -13,10 +13,7 @@ const {
     createNewWindow
 } = require("./newwindow.js");
 
-const {
-    shortcut
-} = require("./configuration.js");
-
+const shortcut = {};
 
 const share = {
     label: "Share",
