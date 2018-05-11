@@ -119,6 +119,20 @@
 
     };
 
+    handleAkaraSettings.shortcutkeys = () => {
+        const shortcutkeys = {
+            title: "ShortCut Keys",
+            maximizable: true,
+            resizable: true,
+            minimizable: true,
+            width: 500,
+            height: 450,
+            center: true
+        };
+
+        settingsWindow(shortcutkeys, "settings/shortcutkeys.html");
+    };
+
     settingsValue.addEventListener("click", evt => {
         const { target } = evt;
 
