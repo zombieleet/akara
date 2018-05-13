@@ -51,7 +51,7 @@
     const {
         fireControlButtonEvent,
         videoLoadData,
-        dbClickEvent,
+        setFullScreen,
         mouseNotHoverVideo,
         mouseMoveOnVideo,
         updateTimeIndicator,
@@ -102,7 +102,7 @@
     controlElements.addEventListener("click", fireControlButtonEvent);
 
     video.addEventListener("loadeddata",videoLoadData);
-    video.addEventListener("dblclick", dbClickEvent);
+    video.addEventListener("dblclick", setFullScreen);
     video.addEventListener("mousemove", mouseMoveOnVideo);
     video.addEventListener("timeupdate", updateTimeIndicator);
     video.addEventListener("ended", videoEndedEvent);

@@ -1067,15 +1067,13 @@ module.exports.lowHighVolume = volume => {
 
 };
 
-const dbClickEvent = () => {
+module.exports.setFullScreen = () => {
 
     if ( document.webkitIsFullScreen )
         return _leavefullscreen();
     else
         return _enterfullscreen();
 };
-
-module.exports.dbClickEvent = dbClickEvent;
 
 
 module.exports.showSubtitle = (mItem,id) => {
