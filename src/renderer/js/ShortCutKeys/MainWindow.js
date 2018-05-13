@@ -1,6 +1,15 @@
-; ( () => {
+; ( async () => {
 
     "use strict";
+
+    // ask how to call this in an object literal expression
+    //    { a: 'b', c: this.a }
+
+    const {
+        remote: {
+            require: _require
+        }
+    } = require("electron");
 
     const {
         setupPlaying,
@@ -23,19 +32,30 @@
         showMediaInfoWindow
     } = require("../js/handle_dropdown_commands.js")();
 
-    const akara_emit = require("../js/emitter.js");
     const {
-        dbClickEvent,
+        setFullScreen,
         showFileLocation,
         subHandler
     } = require("../js/videohandlers.js");
 
+    const akara_emit = require("../js/emitter.js");
     const mainWindowKey = new (require("../js/keyevents.js"));
 
     const video = document.querySelector("video");
-
     const searchResults = document.querySelector(".findings");
 
+    const { requireSettingsPath } = _require("./constants.js");
+    const shortcutpath = await requireSettingsPath("shortcut.json");
+    const shortcutsettings = require(shortcutpath);
+
+    console.log(shortcutsettings);
+
+    const getKeyIndex = (shortcut,shortcutType) => {
+        const shortcut__ = shortcutsettings[shortcut];
+        const idx = shortcut__.findIndex( sh_setting => sh_setting[shortcutType] );
+        //return shortcut__.find( sh_setting => sh_setting[shortcutType] )[shortcutType];
+        return shortcut__[idx][shortcutType];
+    };
 
 
     const isSearchSuccesful = () => {
