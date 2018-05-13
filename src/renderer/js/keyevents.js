@@ -136,11 +136,11 @@ class AkaraKey  {
                 `got type of ${typeof key} instead of an array`
             );
 
-            assert.notStrictEqual(
-                modifier.length,
-                0,
-                `no modifier key was specified in the modifier array`
-            );
+            // assert.notStrictEqual(
+            //     modifier.length,
+            //     0,
+            //     `no modifier key was specified in the modifier array`
+            // );
 
             this.hash = this.__computeHash(modifier);
 
