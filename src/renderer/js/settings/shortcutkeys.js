@@ -10,6 +10,7 @@
         }
     } = require("electron");
 
+    const fs = require("fs");
 
     const { handleWindowButtons } = require("../../js/util.js");
     const { requireSettingsPath } = _require("./constants.js");
@@ -21,6 +22,24 @@
     const shortcutList = document.querySelector(".shortcutkey_list");
 
 
+    const saveShortcut = async ({ key, modifier, shortcut, shortcutType }) => {
+
+        const shortcutpath = await requireSettingsPath("shortcut.json");
+        const shortcutsettings = require(shortcutpath);
+        const shortcutKeySettings = shortcutsettings[shortcut];
+
+        const shortcutObj = shortcutKeySettings.find( setting => setting[shortcutType] );
+
+        Object.assign( shortcutObj , {
+            [shortcutType]: {
+                key,
+                modifier
+            }
+        });
+
+        fs.writeFileSync(shortcutpath, JSON.stringify(shortcutsettings));
+    };
+
     const processShortcut = (key,modifier,keyValue) => {
 
         const pNode = keyValue.parentNode;
@@ -29,18 +48,19 @@
 
         if ( ! pNode ) {
             keyValue.textContent = `${modifier}  ${key}`;
-            return ;
+            return true;
         }
 
         if ( key === "" ) {
             pNode.setAttribute("data-modify-invalid", "invalid");
             keyValue.textContent = modifier;
-            return ;
+            return null;
         }
 
         pNode.removeAttribute("data-modify-invalid");
         keyValue.textContent = `${modifier}  ${key}`;
 
+        return { saveShortcut };
 
     };
 
