@@ -122,6 +122,7 @@
      **/
 
     mainWindowKey.register({
+        name: "remove search box",
         key: "Escape",
         handler() {
             const searchParent = document.querySelector(".search-parent");
@@ -139,11 +140,10 @@
      **/
 
     mainWindowKey.register({
-
+        name: "move up to the next search",
         key: "ArrowUp",
-
         handler() {
-            
+
             let el = handleArrowKeys();
             let prev;
 
@@ -161,11 +161,10 @@
      *
      **/
     mainWindowKey.register({
-
+        name: "move down to the next search",
         key: "ArrowDown",
-
         handler() {
-            
+
             let el = handleArrowKeys();
             let next;
 
@@ -185,12 +184,13 @@
      *
      **/
     mainWindowKey.register({
+        name: "open media file",
         key: "f",
         modifier: ["altKey"],
         handler: addMediaFile
     });
 
-    
+
     /**
      *
      * shortcut key to handle
@@ -198,6 +198,7 @@
      *
      **/
     mainWindowKey.register({
+        name: "open media folder",
         key: "f",
         modifier: [ "altKey", "shiftKey" ],
         handler: addMediaFolder
@@ -210,6 +211,7 @@
      *
      **/
     mainWindowKey.register({
+        name: "play searched video",
         key: "Enter",
         handler: handlePlaySearchResult
     });
@@ -222,9 +224,8 @@
      **/
 
     mainWindowKey.register({
-
+        name: "play or pause video",
         key: "Space",
-
         handler() {
 
             if ( video.paused )
@@ -235,27 +236,35 @@
     });
 
     mainWindowKey.register({
-        key: "n",
+        name: "play next media",
+        key: getKeyIndex("video", "next").key,
+        modifier: getKeyIndex("video", "next").modifier,
         handler: _next
     });
 
     mainWindowKey.register({
-        key: "p",
+        name: "play previous media",
+        key: getKeyIndex("video", "previous").key,
+        modifier: getKeyIndex("video", "previous").modifier,
         handler: _previous
     });
 
     mainWindowKey.register({
-        key: "f",
-        handler: dbClickEvent
+        name: "set fullscreen",
+        key: getKeyIndex("video", "fullscreen").key,
+        modifier: getKeyIndex("video", "fullscreen").modifier,
+        handler: setFullScreen
     });
 
     mainWindowKey.register({
+        name: "show search box",
         key: "s",
         modifier: [ "ctrlKey" ],
         handler: search
     });
-    
+
     mainWindowKey.register({
+        name: "increase volume",
         key: "ArrowUp",
         modifier: [ "ctrlKey" ],
         handler: () => incrDecrVolume("next")
@@ -263,56 +272,65 @@
 
 
     mainWindowKey.register({
+        name: "decrease volume",
         key: "ArrowDown",
         modifier: [ "ctrlKey" ],
         handler: () => incrDecrVolume("prev")
     });
 
     mainWindowKey.register({
+        name: "open media file location",
         key: "o",
         modifier: [ "ctrlKey" ],
         handler: showFileLocation
     });
 
     mainWindowKey.register({
+        name: "show media info",
         key: "m",
         modifier: [ "ctrlKey", "shiftKey" ],
         handler: showMediaInfoWindow
     });
 
     mainWindowKey.register({
+        name: "normal media play back rate",
         key: "n",
         modifier: [ "altKey" ],
         handler: () => _setPlaybackRate(1)
     });
 
     mainWindowKey.register({
+        name: "fast media playback rate",
         key: "f",
         modifier: [ "altKey", "ctrlKey"] ,
         handler: () => _setPlaybackRate(12)
     });
 
     mainWindowKey.register({
+        name: "very fast media playback rate",
         key: "f",
         modifier: [ "shiftKey" ],
         handler: () => _setPlaybackRate(25)
     });
 
     mainWindowKey.register({
+        name: "slow media playback rate",
         key: "s",
         modifier: [ "altKey", "ctrlKey" ],
         handler: () => _setPlaybackRate(0.7)
     });
 
     mainWindowKey.register({
+        name: "very slow media playback rate",
         key: "s",
         modifier: [ "shiftKey" ],
         handler: () => _setPlaybackRate(0.2)
     });
 
     mainWindowKey.register({
-        key: "ArrowRight",
-        modifier: [ "shiftKey" ],
+        name: "next frame slow",
+        key: getKeyIndex("video", "next frame slow").key,
+        modifier: getKeyIndex("video", "next frame slow").modifier,
         handler() {
 
             if ( ! video.hasAttribute("data-id") )
@@ -327,8 +345,9 @@
 
 
     mainWindowKey.register({
-        key: "ArrowLeft",
-        modifier: [ "shiftKey" ],
+        name: "previous frame slow",
+        key: getKeyIndex("video", "previous frame slow").key,
+        modifier: getKeyIndex("video", "previous frame slow").modifier,
         handler() {
 
             if ( ! video.hasAttribute("data-id") )
@@ -342,8 +361,9 @@
     });
 
     mainWindowKey.register({
-        key: "ArrowRight",
-        modifier: [ "ctrlKey" ],
+        name: "next frame fast",
+        key: getKeyIndex("video", "next frame fast").key,
+        modifier: getKeyIndex("video", "next frame fast").modifier,
         handler() {
 
             if ( ! video.hasAttribute("data-id") )
@@ -357,8 +377,9 @@
     });
 
     mainWindowKey.register({
-        key: "ArrowLeft",
-        modifier: [ "ctrlKey" ],
+        name: "previous frame fast",
+        key: getKeyIndex("video", "previous frame fast").key,
+        modifier: getKeyIndex("video", "previous frame fast").modifier,
         handler() {
 
             if ( ! video.hasAttribute("data-id") )
@@ -372,12 +393,14 @@
     });
 
     mainWindowKey.register({
+        name: "get subtitle from computer",
         key: "t",
         modifier: [ "altKey" ],
         handler: () => subHandler( undefined, "computer" )
     });
 
     mainWindowKey.register({
+        name: "get subtitle from internet",
         key: "x",
         modifier: [ "altKey" ],
         handler: () => subHandler( undefined, "net")
@@ -387,6 +410,7 @@
     akara_emit.on("video::subtitle:shortcut", track => {
         console.log(track);
         mainWindowKey.register({
+            name: `subtitle track ${track.id}`,
             key: track.id,
             modifier: [ "ctrlKey" ],
             handler() {
