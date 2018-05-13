@@ -81,6 +81,8 @@
               : document.createElement("ul");
 
         ul.setAttribute("class", "shortcut_key_list");
+        ul.setAttribute("data-shortcut", type);
+
         showSettings.appendChild(ul);
 
         for ( const shortcuttype of shortcutKeySettings ) {
@@ -92,7 +94,7 @@
                 const keyValue = document.createElement("span");
 
                 const shortcutKey = shortcuttype[kName];
-
+                console.log(shortcutKey);
                 processShortcut(shortcutKey.key, shortcutKey.modifier, keyValue);
 
                 keyName.textContent = kName;
@@ -100,7 +102,9 @@
                 li.setAttribute("class", "shortcut_key_item");
 
                 keyName.setAttribute("class", "shortcut_key_name");
+
                 keyValue.setAttribute("class", "shortcut_key_value");
+                keyValue.setAttribute("data-shortcut-type", kName);
 
                 li.appendChild(keyName);
                 li.appendChild(keyValue);
@@ -170,6 +174,7 @@
         if ( ! modifyActive )
             return ;
 
+        const shortcutTypeEl = modifyActive.parentNode;
         const keyValue = modifyActive.querySelector(".shortcut_key_value");
 
         let modifierKeys = [ "altKey", "ctrlKey", "metaKey", "shiftKey" ]
@@ -179,14 +184,27 @@
             ? evt.code
             : ( () => {
                 if ( ! /Control|Alt|Shift/.test(evt.key) ) {
-                    if ( ! /(ArrowRight|ArrowLeft|ArrowUp|ArrowDown)/.test(evt.key) )
+                    if ( ! /(ArrowRight|ArrowLeft|ArrowUp|ArrowDown|Tab)/.test(evt.key) )
                         return evt.key.toLowerCase();
                     return evt.key;
                 }
                 return "";
             })();
 
-        processShortcut(key_code, modifierKeys, keyValue);
+        const isValid = processShortcut(key_code, modifierKeys, keyValue);
+
+        if ( ! isValid )
+            return ;
+
+        const shortcut = shortcutTypeEl.getAttribute("data-shortcut");
+        const shortcutType = keyValue.getAttribute("data-shortcut-type");
+
+        isValid.saveShortcut({
+            key: key_code,
+            modifier: modifierKeys,
+            shortcut,
+            shortcutType
+        });
 
     });
 
