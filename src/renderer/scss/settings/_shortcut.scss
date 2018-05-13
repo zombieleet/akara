@@ -11,12 +11,15 @@
     width: 100%;
     .shortcutkey_settings {
         float: left;
-        width: 11%;
+        width: 150px;
         height: 100%;
         font-size: 20px;
         .shortcutkey_list {
+            height: inherit;
             padding: 12px;
             padding-top: 0;
+            box-shadow: 0px 3px 13px -5px darken($global-color,15%);
+            background: darken($global-color,15%);
             .shortcut_item {
                 cursor: pointer;
                 padding-top: 12px;
@@ -28,10 +31,13 @@
         }
     }
 
-    .shortcut_show_template {
-        float: right;
-        width: 88%;
-        height: 70%;
+    .shortcut_show_settings {
+        /* float: right; */
+        /* margin-right: 5%; */
+        /* width: 70%; */
+        height: 100%;
+        box-shadow: 0px 3px 13px -5px darken($global-color,15%);
+        background: darken($global-color,5%);
         //border: 2px solid blue;
     }
 }
