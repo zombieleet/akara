@@ -11,6 +11,7 @@
     } = require("electron");
 
     const fs = require("fs");
+    const crypto = require("crypto");
 
     const { handleWindowButtons } = require("../../js/util.js");
     const { requireSettingsPath } = _require("./constants.js");
@@ -40,6 +41,47 @@
         fs.writeFileSync(shortcutpath, JSON.stringify(shortcutsettings));
     };
 
+    const checkIfShortcutExists = (key,modifier,parentNode) => {
+
+        const nodeIterator = document.createNodeIterator(
+            parentNode, NodeFilter.SHOW_ELEMENT,
+            node => {
+                return node.hasAttribute("data-modify-shortcut") || ! HTMLLIElement[Symbol.hasInstance](node)
+                    ? NodeFilter.FILTER_SKIP
+                    : NodeFilter.FILTER_ACCEPT;
+            }
+            , false
+        );
+
+        const regexp = /\s+\+\s+/;
+
+        let currnode, isMatch = 0;
+
+        while ( ( currnode = nodeIterator.nextNode() ) ) {
+
+            const modi = modifier.split(regexp);
+            const lastChildContent = currnode.lastElementChild.textContent.split(regexp);
+
+
+            // .pop removes a leading "" at the end of the array
+            //   after been split, the cause of the "" at the end of the array
+            //   is not known
+            modi.pop();
+            modi.push(key);
+
+            const modiHash = crypto.createHash("md5").update(Buffer.from(modi.toString())).digest("hex");
+            const lastChildContentHash = crypto.createHash("md5").update(Buffer.from(lastChildContent.toString())).digest("hex");
+
+            if ( modiHash === lastChildContentHash ) {
+                console.log("duh");
+                isMatch = 1;
+                break;
+            }
+        }
+        console.log(isMatch);
+        return isMatch;
+    };
+
     const processShortcut = (key,modifier,keyValue) => {
 
         const pNode = keyValue.parentNode;
@@ -53,9 +95,19 @@
 
         if ( key === "" ) {
             pNode.setAttribute("data-modify-invalid", "invalid");
-            keyValue.textContent = modifier;
+            //keyValue.textContent = modifier;
+            keyValue.textContent = "bad key combination";
             return null;
         }
+
+
+        if ( checkIfShortcutExists(key,modifier,pNode.parentNode) ) {
+            pNode.setAttribute("data-modify-invalid", "invalid");
+            keyValue.textContent = "shortcut already exists";
+            return null;
+        }
+
+
 
         pNode.removeAttribute("data-modify-invalid");
         keyValue.textContent = `${modifier}  ${key}`;
