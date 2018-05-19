@@ -66,8 +66,11 @@
             // .pop removes a leading "" at the end of the array
             //   after been split, the cause of the "" at the end of the array
             //   is not known
+
             modi.pop();
             modi.push(key);
+
+            console.log(modi.toString(), lastChildContent);
 
             const modiHash = crypto.createHash("md5").update(Buffer.from(modi.toString())).digest("hex");
             const lastChildContentHash = crypto.createHash("md5").update(Buffer.from(lastChildContent.toString())).digest("hex");
@@ -86,10 +89,10 @@
 
         const pNode = keyValue.parentNode;
 
-        modifier = modifier.length > 0 ? `${modifier.join("  +  ")}  +  ` : "  ";
+        modifier = modifier.length > 0 ? `${modifier.join("  +  ")}  +  ` : "";
 
         if ( ! pNode ) {
-            keyValue.textContent = `${modifier}  ${key}`;
+            keyValue.textContent = `${modifier}${key}`;
             return true;
         }
 
@@ -110,7 +113,7 @@
 
 
         pNode.removeAttribute("data-modify-invalid");
-        keyValue.textContent = `${modifier}  ${key}`;
+        keyValue.textContent = `${modifier}${key}`;
 
         return { saveShortcut };
 
