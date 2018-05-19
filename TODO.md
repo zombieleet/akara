@@ -2,8 +2,8 @@
 # settings
 1. fullscreen settings
 2. playback speed settings ( DONE )
-3. howmany seconds to wait before turning off akara-control in fullscreen mode
-4. stying cues
+3. how many seconds to wait before turning off akara-control in fullscreen mode ( settings )
+4. styling cues
 5. automatically playing converted media ( SETTINGS )
 6. play other media when conversion is taking place ( SETTINGS )
 7. ask for where to save subtitle ( SETTINGS )
@@ -25,4 +25,7 @@ ffmpeg -i Videos/gulps/part15/15-01-softbodies-part1-vertexweight-mobile.mp4 -c 
 17. validate unicode values
 18. unicode values as font
 19. convert image uploaded to data-uri
-settinings for context menu icons
+20. settings for context menu icons
+21. In subtitle settings add support for toggling on or off automatic subtitle adding if the name of the media file equals its su
+btitle file
+22. fix resuming media from previously stopped location
