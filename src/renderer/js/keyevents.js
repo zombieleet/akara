@@ -49,12 +49,10 @@ class AkaraKey  {
 
         if ( execute ) {
 
+            console.log(execute);
 
             if ( execute.modifier && execute.modifier )
                 return execute.handler(evt);
-
-            // if ( execute.modifier && ! execute.modifier )
-            //     return false;
 
             return execute.handler(evt);
 
@@ -78,15 +76,7 @@ class AkaraKey  {
     }
 
     __computeHash(modifier) {
-        return crypto.createHash("md5")
-            .update(
-                modifier.join(" ")
-            ).digest(
-                "hex"
-            ).substr(
-                0,
-                8
-            );
+        return crypto.createHash("md5").update(modifier.join(" ")).digest("hex").substr(0,8);
     }
     /**
      *
@@ -130,34 +120,29 @@ class AkaraKey  {
 
         if ( modifier ) {
 
-            assert.strictEqual(
-                Array.isArray(modifier),
-                true,
-                `got type of ${typeof key} instead of an array`
-            );
+            if ( modifier.length > 0 ) {
 
-            // assert.notStrictEqual(
-            //     modifier.length,
-            //     0,
-            //     `no modifier key was specified in the modifier array`
-            // );
+                assert.strictEqual(
+                    Array.isArray(modifier),
+                    true,
+                    `got type of ${typeof key} instead of an array`
+                );
 
-            this.hash = this.__computeHash(modifier);
+                this.hash = this.__computeHash(modifier);
+                this.__makeSearch(key,modifier);
+                this.stack[`${key.toLowerCase()}_${this.hash}`] = opt;
+                this.hash = undefined;
+
+                return true;
+            }
 
             this.__makeSearch(key,modifier);
-
-            this.stack[`${key.toLowerCase()}_${this.hash}`] = opt;
-
-            this.hash = undefined;
-
+            this.stack[key] = opt;
             return true;
         }
+        // executing of this routine should not reach this branch of code
+        return false;
 
-        this.__makeSearch(key,modifier);
-
-        this.stack[key] = opt;
-
-        return true;
     }
 
     /**
