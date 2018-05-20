@@ -185,8 +185,8 @@
      **/
     mainWindowKey.register({
         name: "open media file",
-        key: "f",
-        modifier: ["altKey"],
+        key: getKeyIndex("others", "open media file").key,
+        modifier: getKeyIndex("others", "open media file").modifier,
         handler: addMediaFile
     });
 
@@ -199,8 +199,8 @@
      **/
     mainWindowKey.register({
         name: "open media folder",
-        key: "f",
-        modifier: [ "altKey", "shiftKey" ],
+        key: getKeyIndex("others", "open media folder").key,
+        modifier: getKeyIndex("others", "open media folder").modifier,
         handler: addMediaFolder
     });
 
@@ -225,7 +225,8 @@
 
     mainWindowKey.register({
         name: "play or pause video",
-        key: "Space",
+        key: getKeyIndex("audio", "play and pause").key,
+        modifier: getKeyIndex("audio", "play and pause").modifier,
         handler() {
 
             if ( video.paused )
@@ -258,8 +259,8 @@
 
     mainWindowKey.register({
         name: "show search box",
-        key: "s",
-        modifier: [ "ctrlKey" ],
+        key: getKeyIndex("others", "show search box").key,
+        modifier: getKeyIndex("others", "show search box").modifier,
         handler: search
     });
 
@@ -280,50 +281,50 @@
 
     mainWindowKey.register({
         name: "open media file location",
-        key: "o",
-        modifier: [ "ctrlKey" ],
+        key: getKeyIndex("others", "open media file location").key,
+        modifier: getKeyIndex("others", "open media file location").modifier,
         handler: showFileLocation
     });
 
     mainWindowKey.register({
         name: "show media info",
-        key: "m",
-        modifier: [ "ctrlKey", "shiftKey" ],
+        key: getKeyIndex("others", "media info").key,
+        modifier: getKeyIndex("others", "media info").modifier,
         handler: showMediaInfoWindow
     });
 
     mainWindowKey.register({
         name: "normal media play back rate",
-        key: "n",
-        modifier: [ "altKey" ],
+        key: getKeyIndex("audio", "normal playback rate").key,
+        modifier: getKeyIndex("audio", "normal playback rate").modifier,
         handler: () => _setPlaybackRate(1)
     });
 
     mainWindowKey.register({
         name: "fast media playback rate",
-        key: "f",
-        modifier: [ "altKey", "ctrlKey"] ,
+        key: getKeyIndex("audio", "fast playback rate").key,
+        modifier: getKeyIndex("audio", "slow playback rate").modifier,
         handler: () => _setPlaybackRate(12)
     });
 
     mainWindowKey.register({
         name: "very fast media playback rate",
-        key: "f",
-        modifier: [ "shiftKey" ],
+        key: getKeyIndex("audio", "very fast playback rate").key,
+        modifier: getKeyIndex("audio", "very fast playback rate").modifier,
         handler: () => _setPlaybackRate(25)
     });
 
     mainWindowKey.register({
         name: "slow media playback rate",
-        key: "s",
-        modifier: [ "altKey", "ctrlKey" ],
+        key: getKeyIndex("audio", "slow playback rate").key,
+        modifier: getKeyIndex("audio", "slow playback rate").modifier,
         handler: () => _setPlaybackRate(0.7)
     });
 
     mainWindowKey.register({
         name: "very slow media playback rate",
-        key: "s",
-        modifier: [ "shiftKey" ],
+        key: getKeyIndex("audio", "very slow playback rate").key,
+        modifier: getKeyIndex("audio", "very slow playback rate").modifier,
         handler: () => _setPlaybackRate(0.2)
     });
 
@@ -394,15 +395,15 @@
 
     mainWindowKey.register({
         name: "get subtitle from computer",
-        key: "t",
-        modifier: [ "altKey" ],
+        key: getKeyIndex("subtitle", "subtitle computer").key,
+        modifier:  getKeyIndex("subtitle", "subtitle computer").modifier,
         handler: () => subHandler( undefined, "computer" )
     });
 
     mainWindowKey.register({
         name: "get subtitle from internet",
-        key: "x",
-        modifier: [ "altKey" ],
+        key: getKeyIndex("subtitle", "subtitle internet").key,
+        modifier: getKeyIndex("subtitle", "subtitle internet").modifier,
         handler: () => subHandler( undefined, "net")
     });
 
