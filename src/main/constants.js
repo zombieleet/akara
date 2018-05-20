@@ -17,7 +17,8 @@ const {
 const {
     video,
     audio,
-    subtitle
+    subtitle,
+    others
 } = require("./shortcut.js");
 
 const APP_PATH = app.getAppPath();
@@ -87,7 +88,7 @@ const requireSettingsPath = type => {
                 objConfig = { volume_default_level: 50, volume_max_level: 70, volume_warn_exceed_max: true };
                 break;
             case "shortcut.json":
-                objConfig = { video , audio , subtitle };
+                objConfig = { video , audio , subtitle , others };
                 break;
             case "custom_uibuttons.json":
                 /*
