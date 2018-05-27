@@ -24,10 +24,9 @@
     const showSettings = document.querySelector(".shortcut_show_settings");
     const shortcutList = document.querySelector(".shortcutkey_list");
 
+    const saveShortcut = ({ key, modifier, shortcut, shortcutType }) => {
 
-    const saveShortcut = async ({ key, modifier, shortcut, shortcutType }) => {
-
-        const shortcutpath = await requireSettingsPath("shortcut.json");
+        const shortcutpath = requireSettingsPath("shortcut.json");
         const shortcutsettings = require(shortcutpath);
         const shortcutKeySettings = shortcutsettings[shortcut];
 
@@ -72,18 +71,14 @@
             modi.pop();
             modi.push(key);
 
-            console.log(modi.toString(), lastChildContent);
-
             const modiHash = crypto.createHash("md5").update(Buffer.from(modi.toString())).digest("hex");
             const lastChildContentHash = crypto.createHash("md5").update(Buffer.from(lastChildContent.toString())).digest("hex");
 
             if ( modiHash === lastChildContentHash ) {
-                console.log("duh");
                 isMatch = 1;
                 break;
             }
         }
-        console.log(isMatch);
         return isMatch;
     };
 
@@ -111,8 +106,6 @@
             keyValue.textContent = "shortcut already exists";
             return null;
         }
-
-
 
         pNode.removeAttribute("data-modify-invalid");
         keyValue.textContent = `${modifier}${key}`;
