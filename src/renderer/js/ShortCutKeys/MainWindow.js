@@ -1,4 +1,4 @@
-; ( async () => {
+; ( () => {
 
     "use strict";
 
@@ -45,7 +45,7 @@
     const searchResults = document.querySelector(".findings");
 
     const { requireSettingsPath } = _require("./constants.js");
-    const shortcutpath = await requireSettingsPath("shortcut.json");
+    const shortcutpath = requireSettingsPath("shortcut.json");
     const shortcutsettings = require(shortcutpath);
 
     console.log(shortcutsettings);

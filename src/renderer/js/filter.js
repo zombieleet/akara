@@ -11,23 +11,20 @@
 
     const { requireSettingsPath } = _require("./constants.js");
     const fs = require("fs");
-    
     const akara_emit = require("../js/emitter.js");
     
-
     const progress = document.querySelector("progress");
+    
+    const filterSettingsPath = requireSettingsPath("filter.json");
+    const filterSettings = require(filterSettingsPath);
 
 
-    const saveFilters = async (filterConfig) => {
-        const filterSettingsPath = await requireSettingsPath("filter.json");
-        const filterSettings = require(filterSettingsPath);
-
+    const saveFilters = (filterConfig) => {
         Object.assign(filterSettings, filterConfig);
-        
         fs.writeFileSync(filterSettingsPath, JSON.stringify(filterSettings));
     };
 
-    const handleFilters = async (evt,dir,cb) => {
+    const handleFilters =  (evt,dir,cb) => {
         
         const target = evt.target;
         const pNode = target.parentNode;
@@ -58,10 +55,7 @@
         return ;
     };
 
-    const resetFilters = async (evt) => {
-        
-        const filterSettingsPath = await requireSettingsPath("filter.json");
-        const filterSettings = require(filterSettingsPath);
+    const resetFilters =  (evt) => {
         
         let target = evt.target;
         let pNode = target.parentNode;
@@ -85,10 +79,7 @@
         }
     };
 
-    const resetAllFilters = async (evt) => {
-
-        const filterSettingsPath = await requireSettingsPath("filter.json");
-        const filterSettings = require(filterSettingsPath);
+    const resetAllFilters =  (evt) => {
         
         Object.keys(filterSettings).forEach( filter => {
             
@@ -127,11 +118,7 @@
         .addEventListener("click", () => getCurrentWindow().close());
 
         
-    window.addEventListener("DOMContentLoaded", async () => {
-        
-        const filterSettingsPath = await requireSettingsPath("filter.json");
-        const filterSettings = require(filterSettingsPath);
-
+    window.addEventListener("DOMContentLoaded",  () => {
         Object.keys(filterSettings).forEach( filter => {
             const filterType = document.querySelector(`[data-filter-type=${filter}]`);
             const progressBar = filterType.querySelector(".progress-bar");

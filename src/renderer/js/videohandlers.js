@@ -824,9 +824,9 @@ const handleLoadSubtitle = async (filePath,cb) => {
 };
 
 
-const loadAlbumArt = async () => {
+const loadAlbumArt = () => {
 
-    const posterJson = await requireSettingsPath("poster.json");
+    const posterJson = requireSettingsPath("poster.json");
     const posterSettings = require(posterJson);
 
 
@@ -874,9 +874,9 @@ const loadAlbumArt = async () => {
  **/
 
 
-module.exports.videoLoadData = async (event) => {
+module.exports.videoLoadData = event => {
 
-    const posterJson = await requireSettingsPath("poster.json");
+    const posterJson = requireSettingsPath("poster.json");
     const posterSettings = require(posterJson);
 
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");

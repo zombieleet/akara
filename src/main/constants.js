@@ -14,12 +14,8 @@ const {
     writeFileSync
 } = require("fs");
 
-const {
-    video,
-    audio,
-    subtitle,
-    others
-} = require("./shortcut.js");
+const jsonFileDB = require("./defaultSettings.js");
+
 
 const APP_PATH = app.getAppPath();
 const BACKGROUND_COLOR = "#4B4B4B";
@@ -60,165 +56,19 @@ const PODCAST = () => {
 const requireSettingsPath = type => {
 
     const settingsPath = SETTINGS();
+    const jsonPath = join(settingsPath, type);
 
-    return new Promise((resolve,reject) => {
+    if ( existsSync(jsonPath) )
+        return jsonPath;
 
-        const jsonPath = join(settingsPath, type);
+    let objConfig = jsonFileDB[type.replace(".json","")];
 
-        if ( existsSync(jsonPath) )
-            resolve(jsonPath);
+    if ( ! objConfig )
+        objConfig = {};
 
-        if ( ! existsSync(jsonPath) ) {
+    writeFileSync(jsonPath, JSON.stringify(objConfig));
 
-            let objConfig = {};
-
-            switch(type) {
-            case "poster.json":
-                objConfig = { poster: join(APP_PATH, "app", "renderer", "img", "posters", "default_poster.jpg") };
-                break;
-            case "playbackrate.json":
-                objConfig = { fast: 12, veryfast: 25, slow: 0.7, veryslow: 0.2};
-                break;
-            case "filter.json":
-                break;
-            case "share.json":
-                objConfig = { deactivate_sharing_option: "no", request_permission_before_sending_videos: "no" , "cache_expiry_date": (new Date()).valueOf()};
-                break;
-            case "volume.json":
-                objConfig = { volume_default_level: 50, volume_max_level: 70, volume_warn_exceed_max: true };
-                break;
-            case "shortcut.json":
-                objConfig = { video , audio , subtitle , others };
-                break;
-            case "custom_uibuttons.json":
-                /*
-                 * holds user custom fonts
-                 *
-                 */
-                objConfig = {
-                    ["control-buttons"]: {
-                        play: [],
-                        pause: [],
-                        stop: [],
-                        next: [],
-                        previous: [],
-                        volume: [],
-                        filter: [],
-                        repeat: [],
-                        random: [],
-                        subtitle: [],
-                        expand: [],
-                        unexpand: [],
-                        enterfullscreen: [],
-                        leavefullscreen: []
-                    },
-
-                    ["media-buttons"]:{
-                        play: [],
-                        pause: [],
-                        check: [],
-                        uncheck: []
-                    },
-
-                    ["podcast-buttons"]: {
-                        play: [],
-                        home: [],
-                        grid: [],
-                        list: [],
-                        uncheck: [],
-                        check: [],
-                        folder: [],
-                        times: [],
-                        close: [],
-                        download: [],
-                        add: []
-                    },
-
-                    ["window-buttons"]: {
-                        close: [],
-                        minimize: [],
-                        maximize: [],
-                        restore: []
-                    },
-
-                    [ "playlist-buttons" ]: {
-                        delete: [],
-                        load: [],
-                        add: [],
-                        uncheck: [],
-                        check: [],
-                        times: [],
-                        play: []
-                    }
-
-                };
-                break;
-            case "uibuttons.json":
-                /*
-                  *
-                  * default fonts
-                  *
-                 */
-                objConfig = {
-                    ["control-buttons"]: {
-                        play: "fa-play",
-                        pause: "fa-pause",
-                        stop: "fa-stop",
-                        next: "fa-forward",
-                        previous: "fa-backward",
-                        volume: "fa-volume-up",
-                        filter: "fa-filter",
-                        repeat: "fa-repeat",
-                        random: "fa-random",
-                        subtitle: "fa-cc",
-                        expand: "fa-arrows-h",
-                        unexpand: "fa-exchange",
-                        leavefullscreen: "fa-compress",
-                        enterfullscreen: "fa-expand"
-                    },
-                    ["media-buttons"]:{
-                        play: "fa-play",
-                        pause: "fa-pause",
-                        check: "fa-check-square-o",
-                        uncheck: "fa-square-o"
-
-                    },
-                    ["podcast-buttons"]: {
-                        play: "fa-play",
-                        home: "fa-home",
-                        grid: "fa-th-large",
-                        list: "fa-list",
-                        uncheck: "fa-square-o",
-                        check: "fa-check-square",
-                        times: "fa-times-circle",
-                        folder: "fa-folder",
-                        close: "fa-window-close",
-                        add: "fa-plus-square",
-                        download: "fa-download"
-                    },
-                    ["window-buttons"]: {
-                        close: "fa-window-close",
-                        minimize: "fa-window-minimize",
-                        maximize: "fa-window-maximize",
-                        restore: "fa-window-restore"
-                    },
-                    ["playlist-buttons"]: {
-                        delete: "fa-trash",
-                        load: "fa-file-powerpoint-o",
-                        add: "fa-plus-square",
-                        times: "fa-times-circle",
-                        check: "fa-check-square",
-                        uncheck: "fa-square-o",
-                        play: "fa-play-circle"
-                    }
-                };
-                break;
-            }
-
-            writeFileSync(jsonPath, JSON.stringify(objConfig));
-            resolve(jsonPath);
-        }
-    });
+    return jsonPath;
 };
 
 const SETTINGS = () => {

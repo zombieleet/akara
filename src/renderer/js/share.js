@@ -123,9 +123,9 @@
     };
 
 
-    share.shouldShare = async function() {
+    share.shouldShare = function() {
 
-        const shareFile = await requireSettingsPath("share.json");
+        const shareFile = requireSettingsPath("share.json");
         const shareSettings = require(shareFile);
 
 

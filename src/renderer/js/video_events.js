@@ -118,9 +118,9 @@
     video.addEventListener("progress", mediaProgress);
     video.addEventListener("seeking", mediaProgress);
 
-    video.addEventListener("volumechange", async (evt) => {
+    video.addEventListener("volumechange", evt => {
 
-        const volumeSettingPath = await requireSettingsPath("volume.json");
+        const volumeSettingPath = requireSettingsPath("volume.json");
         const volumeSettings = require(volumeSettingPath);
 
         if ( volumeSettings.volume_warn_exceed_max && volumeSettings.volume_default_level > volumeSettings.volume_max_level ) {
@@ -170,7 +170,7 @@
 
     ipc.on("normal-speed", () => _setPlaybackRate(1));
 
-    requireSettingsPath("playbackrate.json").
+    Promise.resolve(requireSettingsPath("playbackrate.json")).
         then( playbackFile => {
             const { fast,veryfast,slow,veryslow } = require(playbackFile);
             ipc.on("fast-speed", () => _setPlaybackRate(fast));

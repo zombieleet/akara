@@ -41,9 +41,9 @@
             }
         },
         youtube: {
-            async value(pin) {
+            value(pin) {
 
-                const shareFile = await requireSettingsPath("share.json");
+                const shareFile = requireSettingsPath("share.json");
                 const shareSettings = require(shareFile);
 
                 youtubeClient.getToken( pin, (err,token) => {
