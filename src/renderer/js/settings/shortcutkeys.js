@@ -3,9 +3,11 @@
     "use strict";
 
     const {
+        ipcRenderer: ipc,
         remote: {
             app,
             dialog,
+            getCurrentWindow,
             require: _require
         }
     } = require("electron");
@@ -254,17 +256,21 @@
         const shortcut = shortcutTypeEl.getAttribute("data-shortcut");
         const shortcutType = keyValue.getAttribute("data-shortcut-type");
 
-        isValid.saveShortcut({
+        const shKeys = {
             key: key_code,
             modifier: modifierKeys,
             shortcut,
             shortcutType
-        });
+        };
+
+        isValid.saveShortcut(shKeys);
+
+        ipc.sendTo(1, "akara::shortcutkey", shKeys);
 
     });
 
     window.addEventListener("DOMContentLoaded", () => {
-        appendSettingsToDom("video");
+        appendSettingsToDom("media");
     });
 
 

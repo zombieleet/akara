@@ -6,6 +6,7 @@
     //    { a: 'b', c: this.a }
 
     const {
+        ipcRenderer: ipc,
         remote: {
             require: _require
         }
@@ -446,6 +447,23 @@
             key: id,
             modifier: [ "ctrlKey"]
         });
+    });
+
+    ipc.on("akara::shortcutkey", ( evt, shKeys ) => {
+
+        const keyLocation = Object.keys(mainWindowKey.stack).find( key => mainWindowKey.stack[key].name === shKeys.shortcutType);
+        const keyCred = mainWindowKey.stack[keyLocation];
+        const handler = keyCred.handler;
+
+        mainWindowKey.unregister({ key: keyCred.key, modifier: keyCred.modifier});
+
+        mainWindowKey.register({
+            name: shKeys.shortcutType,
+            key: shKeys.key,
+            modifier: shKeys.modifier,
+            handler
+        });
+
     });
 
 })();
