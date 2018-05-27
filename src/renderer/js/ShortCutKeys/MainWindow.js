@@ -186,8 +186,8 @@
      **/
     mainWindowKey.register({
         name: "open media file",
-        key: getKeyIndex("others", "open media file").key,
-        modifier: getKeyIndex("others", "open media file").modifier,
+        key: getKeyIndex("media", "open media file").key,
+        modifier: getKeyIndex("media", "open media file").modifier,
         handler: addMediaFile
     });
 
@@ -200,8 +200,8 @@
      **/
     mainWindowKey.register({
         name: "open media folder",
-        key: getKeyIndex("others", "open media folder").key,
-        modifier: getKeyIndex("others", "open media folder").modifier,
+        key: getKeyIndex("media", "open media folder").key,
+        modifier: getKeyIndex("media", "open media folder").modifier,
         handler: addMediaFolder
     });
 
@@ -225,9 +225,9 @@
      **/
 
     mainWindowKey.register({
-        name: "play or pause video",
-        key: getKeyIndex("audio", "play and pause").key,
-        modifier: getKeyIndex("audio", "play and pause").modifier,
+        name: "play and pause",
+        key: getKeyIndex("media", "play and pause").key,
+        modifier: getKeyIndex("media", "play and pause").modifier,
         handler() {
 
             if ( video.paused )
@@ -238,30 +238,30 @@
     });
 
     mainWindowKey.register({
-        name: "play next media",
-        key: getKeyIndex("video", "next").key,
-        modifier: getKeyIndex("video", "next").modifier,
+        name: "next",
+        key: getKeyIndex("media", "next").key,
+        modifier: getKeyIndex("media", "next").modifier,
         handler: _next
     });
 
     mainWindowKey.register({
-        name: "play previous media",
-        key: getKeyIndex("video", "previous").key,
-        modifier: getKeyIndex("video", "previous").modifier,
+        name: "previous",
+        key: getKeyIndex("media", "previous").key,
+        modifier: getKeyIndex("media", "previous").modifier,
         handler: _previous
     });
 
     mainWindowKey.register({
-        name: "set fullscreen",
-        key: getKeyIndex("video", "fullscreen").key,
-        modifier: getKeyIndex("video", "fullscreen").modifier,
+        name: "fullscreen",
+        key: getKeyIndex("media", "fullscreen").key,
+        modifier: getKeyIndex("media", "fullscreen").modifier,
         handler: setFullScreen
     });
 
     mainWindowKey.register({
         name: "show search box",
-        key: getKeyIndex("others", "show search box").key,
-        modifier: getKeyIndex("others", "show search box").modifier,
+        key: getKeyIndex("media", "show search box").key,
+        modifier: getKeyIndex("media", "show search box").modifier,
         handler: search
     });
 
@@ -282,57 +282,57 @@
 
     mainWindowKey.register({
         name: "open media file location",
-        key: getKeyIndex("others", "open media file location").key,
-        modifier: getKeyIndex("others", "open media file location").modifier,
+        key: getKeyIndex("media", "open media file location").key,
+        modifier: getKeyIndex("media", "open media file location").modifier,
         handler: showFileLocation
     });
 
     mainWindowKey.register({
         name: "show media info",
-        key: getKeyIndex("others", "media info").key,
-        modifier: getKeyIndex("others", "media info").modifier,
+        key: getKeyIndex("media", "media info").key,
+        modifier: getKeyIndex("media", "media info").modifier,
         handler: showMediaInfoWindow
     });
 
     mainWindowKey.register({
-        name: "normal media play back rate",
-        key: getKeyIndex("audio", "normal playback rate").key,
-        modifier: getKeyIndex("audio", "normal playback rate").modifier,
+        name: "normal playback rate",
+        key: getKeyIndex("media", "normal playback rate").key,
+        modifier: getKeyIndex("media", "normal playback rate").modifier,
         handler: () => _setPlaybackRate(1)
     });
 
     mainWindowKey.register({
         name: "fast media playback rate",
-        key: getKeyIndex("audio", "fast playback rate").key,
-        modifier: getKeyIndex("audio", "slow playback rate").modifier,
+        key: getKeyIndex("media", "fast playback rate").key,
+        modifier: getKeyIndex("media", "slow playback rate").modifier,
         handler: () => _setPlaybackRate(12)
     });
 
     mainWindowKey.register({
         name: "very fast media playback rate",
-        key: getKeyIndex("audio", "very fast playback rate").key,
-        modifier: getKeyIndex("audio", "very fast playback rate").modifier,
+        key: getKeyIndex("media", "very fast playback rate").key,
+        modifier: getKeyIndex("media", "very fast playback rate").modifier,
         handler: () => _setPlaybackRate(25)
     });
 
     mainWindowKey.register({
-        name: "slow media playback rate",
-        key: getKeyIndex("audio", "slow playback rate").key,
-        modifier: getKeyIndex("audio", "slow playback rate").modifier,
+        name: "slow playback rate",
+        key: getKeyIndex("media", "slow playback rate").key,
+        modifier: getKeyIndex("media", "slow playback rate").modifier,
         handler: () => _setPlaybackRate(0.7)
     });
 
     mainWindowKey.register({
-        name: "very slow media playback rate",
-        key: getKeyIndex("audio", "very slow playback rate").key,
-        modifier: getKeyIndex("audio", "very slow playback rate").modifier,
+        name: "very slow playback rate",
+        key: getKeyIndex("media", "very slow playback rate").key,
+        modifier: getKeyIndex("media", "very slow playback rate").modifier,
         handler: () => _setPlaybackRate(0.2)
     });
 
     mainWindowKey.register({
         name: "next frame slow",
-        key: getKeyIndex("video", "next frame slow").key,
-        modifier: getKeyIndex("video", "next frame slow").modifier,
+        key: getKeyIndex("media", "next frame slow").key,
+        modifier: getKeyIndex("media", "next frame slow").modifier,
         handler() {
 
             if ( ! video.hasAttribute("data-id") )
@@ -348,8 +348,8 @@
 
     mainWindowKey.register({
         name: "previous frame slow",
-        key: getKeyIndex("video", "previous frame slow").key,
-        modifier: getKeyIndex("video", "previous frame slow").modifier,
+        key: getKeyIndex("media", "previous frame slow").key,
+        modifier: getKeyIndex("media", "previous frame slow").modifier,
         handler() {
 
             if ( ! video.hasAttribute("data-id") )
@@ -364,8 +364,8 @@
 
     mainWindowKey.register({
         name: "next frame fast",
-        key: getKeyIndex("video", "next frame fast").key,
-        modifier: getKeyIndex("video", "next frame fast").modifier,
+        key: getKeyIndex("media", "next frame fast").key,
+        modifier: getKeyIndex("media", "next frame fast").modifier,
         handler() {
 
             if ( ! video.hasAttribute("data-id") )
@@ -380,8 +380,8 @@
 
     mainWindowKey.register({
         name: "previous frame fast",
-        key: getKeyIndex("video", "previous frame fast").key,
-        modifier: getKeyIndex("video", "previous frame fast").modifier,
+        key: getKeyIndex("media", "previous frame fast").key,
+        modifier: getKeyIndex("media", "previous frame fast").modifier,
         handler() {
 
             if ( ! video.hasAttribute("data-id") )
@@ -395,14 +395,14 @@
     });
 
     mainWindowKey.register({
-        name: "get subtitle from computer",
+        name: "subtitle computer",
         key: getKeyIndex("subtitle", "subtitle computer").key,
         modifier:  getKeyIndex("subtitle", "subtitle computer").modifier,
         handler: () => subHandler( undefined, "computer" )
     });
 
     mainWindowKey.register({
-        name: "get subtitle from internet",
+        name: "subtitle internet",
         key: getKeyIndex("subtitle", "subtitle internet").key,
         modifier: getKeyIndex("subtitle", "subtitle internet").modifier,
         handler: () => subHandler( undefined, "net")
