@@ -13,6 +13,7 @@
     } = require("electron");
 
     const fs = require("fs");
+    const cluster = require("cluster");
     const crypto = require("crypto");
 
     const { handleWindowButtons } = require("../../js/util.js");
@@ -23,6 +24,9 @@
     const shortcutClose = document.querySelector("[data-winop=close]");
     const showSettings = document.querySelector(".shortcut_show_settings");
     const shortcutList = document.querySelector(".shortcutkey_list");
+
+
+    let DATASHOWSET;
 
     const saveShortcut = ({ key, modifier, shortcut, shortcutType }) => {
 
@@ -42,7 +46,37 @@
         fs.writeFileSync(shortcutpath, JSON.stringify(shortcutsettings));
     };
 
-    const checkIfShortcutExists = (key,modifier,parentNode) => {
+    const computeAgainstOtherSections = ( { key , modifier , from } ) => {
+
+        const shortcutpath = requireSettingsPath("shortcut.json");
+        const shortcutsettings = require(shortcutpath);
+
+        let isMatch = 0;
+
+        for ( let shsettings of Object.keys(shortcutsettings) ) {
+
+            if ( shsettings === from )
+                continue;
+
+
+            for ( let shset of shortcutsettings[shsettings] ) {
+
+                const [ objectPropName ] = Object.getOwnPropertyNames(shset);
+                const modiHash = crypto.createHash("md5").update(Buffer.from(modifier.toString())).digest("hex");
+                const shsetHash = crypto.createHash("md5").update(Buffer.from(shset[objectPropName].modifier.toString())).digest("hex");
+
+                if ( (shset[objectPropName].key === key) && (modiHash === shsetHash) ) {
+                    isMatch = 1;
+                    break;
+                }
+            }
+        }
+
+        return isMatch;
+
+    };
+
+    const computeAgainstDom = (key,modifier,parentNode) => {
 
         const nodeIterator = document.createNodeIterator(
             parentNode, NodeFilter.SHOW_ELEMENT,
@@ -79,9 +113,14 @@
                 break;
             }
         }
+
+        if ( ! isMatch  ) {
+            isMatch = computeAgainstOtherSections({key,modifier, from: DATASHOWSET});
+        }
+
         return isMatch;
     };
-
+    
     const processShortcut = (key,modifier,keyValue) => {
 
         const pNode = keyValue.parentNode;
@@ -101,7 +140,7 @@
         }
 
 
-        if ( checkIfShortcutExists(key,modifier,pNode.parentNode) ) {
+        if ( computeAgainstDom(key,modifier,pNode.parentNode) ) {
             pNode.setAttribute("data-modify-invalid", "invalid");
             keyValue.textContent = "shortcut already exists";
             return null;
@@ -144,8 +183,8 @@
                 const keyValue = document.createElement("span");
 
                 const shortcutKey = shortcuttype[kName];
-                console.log(shortcutKey);
-                processShortcut(shortcutKey.key, shortcutKey.modifier, keyValue);
+
+                processShortcut(shortcutKey.key, shortcutKey.modifier, keyValue, type);
 
                 keyName.textContent = kName;
 
@@ -179,13 +218,13 @@
             return ;
         }
 
-        const dataShowSet = target.getAttribute("data-show-set");
+        DATASHOWSET = target.getAttribute("data-show-set");
 
         try {
-            appendSettingsToDom(dataShowSet);
+            appendSettingsToDom(DATASHOWSET);
         } catch(ex) {
             console.log(ex);
-            dialog.showErrorBox("Not Implemented", `no implementation for ${dataShowSet}`);
+            dialog.showErrorBox("Not Implemented", `no implementation for ${DATASHOWSET}`);
         }
     });
 
@@ -263,6 +302,7 @@
     });
 
     window.addEventListener("DOMContentLoaded", () => {
+        DATASHOWSET = "media";
         appendSettingsToDom("media");
     });
 
