@@ -29,3 +29,21 @@ module.exports.subtitle = [
     { "subtitle computer": { key: "t" , modifier: [ "altKey" ] } },
     { "subtitle internet": { key: "x", modifier: [ "altKey" ] } }
 ];
+
+module.exports.settings = [
+    { "quick search": { key: "f", modifier: [ "ctrlKey" ] } },
+    { "playbackrate settings": { key: "p", modifier: [ "ctrlKey"] } },
+    { "filter settings": { key: "f" , modifier: [ "ctrlKey" ] } },
+    { "fullscreen settings": { key: "f" , modifier: [ "shiftKey" ]} },
+    { "play option settings": { key: "p", modifier: [ "shiftKey" ] } },
+    { "volume settings": { key: "v", modifier: [ "ctrlKey" ] } },
+    { "poster settings": { key: "p", modifier: [ "ctrlKey", "shiftKey" ] } },
+    { "audio type settings": { key: "a", modifier: [ "ctrlKey" ] } },
+    { "button settings": { key: "b", modifier: [ "ctrlKey" ] } },
+    { "themes": { key: "t", modifier: [ "ctrlKey" ] } },
+    { "plugin install": { key: "p", modifier: [ "ctrlKey" ] } },
+    { "plugin uninstal": { key: "p", modifier: [ "ctrlKey", "shiftKey" ] } },
+    { "power settings": { key: "p", modifier: [  "altKey", "shiftKey" ] } },
+    { "share settings": { keys: "s", modifier: [ "ctrlKey" ] } },
+    { "shortcutkey settings": { key: "s", modifier: [ "ctrlKey", "shiftKey" ] } },
+];
