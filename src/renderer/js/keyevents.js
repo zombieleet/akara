@@ -153,11 +153,11 @@ class AkaraKey  {
      *
      **/
 
-    remove({key,modifier}) {
+    unregister({key,modifier}) {
 
         if ( this.search(key,modifier) ) {
-
-            if ( modifier )
+            
+            if ( modifier.length > 0 )
                 delete this.stack[`${key}_${this.__computeHash(modifier)}`];
             else
                 delete this.stack[key];
@@ -196,7 +196,7 @@ class AkaraKey  {
 
     search(key,modifier) {
 
-        if ( modifier )
+        if ( modifier.length > 0 )
             key = `${key}_${this.__computeHash(modifier)}`;
 
         let value = this.__find(key);
