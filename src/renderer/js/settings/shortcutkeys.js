@@ -26,7 +26,7 @@
     const shortcutList = document.querySelector(".shortcutkey_list");
 
 
-    let DATASHOWSET;
+    let _CURRENT_SETTING_SECTION_IN_VIEW;
 
     const saveShortcut = ({ key, modifier, shortcut, shortcutType }) => {
 
@@ -115,7 +115,7 @@
         }
 
         if ( ! isMatch  ) {
-            isMatch = computeAgainstOtherSections({key,modifier, from: DATASHOWSET});
+            isMatch = computeAgainstOtherSections({key,modifier, from: _CURRENT_SETTING_SECTION_IN_VIEW});
         }
 
         return isMatch;
@@ -218,13 +218,13 @@
             return ;
         }
 
-        DATASHOWSET = target.getAttribute("data-show-set");
+        _CURRENT_SETTING_SECTION_IN_VIEW = target.getAttribute("data-show-set");
 
         try {
-            appendSettingsToDom(DATASHOWSET);
+            appendSettingsToDom(_CURRENT_SETTING_SECTION_IN_VIEW);
         } catch(ex) {
             console.log(ex);
-            dialog.showErrorBox("Not Implemented", `no implementation for ${DATASHOWSET}`);
+            dialog.showErrorBox("Not Implemented", `no implementation for ${_CURRENT_SETTING_SECTION_IN_VIEW}`);
         }
     });
 
@@ -296,13 +296,13 @@
         };
 
         isValid.saveShortcut(shKeys);
-
-        ipc.sendTo(1, "akara::shortcutkey", shKeys);
+        console.log("short");
+        ipc.sendTo(1, "akara::shortcutkey", _CURRENT_SETTING_SECTION_IN_VIEW , shKeys);
 
     });
 
     window.addEventListener("DOMContentLoaded", () => {
-        DATASHOWSET = "media";
+        _CURRENT_SETTING_SECTION_IN_VIEW = "media";
         appendSettingsToDom("media");
     });
 
