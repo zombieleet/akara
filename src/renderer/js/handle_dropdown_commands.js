@@ -289,39 +289,48 @@ const incrDecrVolume = direction => {
 };
 
 const showMediaInfoWindow = () => {
+    
     if ( ! noMediaPlaying() )
         return false;
-    const __obj = {
+    
+    createNewWindow({
         title: "mediainfo",
         height: 773,
         width: 608,
         maximizable: true,
         minimizable: true,
         resizable: true
-    };
-    const html = `${__obj.title}.html`;
-    createNewWindow(__obj,html);
+    },"mediainfo.html");
+    
     return true;
 };
 
 
 
-/**
- *
- *
- *
- **/
-
-const podWinOption = {
+const podcast = () => createNewWindow({
     width: 800,
     height: 530,
     title: "podcast",
     maximizable: true,
     minimizable: true,
     resizable: true
-};
+}, "podcast.html");
 
-const podcast = () => createNewWindow(podWinOption, "podcast.html");
+const settings = () => createNewWindow({
+    title: "Settings",
+    minimizable: true,
+    maximizable: true,
+    resizable: true
+}, "setting.html");
+
+const screenshot = () => createNewWindow({
+    title: "screenshot",
+    minimizable: false,
+    maximizable: false,
+    resizable: false,
+    width: 700,
+    height: 300    
+}, "screenshot.html");
 
 const saveplaylist = () => {
     dialog.showSaveDialog({
@@ -344,14 +353,6 @@ const loadplaylist = () => {
     }, loadplaylistCb);
 };
 
-const settings = () => createNewWindow({
-    title: "Settings",
-    minimizable: true,
-    maximizable: true,
-    resizable: true
-}, "setting.html");
-
-
 const loadsub = () => {
     if ( noMediaPlaying() )
         getCurrentWindow().webContents.send("subtitle::load-sub", "computer");
@@ -360,18 +361,7 @@ const onlinesub = () => {
     if ( navigator.isOnline && noMediaPlaying() )
         getCurrentWindow().webContents.send("subtitle::load-sub", "net");
 };
-const screenshot = () => {
-    const __obj = {
-        title: "screenshot",
-        minimizable: false,
-        maximizable: false,
-        resizable: false,
-        width: 700,
-        height: 300
-    };
-    const html = `${__obj.title}.html`;
-    createNewWindow(__obj,html);
-};
+
 
 const HandleDroped = () => ({
     addMediaFile,
