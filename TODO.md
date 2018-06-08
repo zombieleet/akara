@@ -29,3 +29,4 @@ ffmpeg -i Videos/gulps/part15/15-01-softbodies-part1-vertexweight-mobile.mp4 -c 
 21. In subtitle settings add support for toggling on or off automatic subtitle adding if the name of the media file equals its su
 btitle file
 22. fix resuming media from previously stopped location
+23. Add support for backspace key to unset a shortcut key
