@@ -6,6 +6,7 @@ const google = require("googleapis");
 const googleAuth = new(require("google-auth-library"));
 
 const {
+    desktopCapturer,
     ipcRenderer: ipc,
     remote: {
         require: _require,
@@ -1426,7 +1427,28 @@ module.exports.uploadYoutubeVideo = auth => {
 
 };
 
+const changeShortCutSetting = (keysettings,shKeys) => {
+    
+    const keyLocation = Object.keys(keysettings.stack).find( key => keysettings.stack[key].name === shKeys.shortcutType);
+    const keyCred = keysettings.stack[keyLocation];
+    const handler = keyCred.handler;
+
+    keysettings.unregister({ key: keyCred.key, modifier: keyCred.modifier});
+
+    keysettings.register({
+        name: shKeys.shortcutType,
+        key: shKeys.key,
+        modifier: shKeys.modifier,
+        handler
+    });
+
+};
+
 module.exports.handleWindowButtons = ( { close, min, max } ) => {
+    
+    const windowShortCutKey = require("../js/ShortCutKeys/WindowShortCutKey.js");
+    
+    ipc.on("akara::window:shortcut", () => changeShortCutSetting(windowShortCutKey) ); 
 
     applyButtonConfig(max,"window-buttons", "maximize");
     applyButtonConfig(min, "window-buttons", "minimize");
@@ -1527,7 +1549,7 @@ module.exports.applyButtonConfig = applyButtonConfig;
 
 const UIBUTTON = async (type,buttonName) => {
 
-    let uibuttonPath = await requireSettingsPath("uibuttons.json");
+    let uibuttonPath = requireSettingsPath("uibuttons.json");
     let uibutton = require(uibuttonPath);
 
     if ( Array.isArray(buttonName) )
@@ -1572,3 +1594,115 @@ module.exports.loadUISettingButton = async (section, buttonsToLoad, getBy) => {
 
     });
 };
+
+module.exports.getKeyIndex = (shortcut,shortcutType) => {
+    const shortcutpath = requireSettingsPath("shortcut.json");
+    const shortcutsettings = require(shortcutpath);
+    const shortcut__ = shortcutsettings[shortcut];
+    const idx = shortcut__.findIndex( sh_setting => sh_setting[shortcutType] );
+    //return shortcut__.find( sh_setting => sh_setting[shortcutType] )[shortcutType];
+    return shortcut__[idx][shortcutType];
+};
+
+
+const savePath = () => {
+    const chooseSavePathWindow = {
+        title: "savepath",
+        parent: getCurrentWindow(),
+        minimizeable: true,
+        maximizable: true,
+        resizable: true,
+        width: 600,
+        height: 300
+    };
+    const html = `${chooseSavePathWindow.title}.html`;
+    createNewWindow(chooseSavePathWindow, html);
+};
+
+const screenshot = (options,checkType) => {
+
+    const screenshotTimeout = document.querySelector(".screenshot-delay-ms");
+
+    getCurrentWindow().minimize();
+    //{ types, thumbnailSize }
+    desktopCapturer.getSources(options, (error, sources) => {
+
+        if ( error ) {
+            dialog.showErrorBox("cannot take screenshot", error);
+            return;
+        }
+
+        sources.forEach( source => {
+
+            if ( ! checkType(source) )
+                return ;
+
+            if ( ! screenshotTimeout.disabled ) {
+                setTimeout( savePath, screenshotTimeout.valueAsNumber * 1000);
+                return ;
+            }
+
+        });
+
+    });
+};
+
+
+module.exports.handleScreenShot = Object.defineProperties( {} , {
+    entireScreen: {
+        value() {
+            screenshot({ types: ["screen"]}, source => {
+
+                if ( source.name !== "Entire screen" )
+                    return false;
+
+                ipc.once("akara::screenshot:get_file", evt => {
+                    const childWindowId = getCurrentWindow().getChildWindows()[0].webContents.id;
+                    ipc.sendTo(childWindowId,"akara::screenshot:send_file", source.thumbnail.toPng());
+                });
+                return true;
+            });
+        }
+    },
+    activeWindow: {
+        value() {
+
+            // const screenSize = screen.getPrimaryDisplay().workAreaSize;
+            // const maxDimension = Math.max(screenSize.width, screenSize.height);
+
+            // const thumbnailSize = {
+            //     width: maxDimension * window.devicePixelRatio,
+            //     height: maxDimension * window.devicePixelRatio
+            // };
+
+            screenshot({ types: ["window"], thumbnailSize: { width: 100, height: 300 } } , source => {
+
+                if ( source.name !== "Akara" )
+                    return false;
+
+                ipc.once("akara::screenshot:get_file", evt => {
+
+                    let screenshotWindow ;
+
+                    for ( screenshotWindow of BrowserWindow.getAllWindows() ) {
+                        if ( screenshotWindow.isFocused() === true )
+                            break;
+                    }
+
+                    const childWindowId = getCurrentWindow().getChildWindows()[0].webContents.id;
+
+                    screenshotWindow.capturePage( nImage => {
+                        ipc.sendTo(childWindowId,"akara::screenshot:send_file", nImage.toPng());
+                    });
+
+                });
+
+                return true;
+            });
+        }
+    },
+    selectRegion: {
+        value() {
+        }
+    }
+});
