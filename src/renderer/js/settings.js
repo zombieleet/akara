@@ -1,152 +1,38 @@
 ; ( () => {
+    
+    "use strict";
 
     const {
         ipcRenderer: ipc,
         remote: {
             getCurrentWindow,
-            dialog,
-            require: _require
+            dialog
         }
     } = require("electron");
 
-    const { createNewWindow: settingsWindow } = _require("./newwindow.js");
-
     const { handleWindowButtons } = require("../js/util.js");
-
+    const openSettingsWindow = require("../js/settingsWindow.js");
 
     const settingsMin = document.querySelector("[data-winop=minimize]");
     const settingsMax = document.querySelector("[data-winop=maximize]");
     const settingsClose = document.querySelector("[data-winop=close]");
     const settingsValue = document.querySelector(".settings-values");
     const textSearch = document.querySelector(".search");
-
-
-    const handleAkaraSettings = Object.create({});
-
-
-    handleAkaraSettings.poster = () => {
-
-        const poster = {
-            title: "poster",
-            maximizable: false,
-            resizable: false,
-            minimizable: false,
-            center: true
-        };
-
-        settingsWindow(poster, "settings/poster.html");
-    };
-
-    handleAkaraSettings.powersettings = () => {
-        const power = {
-            title: "power",
-            maximizable: false,
-            resizable: false,
-            minimizable: false,
-            width: 500,
-            height: 460,
-            center: true
-        };
-
-        settingsWindow(power, "settings/powermanagement.html");
-    };
-
-    handleAkaraSettings.playbackrate = () => {
-        const playbackrate = {
-            title: "playbackrate",
-            maximizable: false,
-            resizable: false,
-            minimizable: false,
-            width: 500,
-            height: 460,
-            center: true
-        };
-        settingsWindow(playbackrate, "settings/playbackrate.html");
-    };
-
-    handleAkaraSettings.filter = () => {
-        const filter = {
-            title: "filter",
-            maximizable: false,
-            resizable: false,
-            minimizable: false,
-            width: 408,
-            height: 1000
-        };
-        settingsWindow(filter, "filter.html");
-    };
-
-    handleAkaraSettings.share = () => {
-        const share = {
-            title: "share",
-            maximizable: false,
-            resizeable: false,
-            minimizable: false,
-            width: 500,
-            height: 450,
-            center: true
-        };
-        settingsWindow(share, "settings/share.html");
-    };
-
-    handleAkaraSettings.volume = () => {
-        const volume = {
-            title: "volume",
-            maximizable: false,
-            resizeable: false,
-            minimizable: false,
-            width: 500,
-            height: 450,
-            center: true
-        };
-        settingsWindow(volume, "settings/volume.html");
-    };
-
-
-    handleAkaraSettings.buttons = () => {
-
-        const button = {
-            title: "ui buttons",
-            maximizable: true,
-            resizable: true,
-            minimizable: true,
-            width: 500,
-            height: 450,
-            center: true
-        };
-
-        settingsWindow(button, "settings/ui_button.html");
-
-    };
-
-    handleAkaraSettings.shortcutkeys = () => {
-        const shortcutkeys = {
-            title: "ShortCut Keys",
-            maximizable: true,
-            resizable: true,
-            minimizable: true,
-            width: 500,
-            height: 450,
-            center: true
-        };
-
-        settingsWindow(shortcutkeys, "settings/shortcutkeys.html");
-    };
-
+    
     settingsValue.addEventListener("click", evt => {
+        
         const { target } = evt;
 
         if ( ! target.hasAttribute("data-fire") )
             return ;
 
         try {
-            handleAkaraSettings[target.getAttribute("data-fire")](evt);
+            openSettingsWindow[target.getAttribute("data-fire")](evt);
         } catch(ex) {
             console.log(ex);
             dialog.showErrorBox("Not Yet Implemented", `${target.textContent} has not yet be implemented`);
         }
     });
-
+    
     handleWindowButtons({ close: settingsClose, min: settingsMin, max: settingsMax });
-
 })();
