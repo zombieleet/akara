@@ -67,10 +67,9 @@ class AkaraKey  {
         if ( this.search(key,modifier) ) {
 
             if ( modifier )
+                throw new Error(`${key} with ${ modifier.join(" ") } modifier already exists`);
 
-                throw new Error(`${key} already exists`);
-
-            throw new Error(`${key} with ${modifier} already exists`);
+            throw new Error(`${key} already exists`);
         }
 
     }
@@ -156,7 +155,7 @@ class AkaraKey  {
     unregister({key,modifier}) {
 
         if ( this.search(key,modifier) ) {
-            
+
             if ( modifier.length > 0 )
                 delete this.stack[`${key}_${this.__computeHash(modifier)}`];
             else
