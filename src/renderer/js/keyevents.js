@@ -102,19 +102,20 @@ class AkaraKey  {
         let {
             modifier,
             key,
-            handler
+            handler,
+            name
         } = opt;
 
         assert.strictEqual(
             typeof(key),
             "string",
-            `got typeof ${typeof key} instead of a string`
+            `got typeof ${typeof key} instead of a string for ${name}`
         );
 
         assert.strictEqual(
             typeof(handler),
             "function",
-            `expected function as last argument but got ${typeof(handler)}`
+            `expected function as last argument but got ${typeof(handler)} for ${name}`
         );
 
         if ( modifier ) {
