@@ -18,11 +18,26 @@ module.exports.media = [
     { "very fast playback rate": { key: "f", modifier: [ "shiftKey" ] } },
     { "slow playback rate": { key: "s", modifier: [ "altKey", "ctrlKey" ] } },
     { "very slow playback rate": { key: "s", modifier: [ "shiftKey" ] } },
-    { "open media file": { key: "f", modifier: ["altKey"] } },
-    { "open media folder": { key: "f", modifier: ["altKey","shiftKey"] } },
-    { "show search box": { key: "s", modifier: ["ctrlKey"] } },
+    { "open media file": { key: "o", modifier: ["altKey"] } },
+    { "open media folder": { key: "o", modifier: ["altKey","shiftKey"] } },
+    { "show search box": { key: "s", modifier: [ "altKey" ] } },
     { "open media file location": { key: "o", modifier: [ "ctrlKey" ] } },
     { "media info" : { key: "m", modifier: [ "ctrlKey", "shiftKey"] } },
+    { "screenshot": { key: "s", modifier: [] } },
+];
+
+module.exports.share = [
+    { "twitter share": { key: "t", modifier: [ "ctrlKey" ] } },
+    { "facebook share": { key: "b", modifier: [ "ctrlKey" ] } },
+    { "youtube share": { key: "y", modifier: [ "ctrlKey" ] } }
+];
+
+module.exports.window = [
+    { "fullscreen window": { key: "w", modifier: [] } },
+    { "kiosk window": { key: "k" , modifier: []} },
+    { "settings window": { key: "g", modifier: [] } },
+    { "screenshot window": { key: "e", modifier: [] } },
+    { "podcast window": { key: "c", modifier: [] } }
 ];
 
 module.exports.subtitle = [
@@ -31,19 +46,17 @@ module.exports.subtitle = [
 ];
 
 module.exports.settings = [
-    { "quick search": { key: "f", modifier: [ "ctrlKey" ] } },
-    { "playbackrate settings": { key: "p", modifier: [ "ctrlKey"] } },
+    { "playbackrate settings": { key: "p", modifier: [ "altKey"] } },
     { "filter settings": { key: "f" , modifier: [ "ctrlKey" ] } },
-    { "fullscreen settings": { key: "f" , modifier: [ "shiftKey" ]} },
+    { "fullscreen settings": { key: "f" , modifier: [ "altKey", "shiftKey" ] } },
     { "play option settings": { key: "p", modifier: [ "shiftKey" ] } },
     { "volume settings": { key: "v", modifier: [ "ctrlKey" ] } },
     { "poster settings": { key: "p", modifier: [ "ctrlKey", "shiftKey" ] } },
     { "audio type settings": { key: "a", modifier: [ "ctrlKey" ] } },
     { "button settings": { key: "b", modifier: [ "ctrlKey" ] } },
     { "themes": { key: "t", modifier: [ "ctrlKey" ] } },
-    { "plugin install": { key: "p", modifier: [ "ctrlKey" ] } },
-    { "plugin uninstal": { key: "p", modifier: [ "ctrlKey", "shiftKey" ] } },
+    { "plugin": { key: "u", modifier: [ "ctrlKey" ] } },
     { "power settings": { key: "p", modifier: [  "altKey", "shiftKey" ] } },
-    { "share settings": { keys: "s", modifier: [ "ctrlKey" ] } },
+    { "share settings": { key: "s", modifier: [ "ctrlKey" ] } },
     { "shortcutkey settings": { key: "s", modifier: [ "ctrlKey", "shiftKey" ] } },
 ];

@@ -4,7 +4,9 @@ const { app } = require("electron");
 const {
     media,
     subtitle,
-    settings
+    settings,
+    share,
+    window
 } = require("./shortcut.js");
 
 module.exports.poster =  {poster: path.join(app.getAppPath(), "app", "renderer", "img", "posters", "default_poster.jpg") };
@@ -13,7 +15,7 @@ module.exports.filter = {};
 module.exports.share  = { deactivate_sharing_option: "no", request_permission_before_sending_videos: "no" , "cache_expiry_date": (new Date()).valueOf()};
 module.exports.volume = { volume_default_level: 50, volume_max_level: 70, volume_warn_exceed_max: true };
 
-module.exports.shortcut = { media , subtitle, settings };
+module.exports.shortcut = { media , subtitle, settings, share, window };
 
 module.exports.custom_uibuttons = {
     ["control-buttons"]: {
