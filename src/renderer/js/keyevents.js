@@ -25,6 +25,9 @@ class AkaraKey  {
 
     __eventHandler(evt) {
 
+        if ( HTMLTextAreaElement[Symbol.hasInstance](evt.target) )
+            return false;
+
         const {
             key
         } = evt;
