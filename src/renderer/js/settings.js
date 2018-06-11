@@ -1,5 +1,5 @@
 ; ( () => {
-    
+
     "use strict";
 
     const {
@@ -10,17 +10,19 @@
         }
     } = require("electron");
 
-    const { handleWindowButtons } = require("../js/util.js");
+    const { handleWindowButtons, changeShortCutSetting } = require("../js/util.js");
     const openSettingsWindow = require("../js/settingsWindow.js");
+
+    const settingsShortCutKey = require("../js/ShortCutKeys/SettingsShortCutKey.js");
 
     const settingsMin = document.querySelector("[data-winop=minimize]");
     const settingsMax = document.querySelector("[data-winop=maximize]");
     const settingsClose = document.querySelector("[data-winop=close]");
     const settingsValue = document.querySelector(".settings-values");
     const textSearch = document.querySelector(".search");
-    
+
     settingsValue.addEventListener("click", evt => {
-        
+
         const { target } = evt;
 
         if ( ! target.hasAttribute("data-fire") )
@@ -33,6 +35,8 @@
             dialog.showErrorBox("Not Yet Implemented", `${target.textContent} has not yet be implemented`);
         }
     });
-    
+
+    ipc.on("akara::settings:shortcut", (evt,shKeys) => changeShortCutSetting(settingsShortCutKey,shKeys));
     handleWindowButtons({ close: settingsClose, min: settingsMin, max: settingsMax });
+
 })();
