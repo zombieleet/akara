@@ -52,19 +52,21 @@ const {
 } = require("../js/util.js");
 
 const fs = require("fs");
-
-const {
-    videoContextMenu
-} = _require("./menu.js");
-
-const {
-    _enterfullscreen,
-    _leavefullscreen
-} = require("../js/handle_dropdown_commands.js")();
-
+const { videoContextMenu } = _require("./menu.js");
 const akara_emit = require("../js/emitter.js");
-
 const mime = require("mime");
+
+let _enterfullscreen, _leavefullscreen;
+
+try {
+    ({
+        _enterfullscreen,
+        _leavefullscreen
+    } = require("../js/handle_dropdown_commands.js")());
+
+} catch(ex) {
+    ex;
+}
 
 let controlMouseEnterFscreen = false;
 
