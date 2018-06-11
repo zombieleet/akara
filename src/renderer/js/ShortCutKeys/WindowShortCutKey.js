@@ -48,5 +48,11 @@ windowShortCutKey.register({
     handler: launchWindow.screenshot
 });
 
+windowShortCutKey.register({
+    name: "podcast window",
+    key: getKeyIndex("window", "podcast window").key,
+    modifier: getKeyIndex("window", "podcast window").modifier,
+    handler: launchWindow.podcast
+});
 
 module.exports = windowShortCutKey;
