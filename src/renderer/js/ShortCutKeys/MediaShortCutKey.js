@@ -431,7 +431,7 @@ mediaShortCutKey.register({
 });
 
 akara_emit.on("video::subtitle:shortcut", track => {
-    
+
     mediaShortCutKey.register({
         name: `subtitle track ${track.id}`,
         key: track.id,
