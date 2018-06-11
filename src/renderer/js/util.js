@@ -1428,7 +1428,7 @@ module.exports.uploadYoutubeVideo = auth => {
 };
 
 const changeShortCutSetting = (keysettings,shKeys) => {
-    
+
     const keyLocation = Object.keys(keysettings.stack).find( key => keysettings.stack[key].name === shKeys.shortcutType);
     const keyCred = keysettings.stack[keyLocation];
     const handler = keyCred.handler;
@@ -1444,11 +1444,13 @@ const changeShortCutSetting = (keysettings,shKeys) => {
 
 };
 
+module.exports.changeShortCutSetting = changeShortCutSetting;
+
 module.exports.handleWindowButtons = ( { close, min, max } ) => {
-    
+
     const windowShortCutKey = require("../js/ShortCutKeys/WindowShortCutKey.js");
-    
-    ipc.on("akara::window:shortcut", () => changeShortCutSetting(windowShortCutKey) ); 
+
+    ipc.on("akara::window:shortcut", (evt,shKeys) => changeShortCutSetting(windowShortCutKey,shKeys) );
 
     applyButtonConfig(max,"window-buttons", "maximize");
     applyButtonConfig(min, "window-buttons", "minimize");
