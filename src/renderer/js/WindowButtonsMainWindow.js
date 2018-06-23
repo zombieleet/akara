@@ -2,9 +2,9 @@
 
 ( ({ ipcRenderer: ipc }) => {
 
-    const akaraMin = document.querySelector("[data-winop=minimize]");
-    const akaraMax = document.querySelector("[data-winop=maximize]");
-    const akaraClose = document.querySelector("[data-winop=close]");
+    const min = document.querySelector("[data-winop=minimize]");
+    const max = document.querySelector("[data-winop=maximize]");
+    const close = document.querySelector("[data-winop=close]");
 
     const {
         applyButtonConfig
@@ -12,33 +12,34 @@
 
 
     window.addEventListener("DOMContentLoaded", () => {
-        applyButtonConfig(akaraMax,"window-buttons", "maximize");
-        applyButtonConfig(akaraMin, "window-buttons", "minimize");
-        applyButtonConfig(akaraClose, "window-buttons", "close");
+        console.log("fired first page, duh");
+        applyButtonConfig(max,"window-buttons", "maximize");
+        applyButtonConfig(min, "window-buttons", "minimize");
+        applyButtonConfig(close, "window-buttons", "close");
     });
 
-    akaraMin.addEventListener("click", () => {
+    min.addEventListener("click", () => {
         ipc.send("window-minimize");
     });
 
-    akaraMax.addEventListener("click", () => {
+    max.addEventListener("click", () => {
         ipc.send("window-maximize");
     });
 
-    akaraClose.addEventListener("click", () => {
+    close.addEventListener("click", () => {
         ipc.send("window-close");
     });
 
     ipc.on("window-is-max", () => {
         // dont restore back to max
-        akaraMax.removeAttribute("class");
-        applyButtonConfig(akaraMax, "window-buttons", "maximize");
+        max.removeAttribute("class");
+        applyButtonConfig(max, "window-buttons", "restore");
     });
 
     ipc.on("window-is-not-max", () => {
         // restore back to max
-        akaraMax.removeAttribute("class");
-        applyButtonConfig(akaraMax, "window-buttons", "maximize");
+        max.removeAttribute("class");
+        applyButtonConfig(max, "window-buttons", "maximize");
     });
 
     ipc.on("akara::quiting", () => {
