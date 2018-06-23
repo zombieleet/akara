@@ -39,27 +39,20 @@ class AkaraKey  {
         let modifierKeys = ["altKey", "ctrlKey", "metaKey", "shiftKey" ]
                 .filter(mod => evt[mod] ? mod : undefined);
 
-
+        console.log(key);
         if ( modifierKeys.length > 0 ) {
             execute = isSpace
                 ? this.stack["Space"]
                 : this.stack[`${key.toLowerCase()}_${this.__computeHash(modifierKeys)}`];
         } else {
+            console.log(this.stack[key], key);
             execute = isSpace
                 ? this.stack["Space"]
                 : this.stack[key];
         }
 
-        if ( execute ) {
-
-            console.log(execute);
-
-            if ( execute.modifier && execute.modifier )
-                return execute.handler(evt);
-
+        if ( execute )
             return execute.handler(evt);
-
-        }
 
         return false;
 
@@ -138,7 +131,6 @@ class AkaraKey  {
 
                 return true;
             }
-
             this.__makeSearch(key,modifier);
             this.stack[key] = opt;
             return true;
