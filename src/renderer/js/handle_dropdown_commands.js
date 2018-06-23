@@ -358,7 +358,7 @@ const loadsub = () => {
         getCurrentWindow().webContents.send("subtitle::load-sub", "computer");
 };
 const onlinesub = () => {
-    if ( navigator.isOnline && noMediaPlaying() )
+    if ( noMediaPlaying() )
         getCurrentWindow().webContents.send("subtitle::load-sub", "net");
 };
 
