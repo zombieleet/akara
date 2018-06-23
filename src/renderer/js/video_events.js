@@ -220,6 +220,10 @@
         uploadYoutubeVideo(youtubeClient);
     });
 
+    ipc.on("akara::send:media:file", (evt,id) => {
+        evt.sender.sendTo(id,"akara::media:file", video.getAttribute("src"));
+    });
+
     akaraControl.addEventListener("mousedown", controlDragFullScreen);
     akaraControl.addEventListener("mouseenter", controlMouseEnter);
     akaraControl.addEventListener("mouseleave", controlMouseLeave);

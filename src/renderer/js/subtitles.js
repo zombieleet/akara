@@ -11,18 +11,14 @@
         }
     }  = require("electron");
 
-    const {
-        join
-    } = require("path");
-
-    const {
-        existsSync,
-        mkdirSync
-    } = require("fs");
-
+    const fs = require("fs");
+    const url = require("url");
+    const path = require("path");
+    
     const {
         getSubtitle,
         isOnline,
+        OS,
         downloadWindow,
         downloadFile
     } = require("../js/util.js");
@@ -63,28 +59,28 @@
         } else {
             result = await getSubtitle({query});
         }
-
-        if ( Error[Symbol.hasInstance](result) ) {
-            loaded.innerHTML = "Cannot connect to subtitle server";
-            return true;
-        }
-
-        if ( Object.keys(result).length === 0 ) {
-            loaded.innerHTML = "Cannot find required subtitle";
-            return true;
-        }
-
-        loaded.hidden = true;
         return styleResult(result);
     };
 
     const styleResult = value => {
 
+        if ( Error[Symbol.hasInstance](value) ) {
+            loaded.innerHTML = "Cannot connect to subtitle server";
+            return true;
+        }
+
+        if ( Object.keys(value).length === 0 ) {
+            loaded.innerHTML = "Cannot find required subtitle";
+            return true;
+        }
+
+        loaded.hidden = true;
+
         const subtitleListParent = document.querySelector(".subtitle-loaded");
         const subtitleParent = document.createElement("table");
 
         let idx = 1;
-
+        
         subtitleParent.appendChild(createTableHeaders(value));
 
         for ( let [ key, values ] of Object.entries(value)) {
@@ -302,16 +298,23 @@
                     table.remove();
                     loaded.hidden = false;
                 }
-
                 loaded.innerHTML = "Loading...";
-
                 const {query,season,episode} = value;
-
                 handleSearch(value);
             }
 
         }
 
     });
+
+    ipc.on("akara::media:file", async (evt,videoPath) => {
+        videoPath = url.parse(videoPath);
+        input.disabled = false;
+        input.value = path.parse(videoPath.pathname).name;
+        loaded.innerHTML = "Loading...";
+        styleResult(await getSubtitle({ hash: await OS.hash(videoPath.pathname).moviehash}));
+    });
+    
+    ipc.sendTo(1, "akara::send:media:file", getCurrentWindow().webContents.id);
 
 })();
