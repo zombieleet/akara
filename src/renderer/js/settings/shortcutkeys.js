@@ -120,7 +120,7 @@
 
         return isMatch;
     };
-    
+
     const processShortcut = (key,modifier,keyValue) => {
 
         const pNode = keyValue.parentNode;
@@ -257,7 +257,7 @@
     });
 
     window.addEventListener("keydown", evt => {
-
+        //evt.preventDefault();
         const modifyActive = showSettings.querySelector("[data-modify-shortcut=modify]");
 
         if ( ! modifyActive )
@@ -273,9 +273,35 @@
             ? evt.code
             : ( () => {
                 if ( ! /Control|Alt|Shift/.test(evt.key) ) {
-                    if ( ! /(ArrowRight|ArrowLeft|ArrowUp|ArrowDown|Tab)/.test(evt.key) )
-                        return evt.key.toLowerCase();
-                    return evt.key;
+
+                    const regex = /(ArrowRight|ArrowLeft|ArrowUp|ArrowDown|Tab|Home|PageUp|PageDown|End|Enter|Insert|Escape|BrowserHome|BrightnessDown|BrightnessUp)/;
+
+                    /**
+                     * the above regex and the Function key regex
+                     * is not affected by Shift key ( turns lowercase to uppercase or vice versa )
+                     * return the key as it is
+                     **/
+
+                    if ( regex.test(evt.key) || /^F([0-9]{1,2})$/.test(evt.key) )
+                        return evt.key;
+
+                    /**
+                     * backspace or delete key should unset a shortcutkey
+                     * if backspace or delete key is used with a modifierkey
+                     * shortcut key is not unset
+                     **/
+                    if ( /Backspace|Delete/.test(evt.key) ) {
+                        if ( modifierKeys.length > 0 )
+                            return evt.key;
+                        return "DISABLED";
+                    }
+
+                    /**
+                     * turn the key to a lower case in other prevent ignoring keys
+                     * when Shift key is triggered ( turns lowercase to uppercase or vice versa )
+                     * is used on them
+                    **/
+                    return evt.key.toLowerCase();
                 }
                 return "";
             })();
@@ -296,7 +322,6 @@
         };
 
         isValid.saveShortcut(shKeys);
-        console.log("short");
         ipc.sendTo(1, "akara::shortcutkey", _CURRENT_SETTING_SECTION_IN_VIEW , shKeys);
 
     });
