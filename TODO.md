@@ -31,3 +31,4 @@ btitle file
 22. fix resuming media from previously stopped location
 23. Add support for backspace key to unset a shortcut key
 24. Handle crazy shortcut keys such as pageup and all of its siblings
+25. automatically add downloaded subtitle from net to video
