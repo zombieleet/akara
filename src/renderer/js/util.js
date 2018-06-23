@@ -56,8 +56,6 @@ const {
     }
 } = require("../js/video_control.js");
 
-const OS = new _OS("OSTestUserAgentTemp");
-
 const {
     createNewWindow
 } = _require("./newwindow.js");
@@ -73,6 +71,10 @@ const {
 } = require(path.join(app.getAppPath(), "youtube.json"));
 
 const datadir = app.getPath("userData");
+
+const OS = new _OS("TemporaryUserAgent");
+
+module.exports.OS = OS;
 
 const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
 
@@ -687,6 +689,7 @@ module.exports.getSubtitle = async (option) => {
     } catch(ex) {
         value = ex;
     }
+    console.log(value);
     return value;
 };
 
