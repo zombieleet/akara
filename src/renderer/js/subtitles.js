@@ -308,7 +308,10 @@
     });
 
     ipc.on("akara::media:file", async (evt,videoPath) => {
+        if ( ! videoPath )
+            return ;
         videoPath = url.parse(videoPath);
+        videoPath.pathname = decodeURIComponent(videoPath.pathname);
         input.disabled = false;
         input.value = path.parse(videoPath.pathname).name;
         loaded.innerHTML = "Loading...";
