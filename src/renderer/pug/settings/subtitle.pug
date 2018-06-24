@@ -1,0 +1,51 @@
+extends ../__layout.pug
+
+block title
+  title Subtitle
+
+block link
+  link(rel="stylesheet" href="../../css/main.css")
+  link(rel="stylesheet" href="../../libs/font-awesome.min.css")
+
+block body
+  body(class="subtitle-body")
+    header(class="subtitle-header")
+      span Subtitle Settings
+      span(class="fa fa-window-close subtitle-close")
+
+    section(class="subtitle")
+      div(class="subtitle-options")
+        ul(class="subtitle-list")
+
+          li(class="subtitle-item" data-save="auto_add_subtitle")
+            p Automatically add Subtitle to Video
+            i(class="fa fa-toggle-off toggle-off")
+
+          li(class="subtitle-item" data-save="auto_add_downloaded")
+            p Automatically add Downloaded Subtitle to Video
+            i(class="fa fa-toggle-off toggle-off")
+
+      div(class="subtitle-cues")
+
+        div(class="subtitle-cues-option")
+
+          div(class="subtitle-cues-style" data-cue="color")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Cue Color
+            div(data-hide="subtitle_toggle_hidden")
+              input(type="color")
+
+          div(class="subtitle-cues-style" data-cue="location")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Cue Location
+            div(data-hide="subtitle_toggle_hidden")
+              - const locations = [ "top", "right", "bottom", "left" ]
+              each idx in locations
+                label
+                  span #{idx}
+                  input(type="number" min="0" max="1" value="0.1" step=".1")
+
+
+        div(class="subtitle-cues-result")
+
+    script(src="../../js/settings/subtitle.js")
