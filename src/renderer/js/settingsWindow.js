@@ -125,7 +125,7 @@ handleAkaraSettings.subtitle = () => {
         resizeable: false,
         minimizable: false,
         width: 700,
-        height: 450,
+        height: 700,
         center: true
     };
 
