@@ -1,4 +1,5 @@
 
+
 # settings
 1. fullscreen settings
 2. playback speed settings ( DONE )
@@ -29,6 +30,6 @@ ffmpeg -i Videos/gulps/part15/15-01-softbodies-part1-vertexweight-mobile.mp4 -c 
 21. In subtitle settings add support for toggling on or off automatic subtitle adding if the name of the media file equals its su
 btitle file
 22. fix resuming media from previously stopped location
-23. Add support for backspace key to unset a shortcut key
-24. Handle crazy shortcut keys such as pageup and all of its siblings
+23. Add support for backspace key to unset a shortcut key ( DONE )
+24. Handle crazy shortcut keys such as pageup and all of its siblings ( DONE )
 25. automatically add downloaded subtitle from net to video
