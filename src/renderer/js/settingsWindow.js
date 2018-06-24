@@ -117,4 +117,20 @@ handleAkaraSettings.shortcutkeys = () => {
     settingsWindow(shortcutkeys, "settings/shortcutkeys.html");
 };
 
+handleAkaraSettings.subtitle = () => {
+
+    const subtitle = {
+        title: "Subtitle",
+        maximizable: false,
+        resizeable: false,
+        minimizable: false,
+        width: 700,
+        height: 450,
+        center: true
+    };
+
+    settingsWindow(subtitle, "settings/subtitle.html");
+
+};
+
 module.exports = handleAkaraSettings;
