@@ -15,6 +15,47 @@ module.exports.filter = {};
 module.exports.share  = { deactivate_sharing_option: "no", request_permission_before_sending_videos: "no" , "cache_expiry_date": (new Date()).valueOf()};
 module.exports.volume = { volume_default_level: 50, volume_max_level: 70, volume_warn_exceed_max: true };
 
+module.exports.subtitle = {
+    "auto_add_subtitle": "no",
+    "auto_add_downloaded_subtitle": "yes"
+};
+
+module.exports.cueStyle = {
+
+    "font-size": "",
+    "font-weight": "",
+    "font-family": "",
+
+    color: "",
+    opacity: "",
+
+    "margin-top": "",
+    "margin-bottom": "",
+    "margin-right": "",
+    "margin-left": "",
+
+    visibility: "",
+
+    "text-decoration-line": "",
+    "text-decoration-color": "",
+    "text-decoration-style": "",
+    "text-shadow": "",
+
+    "background-attachment": "",
+    "background-clip": "",
+    "background-color": "",
+    "background-image": "",
+    "background-repeat": "",
+    "background-size": "",
+
+    "outline-color": "",
+    "outline-style": "",
+    "outline-width": "",
+
+    "line-height": "",
+    "white-space": ""
+};
+
 module.exports.shortcut = { media , subtitle, settings, share, window };
 
 module.exports.custom_uibuttons = {
