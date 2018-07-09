@@ -52,6 +52,7 @@
         "twitter-pin": "^1.0.0",
         "twitter-pin-auth": "^0.2.0",
         "wait-promise": "^0.4.1",
+        "webworker-threads": "^0.7.16",
         "xml2js": "^0.4.19",
         "xmlbuilder": "^9.0.4"
     },
