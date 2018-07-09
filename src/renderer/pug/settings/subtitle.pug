@@ -21,7 +21,7 @@ block body
             p Automatically add Subtitle to Video
             i(class="fa fa-toggle-off toggle-off")
 
-          li(class="subtitle-item" data-save="auto_add_downloaded")
+          li(class="subtitle-item" data-save="auto_add_downloaded_subtitle")
             p Automatically add Downloaded Subtitle to Video
             i(class="fa fa-toggle-off toggle-off")
 
@@ -43,7 +43,7 @@ block body
               each el in locations
                 label
                   span #{el}
-                  input(type="number" min="0" max="20" value="1" step="1" data-style="margin-" + el)
+                  input(type="number" min="0" max="20" value="1" step="1" data-style="margin-" + el data-unit)
 
           div(class="subtitle-cues-style" data-cue="opacity")
             i(class="fa fa-toggle-right cue-toggler")
@@ -51,7 +51,129 @@ block body
             div(data-hide="subtitle_toggle_hidden")
               input(type="number" min="0" max="1" value="1" step=".1" data-style="opacity")
 
+          div(class="subtitle-cues-style" data-cue="font_size")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Font Size
+            div(data-hide="subtitle_toggle_hidden")
+              input(type="number" min="0" max="1000" value="20" step="5" data-style="font-size" data-unit)
+
+          div(class="subtitle-cues-style" data-cue="font_weight")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Font Weight
+            div(data-hide="subtitle_toggle_hidden")
+              input(type="number" min="0" max="1000" value="400" step="100" data-style="font-weight" data-unit)
+
+          div(class="subtitle-cues-style" data-cue="font_family")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Font Family
+            div(data-hide="subtitle_toggle_hidden")
+              input(list="fontFamily" data-style="font-family")
+              datalist(id="fontFamily")
+                option(value="serif")
+                option(value="sans-serif")
+                option(value="monospace")
+                option(value="cursive")
+                option(value="fantasy")
+                option(value="system-ui")
+
+
+          div(class="subtitle-cues-style" data-cue="visiblity")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Visiblity
+            div(data-hide="subtitle_toggle_hidden")
+              input(list="visibility" data-style="visibility")
+              datalist(id="visibility")
+                option(value="visible")
+                option(value="hidden")
+
+          div(class="subtitle-cues-style" data-cue="text_decoration_line")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Text Decoration Line
+            div(data-hide="subtitle_toggle_hidden")
+              input(list="textDecorationLine" data-style="text-decoration-line")
+              datalist(id="textDecorationLine")
+                option(value="none")
+                option(value="underline")
+                option(value="overline")
+                option(value="line-through")
+
+          div(class="subtitle-cues-style" data-cue="text_decoration_color")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Text Decoration Color
+            div(data-hide="subtitle_toggle_hidden")
+              input(type="color" data-style="text-decoration-color")
+
+          div(class="subtitle-cues-style" data-cue="text_decoration_style")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Text Decoration Style
+            div(data-hide="subtitle_toggle_hidden")
+              input(list="textDecorationList" data-style="text-decoration-style")
+              datalist(id="textDecorationList")
+                option(value="solid")
+                option(value="double")
+                option(value="dotted")
+                option(value="dashed")
+                option(value="wavy")
+
+          div(class="subtitle-cues-style" data-cue="outline_color")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Outline Color
+            div(data-hide="subtitle_toggle_hidden")
+              input(type="color" data-style="outline-color")
+
+
+          div(class="subtitle-cues-style" data-cue="outline_width")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Outline Width
+            div(data-hide="subtitle_toggle_hidden")
+              input(type="number" max="100" min="1" value="5" step="5" data-style="outline-width")
+
+          div(class="subtitle-cues-style" data-cue="outline_style")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Outline Style
+            div(data-hide="subtitle_toggle_hidden")
+              input(list="outlineStyle" data-style="outline-style")
+              datalist(id="outlineStyle")
+                option(value="auto")
+                option(value="none")
+                option(value="dotted")
+                option(value="dashed")
+                option(value="solid")
+                option(value="double")
+                option(value="grovve")
+                option(value="ridge")
+                option(value="inset")
+                option(value="outset")
+
+          div(class="subtitle-cues-style" data-cue="line_height")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Line Height
+            div(data-hide="subtitle_toggle_hidden")
+              input(type="number" max="100" min="1" value="10" step="10" data-style="line-height" data-unit)
+
+          div(class="subtitle-cues-style" data-cue="white_space")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") White Space
+            div(data-hide="subtitle_toggle_hidden")
+              input(list="whiteSpace" data-style="white_space")
+              datalist(id="whiteSpace")
+                option(value="normal")
+                option(value="nowrap")
+                option(value="pre")
+                option(value="pre-wrap")
+                option(value="pre-line")
+
+          div(class="subtitle-cues-style" data-cue="background_color")
+            i(class="fa fa-toggle-right cue-toggler")
+            span(class="cue-title") Background Color
+            div(data-hide="subtitle_toggle_hidden")
+              input(type="color" data-style="background-color")
+
         div(class="subtitle-cues-result")
           p(class="cue-test") Akara Media Player
+
+        div(class="subtitle-buttons")
+          button(class="subtitle-save") Save
+          button(class="subtitle-cancel") Cancel
 
     script(src="../../js/settings/subtitle.js")
