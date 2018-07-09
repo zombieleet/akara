@@ -183,20 +183,20 @@
     ipc.on("enter-video-fullscreen", _enterfullscreen);
     ipc.on("leave-video-fullscreen", _leavefullscreen);
     ipc.on("video-search", search);
-    
+
     ipc.on("media-info", showMediaInfoWindow);
-    
+
     ipc.on("akara::video::currentplaying", (evt,winid,fromPlist) => {
-        
+
         if ( fromPlist ) {
             ipc.sendTo(winid, "akara::video::currentplaying:src", localStorage.getItem("akara::mediainfo:playlist_section"));
             localStorage.removeItem("akara::mediainfo:playlist_section");
             return ;
         }
-        
+
         ipc.sendTo(winid, "akara::video::currentplaying:src", video.src);
     });
-    
+
     ipc.on("akara::podcast:play", (evt,podmetadata,category) => {
         const { episode: { enclosure: { url } } } = JSON.parse(podmetadata);
         localStorage.setItem("podcast-metadata", podmetadata);
@@ -222,6 +222,21 @@
 
     ipc.on("akara::send:media:file", (evt,id) => {
         evt.sender.sendTo(id,"akara::media:file", video.getAttribute("src"));
+    });
+
+    ipc.on("akara::subtitle:style:change", (evt,cssProps,cssValue) => {
+        const tracks = document.querySelectorAll("track");
+
+        if ( tracks.length === 0 )
+            return;
+
+        const { webContents } = BrowserWindow.fromId(1);
+
+        webContents.insertCSS(`
+          ::cue {
+            ${cssProps}: ${cssValue};
+          }
+       `);
     });
 
     akaraControl.addEventListener("mousedown", controlDragFullScreen);
