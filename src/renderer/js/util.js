@@ -1552,7 +1552,7 @@ module.exports.downloadAlbumArt = art => {
 module.exports.applyButtonConfig = applyButtonConfig;
 
 
-const UIBUTTON = async (type,buttonName) => {
+const UIBUTTON = (type,buttonName) => {
 
     let uibuttonPath = requireSettingsPath("uibuttons.json");
     let uibutton = require(uibuttonPath);
@@ -1573,9 +1573,9 @@ const UIBUTTON = async (type,buttonName) => {
     return buttonsObj;
 };
 
-module.exports.loadUISettingButton = async (section, buttonsToLoad, getBy) => {
+module.exports.loadUISettingButton = (section, buttonsToLoad, getBy) => {
 
-    let uibutton = await UIBUTTON(section, buttonsToLoad);
+    let uibutton = UIBUTTON(section, buttonsToLoad);
 
     Object.keys(uibutton).forEach( button => {
 

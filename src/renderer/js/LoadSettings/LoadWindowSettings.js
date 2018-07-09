@@ -3,6 +3,7 @@
     const {
         ipcRenderer: ipc,
         remote: {
+            BrowserWindow,
             app,
             dialog,
             require: _require
@@ -26,9 +27,9 @@
     const brightness = require("brightness");
 
 
-    const loadVolumeSettings = async () => {
+    const loadVolumeSettings = () => {
 
-        const volumeSettingPath = await requireSettingsPath("volume.json");
+        const volumeSettingPath = requireSettingsPath("volume.json");
         const volumeSettings = require(volumeSettingPath);
 
 
@@ -72,9 +73,9 @@
 
     };
 
-    const loadFilterSettings = async () => {
+    const loadFilterSettings = () => {
 
-        const filterSettingsPath = await requireSettingsPath("filter.json");
+        const filterSettingsPath = requireSettingsPath("filter.json");
         const filterSettings = require(filterSettingsPath);
 
         Object.keys(filterSettings).forEach( filterType => {
@@ -83,8 +84,8 @@
         });
     };
 
-    const loadPosterSettings = async () => {
-        const posterJson = await requireSettingsPath("poster.json");
+    const loadPosterSettings = () => {
+        const posterJson = requireSettingsPath("poster.json");
         const posterSettings = require(posterJson);
         const video = document.querySelector("video");
         video.poster = posterSettings.poster;
@@ -119,7 +120,7 @@
 
     const loadBatterySettings = async () => {
 
-        const batteryJson = await requireSettingsPath("power.json");
+        const batteryJson = requireSettingsPath("power.json");
         const batterySettings = require(batteryJson);
 
         const battery = await navigator.getBattery();
@@ -193,23 +194,38 @@
 
     };
 
+    const loadCueSettings = () => {
+        const cuesStyle = require(requireSettingsPath("cueStyle.json"));
+        
+        Object.getOwnPropertyNames(cuesStyle).forEach( _style_ => {
+            
+            const { webContents } = BrowserWindow.fromId(1);
+            webContents.insertCSS(`
+               ::cue {
+                  ${_style_}: ${cuesStyle[_style_]};
+               }
+           `);
+            
+        });
+    };
 
     window.addEventListener("DOMContentLoaded", async () => {
-        await loadPosterSettings();
         await loadBatterySettings();
-        await loadFilterSettings();
-        await loadVolumeSettings();
-        await loadUISettingButton("control-buttons", [
+        loadCueSettings();
+        loadPosterSettings();
+        loadFilterSettings();
+        loadVolumeSettings();
+        loadUISettingButton("control-buttons", [
             "play", "pause", "stop", "next", "previous", "volume",
             "expand", "unexpand", "filter", "repeat", "random",
             "subtitle", "enterfullscreen", "leavefullscreen"
         ], "data-fire");
 
-        await loadUISettingButton("window-buttons", [
+        loadUISettingButton("window-buttons", [
             "close", "minimize", "maximize", "restore"
         ], "data-winop");
 
-        await loadUISettingButton("playlist-buttons", [
+        loadUISettingButton("playlist-buttons", [
             "delete", "load", "add", "check", "times", "uncheck",
             "play"
         ], "data-playlist-op");
