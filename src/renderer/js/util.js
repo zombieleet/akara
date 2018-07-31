@@ -312,7 +312,7 @@ const removeTarget = (target,video) => {
             document.querySelector(".akara-title").textContent = "Akara Media Player";
 
         } else {
-            video.src = _target.getAttribute("data-full-path");
+            video.src = decodeURIComponent(_target.getAttribute("data-full-path"));
             setCurrentPlaying(_target);
             video.play();
         }
