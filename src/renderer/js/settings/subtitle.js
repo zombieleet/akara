@@ -136,7 +136,7 @@
         cueStyle.setAttribute("data-hide", "subtitle_toggle_hidden");
     });
 
-    document.addEventListener("change", evt => {
+    document.addEventListener("input", evt => {
 
         const { target } = evt;
         const cssProps = target.getAttribute("data-style");
