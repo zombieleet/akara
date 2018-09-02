@@ -2,6 +2,7 @@
     "name": "akara",
     "description": "akara is an adavance media player",
     "author": "Victory Osikwemhe",
+    "email": "zombieleetnca@gmail.com",
     "scripts": {
         "start": "electron .",
         "test": "jasmine test/*",
@@ -19,8 +20,8 @@
         "brightness": "^3.0.0",
         "datauri": "^1.0.5",
         "dotenv": "^5.0.1",
-        "electron": "^1.7.11",
         "extract-zip": "^1.6.6",
+        "electron-reload": "^1.2.1",
         "facebook-api-video-upload": "^1.2.2",
         "ffmetadata": "^1.4.0",
         "ffmpeg": "0.0.4",
@@ -76,8 +77,8 @@
     "homepage": "https://github.com/zombieleet/akara#readme",
     "devDependencies": {
         "babel-eslint": "^8.2.3",
+        "electron": "^1.7.11",
         "electron-rebuild": "^1.5.11",
-        "electron-reload": "^1.2.1",
         "eslint": "^4.1.1",
         "ffbinaries": "^1.0.2",
         "gulp-eslint": "^4.0.0",
