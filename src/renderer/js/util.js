@@ -732,7 +732,9 @@ module.exports.readSubtitleFile = fPath => new Promise((resolve,reject) => {
     const _path = path.join(CONVERTED_MEDIA,path.basename(fPath).replace(".srt", ".vtt"));
     const data = fs.readFileSync(fPath);
     srt2vtt(data, (err,vttData) => {
+        console.log(err);
         if ( err ) return reject(err);
+        console.log(_path, vttData);
         fs.writeFileSync(_path, vttData);
         return resolve(_path);
     });

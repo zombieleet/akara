@@ -82,7 +82,8 @@
         videoSetFilter,
         videoResetFilter,
         mediaProgress,
-        mediaWating
+        mediaWating,
+        handleLoadSubtitle
     } = require("../js/videohandlers.js");
 
     const {
@@ -238,6 +239,7 @@
           }
        `);
     });
+
 
     akaraControl.addEventListener("mousedown", controlDragFullScreen);
     akaraControl.addEventListener("mouseenter", controlMouseEnter);
