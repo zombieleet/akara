@@ -902,9 +902,28 @@ module.exports.videoLoadData = event => {
             video.currentTime = currentTime;
         }
 
+    }
 
+    const extRegexp = new RegExp(`\\${path.extname(video.src)}$`);
+    const srtReplaced = video.src.replace(extRegexp, ".srt");
+    const webvvtReplaced = video.src.replace(extRegexp, ".webvvt");
 
-    video.currentTime = Number(getRecentPos(video.src).toString());
+    const subtitlePath = fs.existsSync(srtReplaced)
+          ? srtReplaced
+          : ( () => fs.existsSync(webvvtReplaced) ? webvvtReplaced : false )();
+
+    if ( subtitlePath ) {
+
+        handleLoadSubtitle(subtitlePath, async (filePath) => {
+
+            if ( webvvtReplaced.test(subtitlePath) )
+                return webvvtReplaced;
+
+            const result = await readSubtitleFile(filePath);
+            return result;
+        });
+
+    }
 
     const submenu = videoContextMenu[16].submenu;
 
@@ -1199,7 +1218,6 @@ module.exports.subHandler = ( event, from, fPath ) => {
         val = subHandlerComputer();
 
     if ( from === "net" && ! fPath )
-
         return subHandlerNet();
 
     if ( from === "net" && fPath )
