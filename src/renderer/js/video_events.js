@@ -165,8 +165,17 @@
     ipc.on("video-stop", _stop);
     ipc.on("video-next", _next);
     ipc.on("video-previous", _previous);
-    ipc.on("video-repeat", () => video.loop = true );
-    ipc.on("video-no-repeat", () => video.loop = false );
+
+    ipc.on("video-repeat", () =>  {
+        video.loop = true;
+        localStorage.setItem("LOOP_CURRENT_VIDEO", video.getAttribute("data-id"));
+    });
+
+    ipc.on("video-no-repeat", () => {
+        video.loop = false;
+        localStorage.removeItem("LOOP_CURRENT_VIDEO");
+    });
+
     ipc.on("video-open-external", showFileLocation);
 
     ipc.on("normal-speed", () => _setPlaybackRate(1));
