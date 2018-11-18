@@ -2,19 +2,14 @@
     position: fixed;
     width: 100%;
 
-    input {
-        border: none;
-        background-color: $global-color;
-        color: white;
+    .search-input {
+        @extend %form-input;
         font-size: 20px;
-
         padding: 30px;
-        
         width: 50%;
-
-        margin: auto;
-
-        margin-left: 30%;
+        margin-left: 36%;
+        border-radius: 12px;
+        color: white;
     }
     .findings-parent {
         

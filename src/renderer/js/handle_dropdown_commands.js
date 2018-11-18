@@ -98,6 +98,7 @@ const search = () => {
     const input = document.createElement("input");
     input.setAttribute("class", "search-input");
     input.setAttribute("type","text");
+    input.setAttribute("data-prevent-shortcut", "true");
 
     const findingsParent = document.createElement("div");
     findingsParent.setAttribute("class", "findings-parent");

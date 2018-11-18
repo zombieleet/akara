@@ -55,7 +55,7 @@
 
                 const info = this.info = document.createElement("p");
 
-                const addpodcastArea = this.addpodcastArea = document.createElement("textarea");
+                const addpodcastArea = this.addpodcastArea = document.createElement("input");
                 const podcastBtns = this.podcastBtns = document.createElement("div");
 
                 const addpodcastAdd = this.addpodcastAdd  = document.createElement("button");
@@ -69,6 +69,7 @@
                 info.setAttribute("class", "podcast-modal-info");
 
                 addpodcastArea.setAttribute("class", "podcast-modal-addpodcastarea");
+                addpodcastArea.setAttribute("data-prevent-shortcut", "true");
 
                 podcastBtns.setAttribute("class", "podcast-modal-btn");
 
@@ -77,7 +78,7 @@
 
 
                 coverView.setAttribute("class", "cover-view");
-
+                addpodcastArea.type = "text";
                 addpodcastAdd.textContent = "Add";
                 addpodcastCancel.textContent = "Cancel";
                 info.textContent = "input podcast url, separate each urls with comma";

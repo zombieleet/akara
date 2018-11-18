@@ -3,8 +3,8 @@ extends ../__layout.pug
 
 block title
   title Create Playlist
-  
-include ./PlaylistLayout.pug  
+
+include ./PlaylistLayout.pug
 
 block body
   body(class="create-playlist-body")
@@ -24,7 +24,7 @@ block body
         label(for="create-playlist-name")
           i Playlist Name:
 
-        input(type="text" placeholder="Playlist Name" id="create-playlist-name" class="create-playlist-input")
+        input(type="text" placeholder="Playlist Name" id="create-playlist-name" class="create-playlist-input" data-prevent-shortcut="true")
 
         div(class="media-playlist-container")
           div(class="add-playlist")

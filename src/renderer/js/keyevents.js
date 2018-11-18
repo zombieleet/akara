@@ -25,7 +25,7 @@ class AkaraKey  {
 
     __eventHandler(evt) {
 
-        if ( HTMLTextAreaElement[Symbol.hasInstance](evt.target) )
+        if ( evt.target.hasAttribute("data-prevent-shortcut") )
             return false;
 
         const {
