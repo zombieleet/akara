@@ -388,10 +388,13 @@ module.exports.videoPlayEvent = () => {
  **/
 
 module.exports.videoLoadedEvent = () => {
+
     const currentVolumeSet = document.querySelectorAll("[data-volume-set=true]");
     const coverOnError = document.querySelector(".cover-on-error-src");
 
     video.volume = currentVolumeSet[currentVolumeSet.length - 1].getAttribute("data-volume-controler");
+
+    console.log("hi");
 
     if ( coverOnError )
         coverOnError.setAttribute("style", "display: none;");
@@ -782,8 +785,10 @@ const handleLoadSubtitle = async (filePath,cb) => {
     [ filePath ] = Array.isArray(filePath) ? filePath : [ filePath ];
 
 
-    if ( /x-subrip$/.test(mime.lookup(filePath)) )
+    if ( /x-subrip$/.test(mime.lookup(filePath)) ) {
         filePath = await cb(filePath);
+        console.log(filePath);
+    }
 
     const { track, lang } = await setUpTrackElement(filePath);
 
@@ -882,10 +887,43 @@ module.exports.videoLoadData = event => {
     const posterSettings = require(posterJson);
 
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
-    const pathToFile = hashedPath(video.src);
+    const currentTime = Number(getRecentPos(video.src).toString());
 
+    if ( currentTime !== 0 ) {
 
-    video.currentTime = Number(getRecentPos(video.src).toString());
+        const btn = dialog.showMessageBox({
+            type: "info",
+            message: "Continue Playing media file from previous location",
+            buttons: [ "Continue", "Cancel" ]
+        });
+
+        // play media file from previous time location
+        if ( btn === 0 ) {
+            video.currentTime = currentTime;
+        }
+
+    }
+
+    const extRegexp = new RegExp(`\\${path.extname(video.src)}$`);
+    const srtReplaced = video.src.replace(extRegexp, ".srt");
+    const webvvtReplaced = video.src.replace(extRegexp, ".webvvt");
+
+    const subtitlePath = fs.existsSync(srtReplaced)
+          ? srtReplaced
+          : ( () => fs.existsSync(webvvtReplaced) ? webvvtReplaced : false )();
+
+    if ( subtitlePath ) {
+
+        handleLoadSubtitle(subtitlePath, async (filePath) => {
+
+            if ( webvvtReplaced.test(subtitlePath) )
+                return webvvtReplaced;
+
+            const result = await readSubtitleFile(filePath);
+            return result;
+        });
+
+    }
 
     const submenu = videoContextMenu[16].submenu;
 
@@ -1180,7 +1218,6 @@ module.exports.subHandler = ( event, from, fPath ) => {
         val = subHandlerComputer();
 
     if ( from === "net" && ! fPath )
-
         return subHandlerNet();
 
     if ( from === "net" && fPath )

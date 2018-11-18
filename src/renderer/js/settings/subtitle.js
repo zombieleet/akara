@@ -43,7 +43,7 @@
                     elIcon.classList.add("toggle-off");
                     return ;
                 }
-
+                console.log(elIcon);
                 elIcon.classList.remove("fa-toggle-off");
                 elIcon.classList.remove("toggle-off");
 
@@ -75,24 +75,6 @@
 
                 ipc.sendTo(1, "akara::subtitle:style:change", props, cueTest.style[props]);
             });
-    };
-
-    const runWorker = (property,value) => {
-        const cueTest = document.querySelector(".cue-test");
-        const worker = new Worker( () => {
-            postMessage({
-                property,
-                value
-            });
-            this.onmessage = evt => console.log(evt);
-        });
-
-        worker.postMessage("shit");
-        worker.addEventListener("message", ({ data: { property, value } }) => {
-            console.log("abracadabra");
-            cueTest.style[property] = value;
-            //worker.terminate();
-        });
     };
 
     close.addEventListener("click", () => getCurrentWindow().close());
@@ -148,7 +130,6 @@
         cueTest.style[cssProps] = cssValue;
 
         ipc.sendTo(1, "akara::subtitle:style:change", cssProps, cssValue);
-        //runWorker({ property: cssProps, value: cssValue });
     });
 
     // don't forget checkboxLabel to prompt if to
@@ -187,6 +168,8 @@
 
             });
         }
+
+        console.log(target);
 
         // toggle-off
         if ( toggleState ) {
