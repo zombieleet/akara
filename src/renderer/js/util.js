@@ -324,8 +324,15 @@ const removeTarget = (target,video) => {
             video.play();
         }
     }
+
+    const currentLooping = localStorage.getItem("LOOP_CURRENT_VIDEO");
+
+    if ( currentLooping && currentLooping === target.getAttribute("id") ) {
+        getCurrentWindow().webContents.send("video-no-repeat");
+    }
+
     target.remove();
-    target = undefined;
+
     return ;
 };
 
