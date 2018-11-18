@@ -120,7 +120,6 @@ const TWITTER_OAUTH = "https://api.twitter.com/oauth/authenticate";
 const FFMPEG_LOCATION = `${APP_PATH}/node_modules/.bin/`;
 
 
-
 /*const BYTE = 8;
 const MBYTE = 1048576;
 const GBYTE = 1073741824;

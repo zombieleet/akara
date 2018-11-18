@@ -85,11 +85,17 @@ $drop-down-left-pos: 200;
     display: block;
     margin-top: 10 + px;
     width: 100 - $input-padding + %;
-
+    
     padding: $input-padding + px;
     color: black;
     font-size: 15px;
     border: 2px solid lighten(black,50%);
+
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0px 1px 6px 0px darken(lighten($global-color, 50%), 55%);
+    background: $global-color;
+    color: white;
 }
 
 %buttons {

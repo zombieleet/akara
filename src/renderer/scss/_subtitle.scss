@@ -20,11 +20,6 @@ section {
 
 .subtitle-form-input {
     @extend %form-input;
-    border: none;
-    border-radius: 25px;
-    box-shadow: 0px 1px 6px 0px darken(lighten($global-color, 50%), 55%);
-    background: $global-color;
-    color: white;
 }
 
 label[for="series"] {

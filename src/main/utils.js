@@ -90,8 +90,68 @@ const removeConvMedia = () => {
     });
 };
 
+
+const resumeDownloading = (item,webContents) => {
+    console.log("resume");
+    if ( item.canResume() ) {
+        item.resume();
+        webContents.send("download::state", "resumed");
+    } else {
+        webContents.send("download::state", "noResume");
+    }
+};
+
+const downloadFile = (url, contentId) => {
+
+    const [ window ] = BrowserWindow.getAllWindows().filter( ({webContents}) => webContents.id === contentId );
+    const { webContents } = window;
+    webContents.downloadURL(url);
+
+    webContents.session.on("will-download", async (event,item,webContents) => {
+
+        item.setSavePath(app.getPath("downloads"));
+
+        ipc.on("download::paused", () => {
+            item.pause();
+        });
+
+        ipc.on("download::cancel", () => {
+            item.cancel();
+        });
+
+        ipc.on("download::restart", () => {
+            downloadFile(item.getURL(), contentId);
+        });
+
+        ipc.on("download::resume", () => {
+            resumeDownloading(item,webContents);
+        });
+
+        webContents.send("download::started", webContents.id, item.getFilename());
+
+        item.on("updated", (event,state) => {
+
+            webContents.send("download::state", state);
+
+            // if ( state === "interrupted" )
+            //     resumeDownloading(item,webContents);
+
+            webContents.send("download::gottenByte", item.getReceivedBytes());
+            webContents.send("download::computePercent", item.getReceivedBytes(), item.getTotalBytes());
+        });
+
+        item.once("done", (event,state) => {
+            webContents.send("download::state", state);
+        });
+
+        webContents.send("download::totalbyte", item.getTotalBytes());
+    });
+};
+
+
 module.exports = {
     checkType,
     iterateDir,
-    removeConvMedia
+    removeConvMedia,
+    downloadFile
 };

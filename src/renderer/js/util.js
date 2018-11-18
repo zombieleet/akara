@@ -1151,7 +1151,7 @@ module.exports.removepodcast = podtoremove => {
     return true;
 };
 
-const resumeDownloading = module.exports.resumeDownloading = (item,webContents) => {
+const resumeDownloading = (item,webContents) => {
     console.log("resume");
     if ( item.canResume() ) {
         item.resume();
@@ -1183,10 +1183,24 @@ const downloadFile = (url, window ) => {
     window.webContents.session.on("will-download", (event,item,webContents) => {
 
         item.setSavePath(app.getPath("downloads"));
+        
+        webContents.on("download::paused", () => {
+            item.pause();
+        });
 
-        // webContents.send("download::filename", item.getFilename());
-        console.log(item);
-        webContents.send("download::started", item);
+        webContents.on("download::cancel", () => {
+            item.cancel();
+        });
+
+        webContents.on("download::restart", () => {
+            downloadFile(item.getURL(), window);
+        });
+
+        webContents.on("download::resume", () => {
+            resumeDownloading(item,webContents);
+        });
+
+        webContents.send("download::started", webContents.id, item.getFileName());
 
         item.on("updated", (event,state) => {
 

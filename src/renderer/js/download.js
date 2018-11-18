@@ -67,12 +67,12 @@
             : state;
 
         switch(state) {
-        // case "interrupted":
-        //     pause.hidden = true;
-        //     cancel.hidden = true;
-        //     resume.hidden = true;
-        //     restart.hidden = false;
-        //     break;
+        case "interrupted":
+            pause.hidden = true;
+            cancel.hidden = true;
+            resume.hidden = true;
+            restart.hidden = false;
+            break;
         case "progressing":
             pause.disabled = false;
             cancel.disabled = false;
@@ -179,7 +179,7 @@
         downByte.setAttribute("style", `width: ${percentWidth};display: block`);
 
     });
-
+    
 
     // resume.addEventListener("click", () => {
     //     ipc.send("download::resume");
@@ -192,36 +192,32 @@
     // });
 
 
-    async function downloadDomEvents(item) {
+    function downloadDomEvents(item) {
+
+
+    };
+
+    ipc.on("download::started", (event,webContentId,fileName) => {
 
         pause.addEventListener("click", () => {
-            item.pause();
+            ipc.send("download::paused");
         });
 
         close.addEventListener("click", () => {
-            // the cancel button will only be disabled
-            //   if download is completed
-            if ( ! cancel.disabled ) {
-                item.cancel();
-            }
+            ipc.send("download::cancel");
             getCurrentWindow().close();
         });
 
-
         restart.addEventListener("click", () => {
-            downloadFile(item.getURL(),getCurrentWindow());
+            ipc.send("download::restart");
         });
 
         resume.addEventListener("click", () => {
-            resumeDownloading(item,getCurrentWindow().webContents);
+            ipc.send("download::resume");
         });
 
-        filename.textContent = item.getFilname();
-    };
+        filename.textContent = fileName;
 
-    ipc.on("download::started", async (event,item) => {
-        console.log(item);
-        await downloadDomEvents(item);
     });
 
 })();

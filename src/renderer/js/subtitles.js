@@ -139,8 +139,9 @@
         td.addEventListener("click", () => {
 
             let win = downloadWindow();
-
-            downloadFile(__url,win);
+            console.log("send event");
+            ipc.send("download::init", __url, win.webContents.id);
+            //downloadFile(__url,win);
 
             akara_emit.once("download::complete", fpath => {
                 console.log("sent");

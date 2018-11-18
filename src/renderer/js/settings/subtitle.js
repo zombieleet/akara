@@ -21,8 +21,6 @@
 
     const akara_emit = require("../../js/emitter.js");
 
-
-    const { Worker }  = require("webworker-threads");
     const { requireSettingsPath } = _require("./constants.js");
 
 

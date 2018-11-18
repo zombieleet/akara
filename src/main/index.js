@@ -18,7 +18,8 @@ const {
 } = require("./constants.js");
 
 const {
-    removeConvMedia
+    removeConvMedia,
+    downloadFile
 } = require("./utils.js");
 
 const { join } = require("path");
@@ -67,6 +68,11 @@ const createWindow = () => {
         console.log("app will quit");
         mainWindow.webContents.send("akara::quiting");
         removeConvMedia();
+    });
+
+    ipc.on("download::init", (event,__url,contentId) => {
+        console.log("called event");
+        downloadFile(__url,contentId);
     });
 };
 createWindow();
