@@ -87,6 +87,7 @@ const videoListMenu = [
     {
         label: "No Repeat",
         accelerator: shortcut.no_repeat,
+        visible: false,
         click(menuItem,{ webContents },event) {
             webContents.send("no-repeat-hit-target");
         }
