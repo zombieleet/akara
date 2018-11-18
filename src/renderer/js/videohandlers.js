@@ -560,19 +560,12 @@ module.exports.videoEndedEvent = () => {
         return setupPlaying(playlistItems[index]);
     }
 
-
-    if ( justEnded.nextElementSibling && ! justEnded.hasAttribute("data-repeat") )
-
+    // play the next playlist item if the just ended playlist item is not set to repeat
+    if ( justEnded.nextElementSibling )
         return setupPlaying(justEnded.nextElementSibling);
 
-
-    if ( justEnded.hasAttribute("data-repeat") )
-
-        return controls.play();
-
-
+    // replay all media files in the playlist if set to repeat all
     if ( ! justEnded.nextElementSibling && justEnded.parentNode.hasAttribute("data-repeat") )
-
         return setupPlaying(justEnded.parentNode.firstElementChild);
 
     // force the control element to change it's icon
