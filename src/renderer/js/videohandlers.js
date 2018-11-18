@@ -465,13 +465,15 @@ module.exports.playNextOrPrev = playNextOrPrev;
 
 module.exports.videoErrorEvent = async (evt) => {
 
-    console.log(evt.target.error.code, evt.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED);
     const akaraLoaded = document.querySelector(".akara-loaded");
     const playlistItem = akaraLoaded.querySelector(`#${video.getAttribute("data-id")}`);
 
     let _src = video.getAttribute("src");
 
     disableControls();
+
+    if ( akaraLoaded.childElementCount === 0 )
+        return;
 
 
     switch(evt.target.error.code) {
@@ -544,6 +546,7 @@ module.exports.videoEndedEvent = () => {
     const justEnded = document.querySelector("[data-now-playing=true]");
     const akaraLoaded = document.querySelector(".akara-loaded");
 
+    // play shuffled video
     if ( video.hasAttribute("data-random") ) {
 
         const playlistItems = document.querySelectorAll("[data-full-path]");
