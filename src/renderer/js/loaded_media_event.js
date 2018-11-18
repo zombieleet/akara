@@ -174,11 +174,12 @@
 
 
     ipc.on("repeat-hit-target", () => {
-        currentTarget.setAttribute("data-repeat", "true");
+        getCurrentWindow().webContents.send("video-repeat");
+        //currentTarget.setAttribute("data-repeat", "true");
     });
 
     ipc.on("no-repeat-hit-target", () => {
-        currentTarget.removeAttribute("data-repeat");
+        getCurrentWindow().webContents.send("video-no-repeat");
     });
 
     ipc.on("repeat-all", () => {
