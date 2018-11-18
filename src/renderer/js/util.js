@@ -278,7 +278,14 @@ const setCurrentPlaying = target => {
     video.setAttribute("data-id", target.getAttribute("id"));
     video.setAttribute("src", target.getAttribute("data-full-path"));
 
-    return ;
+    const trackElement = document.querySelector("track");
+
+    if ( trackElement )
+        trackElement.remove();
+
+    getCurrentWindow().webContents.send("video-no-repeat");
+
+    return;
 };
 
 module.exports.setCurrentPlaying = setCurrentPlaying;
