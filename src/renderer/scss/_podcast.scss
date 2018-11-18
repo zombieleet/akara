@@ -306,8 +306,7 @@
     border: 2px solid $global-color;
     border-radius: 5px;
     background: $global-color;
-
-    height: 200px;
+    height: 9%;
 
     .podcast-modal-parent {
 
@@ -326,13 +325,15 @@
         .podcast-modal-addpodcastarea {
             //@extend %modal-textarea;
             @extend %form-input;
+            height: 40px;
+            border-radius: 0px;
         }
 
         .podcast-modal-btn {
 
             display: flex;
             justify-content: flex-end;
-            margin-right: 3px;
+            margin-right: 44px;
             button {
                 @extend %modal-buttons;
                 &:hover {
