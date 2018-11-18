@@ -31,12 +31,12 @@ const applyButtonConfig = (element,section,type) => {
         element.setAttribute("data-image_icon", "image");
         return ;
     }
-        
+
     Array.from(element.classList, _class_ => {
         if ( _class_ === "fa" || _class_ === font )
             element.classList.remove(_class_);
     });
-    
+
     element.classList.add("fa");
     element.classList.add(font);
 
@@ -54,10 +54,12 @@ const buildRepeatMenu = () => {
             type: "radio",
             click() {
 
-                video.loop = true;
-
+                // if the playlist is set to repeat all
+                // remove data-repeat attribute from the parent element of the playlist
                 if ( akLoaded.hasAttribute("data-repeat") )
                     akLoaded.removeAttribute("data-repeat");
+
+                getCurrentWindow().webContents.send("video-repeat");
 
                 //target.setAttribute("data-title","repeat one");
             }
@@ -67,10 +69,17 @@ const buildRepeatMenu = () => {
             id: 1,
             type: "radio",
             click() {
-                akLoaded.setAttribute("data-repeat","repeat");
+
                 if ( video.loop )
                     video.loop = false;
+
+                getCurrentWindow().webContents.send("video-no-repeat");
+
                 //target.setAttribute("data-title","repeat all");
+
+                // set data-repeat attribute of the parent element of the playlist
+                // to repeat the playlist from the beginning ones ended
+                akLoaded.setAttribute("data-repeat","repeat");
             }
         },
         {
@@ -79,18 +88,32 @@ const buildRepeatMenu = () => {
             type: "radio",
             checked: true,
             click() {
-                video.loop = false;
-                akLoaded.removeAttribute("data-repeat");
-                //target.setAttribute("data-title","normal");
+                // if repeat all is set
+                if ( akLoaded.hasAttribute("data-repeat") )
+                    return akLoaded.removeAttribute("data-repeat");
+
+                return getCurrentWindow().webContents.send("video-no-repeat");
             }
         }
     ];
+
+
+    const isSingleVideoRepeat = localStorage.getItem("LOOP_CURRENT_VIDEO");
+    const currentPlaying = akLoaded.querySelector("[data-now-playing]");
+
+    if ( isSingleVideoRepeat ) {
+        if ( isSingleVideoRepeat === currentPlaying.getAttribute("id") ) {
+            menuItems[0].checked = true;
+            menuItems[2].checked = false;
+        } else
+            getCurrentWindow().webContents.send("video-no-repeat");
+    }
 
     menuItems.forEach( mItem => {
         _REPEAT_MENU_.append(new MenuItem(mItem));
     });
 
-    return true;
+    return _REPEAT_MENU_;
 };
 
 const controls = {
@@ -208,7 +231,8 @@ const controls = {
     },
     repeat({target: _target}) {
         target = _target;
-        _REPEAT_MENU_.popup(getCurrentWindow(), { async: true });
+        _REPEAT_MENU_.clear();
+        buildRepeatMenu().popup(getCurrentWindow(), { async: true });
     },
     subtitle({ target }) {
 
@@ -308,9 +332,6 @@ const controls = {
         let window = filterWindow(__obj,html);
     }
 };
-
-
-buildRepeatMenu();
 
 module.exports = {
     video,
