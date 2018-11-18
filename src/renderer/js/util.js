@@ -355,18 +355,20 @@ const disableMenuItem = (memItem,target,video) => {
     if ( memItem.label === "Pause" && ! target.hasAttribute("data-now-playing") )
         memItem.enabled = false;
 
-    if ( memItem.label === "Repeat" && target.hasAttribute("data-repeat") )
-        memItem.visible = false;
+    if ( memItem.label === "Repeat" )
+        repeatVisibility(memItem, target, false);
 
-    if ( memItem.label === "No Repeat" && ! target.hasAttribute("data-repeat") )
-        memItem.visible = false;
+    if ( memItem.label === "No Repeat" )
+        repeatVisibility(memItem, target, true);
+};
 
+const repeatVisibility = (memItem,target,value) => {
 
-    if ( memItem.label === "Repeat All" && target.parentNode.hasAttribute("data-repeat") )
-        memItem.visible = false;
+    const isVideoIdLoop = localStorage.getItem("LOOP_CURRENT_VIDEO");
 
-    if ( memItem.label === "No Repeat All" && ! target.parentNode.hasAttribute("data-repeat") )
-        memItem.visible = false;
+    if ( isVideoIdLoop && isVideoIdLoop === target.getAttribute("id") ) {
+        memItem.visible = value;
+    }
 };
 
 
@@ -746,9 +748,7 @@ module.exports.readSubtitleFile = fPath => new Promise((resolve,reject) => {
     const _path = path.join(CONVERTED_MEDIA,path.basename(fPath).replace(".srt", ".vtt"));
     const data = fs.readFileSync(fPath);
     srt2vtt(data, (err,vttData) => {
-        console.log(err);
         if ( err ) return reject(err);
-        console.log(_path, vttData);
         fs.writeFileSync(_path, vttData);
         return resolve(_path);
     });
