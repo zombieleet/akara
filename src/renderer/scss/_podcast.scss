@@ -53,10 +53,12 @@
         margin-top: 50px;
 
         width: 97%;
-        height: 737px;
+        height: 632px;
 
         overflow-y: auto;
         overflow-x: hidden;
+
+        padding-bottom: 500px;
 
         box-shadow: 0px 1px 6px 0px darken(lighten($global-color, 50%), 55%);
 
