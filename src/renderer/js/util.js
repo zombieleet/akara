@@ -1131,32 +1131,27 @@ const savepodcast = async (podcasturl,callback) => {
 
             result.podlink = pod__;
 
+            console.log(result, result.image);
+
             if ( ! result.image || result.image.length === 0 ) {
+                result.image = base64Img.base64Sync(path.join(app.getAppPath(), "app", "renderer", "img", "posters", "default_poster.jpg"));
                 akara_emit.emit("akara::podcast:image", result);
                 continue;
             }
-
-            callback(null,null, {
-                name: result.name,
-                link: pod__,
-                isDone: podcasturl[podcasturl.length - 1] === pod__ ? true : false
-            });
+            //http://feeds.feedburner.com/boagworldpodcast/
 
             base64Img.requestBase64(result.image, (err,res,body) => {
+
+                if ( err ) {
+                    result.image = base64Img.base64Sync(path.join(app.getAppPath(), "app", "renderer", "img", "posters", "default_poster.jpg"));
+                    akara_emit.emit("akara::podcast:image", result);
+                    return;
+                }
+
                 result.image = body;
                 akara_emit.emit("akara::podcast:image", result);
             });
         }
-    }
-
-
-    for ( let errpod of errs ) {
-        const err = {
-            podcastLink: errpod ,
-            code: "PODCAST_NO_LOAD",
-            isDone: errs[errs.length - 1] === errpod ? true : false
-        };
-        setTimeout( () => callback(err,null), Math.floor(2000 * Math.random(2000)) * 2);
     }
 };
 
