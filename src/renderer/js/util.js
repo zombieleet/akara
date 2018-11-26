@@ -1088,7 +1088,8 @@ const savepodcast = async (podcasturl,callback) => {
             owner,
             categories,
             image,
-            podlink
+            podlink,
+            isDone: podcasturl[podcasturl.length - 1] === podlink ? true : false
         };
         fs.writeFileSync(podcast, JSON.stringify(pod));
         callback(null,pod[title]);
