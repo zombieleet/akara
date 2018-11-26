@@ -67,7 +67,6 @@
         const coverOnError = document.querySelector(".cover-on-error-src");
 
         if ( video.getAttribute("src") )
-
             coverOnError.setAttribute("style", "display: none;");
 
     });
