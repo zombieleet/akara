@@ -1101,7 +1101,13 @@ const savepodcast = async (podcasturl,callback) => {
         let result;
 
         try {
+
+            callback(null,null, {
+                message: `Getting Podcast from podcast rss feed ${pod__}`
+            });
+
             result = await podson.getPodcast(pod__);
+
         } catch(ex) {
             errs.push(pod__);
             continue;
