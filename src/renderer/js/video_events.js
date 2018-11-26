@@ -210,7 +210,7 @@
     ipc.on("akara::podcast:play", (evt,podmetadata,category) => {
         const { episode: { enclosure: { url } } } = JSON.parse(podmetadata);
         localStorage.setItem("podcast-metadata", podmetadata);
-        addMediaCb(url,category);
+        addMediaCb(decodeURIComponent(url),category);
     });
 
     ipc.on("akara::video:filter", videoSetFilter);
