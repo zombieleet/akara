@@ -405,15 +405,15 @@ module.exports.videoLoadedEvent = () => {
 
 /**
  *
- * disableControls when there is no media file
+ * disableControls when there is no media file or something bad happens
+ * when playing a media file
  *
  **/
-
+("style", "display: none;");
 const disableControls = () => {
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
     currTimeUpdate.innerHTML = "00:00 / 00:00";
     document.querySelector(".cover-on-error-src").removeAttribute("style");
-    //return video.removeAttribute("src");
 };
 
 
@@ -470,11 +470,13 @@ module.exports.videoErrorEvent = async (evt) => {
 
     let _src = video.getAttribute("src");
 
+    if ( ! evt.target.error )
+        return;
+
     disableControls();
 
     if ( akaraLoaded.childElementCount === 0 )
         return;
-
 
     switch(evt.target.error.code) {
 
@@ -1361,9 +1363,11 @@ module.exports.mediaProgress = evt => {
     case video.HAVE_CURRENT_DATA:
     case video.HAVE_METADATA:
         networkState.style.visibility = "hidden";
+        document.querySelector(".cover-on-error-src").setAttribute("style", "display: none;");
         break;
     case video.HAVE_NOTHING:
         networkState.style.visibility = "visible";
+        disableControls();
         break;
     }
 
