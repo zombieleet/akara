@@ -35,6 +35,7 @@ const createNewWindow = (obj,html) => {
     newWindow.loadURL(urLocation);
 
     newWindow.once("closed", () => {
+        newWindow.webContents.send("akara::remove:disable_menu");
         newWindow = null;
     });
 
