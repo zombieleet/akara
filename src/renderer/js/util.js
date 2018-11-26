@@ -1124,6 +1124,11 @@ const savepodcast = async (podcasturl,callback) => {
 
         if ( Object.keys(pod).indexOf(result.title) === -1 ) {
 
+            callback(null,null, {
+                message: `Processing ${pod__}`,
+                isDone: podcasturl[podcasturl.length - 1] === pod__ ? true : false
+            });
+
             result.podlink = pod__;
 
             if ( ! result.image || result.image.length === 0 ) {
