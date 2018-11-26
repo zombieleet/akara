@@ -13,6 +13,8 @@ This project is still undergoing development, at this point the application is n
 
 `npm run watch`
 
+`npm rebuild`
+
 `node ./download-ffmpeg.js`
 
 `npm start`
