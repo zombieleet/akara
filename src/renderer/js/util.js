@@ -1109,7 +1109,16 @@ const savepodcast = async (podcasturl,callback) => {
             result = await podson.getPodcast(pod__);
 
         } catch(ex) {
-            errs.push(pod__);
+            result = ex;
+        }
+
+        if ( Error[Symbol.hasInstance](result) ) {
+            callback({
+                podcastLink: pod__,
+                message: `An error occured while adding this podcast ${pod__}`,
+                moreMessage: result.message,
+                isDone: podcasturl[podcasturl.length - 1] === pod__ ? true : false
+            });
             continue;
         }
 
