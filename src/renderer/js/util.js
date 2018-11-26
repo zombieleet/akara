@@ -276,7 +276,7 @@ const setCurrentPlaying = target => {
 
 
     video.setAttribute("data-id", target.getAttribute("id"));
-    video.setAttribute("src", target.getAttribute("data-full-path"));
+    video.setAttribute("src", decodeURIComponent(target.getAttribute("data-full-path")));
 
     const trackElement = document.querySelector("track");
 
