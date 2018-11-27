@@ -19,11 +19,13 @@
     const fs = require("fs");
 
     const {
-        playlistSave,
         makeDynamic,
         handleWindowButtons
     } = require("../../js/util.js");
 
+    const {
+        playlistSave
+    } = require("./PlaylistSettings.js")
     const {
         iterateDir
     } = _require("./utils.js");

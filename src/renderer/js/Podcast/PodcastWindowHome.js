@@ -11,7 +11,7 @@ const {
 const {
     savepodcast,
     removepodcast
-} = require("../../js/util.js");
+} = require("./PodcastSettings.js");
 
 const {
     applyButtonConfig

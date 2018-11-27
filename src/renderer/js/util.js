@@ -781,121 +781,6 @@ const makeDynamic = (el,i) => {
 module.exports.makeDynamic = makeDynamic;
 
 
-
-/**
- *
- *
- * saves a playlist
- * key is the name to saveplaylist with
- * files, an array of files
- * notify, is either true or false
- *    to notify if saved or not
- *
- **/
-
-
-module.exports.playlistSave = (key, files, notify) => {
-
-
-
-    const list = require(playlistLocation);
-
-    let savedList = list[key] || [];
-
-    for ( let __list of files ) {
-        savedList.push(__list);
-    }
-
-    savedList = savedList.sort().filter(
-        (value,index,array) => value !== array[++index]
-    );
-
-    Object.assign(list, {
-        [key]: savedList
-    });
-
-    fs.writeFileSync(playlistLocation, JSON.stringify(list));
-
-    if ( ! notify )
-        return ;
-
-    sendNotification({title: "Playlist", message: "Playlist have been saved"});
-
-    return ;
-
-};
-
-
-
-
-
-/**
- *
- *
- * loads a playlist saved with listName
- * it returns the items in listName
- *
- **/
-
-module.exports.playlistLoad = listName => {
-
-    if ( typeof(listName) !== "string" )
-        throw TypeError(`expected string as listName but got ${typeof(listName)}`);
-
-
-    const list = require(playlistLocation);
-
-    if ( ! listName in list )
-        return dialog.showErrorBox(
-            "unable to load playlist",
-            `${listName} could not be loaded`
-        );
-
-    let playlistList = list[listName];
-
-    const validPlaylist = playlistList.filter( list => {
-
-        if ( fs.existsSync(decodeURIComponent(list.replace(/^file:\/\//,""))) )
-            return list;
-        else
-            return dialog.showErrorBox("Playlist location not found",`path to ${list} was not found`);
-    });
-
-    return validPlaylist;
-};
-
-
-
-
-
-/**
- *
- *
- * deletes playlist and write to
- * the config file
- *
- **/
-
-module.exports.deletePlaylist = listName => {
-
-    if ( typeof(listName) !== "string" )
-        throw TypeError(`expected string as listName but got ${typeof(listName)}`);
-
-    let list = require(playlistLocation);
-
-    if ( ! listName in list )
-        return false;
-
-    delete list[listName];
-
-    if ( Object.keys(list).length === 0 )
-        list = {};
-
-    fs.writeFileSync(playlistLocation, JSON.stringify(list));
-
-    return true;
-};
-
 const selectMultipe = listLoadParent => {
 
     listLoadParent.addEventListener("click", evt => {
@@ -985,63 +870,6 @@ const removeSelections = () => {
 
 
 
-/**
- *
- *
- * renders all playlist name and total
- *   list item to the dom
- *
- **/
-
-module.exports.renderPlayList = type => {
-
-    const loadplaylist = document.querySelector(`.${type}`);
-
-    if ( ! loadplaylist ) {
-        return new Error(`wrong argument`,`specified argument as class ${type} cannot be located in the dom`);
-    }
-
-    const list = require(playlistLocation);
-
-    if ( Object.keys(list).length === 0 ) {
-        const p = document.createElement("p");
-        p.textContent = "No Playlist have been created";
-        p.setAttribute("class", "no-loadplaylist");
-        document.querySelector("button").hidden = true;
-        loadplaylist.appendChild(p);
-        return false;
-    }
-
-    let ul = document.querySelector(".append-list");
-    if ( ul )
-        return false;
-
-    ul = document.createElement("ul");
-    ul.setAttribute("class", "append-list");
-
-    let  noP = loadplaylist.querySelector(".no-loadplaylist");
-    if ( noP )
-        noP.remove();
-
-    noP = undefined;
-
-    for ( let __list of Object.keys(list) ) {
-        const li = document.createElement("li");
-        const p = document.createElement("p");
-        const numlist = document.createElement("span");
-        p.textContent = __list;
-        numlist.textContent = `${list[__list].length} files`;
-        li.setAttribute("class", "loadplaylist-item");
-        li.setAttribute("data-capture", __list);
-        li.appendChild(p);
-        li.appendChild(numlist);
-        ul.appendChild(li);
-    }
-
-    loadplaylist.appendChild(ul);
-    selectMultipe(ul);
-    return true;
-};
 
 const updatePlaylistName = target => {
     const playlistEl = document.querySelector(".playlist-name");
@@ -1061,127 +889,6 @@ module.exports.tClient = bBird.promisifyAll(
     })
 );
 
-
-const savepodcast = async (podcasturl,callback) => {
-
-    const { podcast } = _require("./configuration.js");
-    const pod = require(podcast);
-    const podson = require("podson");
-
-    let conhttp_s = require("http");
-
-    if ( Array.isArray(podcasturl) )
-        ;
-    else if ( typeof(podcasturl) === "string" )
-        podcasturl = [ podcasturl ];
-    else
-        return callback("first argument is not a string or an array",null);
-
-    let errs = [];
-    let succ = [];
-
-    akara_emit.on("akara::podcast:image", ({ description , title, language, owner, categories, image, podlink }) => {
-        pod[title] = {
-            title,
-            description,
-            language,
-            owner,
-            categories,
-            image,
-            podlink,
-            isDone: podcasturl[podcasturl.length - 1] === podlink ? true : false
-        };
-        fs.writeFileSync(podcast, JSON.stringify(pod));
-        callback(null,pod[title]);
-    });
-
-
-    for ( let pod__ of podcasturl ) {
-
-        let result;
-
-        try {
-
-            callback(null,null, {
-                message: `Getting Podcast from podcast rss feed ${pod__}`
-            });
-
-            result = await podson.getPodcast(pod__);
-
-        } catch(ex) {
-            result = ex;
-        }
-
-        if ( Error[Symbol.hasInstance](result) ) {
-            callback({
-                podcastLink: pod__,
-                message: `An error occured while adding this podcast ${pod__}`,
-                moreMessage: result.message,
-                isDone: podcasturl[podcasturl.length - 1] === pod__ ? true : false
-            });
-            continue;
-        }
-
-        if ( Object.keys(pod).indexOf(result.title) === -1 ) {
-
-            callback(null,null, {
-                message: `Processing ${pod__}`,
-                isDone: podcasturl[podcasturl.length - 1] === pod__ ? true : false
-            });
-
-            result.podlink = pod__;
-
-            console.log(result, result.image);
-
-            if ( ! result.image || result.image.length === 0 ) {
-                result.image = base64Img.base64Sync(path.join(app.getAppPath(), "app", "renderer", "img", "posters", "default_poster.jpg"));
-                akara_emit.emit("akara::podcast:image", result);
-                continue;
-            }
-            //http://feeds.feedburner.com/boagworldpodcast/
-
-            base64Img.requestBase64(result.image, (err,res,body) => {
-
-                if ( err ) {
-                    result.image = base64Img.base64Sync(path.join(app.getAppPath(), "app", "renderer", "img", "posters", "default_poster.jpg"));
-                    akara_emit.emit("akara::podcast:image", result);
-                    return;
-                }
-
-                result.image = body;
-                akara_emit.emit("akara::podcast:image", result);
-            });
-        }
-    }
-};
-
-module.exports.savepodcast = savepodcast;
-
-module.exports.loadpodcast = () => {
-    const { podcast } = _require("./configuration.js");
-    const pod = require(podcast);
-    return Object.keys(pod).length > 0 ? pod : {};
-};
-
-module.exports.removepodcast = podtoremove => {
-
-    const { podcast } = _require("./configuration.js");
-    let pod = require(podcast);
-
-    if ( ! Object.keys(pod).includes(podtoremove) )
-        return false;
-
-
-    for ( let _pods of Object.keys(pod) ) {
-        if ( _pods === podtoremove )
-            delete pod[podtoremove];
-    }
-
-
-    fs.writeFileSync(podcast, JSON.stringify(pod));
-
-    return true;
-};
 
 const resumeDownloading = module.exports.resumeDownloading = (item,webContents) => {
     console.log("resume");
@@ -1584,7 +1291,7 @@ module.exports.downloadAlbumArt = art => {
 module.exports.applyButtonConfig = applyButtonConfig;
 
 
-const UIBUTTON = (type,buttonName) => {
+module.exports.UIBUTTON = (type,buttonName) => {
 
     let uibuttonPath = requireSettingsPath("uibuttons.json");
     let uibutton = require(uibuttonPath);
@@ -1605,32 +1312,6 @@ const UIBUTTON = (type,buttonName) => {
     return buttonsObj;
 };
 
-module.exports.loadUISettingButton = (section, buttonsToLoad, getBy) => {
-
-    let uibutton = UIBUTTON(section, buttonsToLoad);
-
-    Object.keys(uibutton).forEach( button => {
-
-        const uibutt = document.querySelector(`[${getBy}=${button}]`);
-        const font = uibutton[button];
-
-        if ( ! font ||  ! uibutt )
-            return ;
-
-        localStorage.setItem(section, JSON.stringify(uibutton));
-
-        if ( /data:image\//.test(font) ) {
-
-            uibutt.style.backgroundImage = `url(${font})`;
-            uibutt.setAttribute("data-image_icon", "image");
-
-        } else {
-            uibutt.classList.add("fa");
-            uibutt.classList.add(`${font}`);
-        }
-
-    });
-};
 
 module.exports.getKeyIndex = (shortcut,shortcutType) => {
     const shortcutpath = requireSettingsPath("shortcut.json");

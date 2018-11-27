@@ -19,7 +19,7 @@
     const {
         playlistSave,
         renderPlayList
-    } = require("../../js/util.js");
+    } = require("./PlaylistSettings");
 
     const list = require(playlistLocation);
 

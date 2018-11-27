@@ -16,8 +16,7 @@
 
     const {
         loadUISettingButton,
-        applyButtonConfig
-    } = require("../js/util.js");
+    } = require("./LoadUISettingButton");
 
 
     const { lowHighVolume } = require("../js/videohandlers.js");

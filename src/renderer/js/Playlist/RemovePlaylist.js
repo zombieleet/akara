@@ -5,7 +5,7 @@
     const {
         deletePlaylist,
         renderPlayList
-    } = require("../../js/util.js");
+    } = require("./PlaylistSettings.js");
 
     const {
         remote: {

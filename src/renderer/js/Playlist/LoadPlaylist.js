@@ -14,7 +14,7 @@
     const {
         playlistLoad,
         renderPlayList
-    } = require("../../js/util.js");
+    } = require("./PlaylistSettings.js");
 
     const loadBtn = document.querySelector(".load-btn");
     const close = document.querySelector("[data-winop=close]");

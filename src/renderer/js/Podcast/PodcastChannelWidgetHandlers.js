@@ -17,7 +17,7 @@ const {
 const podcastWindow = require("../../js/Podcast/PodcastWindowHome.js");
 
 
-const { removepodcast } = require("../../js/util.js");
+const { removepodcast } = require("./PodcastSettings.js");
 const { applyButtonConfig } = require("../../js/video_control.js");
 
 const podson = require("podson");

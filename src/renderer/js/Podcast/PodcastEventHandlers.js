@@ -8,8 +8,9 @@ const {
 const {
     downloadWindow,
     downloadFile,
-    loadpodcast
 } = require("../../js/util.js");
+
+const { loadpodcast } = require("./PodcastSettings.js")
 
 const dodo = require("../../js/Podcast/PodcastUtils.js");
 
