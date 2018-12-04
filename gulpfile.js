@@ -9,11 +9,19 @@ const imagemin = require("gulp-imagemin");
 const sourcemaps = require("gulp-sourcemaps");
 
 
-gulp.task("eslint", () => {
-    return gulp.src("./src/**/**/*.js")
+const path = {
+    src: "./src/**/**/*.js",
+    configFile: "./.eslintrc.json",
+    pugPath: "src/renderer/pug/**/**/*.pug",
+    imageminPath: "./src/renderer/img/**/*",
+    sassPath: "src/renderer/scss/**/*.scss"
+};
+
+const eslintTask = () => {
+    return gulp.src(path.src)
         .pipe(eslint({
             fix: true,
-            configFile: "./.eslintrc.json"
+            configFile: path.configFile
         }))
         .on("error", error => console.log(error))
         .pipe(eslint.format())
@@ -21,29 +29,31 @@ gulp.task("eslint", () => {
         .on("finish", () => {
             console.log("done");
         });
-});
+};
 
 
-gulp.task("pug", () => {
-    return gulp.src("src/renderer/pug/**/**/*.pug")
+const pugTask = () => {
+    return gulp.src(path.pugPath)
         .pipe(pug())
-        .on("error", error => console.log(error))
-        .pipe(gulp.dest("./app/renderer/html/"))
+        .on("error", error => console.error(error))
+        .pipe(gulp.dest("./app/renderer/html"))
         .on("finish", () => {
             console.log("done");
         });
-});
+};
 
-gulp.task("imagemin", () => {
-    return gulp.src("./src/renderer/img/**/*")
+
+const imageminTask = () => {
+    return gulp.src(path.imageminPath)
         .pipe(imagemin([
             imagemin.svgo({plugins: [{removeViewBox: true}]})
         ]))
         .pipe(gulp.dest("./app/renderer/img/"));
-});
+};
 
-gulp.task("sass", () => {
-    return gulp.src("src/renderer/scss/**/*.scss")
+
+const sassTask = () => {
+    return gulp.src(path.sassPath)
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: "extended"}).on("error", sass.logError))
         .pipe(sourcemaps.write("./maps"))
@@ -51,24 +61,29 @@ gulp.task("sass", () => {
         .on("finish", () => {
             console.log("done");
         });
-});
+};
 
-gulp.task("fontawesome", () => {
-    gulp.src("src/renderer/libs/*")
-        .pipe(gulp.dest("./app/renderer/libs/"));
+const fontawesomeTask = () => {
+    return [ gulp.src("src/renderer/libs/*")
+             .pipe(gulp.dest("./app/renderer/libs/")),
+             gulp.src("src/renderer/fonts/*")
+             .pipe(gulp.dest("./app/renderer/fonts/"))
+           ];
+};
 
-    gulp.src("src/renderer/fonts/*")
-        .pipe(gulp.dest("./app/renderer/fonts/"));
-});
+const watch = () => {
+    gulp.watch([path.src, "!node_modules/**"], eslintTask);
+    gulp.watch(path.sassPath, sassTask);
+    gulp.watch(path.pugPath, pugTask);
+    gulp.watch(path.imageminPath, imageminTask);
+};
 
-gulp.task("watch", () => {
+exports.eslintTask = eslintTask;
+exports.sassTask = sassTask;
+exports.pugTask = pugTask;
+exports.imageminTask = imageminTask;
+exports.watch = watch;
+exports.fontawesomeTask = fontawesomeTask;
 
-    gulp.watch(["./src/**/**/*.js", "!node_modules/**"], [ "eslint" ]);
-    gulp.watch("./src/renderer/scss/**/*.scss", [ "sass" ]);
-    gulp.watch("./src/renderer/pug/**/**/*.pug", [ "pug" ]);
-    gulp.watch("./src/renderer/img/**/*", [ "imagemin" ]);
+exports.default = gulp.parallel(eslintTask, sassTask, pugTask, imageminTask, fontawesomeTask, watch);
 
-});
-
-
-gulp.task("default", [ "eslint", "pug", "fontawesome", "sass" , "imagemin", "watch" ]);
