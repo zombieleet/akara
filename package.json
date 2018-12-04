@@ -1,3 +1,4 @@
+
 {
     "name": "akara",
     "description": "akara is an adavance media player",
@@ -53,7 +54,7 @@
         "twitter-pin": "^1.0.0",
         "twitter-pin-auth": "^0.2.0",
         "wait-promise": "^0.4.1",
-        "webworker-threads": "^0.7.16",
+        "wait.for-es6": "^0.1.0",
         "xml2js": "^0.4.19",
         "xmlbuilder": "^9.0.4"
     },
@@ -77,7 +78,7 @@
     "homepage": "https://github.com/zombieleet/akara#readme",
     "devDependencies": {
         "babel-eslint": "^8.2.3",
-        "electron": "^1.7.11",
+        "electron": "^3.0.10",
         "electron-rebuild": "^1.5.11",
         "eslint": "^4.1.1",
         "ffbinaries": "^1.0.2",
