@@ -61,7 +61,7 @@ $settings-value-padding-left: 2;
     float: right;
     padding-top: 12px;
     padding-left: $settings-value-padding-left + px;
-    width: 80 - $settings-value-padding-left + %;
+    width: percentage( (80 - $settings-value-padding-left) / 100 );
 }
 
 .default-settings-page {
