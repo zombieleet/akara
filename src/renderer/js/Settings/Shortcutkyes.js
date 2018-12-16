@@ -12,18 +12,17 @@
         }
     } = require("electron");
 
-    const fs = require("fs");
-    const cluster = require("cluster");
-    const crypto = require("crypto");
+    const fs      = require("fs");
+    const crypto  = require("crypto");
 
     const { handleWindowButtons } = require("../../js/util.js");
     const { requireSettingsPath } = _require("./constants.js");
 
-    const shortcutMin = document.querySelector("[data-winop=minimize]");
-    const shortcutMax = document.querySelector("[data-winop=maximize]");
+    const shortcutMin   = document.querySelector("[data-winop=minimize]");
+    const shortcutMax   = document.querySelector("[data-winop=maximize]");
     const shortcutClose = document.querySelector("[data-winop=close]");
-    const showSettings = document.querySelector(".shortcut_show_settings");
-    const shortcutList = document.querySelector(".shortcutkey_list");
+    const showSettings  = document.querySelector(".shortcut_show_settings");
+    const shortcutList  = document.querySelector(".shortcutkey_list");
 
 
     let _CURRENT_SETTING_SECTION_IN_VIEW;

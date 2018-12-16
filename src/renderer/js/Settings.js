@@ -10,16 +10,17 @@
         }
     } = require("electron");
 
-    const { handleWindowButtons, changeShortCutSetting } = require("../js/util.js");
-    const openSettingsWindow = require("../js/settingsWindow.js");
+    const { handleWindowButtons, changeShortCutSetting } = require("../js/Util.js");
 
+    const openSettingsWindow  = require("../js/SettingsWindow.js");
     const settingsShortCutKey = require("../js/ShortCutKeys/SettingsShortCutKey.js");
 
-    const settingsMin = document.querySelector("[data-winop=minimize]");
-    const settingsMax = document.querySelector("[data-winop=maximize]");
-    const settingsClose = document.querySelector("[data-winop=close]");
-    const settingsValue = document.querySelector(".settings-values");
-    const textSearch = document.querySelector(".search");
+
+    const settingsMin     = document.querySelector("[data-winop=minimize]");
+    const settingsMax     = document.querySelector("[data-winop=maximize]");
+    const settingsClose   = document.querySelector("[data-winop=close]");
+    const settingsValue   = document.querySelector(".settings-values");
+    const textSearch      = document.querySelector(".search");
 
     settingsValue.addEventListener("click", evt => {
 

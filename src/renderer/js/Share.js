@@ -1,4 +1,5 @@
 ; ( () => {
+    
     "use strict";
 
     const {
@@ -11,23 +12,20 @@
         }
     } = require("electron");
 
-    const {
-        createNewWindow: shareWindow
-    } = _require("./newwindow.js");
-
-    const {
-        requireSettingsPath
-    } = _require("./constants.js");
-
+    
     const {
         tClient,
         youtubeClient,
         cache,
         uploadYoutubeVideo
-    } = require("../js/util.js");
+    } = require("../js/Util.js");
 
-    const fs = require("fs");
-    const path = require("path");
+
+    const { createNewWindow: shareWindow } = _require("./newwindow.js");
+    const { requireSettingsPath }         = _require("./constants.js");
+
+    const fs    = require("fs");
+    const path  = require("path");
     const share = Object.create({});
 
     share.YOUTUBE_SCOPE = [ "https://www.googleapis.com/auth/youtube.upload" ];
@@ -35,11 +33,9 @@
     share.__pinWindow = () => {
         const obj = {
             title: "InputPin",
-
             /*minimizable: false,
             maximizable: false,
             resizable: false,*/
-
             width: 400,
             height: 300
 
@@ -61,8 +57,6 @@
         win.setMenu(null);
         return win;
     };
-
-
 
     /** Twitter implementation starts from here **/
 
@@ -152,7 +146,6 @@
 
     };
 
-
     share.youtubeShare = async function() {
 
         const shouldShare = await this.shouldShare();
@@ -166,19 +159,14 @@
             return ;
 
         fs.readFile(cache, (err,token) => {
-
             if ( err )
                 return this.getNewToken();
             console.log(token.toString());
             youtubeClient.credentials = JSON.parse(token);
-
             return uploadYoutubeVideo(youtubeClient);
-
         });
 
     };
-
-
     ipc.on("akara::twit-share", share.twitShare.bind(share));
     ipc.on("akara::ytube-share", share.youtubeShare.bind(share));
 })();

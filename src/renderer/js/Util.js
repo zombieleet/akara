@@ -1,9 +1,6 @@
+
 "use strict";
-const akara_emit = require("../js/emitter.js");
-const fs = require("fs");
-const path = require("path");
-const google = require("googleapis");
-const googleAuth = new(require("google-auth-library"));
+
 
 const {
     desktopCapturer,
@@ -37,16 +34,6 @@ const {
     MAGIC_MIME_TYPE: _GET_MIME
 } = require("mmmagic");
 
-const base64Img = require("base64-img");
-const os = require("os");
-const env = require("dotenv").load();
-const Twitter = require("twitter");
-const bBird = require("bluebird");
-const _OS = require("opensubtitles-api");
-
-const url = require("url");
-const childProcess = require("child_process");
-
 const {
     video,
     applyButtonConfig,
@@ -54,32 +41,35 @@ const {
     controls: {
         play
     }
-} = require("../js/video_control.js");
+} = require("../js/VideoControl.js");
 
-const {
-    createNewWindow
-} = _require("./newwindow.js");
+const { createNewWindow } = _require("./newwindow.js");
 
-const magic = new Magic(_GET_MIME);
+const akara_emit = require("../js/Emitter.js");
+const fs         = require("fs");
+const path       = require("path");
+const google     = require("googleapis");
+const googleAuth = new(require("google-auth-library"));
 
-const {
-    installed: {
-        client_secret,
-        client_id,
-        redirect_uris: [ redirectUrl ]
-    }
-} = require(path.join(app.getAppPath(), "youtube.json"));
 
-const datadir = app.getPath("userData");
 
-const OS = new _OS("TemporaryUserAgent");
+const base64Img = require("base64-img");
+const os        = require("os");
+const env       = require("dotenv").load();
+const Twitter   = require("twitter");
+const bBird     = require("bluebird");
+const _OS       = require("opensubtitles-api");
+const url       = require("url");
+const magic     = new Magic(_GET_MIME);
+const datadir   = app.getPath("userData");
+const OS        = new _OS("TemporaryUserAgent");
 
 module.exports.OS = OS;
 
 const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
 
     let lengthOfSib = document.querySelector(".akara-loaded").childElementCount;
-
+    
     const playlistItem = document.createElement("li");
     const playlistItemContent = document.createElement("span");
 
@@ -100,11 +90,9 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
 
     playlistItem.draggable = true;
 
-
     playlistItem.addEventListener("dragstart", (evt) => {
         window.__draggingElement = evt.target;
     });
-
 
     playlistItem.addEventListener("drag", evt => {
         console.log(" offsetY ", evt.offsetY);
@@ -176,14 +164,9 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
         //playlistItemParent.insertBefore(__draggingElement,target);
 
     });
-
-
     playlistItem.classList.add("playlist");
-
     playlistItemContent.textContent = rel_path;
-
     playlistItem.appendChild(playlistItemContent);
-
     return playlistItem;
 };
 
@@ -211,11 +194,11 @@ const removeCurrentPlayingStyles = parentNode => {
             el.classList.remove(getButtonConfig("playlist-buttons", "play"));
             el.classList.remove("fa");
         }
-
+        
         el.removeAttribute("data-dbclicked");
         el.removeAttribute("data-now-playing");
         el.removeAttribute("data-clicked");
-
+        
     });
 };
 
@@ -421,7 +404,6 @@ const getMime = file => new Promise((resolve,reject) => {
 
 module.exports.getMime = getMime;
 
-
 const computeByte = bytes => {
 
     if ( bytes === 0 )
@@ -464,10 +446,11 @@ module.exports.validateMime = async (path) => {
 };
 
 const convert = _path => new Promise( async (resolve,reject) => {
-
-    let result;
-
+    
+    const cProc = require("child_process");
     const { FFMPEG_LOCATION } = _require("./constants.js");
+    
+    let result;
 
 
     // _fpath will contain the converted path
@@ -490,10 +473,10 @@ const convert = _path => new Promise( async (resolve,reject) => {
         return reject(new Error("Cannot find ffmpeg Executable for this platform"));
 
 
-    //const ffmpeg = childProcess.spawn(ffmpegExecutable, ["-i", _path , "-acodec", "libmp3lame", "-vcodec", "mpeg4", "-f", "mp4", _fpath]);
-    const ffmpeg = childProcess.spawn(ffmpegExecutable, ["-i", _path, "-c:v", "libx264", "-pix_fmt", "yuv420p", "-profile:v", "baseline", "-preset", "fast", "-crf", "18", "-f", "mp4", _fpath]);
+    //const ffmpeg = cProc.spawn(ffmpegExecutable, ["-i", _path , "-acodec", "libmp3lame", "-vcodec", "mpeg4", "-f", "mp4", _fpath]);
+    const ffmpeg = cProc.spawn(ffmpegExecutable, ["-i", _path, "-c:v", "libx264", "-pix_fmt", "yuv420p", "-profile:v", "baseline", "-preset", "fast", "-crf", "18", "-f", "mp4", _fpath]);
 
-    //const ffmpeg = childProcess.spawn(ffmpegExecutable, ["-i", _path , "-c:v", "libx264", "-preset", "slow", "-s", "1024x576" , "-an" , "-b:v" , "370k", _fpath]);
+    //const ffmpeg = cProc.spawn(ffmpegExecutable, ["-i", _path , "-c:v", "libx264", "-preset", "slow", "-s", "1024x576" , "-an" , "-b:v" , "370k", _fpath]);
 
     const allWindows = BrowserWindow.getAllWindows().filter( window => window.getTitle() === "ffmpeg" ? window : undefined);
 
@@ -602,7 +585,6 @@ module.exports.disableVideoMenuItem = menuInst => {
         return ;
     }
 
-
     if ( menuInst.label === "Play" && ! video.paused ) {
         menuInst.enabled = false;
         return ;
@@ -648,7 +630,6 @@ module.exports.disableVideoMenuItem = menuInst => {
         menuInst.visible = true;
         return ;
     }
-
 
     if ( menuInst.label === "Share" && localStorage.getItem("share::deactivate") === "yes" ) {
         menuInst.enabled = false;
@@ -697,9 +678,7 @@ module.exports.langDetect = (file) => {
 };
 
 module.exports.getSubtitle = async (option) => {
-
     let value;
-
     try {
         value = await OS.search(option);
     } catch(ex) {
@@ -755,9 +734,7 @@ module.exports.readSubtitleFile = fPath => new Promise((resolve,reject) => {
 });
 
 module.exports.getMetaData = (sourceFile) => {
-
     const ffmpeg = require("ffmpeg");
-
     return new Promise((resolve,reject) => {
         ffmpeg(sourceFile, (err,media) => {
             if ( err )
@@ -795,8 +772,6 @@ module.exports.makeDynamic = makeDynamic;
 
 
 module.exports.playlistSave = (key, files, notify) => {
-
-
 
     const list = require(playlistLocation);
 
@@ -1321,9 +1296,12 @@ module.exports.importMpegGurl = file => {
     });
 };
 
-module.exports.youtubeClient = bBird.promisifyAll(
-    new googleAuth.OAuth2(client_id,client_secret,redirectUrl)
-);
+module.exports.youtubeClient = () => {
+    const { installed: { client_secret, client_id, redirect_uris: [ redirectUrl ] } } = require(path.join(app.getAppPath(), "youtube.json"));
+    return bBird.promisifyAll(
+        new googleAuth.OAuth2(client_id,client_secret,redirectUrl)
+    );
+};
 
 module.exports.cache = path.join(datadir, "youtube_cache.json");
 

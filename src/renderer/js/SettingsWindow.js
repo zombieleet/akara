@@ -1,3 +1,6 @@
+
+"use strict";
+
 const {
     remote: {
         require: _require
@@ -9,7 +12,6 @@ const { createNewWindow: settingsWindow } = _require("./newwindow.js");
 const handleAkaraSettings = {};
 
 handleAkaraSettings.poster = () => {
-
     const poster = {
         title: "poster",
         maximizable: false,
@@ -17,7 +19,6 @@ handleAkaraSettings.poster = () => {
         minimizable: false,
         center: true
     };
-
     settingsWindow(poster, "settings/poster.html");
 };
 
@@ -31,7 +32,6 @@ handleAkaraSettings.powersettings = () => {
         height: 460,
         center: true
     };
-
     settingsWindow(power, "settings/powermanagement.html");
 };
 
@@ -88,7 +88,6 @@ handleAkaraSettings.volume = () => {
 
 
 handleAkaraSettings.buttons = () => {
-
     const button = {
         title: "ui buttons",
         maximizable: true,
@@ -98,9 +97,7 @@ handleAkaraSettings.buttons = () => {
         height: 450,
         center: true
     };
-
     settingsWindow(button, "settings/ui_button.html");
-
 };
 
 handleAkaraSettings.shortcutkeys = () => {
@@ -113,12 +110,10 @@ handleAkaraSettings.shortcutkeys = () => {
         height: 450,
         center: true
     };
-
     settingsWindow(shortcutkeys, "settings/shortcutkeys.html");
 };
 
 handleAkaraSettings.subtitle = () => {
-
     const subtitle = {
         title: "Subtitle",
         maximizable: false,
@@ -128,9 +123,7 @@ handleAkaraSettings.subtitle = () => {
         height: 700,
         center: true
     };
-
     settingsWindow(subtitle, "settings/subtitle.html");
-
 };
 
 module.exports = handleAkaraSettings;

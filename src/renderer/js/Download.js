@@ -15,24 +15,24 @@
         downloadFile,
         computeByte,
         resumeDownloading
-    } = require("../js/util.js");
+    } = require("../js/Util.js");
 
 
-    const close  = document.querySelector(".download-close");
-    const filename = document.querySelector(".akara-download-filename");
-    const downByte = document.querySelector(".akara-download-meter");
-    const unknownByte = document.querySelector(".akara-unknown-download-meter");
+    const close         = document.querySelector(".download-close");
+    const filename      = document.querySelector(".akara-download-filename");
+    const downByte      = document.querySelector(".akara-download-meter");
+    const unknownByte   = document.querySelector(".akara-unknown-download-meter");
 
     const downByPercent = document.querySelector(".akara-downloading-percent");
     const downloadState = document.querySelector(".akara-download-state");
 
-    const currentByte = document.querySelector(".akara-currentByte");
-    const totalByte = document.querySelector(".akara-totalByte");
+    const currentByte   = document.querySelector(".akara-currentByte");
+    const totalByte     = document.querySelector(".akara-totalByte");
 
-    const cancel = document.querySelector(".akara-download-cancel");
-    const pause = document.querySelector(".akara-download-pause");
-    const resume = document.querySelector(".akara-download-resume");
-    const restart = document.querySelector(".akara-download-restart");
+    const cancel       = document.querySelector(".akara-download-cancel");
+    const pause        = document.querySelector(".akara-download-pause");
+    const resume       = document.querySelector(".akara-download-resume");
+    const restart      = document.querySelector(".akara-download-restart");
 
 
     /**

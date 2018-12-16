@@ -13,41 +13,35 @@
     } = require("electron");
 
     const {
-        basename
-    }  = require("path");
-
-    const fs = require("fs");
-
-    const {
         playlistSave,
         makeDynamic,
         handleWindowButtons
-    } = require("../../js/util.js");
-
-    const {
-        iterateDir
-    } = _require("./utils.js");
-
-    const {
-        playlist
-    } = _require("./configuration.js");
-
+    } = require("../../js/Util.js");
 
     const {
         file: playlistLocation
     } = playlist;
 
-    const list = require(playlistLocation);
-    const form = document.forms[0];
-    const input = form.querySelector("input");
-    const cancel = form.querySelector(".create-playlist-cancel");
-    const addPlaylist = document.querySelector(".add-playlist");
+    const { basename }   = require("path");
+    const { iterateDir } = _require("./utils.js");
+    const { playlist }   = _require("./configuration.js");
+
+
+    
+    const addPlaylist   = document.querySelector(".add-playlist");
     const addToExisting = document.querySelector(".add-to-existing-playlist");
 
-    const min = document.querySelector("[data-winop=minimize]");
-    const max = document.querySelector("[data-winop=maximize]");
-    const close = document.querySelector("[data-winop=close]");
 
+    const fs     = require("fs");
+    const list   = require(playlistLocation);
+    const form   = document.forms[0];
+    const input  = form.querySelector("input");
+    const cancel = form.querySelector(".create-playlist-cancel");
+    const min    = document.querySelector("[data-winop=minimize]");
+    const max    = document.querySelector("[data-winop=maximize]");
+    const close  = document.querySelector("[data-winop=close]");
+
+    
     let DYNAMICLISTADD = 0;
     let DYNAMICLISTADDREARRANGE = DYNAMICLISTADD;
 
@@ -134,7 +128,7 @@
             }
             iterateDir()(file_dir).forEach( f => files.push(f));
         }
-
+        
         if ( p ) {
             p.remove();
             addPlaylist.setAttribute("data-playlist", "playlist");

@@ -1,4 +1,4 @@
-( () => {
+; ( () => {
 
     "use strict";
 
@@ -10,10 +10,6 @@
             require: _require
         }
     }  = require("electron");
-
-    const fs = require("fs");
-    const url = require("url");
-    const path = require("path");
     
     const {
         getSubtitle,
@@ -21,19 +17,24 @@
         OS,
         downloadWindow,
         downloadFile
-    } = require("../js/util.js");
+    } = require("../js/Util.js");
 
-    const akara_emit =  require("../js/emitter.js");
+    
+    const fs    = require("fs");
+    const url   = require("url");
+    const path  = require("path");
 
-    const movie = document.querySelector("#movies");
-    const series = document.querySelector("#series");
-    const button = document.querySelector("button");
-    const season = document.querySelector("#season");
-    const episode = document.querySelector("#episode");
-    const input = document.querySelector(".subtitle-form-input");
-    const loaded = document.querySelector(".subtitle-info");
-    const close = document.querySelector(".subtitle-close");
-    const section = document.querySelector("section");
+
+    const akara_emit =  require("../js/Emitter.js");
+    const movie      = document.querySelector("#movies");
+    const series     = document.querySelector("#series");
+    const button     = document.querySelector("button");
+    const season     = document.querySelector("#season");
+    const episode    = document.querySelector("#episode");
+    const input      = document.querySelector(".subtitle-form-input");
+    const loaded     = document.querySelector(".subtitle-info");
+    const close      = document.querySelector(".subtitle-close");
+    const section    = document.querySelector("section");
 
 
     /**
@@ -122,10 +123,9 @@
             }
 
             td = document.createElement("td");
+            
             if ( keys[i] === "url" ) {
-
                 __url = _value;
-
                 i++;
                 continue;
             }
@@ -142,13 +142,11 @@
             console.log("send event");
             ipc.send("download::init", __url, win.webContents.id);
             //downloadFile(__url,win);
-
             akara_emit.once("download::complete", fpath => {
                 console.log("sent");
                 ipc.sendTo(1,"subtitle::load-sub", "net", fpath);
             });
         });
-
         return parent.appendChild(subtitle);
     };
 
@@ -177,9 +175,7 @@
 
             tr.appendChild(setUpTableHeadersContent(keys));
         }
-
         thead.appendChild(tr);
-
         return thead;
     };
 
@@ -189,16 +185,9 @@
         let i = 0;
 
         switch (key) {
-
         case "score":
-            i = 1;
-            break;
         case "downloads":
-            i = 1;
-            break;
         case "langcode":
-            i = 1;
-            break;
         case "id":
             i = 1;
             break;
@@ -243,7 +232,6 @@
 
         return undefined;
     };
-
 
 
     close.addEventListener("click", () => getCurrentWindow().close());

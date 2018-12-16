@@ -1,25 +1,6 @@
-( () => {
+; ( () => {
 
     "use strict";
-
-    const mime = require("mime");
-
-    const url = require("url");
-
-    const {
-        video
-    } = require("../js/video_control.js");
-
-    const {
-        addMediaCb
-    } = require("../js/dropdown_callbacks.js");
-
-    const {
-        readSubtitleFile,
-        uploadYoutubeVideo
-    } = require("../js/util.js");
-
-    const akara_emit = require("../js/emitter.js");
 
     const {
         ipcRenderer: ipc,
@@ -30,94 +11,45 @@
         }
     } = require("electron");
 
+
+    const { video }  = require("../js/VideoControl.js");
+    const { addMediaCb } = require("../js/DropdownCallbacks.js");
     const { requireSettingsPath } = _require("./constants.js");
-
-    const {
-        addMediaFile,
-        addMediaFolder,
-        search,
-        _play,
-        _stop,
-        _pause,
-        _next,
-        _previous,
-        _setPlaybackRate,
-        _enterfullscreen,
-        _leavefullscreen,
-        showMediaInfoWindow,
-        loadplaylist
-    } = require("../js/handle_dropdown_commands.js")();
-
-    const {
-        fireControlButtonEvent,
-        videoLoadData,
-        setFullScreen,
-        mouseNotHoverVideo,
-        mouseMoveOnVideo,
-        updateTimeIndicator,
-        videoPauseEvent,
-        videoPlayEvent,
-        videoLoadedEvent,
-        setTime,
-        videoErrorEvent,
-        contextMenuEvent,
-        clickedMoveToEvent,
-        mouseMoveShowCurrentTimeEvent,
-        removeHoverTime,
-        mouseDownDragEvent,
-        moveToDragedPos,
-        handleVolumeChange,
-        handleVolumeWheelChange,
-        lowHighVolume,
-        subHandler,
-        showSubtitle,
-        showFileLocation,
-        loadContextPlaylist,
-        contextPlaylist,
-        removeContextPlaylist,
-        controlDragFullScreen,
-        controlMouseEnter,
-        controlMouseLeave,
-        videoEndedEvent,
-        videoSetFilter,
-        videoResetFilter,
-        mediaProgress,
-        mediaWating,
-        handleLoadSubtitle
-    } = require("../js/videohandlers.js");
-
-    const {
-        createNewWindow: playListWindow
-    } = _require("./newwindow.js");
-
-    const fs = require("fs");
-
-    const currTimeUpdate = document.querySelector(".akara-update-cur-time"),
-        jumpToSeekElement = document.querySelector(".akara-time"),
-        akaraVolume = document.querySelector(".akara-volume"),
-        akaraControl = document.querySelector(".akara-control"),
-        controlElements = akaraControl.querySelector(".akara-control-element");
+    const { readSubtitleFile, uploadYoutubeVideo } = require("../js/Util.js");
+    const { createNewWindow: playListWindow } = _require("./newwindow.js");
 
 
+    const currTimeUpdate       = document.querySelector(".akara-update-cur-time");
+    const jumpToSeekElement    = document.querySelector(".akara-time");
+    const akaraVolume          = document.querySelector(".akara-volume");
+    const akaraControl         = document.querySelector(".akara-control");
+    const controlElements      = akaraControl.querySelector(".akara-control-element");
+    const dropDownMenuCommands = require("../js/HandleDropdownCommands.js")();
+    
+    const fs           = require("fs");
+    const mime         = require("mime");
+    const url          = require("url");
+    const akara_emit   = require("../js/Emitter.js");
+    const videoHandler = require("../js/VideoHandlers.js");
 
-    controlElements.addEventListener("click", fireControlButtonEvent);
+    controlElements.addEventListener("click", videoHandler.fireControlButtonEvent);
 
-    video.addEventListener("loadeddata",videoLoadData);
-    video.addEventListener("dblclick", setFullScreen);
-    video.addEventListener("mousemove", mouseMoveOnVideo);
-    video.addEventListener("timeupdate", updateTimeIndicator);
-    video.addEventListener("ended", videoEndedEvent);
-    video.addEventListener("pause", videoPauseEvent );
-    video.addEventListener("play", videoPlayEvent );
-    video.addEventListener("loadstart", videoLoadedEvent);
+    video.addEventListener("loadeddata", videoHandler.videoLoadData);
+    video.addEventListener("dblclick", videoHandler.setFullScreen);
+    video.addEventListener("mousemove", videoHandler.mouseMoveOnVideo);
+    video.addEventListener("timeupdate", videoHandler.updateTimeIndicator);
+    video.addEventListener("ended", videoHandler.videoEndedEvent);
+    video.addEventListener("pause", videoHandler.videoPauseEvent );
+    video.addEventListener("play", videoHandler.videoPlayEvent );
+    video.addEventListener("loadstart", videoHandler.videoLoadedEvent);
     video.addEventListener("loadedmetadata", () => {
-        currTimeUpdate.textContent = setTime();
+        currTimeUpdate.textContent = videoHandler.setTime();
     });
 
-    video.addEventListener("error", videoErrorEvent);
-    video.addEventListener("contextmenu", contextMenuEvent);
-    video.addEventListener("progress", mediaProgress);
-    video.addEventListener("seeking", mediaProgress);
+    video.addEventListener("error", videoHandler.videoErrorEvent);
+    video.addEventListener("contextmenu", videoHandler.contextMenuEvent);
+    video.addEventListener("progress", videoHandler.mediaProgress);
+    video.addEventListener("seeking", videoHandler.mediaProgress);
 
     video.addEventListener("volumechange", evt => {
 
@@ -140,31 +72,31 @@
         }
     });
 
-    video.addEventListener("waiting", mediaWating);
+    video.addEventListener("waiting", videoHandler.mediaWating);
 
-    jumpToSeekElement.addEventListener("click", clickedMoveToEvent);
-    jumpToSeekElement.addEventListener("mousemove", mouseMoveShowCurrentTimeEvent);
-    jumpToSeekElement.addEventListener("mouseout", removeHoverTime);
-    jumpToSeekElement.addEventListener("mousedown", mouseDownDragEvent);
+    jumpToSeekElement.addEventListener("click", videoHandler.clickedMoveToEvent);
+    jumpToSeekElement.addEventListener("mousemove", videoHandler.mouseMoveShowCurrentTimeEvent);
+    jumpToSeekElement.addEventListener("mouseout", videoHandler.removeHoverTime);
+    jumpToSeekElement.addEventListener("mousedown", videoHandler.mouseDownDragEvent);
     jumpToSeekElement.addEventListener("mouseup", () => {
         jumpToSeekElement.removeEventListener(
             "mousemove",
-            moveToDragedPos
+            videoHandler.moveToDragedPos
         );
     });
 
-    akaraVolume.addEventListener("click", handleVolumeChange);
-    akaraVolume.addEventListener("mousewheel", handleVolumeWheelChange);
+    akaraVolume.addEventListener("click", videoHandler.handleVolumeChange);
+    akaraVolume.addEventListener("mousewheel", videoHandler.handleVolumeWheelChange);
 
-    akara_emit.on("video::volume", lowHighVolume);
+    akara_emit.on("video::volume", videoHandler.lowHighVolume);
 
-    ipc.on("video-open-file", addMediaFile);
-    ipc.on("video-open-folder", addMediaFolder);
-    ipc.on("video-play", _play);
-    ipc.on("video-pause", _pause);
-    ipc.on("video-stop", _stop);
-    ipc.on("video-next", _next);
-    ipc.on("video-previous", _previous);
+    ipc.on("video-open-file", dropDownMenuCommands.addMediaFile);
+    ipc.on("video-open-folder", dropDownMenuCommands.addMediaFolder);
+    ipc.on("video-play",dropDownMenuCommands._play);
+    ipc.on("video-pause",dropDownMenuCommands._pause);
+    ipc.on("video-stop",dropDownMenuCommands._stop);
+    ipc.on("video-next",dropDownMenuCommands._next);
+    ipc.on("video-previous", dropDownMenuCommands._previous);
 
     ipc.on("video-repeat", () =>  {
         video.loop = true;
@@ -176,25 +108,25 @@
         localStorage.removeItem("LOOP_CURRENT_VIDEO");
     });
 
-    ipc.on("video-open-external", showFileLocation);
+    ipc.on("video-open-external", videoHandler.showFileLocation);
 
-    ipc.on("normal-speed", () => _setPlaybackRate(1));
+    ipc.on("normal-speed", () => dropDownMenuCommands._setPlaybackRate(1));
 
     Promise.resolve(requireSettingsPath("playbackrate.json")).
         then( playbackFile => {
             const { fast,veryfast,slow,veryslow } = require(playbackFile);
-            ipc.on("fast-speed", () => _setPlaybackRate(fast));
-            ipc.on("very-fast-speed", () => _setPlaybackRate(veryfast));
-            ipc.on("slow-speed", () => _setPlaybackRate(slow));
-            ipc.on("very-slow-speed", () => _setPlaybackRate(veryslow));
+            ipc.on("fast-speed", () => dropDownMenuCommands._setPlaybackRate(fast));
+            ipc.on("very-fast-speed", () => dropDownMenuCommands._setPlaybackRate(veryfast));
+            ipc.on("slow-speed", () => dropDownMenuCommands._setPlaybackRate(slow));
+            ipc.on("very-slow-speed", () => dropDownMenuCommands._setPlaybackRate(veryslow));
         });
 
-    ipc.on("subtitle::load-sub", subHandler );
-    ipc.on("enter-video-fullscreen", _enterfullscreen);
-    ipc.on("leave-video-fullscreen", _leavefullscreen);
-    ipc.on("video-search", search);
+    ipc.on("subtitle::load-sub", videoHandler.subHandler );
+    ipc.on("enter-video-fullscreen", dropDownMenuCommands._enterfullscreen);
+    ipc.on("leave-video-fullscreen", dropDownMenuCommands._leavefullscreen);
+    ipc.on("video-search", dropDownMenuCommands.search);
 
-    ipc.on("media-info", showMediaInfoWindow);
+    ipc.on("media-info", dropDownMenuCommands.showMediaInfoWindow);
 
     ipc.on("akara::video::currentplaying", (evt,winid,fromPlist) => {
 
@@ -213,13 +145,13 @@
         addMediaCb(decodeURIComponent(url),category);
     });
 
-    ipc.on("akara::video:filter", videoSetFilter);
-    ipc.on("akara::video:filter:reset", videoResetFilter);
+    ipc.on("akara::video:filter", videoHandler.videoSetFilter);
+    ipc.on("akara::video:filter:reset", videoHandler.videoResetFilter);
     ipc.on("akara::video:filter:reset:all",  () => {
         video.style.filter = "unset";
         akara_emit.emit("akara::processStatus", `video filter unset`, true);
     });
-    ipc.on("akara::playlist:import", loadplaylist);
+    ipc.on("akara::playlist:import", dropDownMenuCommands.loadplaylist);
     ipc.on("akara::video:poster:change", (evt,poster) => {
         video.poster = poster;
     });
@@ -235,6 +167,7 @@
     });
 
     ipc.on("akara::subtitle:style:change", (evt,cssProps,cssValue) => {
+        
         const tracks = document.querySelectorAll("track");
 
         if ( tracks.length === 0 )
@@ -250,11 +183,11 @@
     });
 
 
-    akaraControl.addEventListener("mousedown", controlDragFullScreen);
-    akaraControl.addEventListener("mouseenter", controlMouseEnter);
-    akaraControl.addEventListener("mouseleave", controlMouseLeave);
+    akaraControl.addEventListener("mousedown", videoHandler.controlDragFullScreen);
+    akaraControl.addEventListener("mouseenter", videoHandler.controlMouseEnter);
+    akaraControl.addEventListener("mouseleave", videoHandler.controlMouseLeave);
 
-    akara_emit.on("video::show_subtitle", showSubtitle);
+    akara_emit.on("video::show_subtitle", videoHandler.showSubtitle);
 
     akara_emit.on("akara::playlist", videoContextMenu => {
 
@@ -266,14 +199,14 @@
 
         let submenu ;
 
-        if ( ( submenu = contextPlaylist(videoContextMenu) ) ) {
+        if ( ( submenu = videoHandler.contextPlaylist(videoContextMenu) ) ) {
             Object.assign(videoContextMenu[27], {
                 submenu
             });
             return ;
         }
 
-        if ( ( submenu  = loadContextPlaylist(videoContextMenu,playlistLocation) ) ) {
+        if ( ( submenu  = videoHandler.loadContextPlaylist(videoContextMenu,playlistLocation) ) ) {
             Object.assign(videoContextMenu[28], {
                 submenu
             });

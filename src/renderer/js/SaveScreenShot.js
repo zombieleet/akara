@@ -1,10 +1,7 @@
 ; ( () => {
-
+    
     "use strict";
-
-    const path = require("path");
-    const os = require("os");
-
+    
     const {
         ipcRenderer: ipc,
         remote: {
@@ -14,15 +11,21 @@
         }
     } = require("electron");
 
-    const base64Img = require("base64-img");
     const {
         sendNotification
-    } = require("../js/util.js");
+    } = require("../js/Util.js");
+
+
+    
+    const base64Img = require("base64-img");    
+    const path      = require("path");
+    const os        = require("os");
+    
 
     const saveShotClose = document.querySelector(".saveshot-close");
-    const saveShot = document.querySelector(".saveshot-save");
+    const saveShot      = document.querySelector(".saveshot-save");
     const inputFileName = document.querySelector(".saveshot-name");
-    const setPath = document.querySelector(".saveshot-set_path");
+    const setPath       = document.querySelector(".saveshot-set_path");
 
     saveShotClose.addEventListener("click", () => {
         getCurrentWindow().close();
@@ -69,14 +72,10 @@
 
 
     window.addEventListener("DOMContentLoaded", () => {
-
         const parentWindowId = getCurrentWindow().getParentWindow().webContents.id;
-
         setPath.textContent = app.getPath("pictures");
         inputFileName.value = `ScreenShot by Akara ${(new Date()).toLocaleString()}.png`.replace(/\s+/g, "_");
-
         ipc.sendTo(parentWindowId, "akara::screenshot:get_file");
-
     });
 
 

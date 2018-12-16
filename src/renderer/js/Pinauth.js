@@ -1,8 +1,6 @@
 ; ( () => {
+    
     "use strict";
-    const inputPin = document.querySelector(".inputpin-input");
-    const share = document.querySelector(".inputpin-pin");
-    const close = document.querySelector(".inputpin-close");
 
     const {
         ipcRenderer: ipc,
@@ -19,13 +17,15 @@
         youtubeClient,
         cache,
         uploadYoutubeVideo
-    } = require("../js/util.js");
+    } = require("../js/Util.js");
 
-    const {
-        requireSettingsPath
-    } = _require("./constants.js");
+    const { requireSettingsPath } = _require("./constants.js");
 
-    const fs = require("fs");
+        
+    const inputPin = document.querySelector(".inputpin-input");
+    const share    = document.querySelector(".inputpin-pin");
+    const close    = document.querySelector(".inputpin-close");
+    const fs       = require("fs");
 
     const cacheToken = (token,expiry_date) => {
         token.expiry_date = expiry_date;
@@ -88,9 +88,7 @@
             browserWindowOptions: {
                 __akaraType
             }
-        } = getCurrentWindow()
-              .getParentWindow()
-              .webContents;
+        } = getCurrentWindow().getParentWindow().webContents;
 
         return validateAuth[__akaraType](pin);
     });

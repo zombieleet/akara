@@ -1,4 +1,4 @@
-const path = require("path");
+"use strict";
 
 const {
     ipcRenderer: ipc,
@@ -12,28 +12,6 @@ const {
 } = require("electron");
 
 
-const akara_emit = require("../js/emitter.js");
-
-const {
-    createNewWindow
-} = _require("./newwindow.js");
-
-const {
-    video,
-    controls
-} = require("../js/video_control.js");
-
-const {
-    subHandler
-} = require("../js/videohandlers.js");
-
-const {
-    addMediaCb,
-    searchAndAppend,
-    saveplaylistCb,
-    loadplaylistCb
-} = require("../js/dropdown_callbacks.js");
-
 const {
     play,
     pause,
@@ -44,11 +22,7 @@ const {
     setPlaybackRate,
     enterfullscreen,
     leavefullscreen
-} = controls;
-
-const {
-    iterateDir
-} = _require("./utils.js"); // get utils from the main process folder
+} = require("../js/VideoControl.js");
 
 const {
     prevNext,
@@ -56,7 +30,23 @@ const {
     exportXspf,
     importXspf,
     importMpegGurl
-} = require("../js/util.js");
+} = require("../js/Util.js");
+
+const {
+    addMediaCb,
+    searchAndAppend,
+    saveplaylistCb,
+    loadplaylistCb
+} = require("../js/DropdownCallbacks.js");
+
+
+const path                = require("path");
+const akara_emit          = require("../js/Emitter.js");
+const { createNewWindow } = _require("./newwindow.js");
+const { video, controls } = require("../js/VideoControl.js");
+const { subHandler }      = require("../js/VideoHandlers.js");
+const { iterateDir }      = _require("./utils.js"); // get utils from the main process folder
+
 
 const addMediaFile = () => {
 

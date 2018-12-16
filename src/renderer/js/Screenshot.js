@@ -17,15 +17,16 @@
         createNewWindow
     } = _require("./newwindow.js");
 
-    const path = require("path");
     
     const {
         handleScreenShot
-    } = require("../js/util.js");
+    } = require("../js/Util.js");
 
+
+    const path             = require("path");
     const screenshotCancel = document.querySelector(".screenshot-cancel");
-    const windowClose = document.querySelector(".screenshot-close");
-    const screenshotOk = document.querySelector(".screenshot-ok");
+    const windowClose      = document.querySelector(".screenshot-close");
+    const screenshotOk     = document.querySelector(".screenshot-ok");
 
 
     screenshotCancel.addEventListener("click", () => {
@@ -38,6 +39,7 @@
 
 
     screenshotOk.addEventListener("click", () => {
+        
         const form = document.querySelector("form");
 
         let checkedElement = Array.from(form.querySelectorAll("input")).
@@ -50,7 +52,6 @@
         } catch(ex) {
             console.log(ex);
         }
-
     });
 
 })();

@@ -10,13 +10,12 @@
     } = require("electron");
 
     const { requireSettingsPath } = _require("./constants.js");
-    const fs = require("fs");
-    const akara_emit = require("../js/emitter.js");
-    
-    const progress = document.querySelector("progress");
-    
+
+    const fs                 = require("fs");
+    const akara_emit         = require("../js/Emitter.js");
+    const progress           = document.querySelector("progress");
     const filterSettingsPath = requireSettingsPath("filter.json");
-    const filterSettings = require(filterSettingsPath);
+    const filterSettings     = require(filterSettingsPath);
 
 
     const saveFilters = (filterConfig) => {

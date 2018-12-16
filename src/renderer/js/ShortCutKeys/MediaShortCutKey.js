@@ -1,9 +1,6 @@
 
 "use strict";
 
-// ask how to call this in an object literal expression
-//    { a: 'b', c: this.a }
-
 const {
     ipcRenderer: ipc,
     remote: {
@@ -16,7 +13,7 @@ const {
     makeFullScreen,
     handleScreenShot: { entireScreen },
     getKeyIndex
-} = require("../../js/util.js");
+} = require("../../js/Util.js");
 
 // TODO: move makeFullScreen to handle_dropdown_command
 const {
@@ -32,19 +29,18 @@ const {
     togglePlist,
     incrDecrVolume,
     showMediaInfoWindow
-} = require("../../js/handle_dropdown_commands.js")();
+} = require("../../js/HandleDropdownCommands.js")();
 
 const {
     setFullScreen,
     showFileLocation,
     subHandler
-} = require("../../js/videohandlers.js");
+} = require("../../js/VideoHandlers.js");
 
-const akara_emit = require("../../js/emitter.js");
-const mediaShortCutKey = new (require("../../js/keyevents.js"));
-
-const video = document.querySelector("video");
-const searchResults = document.querySelector(".findings");
+const akara_emit       = require("../../js/Emitter.js");
+const mediaShortCutKey = new (require("../../js/Keyevents.js"));
+const video            = document.querySelector("video");
+const searchResults    = document.querySelector(".findings");
 
 
 const isSearchSuccesful = () => {
@@ -322,13 +318,9 @@ mediaShortCutKey.register({
     key: getKeyIndex("media", "next frame slow").key,
     modifier: getKeyIndex("media", "next frame slow").modifier,
     handler() {
-
         if ( ! video.hasAttribute("data-id") )
-
             return false;
-
         video.currentTime += 5;
-
         return true;
     }
 });
@@ -339,13 +331,9 @@ mediaShortCutKey.register({
     key: getKeyIndex("media", "previous frame slow").key,
     modifier: getKeyIndex("media", "previous frame slow").modifier,
     handler() {
-
         if ( ! video.hasAttribute("data-id") )
-
             return false;
-
         video.currentTime -= 5;
-
         return true;
     }
 });
@@ -355,13 +343,9 @@ mediaShortCutKey.register({
     key: getKeyIndex("media", "next frame fast").key,
     modifier: getKeyIndex("media", "next frame fast").modifier,
     handler() {
-
         if ( ! video.hasAttribute("data-id") )
-
             return false;
-
         video.currentTime += 80;
-
         return true;
     }
 });
@@ -371,13 +355,9 @@ mediaShortCutKey.register({
     key: getKeyIndex("media", "previous frame fast").key,
     modifier: getKeyIndex("media", "previous frame fast").modifier,
     handler() {
-
         if ( ! video.hasAttribute("data-id") )
-
             return false;
-
         video.currentTime -= 80;
-
         return true;
     }
 });
@@ -445,18 +425,14 @@ akara_emit.on("video::subtitle:shortcut", track => {
             } = textTracks;
 
             for ( let i = 0; i < _trackLength; i++ ) {
-
+                
                 if ( textTracks[i].id != track.id ) {
-
                     textTracks[i].mode = "hidden";
-
                     akara_emit.emit("video::state:track", textTracks[i].id, "disable");
-
                     continue ;
                 }
-
+                
                 textTracks[i].mode = "showing";
-
                 akara_emit.emit("video::state:track", textTracks[i].id, "enable");
             }
         }

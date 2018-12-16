@@ -2,18 +2,6 @@
 "use strict";
 
 const {
-    basename
-} = require("path");
-
-const mime = require("mime");
-
-const {
-    existsSync
-} = require("fs");
-
-const path = require("path");
-
-const {
     setupPlaying,
     createPlaylistItem,
     playOnDrop,
@@ -21,9 +9,7 @@ const {
     exportMpegGurl,
     importXspf,
     exportXspf
-} = require("../js/util.js");
-
-console.log(createPlaylistItem);
+} = require("../js/Util.js");
 
 const {
     ipcRenderer: ipc,
@@ -31,6 +17,14 @@ const {
         dialog
     }
 } = require("electron");
+
+
+
+const { basename , extname }   = require("path");
+const { existsSync }           = require("fs");
+
+const mime = require("mime");
+
 
 
 const loadMpegGurlFormat = async (path) => {
@@ -179,10 +173,10 @@ const saveplaylistCb = fpath => {
     if ( ! document.querySelector(".playlist") )
         return dialog.showErrorBox("No Playlist", "Cannot export empty playlist");
 
-    if ( /m3u|m3u8/.test(path.extname(fpath)) )
+    if ( /m3u|m3u8/.test(extname(fpath)) )
         return exportMpegGurl(fpath);
 
-    if ( path.extname(fpath) === ".xspf" )
+    if ( extname(fpath) === ".xspf" )
         return exportXspf(fpath);
 
     return false;
@@ -199,10 +193,10 @@ const loadplaylistCb = lists => {
 
         lists.forEach( async (list) => {
 
-            if ( path.extname(list) === ".xspf" )
+            if ( extname(list) === ".xspf" )
                 return loadXspfFormat(list);
 
-            if ( /m3|m3u8/.test(path.extname(list)) )
+            if ( /m3|m3u8/.test(extname(list)) )
                 return loadMpegGurlFormat(list);
 
             return undefined;

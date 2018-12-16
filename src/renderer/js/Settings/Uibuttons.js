@@ -2,7 +2,6 @@
 
     "use strict";
 
-
     const {
         remote: {
             dialog,
@@ -18,14 +17,14 @@
 
     const {
         handleWindowButtons
-    } = require("../../js/util.js");
+    } = require("../../js/Util.js");
 
     const base64Img = require("base64-img");
-    const fs = require("fs");
+    const fs        = require("fs");
 
-    const uiButtonMin = document.querySelector("[data-winop=minimize]");
-    const uiButtonMax = document.querySelector("[data-winop=maximize");
-    const uiButtonClose = document.querySelector("[data-winop=close]");
+    const uiButtonMin     = document.querySelector("[data-winop=minimize]");
+    const uiButtonMax     = document.querySelector("[data-winop=maximize");
+    const uiButtonClose   = document.querySelector("[data-winop=close]");
     const uiButtonsParent = document.querySelector(".ui_button-parent");
 
     const saveFont = async (evt) => {

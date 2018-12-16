@@ -1,6 +1,7 @@
 ; ( () => {
 
-
+    "use strict";
+    
     const {
         ipcRenderer: ipc,
         remote: {
@@ -11,12 +12,10 @@
     console.log("pandroa's box");
 
     const settingsShortCutKey = require("../js/ShortCutKeys/SettingsShortCutKey.js");
-    const mediaShortCutKey = require("../js/ShortCutKeys/MediaShortCutKey.js");
-    const windowShortCutKey = require("../js/ShortCutKeys/WindowShortCutKey.js");
+    const mediaShortCutKey    = require("../js/ShortCutKeys/MediaShortCutKey.js");
+    const windowShortCutKey   = require("../js/ShortCutKeys/WindowShortCutKey.js");
 
-    const {
-        changeShortCutSetting
-    } = require("../js/util.js");
+    const { changeShortCutSetting } = require("../js/Util.js");
 
     const getWindow = winTitle => BrowserWindow.getAllWindows().find( win => win.getTitle() === winTitle );
 

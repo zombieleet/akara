@@ -1,13 +1,12 @@
 "use strict";
 
 
-const settingWindowKey = new (require("../../js/keyevents.js"));
-const openSettingWindow = require("../../js/settingsWindow.js");
-
+const settingWindowKey  = new (require("../../js/Keyevents.js"));
+const openSettingWindow = require("../../js/SettingsWindow.js");
 
 const {
     getKeyIndex
-} = require("../../js/util.js");
+} = require("../../js/Util.js");
 
 settingWindowKey.register({
     name: "playbackrate settings",

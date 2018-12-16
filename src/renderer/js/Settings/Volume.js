@@ -12,9 +12,9 @@
     
     const { requireSettingsPath } = _require("./constants.js");
     
-    const close = document.querySelector(".volume-close");
-    const cancel = document.querySelector(".volume-cancel");
-    const save = document.querySelector(".volume-save");
+    const close     = document.querySelector(".volume-close");
+    const cancel    = document.querySelector(".volume-cancel");
+    const save      = document.querySelector(".volume-save");
     const exceedMax = document.querySelector("[data-save=volume_warn_exceed_max]");
     
 
