@@ -88,7 +88,7 @@
     akaraVolume.addEventListener("click", videoHandler.handleVolumeChange);
     akaraVolume.addEventListener("mousewheel", videoHandler.handleVolumeWheelChange);
 
-    akara_emit.on("video::volume", videoHandler.owHighVolume);
+    akara_emit.on("video::volume", videoHandler.lowHighVolume);
 
     ipc.on("video-open-file", dropDownMenuCommands.addMediaFile);
     ipc.on("video-open-folder", dropDownMenuCommands.addMediaFolder);
