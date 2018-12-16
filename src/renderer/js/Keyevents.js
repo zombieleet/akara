@@ -1,9 +1,8 @@
+"use strict";
 
-const assert = require("assert");
-
-const crypto = require("crypto");
-
-const akara_emit = require("../js/emitter.js");
+const assert     = require("assert");
+const crypto     = require("crypto");
+const akara_emit = require("../js/Emitter.js");
 
 
 /**

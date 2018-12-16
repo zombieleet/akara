@@ -4,7 +4,7 @@
 const {
     video,
     controls
-} = require("../js/video_control.js");
+} = require("../js/VideoControl.js");
 
 const {
     ipcRenderer: ipc,
@@ -21,24 +21,6 @@ const {
 } = require("electron");
 
 const {
-    requireSettingsPath
-} = _require("./constants.js");
-
-const {
-    CURRENT_TIME
-} = _require("./constants.js");
-
-const {
-    createNewWindow
-} = _require("./newwindow.js");
-
-const url = require("url");
-
-const path = require("path");
-
-const crypto = require("crypto");
-
-const {
     disableVideoMenuItem,
     langDetect,
     getMime,
@@ -49,21 +31,26 @@ const {
     sendNotification,
     setCurrentPlaying,
     processMediaTags
-} = require("../js/util.js");
+} = require("../js/Util.js");
 
-const fs = require("fs");
-const { videoContextMenu } = _require("./menu.js");
-const akara_emit = require("../js/emitter.js");
-const mime = require("mime");
+
+const { requireSettingsPath } = _require("./constants.js");
+const { CURRENT_TIME }        = _require("./constants.js");
+const { createNewWindow }     = _require("./newwindow.js");
+const { videoContextMenu }    = _require("./menu.js");
+
+
+const url        = require("url");
+const path       = require("path");
+const crypto     = require("crypto");
+const fs         = require("fs");
+const akara_emit = require("../js/Emitter.js");
+const mime       = require("mime");
 
 let _enterfullscreen, _leavefullscreen;
 
 try {
-    ({
-        _enterfullscreen,
-        _leavefullscreen
-    } = require("../js/handle_dropdown_commands.js")());
-
+    ({_enterfullscreen, _leavefullscreen} = require("../js/HandleDropdownCommands.js")());
 } catch(ex) {
     ex;
 }
@@ -83,10 +70,8 @@ let controlMouseEnterFscreen = false;
 
 
 const setTime = () => {
-
     const curTm = getHumanTime(controls.getCurrentTime());
     const durTm = getHumanTime(controls.duration());
-
     return `${curTm} / ${durTm}`;
 };
 
@@ -95,10 +80,7 @@ module.exports.setTime = setTime;
 
 const hashedPath = filePath => path.join(
     CURRENT_TIME,
-    crypto
-        .createHash("md5")
-        .update(filePath)
-        .digest("hex")
+    crypto.createHash("md5").update(filePath).digest("hex")
 );
 /**
  *

@@ -2,9 +2,9 @@
 
     "use strict";
 
-    const menuToggle = document.querySelector(".akara-menu-toggle");
-    const dropdownP = menuToggle.querySelector(".akara-dropdown");
-    const dropdownPItem = dropdownP.querySelector(".akara-dropdown-item");
+    const menuToggle      = document.querySelector(".akara-menu-toggle");
+    const dropdownP       = menuToggle.querySelector(".akara-dropdown");
+    const dropdownPItem   = dropdownP.querySelector(".akara-dropdown-item");
     const documentElement = document.documentElement;
 
     const removeShowMenu = evt => {

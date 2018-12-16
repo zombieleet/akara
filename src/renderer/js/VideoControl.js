@@ -1,4 +1,6 @@
+
 "use strict";
+
 const {
     ipcRenderer: ipc,
     remote: {
@@ -9,17 +11,17 @@ const {
     }
 } = require("electron");
 
-const {
-    createNewWindow: filterWindow
-} = _require("./newwindow.js");
+const { createNewWindow: filterWindow } = _require("./newwindow.js");
 
-const ff = require("../js/util.js");
 
-const akara_emit = require("../js/emitter.js");
-const video = document.querySelector("video");
-const akLoaded = document.querySelector(".akara-loaded");
-let _REPEAT_MENU_ = new Menu();
-let target, _SUBTITLE_MENU_ = new Menu();
+const akara_emit = require("../js/Emitter.js");
+const video      = document.querySelector("video");
+const akLoaded   = document.querySelector(".akara-loaded");
+
+
+let _REPEAT_MENU_   = new Menu();
+let _SUBTITLE_MENU_ = new Menu();
+let target;
 
 
 const applyButtonConfig = (element,section,type) => {

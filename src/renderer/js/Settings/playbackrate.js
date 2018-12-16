@@ -1,4 +1,7 @@
 ; ( () => {
+    
+    "use strict";
+    
     const {
         remote: {
             getCurrentWindow,
@@ -9,17 +12,15 @@
     
     const { requireSettingsPath } = _require("./constants.js");
     
-    const fs = require("fs");
-    
-    const close = document.querySelector(".playback-close");
+    const close            = document.querySelector(".playback-close");
     const playbackVerySlow = document.querySelector("[data-fire='playback-veryslow'] input");
-    const playbackSlow = document.querySelector("[data-fire='playback-slow'] input");
+    const playbackSlow     = document.querySelector("[data-fire='playback-slow'] input");
     const playbackVeryFast = document.querySelector("[data-fire='playback-veryfast'] input");
-    const playbackFast = document.querySelector("[data-fire='playback-fast'] input");
+    const playbackFast     = document.querySelector("[data-fire='playback-fast'] input");
     
-    
+    const fs     = require("fs");
     const submit = document.querySelector(".playback-submit");
-    const reset = document.querySelector(".playback-reset");
+    const reset  = document.querySelector(".playback-reset");
 
 
     const saveValues = async (playbackSettings) => {
@@ -72,9 +73,6 @@
         return saveValues({slow: slowValue, fast: fastValue, veryfast: veryFastValue, veryslow: verySlowValue});
         
     });
-
-
     reset.addEventListener("click", () => saveValues({ veryslow: 0.3, slow: 0.8, veryfast: 10, fast: 5}));
-    
     close.addEventListener("click", () => getCurrentWindow().close());
 })();

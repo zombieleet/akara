@@ -1,5 +1,6 @@
 ; ( () => {
 
+    "use strict";
 
     const {
         remote: {
@@ -17,12 +18,12 @@
 
     const fs = require("fs");
 
-    const shareSave = document.querySelector(".share-save");
+    const shareSave   = document.querySelector(".share-save");
     const shareCancel = document.querySelector(".share-cancel");
-    const close = document.querySelector(".share-close");
+    const close       = document.querySelector(".share-close");
 
     const togglersOption = document.querySelectorAll(".share-list-item > i");
-    const expiryDate = document.querySelector(".share-list-item > input");
+    const expiryDate     = document.querySelector(".share-list-item > input");
 
 
     const loadShareSettings = async () => {

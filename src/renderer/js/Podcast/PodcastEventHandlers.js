@@ -9,12 +9,9 @@ const {
     downloadWindow,
     downloadFile,
     loadpodcast
-} = require("../../js/util.js");
+} = require("../../js/Util.js");
 
-const dodo = require("../../js/Podcast/PodcastUtils.js");
-
-console.log(dodo);
-
+const dodo    = require("../../js/Podcast/PodcastUtils.js");
 const podcast = require("../../js/Podcast/PodcastWindowHome.js");
 
 module.exports.podcastPlayEvent = ({target}) => {

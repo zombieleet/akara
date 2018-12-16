@@ -1,4 +1,7 @@
 ; ( () => {
+    
+    "use strict";
+    
     const {
         ipcRenderer: ipc,
         remote: {
@@ -7,10 +10,10 @@
     } = require("electron");
 
     
-    const output = document.querySelector(".ffmpeg-output");
-    const ffmpegClose = document.querySelector(".ffmpeg-close");
-    const ffmpegClear = document.querySelector(".ffmpeg-clear");
-    const ffmpegCancel = document.querySelector(".ffmpeg-cancel");
+    const output               = document.querySelector(".ffmpeg-output");
+    const ffmpegClose          = document.querySelector(".ffmpeg-close");
+    const ffmpegClear          = document.querySelector(".ffmpeg-clear");
+    const ffmpegCancel         = document.querySelector(".ffmpeg-cancel");
     const ffmpegConvertedBytes = document.querySelector(".ffmpeg-convertedbytes");
     
     ipc.on("akara::ffmpeg:convert", (evt,data,convertedBytes) => {

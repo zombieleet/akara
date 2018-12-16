@@ -1,7 +1,9 @@
-"use strict";
-
-( (ul) => {
-
+; ( () => {
+    
+    "use strict";
+    
+    const ul = document.querySelector(".akara-loaded");
+    
     const {
         ipcRenderer: ipc,
         remote: {
@@ -14,41 +16,29 @@
     } = require("electron");
 
     const {
-        addMediaCb
-    } = require("../js/dropdown_callbacks.js");
-
-    const {
         removeTarget,
         setCurrentPlaying,
         disableMenuItem,
         setupPlaying,
         prevNext,
         updatePlaylistName
-    } = require("../js/util.js");
-
-    const {
-        createNewWindow: addPlaylistWindow
-    } = _require("./newwindow.js");
-
-    const {
-        videoListMenu
-    } = _require("./menu.js");
-
-    const {
-        iterateDir
-    } = _require("./utils.js");
-
+    } = require("../js/Util.js");
+    
     const {
         controls,
         video
-    } = require("../js/video_control.js");
+    } = require("../js/VideoControl.js");
 
-    let {
-        showMediaInfoWindow
-    } = require("../js/handle_dropdown_commands.js")();
+    
+    const { createNewWindow: addPlaylistWindow } = _require("./newwindow.js");
 
-    const akara_emit = require("../js/emitter.js");
-    const fs = require("fs");
+    const { addMediaCb }        = require("../js/DropdownCallbacks.js");
+    const { videoListMenu }     = _require("./menu.js");
+    const { iterateDir }        = _require("./utils.js");
+    let { showMediaInfoWindow } = require("../js/HandleDropdownCommands.js")();
+
+    const akara_emit = require("../js/Emitter.js");
+    const fs         = require("fs");
 
     const {
         play,
@@ -63,12 +53,9 @@
     const menu = new Menu();
 
     window.addEventListener("DOMContentLoaded", event =>  {
-
         const coverOnError = document.querySelector(".cover-on-error-src");
-
         if ( video.getAttribute("src") )
             coverOnError.setAttribute("style", "display: none;");
-
     });
 
 
@@ -211,7 +198,4 @@
 
     akara_emit.on("video::go-to-next", () => prevNext("next"));
     akara_emit.on("video::go-to-previous", () => prevNext("prev"));
-
-
-
-})(document.querySelector(".akara-loaded"));
+})();

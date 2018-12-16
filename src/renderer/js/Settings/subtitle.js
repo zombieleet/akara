@@ -14,17 +14,17 @@
     const WINDOW_ID = getCurrentWindow().webContents.id;
 
     const cueSettings = document.querySelector(".subtitle-cues-option");
-    const close = document.querySelector(".subtitle-close");
-    const save = document.querySelector(".subtitle-save");
-    const cancel = document.querySelector(".subtitle-cancel");
-    const suboption = document.querySelector(".subtitle-options");
-
-    const akara_emit = require("../../js/emitter.js");
+    const close       = document.querySelector(".subtitle-close");
+    const save        = document.querySelector(".subtitle-save");
+    const cancel      = document.querySelector(".subtitle-cancel");
+    const suboption   = document.querySelector(".subtitle-options");
+    const akara_emit  = require("../../js/emitter.js");
 
     const { requireSettingsPath } = _require("./constants.js");
 
 
     const onLoad = () => {
+        
         const cuesPath = requireSettingsPath("cueStyle.json");
         const subtitlePath = requireSettingsPath("subtitle.json");
 
@@ -220,9 +220,6 @@
         fs.writeFileSync(subtitlePath, JSON.stringify(subtitleSettings));
 
     });
-
     cancel.addEventListener("click", onLoad);
-
     window.addEventListener("DOMContentLoaded", onLoad);
-
 })();

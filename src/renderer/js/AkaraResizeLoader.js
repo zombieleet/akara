@@ -2,9 +2,9 @@
 
     "use strict";
 
-    const dragger = document.querySelector(".akara-loaded-dragger");
+    const dragger    = document.querySelector(".akara-loaded-dragger");
     const docElement = document.documentElement;
-    const akaraLoad = document.querySelector(".akara-load");
+    const akaraLoad  = document.querySelector(".akara-load");
     
     
     let mouseHeldDown = false;

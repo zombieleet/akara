@@ -1,5 +1,7 @@
 ; ( () => {
 
+    "use strict";
+
     const {
         ipcRenderer: ipc,
         remote: {
@@ -18,16 +20,17 @@
         posters: user_poster_location
     } = _require("./configuration.js");
 
-    const { promisify } = require("bluebird");
-    const path = require("path");
-    const fs  = require("fs");
+    //const { promisify } = require("bluebird");
+    const { promisify } = require("util");
+    const path          = require("path");
+    const fs            = require("fs");
 
-    const save = document.querySelector(".poster-submit");
+    const save     = document.querySelector(".poster-submit");
     const checkBox = document.querySelector(".poster-albumart-checkbox");
-    const close = document.querySelector(".poster-close");
-    const install = document.querySelector(".poster-install");
-    const reset = document.querySelector(".poster-reset");
-    const remove= document.querySelector(".poster-remove");
+    const close    = document.querySelector(".poster-close");
+    const install  = document.querySelector(".poster-install");
+    const reset    = document.querySelector(".poster-reset");
+    const remove   = document.querySelector(".poster-remove");
     
     const posterPath = path.join(
         app.getAppPath(),

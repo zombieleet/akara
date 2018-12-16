@@ -12,20 +12,19 @@
             nativeImage
         }
     } = require("electron");
-
-    const url = require("url");
-
+    
     const {
         handleWindowButtons,
         getMetaData,
         processMediaTags,
         downloadAlbumArt
-    } = require("../js/util.js");
+    } = require("../js/Util.js");
 
-    const mediaMin = document.querySelector("[data-winop=minimize]");
-    const mediaMax = document.querySelector("[data-winop=maximize]");
+    const url        = require("url");
+    const mediaMin   = document.querySelector("[data-winop=minimize]");
+    const mediaMax   = document.querySelector("[data-winop=maximize]");
     const mediaClose = document.querySelector("[data-winop=close]");
-    const mediaInfo = document.querySelector(".media-info");
+    const mediaInfo  = document.querySelector(".media-info");
 
     const spinner = () => {
 

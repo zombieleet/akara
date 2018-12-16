@@ -1,20 +1,22 @@
 ; ( () => {
 
+    "use strict";
+    
     const {
         remote: {
             getCurrentWindow,
             require: _require
         }
     } = require("electron");
-
-
-    const fs = require("fs");
+    
     const { requireSettingsPath } = _require("./constants.js");
 
+    const fs = require("fs");
+
     const powerOPtionList = document.querySelector(".power-options-list");
-    const close = document.querySelector(".power-close");
-    const save = document.querySelector(".power-save");
-    const cancel = document.querySelector(".power-cancel");
+    const close           = document.querySelector(".power-close");
+    const save            = document.querySelector(".power-save");
+    const cancel          = document.querySelector(".power-cancel");
 
 
     const loadSavedPower = async () => {

@@ -1,11 +1,14 @@
-( ({remote: { dialog, app , require: _require }}) => {
+;( () => {
 
-    const dropDownAkaraItem = document.querySelector(".akara-dropdown-item"),
-        HandleDroped = require("../js/handle_dropdown_commands.js"),
-
-        { addMediaCb } = require("../js/dropdown_callbacks.js"),
-
-        { iterateDir } = _require("./utils.js"); // get utils from the main process folder
+    "use strict";
+    
+    const { remote: { dialog, app , require: _require } } = require("electron");
+    
+    const dropDownAkaraItem = document.querySelector(".akara-dropdown-item");
+    const HandleDroped      = require("../js/HandleDropdownCommands.js");
+    
+    const { addMediaCb } = require("../js/DropdownCallbacks.js");
+    const { iterateDir } = _require("./utils.js"); // get utils from the main process folder
 
 
     dropDownAkaraItem.addEventListener("click", event => {
@@ -16,7 +19,6 @@
 
         // incase the first check was sucessfull and the parentNode of target is not li;
         const targetDataDrop = target.hasAttribute("data-drop") ? target.getAttribute("data-drop") : undefined;
-
 
         if ( ! targetDataDrop )
             return undefined;
@@ -30,4 +32,4 @@
 
     });
 
-})(require("electron"));
+})();

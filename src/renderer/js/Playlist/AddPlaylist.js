@@ -19,13 +19,12 @@
     const {
         playlistSave,
         renderPlayList
-    } = require("../../js/util.js");
+    } = require("../../js/Util.js");
 
-    const list = require(playlistLocation);
-
+    const list        = require(playlistLocation);
     const addplaylist = document.querySelector(".addplaylist");
-    const addbtn = document.querySelector(".add-btn");
-    const close = document.querySelector(".addplaylist-close");
+    const addbtn      = document.querySelector(".add-btn");
+    const close       = document.querySelector(".addplaylist-close");
 
 
     const requestAddingNewList = () => {

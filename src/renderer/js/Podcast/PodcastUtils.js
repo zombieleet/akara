@@ -1,8 +1,9 @@
+
 "use strict";
 
 const {
     applyButtonConfig
-} = require("../../js/video_control.js");
+} = require("../../js/VideoControl.js");
 
 const podcastChannelWidgetHandler = require("../../js/Podcast/PodcastChannelWidgetHandlers.js");
 
