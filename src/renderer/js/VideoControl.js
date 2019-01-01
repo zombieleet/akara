@@ -188,7 +188,6 @@ const controls = {
 
         this.unexpand({ target: expand});
 
-
         return video.webkitRequestFullScreen();
     },
     leavefullscreen() {
