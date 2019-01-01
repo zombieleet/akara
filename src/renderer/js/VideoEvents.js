@@ -20,12 +20,13 @@
 
 
     const currTimeUpdate       = document.querySelector(".akara-update-cur-time");
-    const jumpToSeekElement    = document.querySelector(".akara-time");
+    const akaraTimeIndicator    = document.querySelector(".akara-time");
     const akaraVolume          = document.querySelector(".akara-volume");
     const akaraControl         = document.querySelector(".akara-control");
     const controlElements      = akaraControl.querySelector(".akara-control-element");
     const dropDownMenuCommands = require("../js/HandleDropdownCommands.js")();
-    
+
+
     const fs           = require("fs");
     const mime         = require("mime");
     const url          = require("url");
@@ -74,16 +75,98 @@
 
     video.addEventListener("waiting", videoHandler.mediaWating);
 
-    jumpToSeekElement.addEventListener("click", videoHandler.clickedMoveToEvent);
-    jumpToSeekElement.addEventListener("mousemove", videoHandler.mouseMoveShowCurrentTimeEvent);
-    jumpToSeekElement.addEventListener("mouseout", videoHandler.removeHoverTime);
-    jumpToSeekElement.addEventListener("mousedown", videoHandler.mouseDownDragEvent);
-    jumpToSeekElement.addEventListener("mouseup", () => {
-        jumpToSeekElement.removeEventListener(
+    akaraTimeIndicator.addEventListener("click", videoHandler.clickedMoveToEvent);
+    akaraTimeIndicator.addEventListener("mousemove", videoHandler.mouseMoveShowCurrentTimeEvent);
+    akaraTimeIndicator.addEventListener("mouseout", videoHandler.removeHoverTime);
+    akaraTimeIndicator.addEventListener("mousedown", videoHandler.mouseDownDragEvent);
+
+    akaraTimeIndicator.addEventListener("mouseup", () => {
+        akaraTimeIndicator.removeEventListener(
             "mousemove",
             videoHandler.moveToDragedPos
         );
     });
+
+    akaraTimeIndicator.addEventListener("contextmenu", evt => {
+
+        const firstFragment = akaraTimeIndicator.querySelector("[data-fragment=start]");
+        const lastFragment = akaraTimeIndicator.querySelector("[data-fragment=end]");
+
+        const location = (( evt.clientX / akaraTimeIndicator.parentNode.clientWidth  )*100).toPrecision(4);
+
+        const createFragment = (startEnd) => {
+
+            const fragmentEl = document.createElement("div");
+            fragmentEl.setAttribute("data-fragment", startEnd);
+            fragmentEl.classList.add("akara-media-fragment");
+            console.log(location, "in");
+            fragmentEl.style.left = `${location}%`;
+            akaraTimeIndicator.appendChild(fragmentEl);
+
+            akara_emit.emit("akara::media:fragment:set", { type: "FIRST" , time: "time"  });
+
+        };
+
+        if ( ! firstFragment ) {
+            createFragment("start");
+            return;
+        }
+
+        const firstFrag = parseFloat(firstFragment.style.left);
+        const lastFrag = lastFragment ? parseFloat(lastFragment.style.left) : null;
+        const floatedLocation = parseFloat(location);
+
+        console.log(location, firstFrag, lastFrag);
+
+        if ( floatedLocation <  firstFrag ) {
+            firstFragment.remove();
+            createFragment("start");
+            return;
+        }
+
+        if ( lastFrag &&
+             ( floatedLocation > lastFrag
+              || floatedLocation < lastFrag
+             )
+           ) {
+            lastFragment.remove();
+            createFragment("end", evt.clientX);
+            return;
+        }
+
+        if ( floatedLocation === firstFrag ) {
+
+            const timeFrame = localStorage.getItem("MEDIA_FRAGMENT_FIRST");
+
+            firstFragment.remove();
+            akara_emit.emit("akara::media:fragment:unset", "FIRST");
+
+            if ( lastFrag ) {
+                akara_emit.emit("akara::media:fragment:set", { type: "FIRST" , time: timeFrame  });
+                lastFragment.setAttribute("data-fragment", "start");
+            }
+
+            return;
+        }
+
+        if ( lastFrag && ( floatedLocation === lastFrag ) ) {
+            lastFragment.remove();
+            akara_emit.emit("akara::media:fragment:unset", "LAST");
+            return;
+        }
+
+        createFragment("end");
+        return;
+    });
+
+    akara_emit.on("akara::media:fragment:unset", type => {
+        localStorage.removeItem(`MEDIA_FRAGMENT_${type}`);
+    });
+
+    akara_emit.on("akara::media:fragment:set", ( { type , time } ) => {
+        localStorage.setItem(`MEDIA_FRAGMENT_${type}`, time);
+    });
+
 
     akaraVolume.addEventListener("click", videoHandler.handleVolumeChange);
     akaraVolume.addEventListener("mousewheel", videoHandler.handleVolumeWheelChange);
@@ -167,7 +250,7 @@
     });
 
     ipc.on("akara::subtitle:style:change", (evt,cssProps,cssValue) => {
-        
+
         const tracks = document.querySelectorAll("track");
 
         if ( tracks.length === 0 )
