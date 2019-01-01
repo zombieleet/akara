@@ -34,8 +34,7 @@ const {
 } = require("../js/Util.js");
 
 
-const { requireSettingsPath } = _require("./constants.js");
-const { CURRENT_TIME }        = _require("./constants.js");
+const { requireSettingsPath , CURRENT_TIME } = _require("./constants.js");
 const { createNewWindow }     = _require("./newwindow.js");
 const { videoContextMenu }    = _require("./menu.js");
 
@@ -46,14 +45,6 @@ const crypto     = require("crypto");
 const fs         = require("fs");
 const akara_emit = require("../js/Emitter.js");
 const mime       = require("mime");
-
-let _enterfullscreen, _leavefullscreen;
-
-try {
-    ({_enterfullscreen, _leavefullscreen} = require("../js/HandleDropdownCommands.js")());
-} catch(ex) {
-    ex;
-}
 
 let controlMouseEnterFscreen = false;
 
@@ -151,6 +142,7 @@ module.exports.updateTimeIndicator = () => {
  **/
 
 const handleMovement = (event,cb) => {
+    
     const incrDiv = document.querySelector(".akara-time-current");
     const akControl = document.querySelector(".akara-control");
 
@@ -167,7 +159,6 @@ const handleMovement = (event,cb) => {
         targetsOffsets = event.target.offsetLeft + event.target.offsetTop;
 
     const result = Math.round(controls.duration() * ( event.clientX - targetsOffsets ) / incrDiv.parentNode.clientWidth);
-
     return cb(result);
 };
 
@@ -1088,6 +1079,8 @@ module.exports.lowHighVolume = volume => {
 };
 
 module.exports.setFullScreen = () => {
+
+    let { _enterfullscreen, _leavefullscreen } = (require("../js/HandleDropdownCommands.js"))();
 
     if ( document.webkitIsFullScreen )
         return _leavefullscreen();
