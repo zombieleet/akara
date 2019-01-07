@@ -1,16 +1,14 @@
-"use strict";
+; ( () => {
+    
+    "use strict";
 
-( ({ ipcRenderer: ipc }) => {
-
-    const min = document.querySelector("[data-winop=minimize]");
-    const max = document.querySelector("[data-winop=maximize]");
-    const close = document.querySelector("[data-winop=close]");
-
-    const {
-        applyButtonConfig
-    } = require("../js/util.js");
-
-
+    const { ipcRenderer: ipc }  = require("electron");
+    const { applyButtonConfig } = require("../js/Util.js");
+    
+    const min    = document.querySelector("[data-winop=minimize]");
+    const max    = document.querySelector("[data-winop=maximize]");
+    const close  = document.querySelector("[data-winop=close]");
+    
     window.addEventListener("DOMContentLoaded", () => {
         console.log("fired first page, duh");
         applyButtonConfig(max,"window-buttons", "maximize");
@@ -48,4 +46,4 @@
         localStorage.removeItem("PODCAST::DISABLE_MENU");
     });
 
-})(require("electron"));
+})();

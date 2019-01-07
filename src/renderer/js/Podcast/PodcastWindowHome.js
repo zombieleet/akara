@@ -1,3 +1,4 @@
+
 "use strict";
 
 const {
@@ -11,11 +12,11 @@ const {
 const {
     savepodcast,
     removepodcast
-} = require("../../js/util.js");
+} = require("../../js/Util.js");
 
 const {
     applyButtonConfig
-} = require("../../js/video_control.js");
+} = require("../../js/VideoControl.js");
 
 const podcastUtility = require("../../js/Podcast/PodcastUtils.js");
 
@@ -35,15 +36,15 @@ const podcast =  {};
 // phat arrow function isa bish when using dis, it lexshically bands to the scalling scope
 podcast.__addpodcastModal = function() {
 
-    const podcastModal = this.podcastModal = document.createElement("div");
+    const podcastModal   = this.podcastModal   = document.createElement("div");
     const podcastMParent = this.podcastMParent = document.createElement("div");
 
     const info = this.info = document.createElement("p");
 
     const addpodcastArea = this.addpodcastArea = document.createElement("input");
-    const podcastBtns = this.podcastBtns = document.createElement("div");
+    const podcastBtns    = this.podcastBtns    = document.createElement("div");
 
-    const addpodcastAdd = this.addpodcastAdd  = document.createElement("button");
+    const addpodcastAdd    = this.addpodcastAdd    = document.createElement("button");
     const addpodcastCancel = this.addpodcastCancel = document.createElement("button");
 
     const coverView = this.coverView = document.createElement("div");
