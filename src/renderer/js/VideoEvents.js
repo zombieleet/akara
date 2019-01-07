@@ -87,77 +87,7 @@
         );
     });
 
-    akaraTimeIndicator.addEventListener("contextmenu", evt => {
-
-        const firstFragment = akaraTimeIndicator.querySelector("[data-fragment=start]");
-        const lastFragment = akaraTimeIndicator.querySelector("[data-fragment=end]");
-
-        const location = (( evt.clientX / akaraTimeIndicator.parentNode.clientWidth  )*100).toPrecision(4);
-
-        const createFragment = (startEnd) => {
-
-            const fragmentEl = document.createElement("div");
-            fragmentEl.setAttribute("data-fragment", startEnd);
-            fragmentEl.classList.add("akara-media-fragment");
-            console.log(location, "in");
-            fragmentEl.style.left = `${location}%`;
-            akaraTimeIndicator.appendChild(fragmentEl);
-
-            akara_emit.emit("akara::media:fragment:set", { type: "FIRST" , time: "time"  });
-
-        };
-
-        if ( ! firstFragment ) {
-            createFragment("start");
-            return;
-        }
-
-        const firstFrag = parseFloat(firstFragment.style.left);
-        const lastFrag = lastFragment ? parseFloat(lastFragment.style.left) : null;
-        const floatedLocation = parseFloat(location);
-
-        console.log(location, firstFrag, lastFrag);
-
-        if ( floatedLocation <  firstFrag ) {
-            firstFragment.remove();
-            createFragment("start");
-            return;
-        }
-
-        if ( lastFrag &&
-             ( floatedLocation > lastFrag
-              || floatedLocation < lastFrag
-             )
-           ) {
-            lastFragment.remove();
-            createFragment("end", evt.clientX);
-            return;
-        }
-
-        if ( floatedLocation === firstFrag ) {
-
-            const timeFrame = localStorage.getItem("MEDIA_FRAGMENT_FIRST");
-
-            firstFragment.remove();
-            akara_emit.emit("akara::media:fragment:unset", "FIRST");
-
-            if ( lastFrag ) {
-                akara_emit.emit("akara::media:fragment:set", { type: "FIRST" , time: timeFrame  });
-                lastFragment.setAttribute("data-fragment", "start");
-            }
-
-            return;
-        }
-
-        if ( lastFrag && ( floatedLocation === lastFrag ) ) {
-            lastFragment.remove();
-            akara_emit.emit("akara::media:fragment:unset", "LAST");
-            return;
-        }
-
-        createFragment("end");
-        return;
-    });
+    akaraTimeIndicator.addEventListener("contextmenu", videoHandler.videoFragment);
 
     akara_emit.on("akara::media:fragment:unset", type => {
         localStorage.removeItem(`MEDIA_FRAGMENT_${type}`);

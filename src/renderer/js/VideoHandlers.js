@@ -1370,6 +1370,82 @@ module.exports.mediaWaiting = evt => {
         console.log(evt.networkState);
 };
 
+module.exports.videoFragment = evt => {
+
+    const akaraTimeIndicator = document.querySelector(".akara-time");
+    const firstFragment = akaraTimeIndicator.querySelector("[data-fragment=start]");
+    const lastFragment = akaraTimeIndicator.querySelector("[data-fragment=end]");
+
+    const location = (
+        ( ( evt.clientX / akaraTimeIndicator.parentNode.clientWidth  )*100 )
+    ).toFixed(5);
+
+    const createFragment = (startEnd,type) => {
+
+        const fragmentEl = document.createElement("div");
+        const result = (controls.duration() * evt.clientX  / akaraTimeIndicator.parentNode.clientWidth);
+
+        fragmentEl.setAttribute("data-fragment", startEnd);
+        fragmentEl.setAttribute("data-fragment-location", evt.clientX);
+
+        fragmentEl.classList.add("akara-media-fragment");
+        fragmentEl.style.left = `${location}%`;
+        akaraTimeIndicator.appendChild(fragmentEl);
+
+        akara_emit.emit("akara::media:fragment:set", { type , time: result });
+    };
+
+    if ( ! firstFragment ) {
+        createFragment("start", "FIRST");
+        console.log(localStorage.getItem("MEDIA_FRAGMENT_FIRST"));
+        return;
+    }
+
+    const firstFrag = parseInt(firstFragment.getAttribute("data-fragment-location"));
+    const lastFrag = lastFragment ? parseInt(lastFragment.getAttribute("data-fragment-location")) : null;
+
+    console.log(location, firstFrag, lastFrag);
+
+    if ( evt.clientX <  firstFrag ) {
+        firstFragment.remove();
+        createFragment("start", "FIRST");
+        return;
+    }
+
+    if ( lastFrag &&
+         ( evt.clientX > lastFrag
+           || evt.clientX < lastFrag
+         )
+       ) {
+        lastFragment.remove();
+        createFragment("end", "LAST");
+        return;
+    }
+
+    if ( evt.clientX === firstFrag ) {
+
+        const timeFrame = localStorage.getItem("MEDIA_FRAGMENT_FIRST");
+
+        firstFragment.remove();
+        akara_emit.emit("akara::media:fragment:unset", "FIRST");
+
+        if ( lastFrag ) {
+            akara_emit.emit("akara::media:fragment:set", { type: "FIRST" , time: timeFrame  });
+            lastFragment.setAttribute("data-fragment", "start");
+        }
+        return;
+    }
+
+    if ( lastFrag && ( evt.clientX === lastFrag ) ) {
+        lastFragment.remove();
+        akara_emit.emit("akara::media:fragment:unset", "LAST");
+        return;
+    }
+
+    createFragment("end", "LAST");
+    return;
+};
+
 if ( require.main !== module ) {
 
     akara_emit.on("video::state:track", (id,mode) => {
