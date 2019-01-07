@@ -22,20 +22,19 @@ const {
 
 const {
     disableVideoMenuItem,
-    langDetect,
-    getMime,
+    setCurrentPlaying,
+    readSubtitleFile,
+    sendNotification,
+    processMediaTags,
     validateMime,
     setupPlaying,
-    readSubtitleFile,
     playlistLoad,
-    sendNotification,
-    setCurrentPlaying,
-    processMediaTags
+    langDetect,
+    getMime
 } = require("../js/Util.js");
 
 
-const { requireSettingsPath } = _require("./constants.js");
-const { CURRENT_TIME }        = _require("./constants.js");
+const { requireSettingsPath , CURRENT_TIME } = _require("./constants.js");
 const { createNewWindow }     = _require("./newwindow.js");
 const { videoContextMenu }    = _require("./menu.js");
 
@@ -46,14 +45,6 @@ const crypto     = require("crypto");
 const fs         = require("fs");
 const akara_emit = require("../js/Emitter.js");
 const mime       = require("mime");
-
-let _enterfullscreen, _leavefullscreen;
-
-try {
-    ({_enterfullscreen, _leavefullscreen} = require("../js/HandleDropdownCommands.js")());
-} catch(ex) {
-    ex;
-}
 
 let controlMouseEnterFscreen = false;
 
@@ -135,8 +126,24 @@ module.exports.updateTimeIndicator = () => {
           ( controls.duration().toFixed(1)) ;
 
     timeIndicator.setAttribute("style", `width: ${( timeIndicatorWidth / pNode.clientWidth)*100}%`);
+
     currTimeUpdate.textContent = setTime();
     saveCurrentTimePos(video.src);
+
+    const firstFragment = localStorage.getItem("MEDIA_FRAGMENT_FIRST");
+
+    if ( firstFragment ) {
+        const lastFragment = localStorage.getItem("MEDIA_FRAGMENT_LAST");
+        console.log(video.duration === video.currentTime );
+        if (
+            (lastFragment && video.currentTime > Number(lastFragment) )
+                || ( video.currentTime >= video.duration )
+        ) {
+            console.log("Shit");
+            video.currentTime = parseFloat(firstFragment);
+        }
+    }
+
     return true;
 };
 
@@ -151,6 +158,7 @@ module.exports.updateTimeIndicator = () => {
  **/
 
 const handleMovement = (event,cb) => {
+
     const incrDiv = document.querySelector(".akara-time-current");
     const akControl = document.querySelector(".akara-control");
 
@@ -166,12 +174,10 @@ const handleMovement = (event,cb) => {
     else
         targetsOffsets = event.target.offsetLeft + event.target.offsetTop;
 
-    const result = Math.round(controls.duration() * ( event.clientX - targetsOffsets ) / incrDiv.parentNode.clientWidth);
-
+    //const result = Math.round(controls.duration() * ( event.clientX - targetsOffsets ) / incrDiv.parentNode.clientWidth);
+    const result = (controls.duration() * ( event.clientX - targetsOffsets ) / incrDiv.parentNode.clientWidth);
     return cb(result);
 };
-
-
 
 
 /**
@@ -530,17 +536,13 @@ module.exports.videoEndedEvent = () => {
     const justEnded = document.querySelector("[data-now-playing=true]");
     const akaraLoaded = document.querySelector(".akara-loaded");
 
+
     // play shuffled video
     if ( video.hasAttribute("data-random") ) {
-
         const playlistItems = document.querySelectorAll("[data-full-path]");
-
         const index = (Math.random() * playlistItems.length).toFixed();
-
         if ( index > playlistItems.length )
-
             return setupPlaying(playlistItems[0]);
-
         return setupPlaying(playlistItems[index]);
     }
 
@@ -555,7 +557,6 @@ module.exports.videoEndedEvent = () => {
     // force the control element to change it's icon
     // if this is is not called, the control icon that handles
     // pause and play will not change
-
     return controls.pause();
 };
 
@@ -1089,6 +1090,8 @@ module.exports.lowHighVolume = volume => {
 
 module.exports.setFullScreen = () => {
 
+    let { _enterfullscreen, _leavefullscreen } = (require("../js/HandleDropdownCommands.js"))();
+
     if ( document.webkitIsFullScreen )
         return _leavefullscreen();
     else
@@ -1375,6 +1378,82 @@ module.exports.mediaWaiting = evt => {
         console.log("network state downloading");
     else
         console.log(evt.networkState);
+};
+
+module.exports.videoFragment = evt => {
+
+    const akaraTimeIndicator = document.querySelector(".akara-time");
+    const firstFragment = akaraTimeIndicator.querySelector("[data-fragment=start]");
+    const lastFragment = akaraTimeIndicator.querySelector("[data-fragment=end]");
+
+    const location = (
+        ( ( evt.clientX / akaraTimeIndicator.parentNode.clientWidth  )*100 )
+    ).toFixed(5);
+
+    const createFragment = (startEnd,type) => {
+
+        const fragmentEl = document.createElement("div");
+        const result = (controls.duration() * evt.clientX  / akaraTimeIndicator.parentNode.clientWidth);
+
+        fragmentEl.setAttribute("data-fragment", startEnd);
+        fragmentEl.setAttribute("data-fragment-location", evt.clientX);
+
+        fragmentEl.classList.add("akara-media-fragment");
+        fragmentEl.style.left = `${location}%`;
+        akaraTimeIndicator.appendChild(fragmentEl);
+
+        akara_emit.emit("akara::media:fragment:set", { type , time: result });
+    };
+
+    if ( ! firstFragment ) {
+        createFragment("start", "FIRST");
+        console.log(localStorage.getItem("MEDIA_FRAGMENT_FIRST"));
+        return;
+    }
+
+    const firstFrag = parseInt(firstFragment.getAttribute("data-fragment-location"));
+    const lastFrag = lastFragment ? parseInt(lastFragment.getAttribute("data-fragment-location")) : null;
+
+    console.log(location, firstFrag, lastFrag);
+
+    if ( evt.clientX <  firstFrag ) {
+        firstFragment.remove();
+        createFragment("start", "FIRST");
+        return;
+    }
+
+    if ( lastFrag &&
+         ( evt.clientX > lastFrag
+           || evt.clientX < lastFrag
+         )
+       ) {
+        lastFragment.remove();
+        createFragment("end", "LAST");
+        return;
+    }
+
+    if ( evt.clientX === firstFrag ) {
+
+        const timeFrame = localStorage.getItem("MEDIA_FRAGMENT_FIRST");
+
+        firstFragment.remove();
+        akara_emit.emit("akara::media:fragment:unset", "FIRST");
+
+        if ( lastFrag ) {
+            akara_emit.emit("akara::media:fragment:set", { type: "FIRST" , time: timeFrame  });
+            lastFragment.setAttribute("data-fragment", "start");
+        }
+        return;
+    }
+
+    if ( lastFrag && ( evt.clientX === lastFrag ) ) {
+        lastFragment.remove();
+        akara_emit.emit("akara::media:fragment:unset", "LAST");
+        return;
+    }
+
+    createFragment("end", "LAST");
+    return;
 };
 
 if ( require.main !== module ) {

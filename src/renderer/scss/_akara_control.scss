@@ -178,17 +178,30 @@ $akara-control-padding-top: 10;
 
 }
 
+.akara-media-fragment {
+    $fragmet-color: darken($global-color,70%);
+    position: fixed;
+    margin-top: -13px;
+    padding: 2px;
+    padding-top: 12px;
+    z-index: 5555;
+    background: $fragmet-color;
+    cursor: pointer;
+    transition: .2s color ease-in;
+    &:hover {
+        background: lighten($fragmet-color,50%);
+    }
+}
+
 // percentage((100 - ( $akara-control-padding-left + $akara-control-padding-right) ) / 100)
 
 $cur-pad-top: 1;
 @for $i from 1 through 11 {
     .volume-incr:nth-of-type(#{$i}) {
-
         @if $i == 1 {
             margin-left: -5px;
         }
         padding-top: $cur-pad-top + px;
-
         $cur-pad-top: $cur-pad-top + 3;
     }
 }

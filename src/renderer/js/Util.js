@@ -69,7 +69,7 @@ module.exports.OS = OS;
 const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
 
     let lengthOfSib = document.querySelector(".akara-loaded").childElementCount;
-    
+
     const playlistItem = document.createElement("li");
     const playlistItemContent = document.createElement("span");
 
@@ -194,11 +194,11 @@ const removeCurrentPlayingStyles = parentNode => {
             el.classList.remove(getButtonConfig("playlist-buttons", "play"));
             el.classList.remove("fa");
         }
-        
+
         el.removeAttribute("data-dbclicked");
         el.removeAttribute("data-now-playing");
         el.removeAttribute("data-clicked");
-        
+
     });
 };
 
@@ -366,9 +366,17 @@ module.exports.disableMenuItem = disableMenuItem;
  *
  **/
 const setupPlaying = target => {
+
     const loaded = document.querySelector(".akara-loaded");
+        
+    localStorage.removeItem("MEDIA_FRAGMENT_LAST");
+    localStorage.removeItem("MEDIA_FRAGMENT_FIRST");
+
+    Array.from(document.querySelectorAll(".akara-media-fragment"), el => el.remove());
+
     removeCurrentPlayingStyles(loaded);
     setCurrentPlaying(target);
+
     return play();
 };
 
@@ -446,10 +454,10 @@ module.exports.validateMime = async (path) => {
 };
 
 const convert = _path => new Promise( async (resolve,reject) => {
-    
+
     const cProc = require("child_process");
     const { FFMPEG_LOCATION } = _require("./constants.js");
-    
+
     let result;
 
 

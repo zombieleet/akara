@@ -11,19 +11,6 @@ const {
     }
 } = require("electron");
 
-
-const {
-    play,
-    pause,
-    mute,
-    unmute,
-    next,
-    previous,
-    setPlaybackRate,
-    enterfullscreen,
-    leavefullscreen
-} = require("../js/VideoControl.js");
-
 const {
     prevNext,
     exportMpegGurl,
@@ -40,13 +27,12 @@ const {
 } = require("../js/DropdownCallbacks.js");
 
 
-const path                = require("path");
-const akara_emit          = require("../js/Emitter.js");
-const { createNewWindow } = _require("./newwindow.js");
-const { video, controls } = require("../js/VideoControl.js");
-const { subHandler }      = require("../js/VideoHandlers.js");
-const { iterateDir }      = _require("./utils.js"); // get utils from the main process folder
-
+const path                 = require("path");
+const akara_emit           = require("../js/Emitter.js");
+const { createNewWindow }  = _require("./newwindow.js");
+const { subHandler }       = require("../js/VideoHandlers.js");
+const { iterateDir }       = _require("./utils.js");
+const { video , controls } = require("../js/VideoControl.js");
 
 const addMediaFile = () => {
 
@@ -163,13 +149,10 @@ const togglePlist = () => {
 
 const noMediaPlaying = () => document.querySelector(".cover-on-error-src").hasAttribute("style");
 
-const __spitError = () =>
-          dialog.showErrorBox("Cannot Carry Out Operation", "This Operation Could Not be carried out");
-
 const _play = () => {
 
     if ( noMediaPlaying() )
-        return play();
+        return controls.play();
 
     return false;
 };
@@ -177,7 +160,7 @@ const _play = () => {
 const _pause = () => {
 
     if ( noMediaPlaying() )
-        return pause();
+        return controls.pause();
 
     return false;
 };
@@ -185,7 +168,7 @@ const _pause = () => {
 const _mute = () => {
 
     if ( noMediaPlaying() )
-        return mute();
+        return controls.mute();
 
     return false;
 };
@@ -193,7 +176,7 @@ const _mute = () => {
 const _unmute = () => {
 
     if ( noMediaPlaying() )
-        return unmute();
+        return controls.unmute();
 
     return false;
 };
