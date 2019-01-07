@@ -22,15 +22,15 @@ const {
 
 const {
     disableVideoMenuItem,
-    langDetect,
-    getMime,
+    setCurrentPlaying,
+    readSubtitleFile,
+    sendNotification,
+    processMediaTags,
     validateMime,
     setupPlaying,
-    readSubtitleFile,
     playlistLoad,
-    sendNotification,
-    setCurrentPlaying,
-    processMediaTags
+    langDetect,
+    getMime
 } = require("../js/Util.js");
 
 
@@ -126,8 +126,24 @@ module.exports.updateTimeIndicator = () => {
           ( controls.duration().toFixed(1)) ;
 
     timeIndicator.setAttribute("style", `width: ${( timeIndicatorWidth / pNode.clientWidth)*100}%`);
+
     currTimeUpdate.textContent = setTime();
     saveCurrentTimePos(video.src);
+
+    const firstFragment = localStorage.getItem("MEDIA_FRAGMENT_FIRST");
+
+    if ( firstFragment ) {
+        const lastFragment = localStorage.getItem("MEDIA_FRAGMENT_LAST");
+        console.log(video.duration === video.currentTime );
+        if (
+            (lastFragment && video.currentTime > Number(lastFragment) )
+                || ( video.currentTime >= video.duration )
+        ) {
+            console.log("Shit");
+            video.currentTime = parseFloat(firstFragment);
+        }
+    }
+
     return true;
 };
 
@@ -142,7 +158,7 @@ module.exports.updateTimeIndicator = () => {
  **/
 
 const handleMovement = (event,cb) => {
-    
+
     const incrDiv = document.querySelector(".akara-time-current");
     const akControl = document.querySelector(".akara-control");
 
