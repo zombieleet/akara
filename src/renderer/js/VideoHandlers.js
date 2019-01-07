@@ -174,11 +174,10 @@ const handleMovement = (event,cb) => {
     else
         targetsOffsets = event.target.offsetLeft + event.target.offsetTop;
 
-    const result = Math.round(controls.duration() * ( event.clientX - targetsOffsets ) / incrDiv.parentNode.clientWidth);
+    //const result = Math.round(controls.duration() * ( event.clientX - targetsOffsets ) / incrDiv.parentNode.clientWidth);
+    const result = (controls.duration() * ( event.clientX - targetsOffsets ) / incrDiv.parentNode.clientWidth);
     return cb(result);
 };
-
-
 
 
 /**
@@ -537,17 +536,13 @@ module.exports.videoEndedEvent = () => {
     const justEnded = document.querySelector("[data-now-playing=true]");
     const akaraLoaded = document.querySelector(".akara-loaded");
 
+
     // play shuffled video
     if ( video.hasAttribute("data-random") ) {
-
         const playlistItems = document.querySelectorAll("[data-full-path]");
-
         const index = (Math.random() * playlistItems.length).toFixed();
-
         if ( index > playlistItems.length )
-
             return setupPlaying(playlistItems[0]);
-
         return setupPlaying(playlistItems[index]);
     }
 
@@ -562,7 +557,6 @@ module.exports.videoEndedEvent = () => {
     // force the control element to change it's icon
     // if this is is not called, the control icon that handles
     // pause and play will not change
-
     return controls.pause();
 };
 
