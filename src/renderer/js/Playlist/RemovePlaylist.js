@@ -14,9 +14,8 @@
         }
     } = require("electron");
 
-    const akara_emit = require("../../js/emitter.js");
-
-    const close = document.querySelector("[data-winop=close]");
+    const akara_emit = require("../../js/Emitter.js");
+    const close     = document.querySelector("[data-winop=close]");
     const removeBtn = document.querySelector(".remove-btn");
 
     close.addEventListener("click", evt => getCurrentWindow().close());

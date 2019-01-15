@@ -14,14 +14,13 @@ const {
     podcastRemoveEvent
 } = require("../../js/Podcast/PodcastEventHandlers.js");
 
-const podcastWindow = require("../../js/Podcast/PodcastWindowHome.js");
+const podcastWindow         = require("../../js/Podcast/PodcastWindowHome.js");
+const { removepodcast }     = require("../../js/Util.js");
+const { applyButtonConfig } = require("../../js/VideoControl.js");
 
-
-const { removepodcast } = require("../../js/util.js");
-const { applyButtonConfig } = require("../../js/video_control.js");
 
 const podson = require("podson");
-const url = require("url");
+const url    = require("url");
 
 
 /**
@@ -32,7 +31,6 @@ const url = require("url");
 const spinOnPodLoad = () => {
 
     let podcasterSection = document.querySelector(".podcastload-podcaster");
-
     let spinner = document.querySelector(".podcast-spinner");
     let podcasterPod = document.querySelector(".podcaster-podcast");
     let podcastLoadMain = document.querySelector(".podcastload-main");

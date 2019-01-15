@@ -33,8 +33,8 @@ const createWindow = () => {
     let mainWindow;
 
     app.setName("Akara Media Player");
-
     app.setVersion(require(`${APP_PATH}/package.json`).version);
+    app.disableHardwareAcceleration();
 
     app.on("ready", () => {
 
@@ -60,6 +60,7 @@ const createWindow = () => {
             tray.destroy();
             app.quit();
         });
+        
         handleWebContents(mainWindow);
         handleWinState(mainWindow);
     });

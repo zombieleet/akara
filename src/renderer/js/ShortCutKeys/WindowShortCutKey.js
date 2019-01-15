@@ -2,7 +2,7 @@
 "use strict";
 
 const windowShortCutKey = new(require(("../../js/keyevents.js")));
-const launchWindow = require("../../js/handle_dropdown_commands.js")();
+const launchWindow      = require("../../js/handle_dropdown_commands.js")();
 
 const {
     remote: {

@@ -14,10 +14,10 @@
     const {
         playlistLoad,
         renderPlayList
-    } = require("../../js/util.js");
+    } = require("../../js/Util.js");
 
     const loadBtn = document.querySelector(".load-btn");
-    const close = document.querySelector("[data-winop=close]");
+    const close   = document.querySelector("[data-winop=close]");
 
     close.addEventListener("click", evt => getCurrentWindow().close());
 

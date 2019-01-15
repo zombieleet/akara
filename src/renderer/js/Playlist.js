@@ -14,33 +14,19 @@
     const {
         playlistSave,
         setupPlaying
-    } = require("../js/util.js");
+    } = require("../js/Util.js");
 
-    const {
-        createNewWindow: playListWindow
-    } = _require("./newwindow.js");
+    const { createNewWindow: playListWindow } = _require("./newwindow.js");
 
-    const {
-        playlist
-    } = _require("./configuration.js");
+    const { playlist }          = _require("./configuration.js");
+    const { addMediaCb }        = require("../js/DropdownCallbacks.js");
+    const { applyButtonConfig } = require("../js/VideoControl.js");
+    const { playNextOrPrev }    = require("../js/VideoHandlers.js");
 
 
     const { file: playlistLocation } = playlist;
-
-    const list = require(playlistLocation);
-
-    const {
-        addMediaCb
-    } = require("../js/dropdown_callbacks.js");
-
-    const {
-        applyButtonConfig
-    } = require("../js/video_control.js");
-
-    const {
-        playNextOrPrev
-    } = require("../js/videohandlers.js");
-
+    
+    const list           = require(playlistLocation);
     const playlistWidget = document.querySelector(".playlist-widget");
 
     const handlePlayListOptions = Object.defineProperties({}, {
