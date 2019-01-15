@@ -95,7 +95,7 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
     });
 
     playlistItem.addEventListener("drag", evt => {
-        console.log(" offsetY ", evt.offsetY);
+        console.log(" offsetY ", evt);
     });
 
     playlistItem.addEventListener("dragenter", evt => {
@@ -114,19 +114,24 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
         window.__draggingElement.id = target.id;
         target.id = _tmpId;
 
-        playlistItemParent.insertBefore(target, window.__draggingElement);
+        // playlistItemParent.insertBefore(target, window.__draggingElement);
+        target.after(target, window.__draggingElement);
+
+        //const el = window.__draggingElement.outerHTML;
+        
+        //target.insertAdjacentHTML("beforebegin", el);
+        //target.insertAdjacentHTML("afterend", el);
 
         const videoId = video.getAttribute("data-id");
 
         if ( _tmpId === videoId ) {
             video.setAttribute("data-id", window.__draggingElement.id);
-            return ;
+        } else if ( window.__draggingElement.id === videoId ) {
+            video.setAttribute("data-id", target.id);
         }
 
-        if ( window.__draggingElement.id === videoId ) {
-            video.setAttribute("data-id", target.id);
-            return;
-        }
+        // window.__draggingElement.remove();
+        // window.__draggingElement = (new DOMParser().parseFromString(el, "text/html")).querySelector("li");
 
         return ;
 
