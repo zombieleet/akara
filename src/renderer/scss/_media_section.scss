@@ -12,8 +12,11 @@ $akara-load-width: 30% ;//- $akara-media-cover-width;
     color: darken(#fff,20%);
     
     .akara-media-cover {
+        position: relative;
+        border: 2px solid red;
+        left: 0px;
         float: right;
-        width: 70%;
+        width: 69.8%;
         height: 80%;
         video {
             width: 100% !important;
