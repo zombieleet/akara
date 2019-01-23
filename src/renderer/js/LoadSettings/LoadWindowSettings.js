@@ -17,11 +17,11 @@
     const {
         loadUISettingButton,
         applyButtonConfig
-    } = require("../js/util.js");
+    } = require("../js/Util.js");
 
 
-    const { lowHighVolume } = require("../js/videohandlers.js");
-    const { controls } = require("../js/video_control.js");
+    const { lowHighVolume } = require("../js/VideoHandlers.js");
+    const { controls } = require("../js/VideoControl.js");
 
     const id3 = require("id3js");
     const brightness = require("brightness");
