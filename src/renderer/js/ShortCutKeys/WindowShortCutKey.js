@@ -1,8 +1,8 @@
 
 "use strict";
 
-const windowShortCutKey = new(require(("../../js/keyevents.js")));
-const launchWindow      = require("../../js/handle_dropdown_commands.js")();
+const windowShortCutKey = new(require(("../../js/Keyevents.js")));
+const launchWindow      = require("../../js/HandleDropdownCommands.js")();
 
 const {
     remote: {
@@ -12,7 +12,7 @@ const {
 
 const {
     getKeyIndex
-} = require("../../js/util.js");
+} = require("../../js/Util.js");
 
 windowShortCutKey.register({
     name: "fullscreen window",

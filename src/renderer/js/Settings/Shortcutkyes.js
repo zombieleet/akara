@@ -15,7 +15,7 @@
     const fs      = require("fs");
     const crypto  = require("crypto");
 
-    const { handleWindowButtons } = require("../../js/util.js");
+    const { handleWindowButtons } = require("../../js/Util.js");
     const { requireSettingsPath } = _require("./constants.js");
 
     const shortcutMin   = document.querySelector("[data-winop=minimize]");
