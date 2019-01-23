@@ -1,7 +1,8 @@
 ; ( () => {
+    
     const {
         loadUISettingButton
-    } = require("../js/util.js");
+    } = require("../js/Util.js");
 
 
     window.addEventListener("DOMContentLoaded", () => {
