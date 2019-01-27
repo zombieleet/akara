@@ -31,6 +31,7 @@
 
     dragger.addEventListener("mousedown", evt => {
         mouseHeldDown = true;
+        docElement.style.cursor = "ew-resize";
         docElement.addEventListener("mousemove", docElementMovement);
     });
 
@@ -40,6 +41,7 @@
     });
 
     docElement.addEventListener("mouseup", evt => {
+        docElement.style.cursor = "initial";
         if ( mouseHeldDown ) {
             docElement.removeEventListener("mousemove", docElementMovement);
         }
