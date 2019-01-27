@@ -18,9 +18,10 @@
 *** TODO ask for where to save subtitle
 *** TODO support for plugin on playlist ( get, set , remove , delete ) :IMPORTANT:
 *** TODO unicode values as font                                   :IMPORTANT:
-*** go to each settings window pug file and make the similar list inerface modular :CLARITY:
+*** TODO go to each settings window pug file and make the similar list inerface modular :CLARITY:
 *** TODO decrease or increase system sound                        :IMPORTANT:
 *** TODO validate unicode values
+
 
 * OTHERS
 *** TODO put function specific to a section to it's on section instead of Util.js :IMPORTANT:
@@ -33,6 +34,7 @@
 
 
 
+*** TODO Reimplement downloading functionality                    :IMPORTANT:
 
 * IMPORTANT COMMANDS
 # ffmpeg -i original.mp4 -c:v libvpx -preset slow -s 1024x576 -qmin 0 -qmax 50 -an -b:v 400K -pass 1 homepage.webm
