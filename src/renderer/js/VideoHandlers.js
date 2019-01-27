@@ -1387,7 +1387,7 @@ module.exports.videoFragment = evt => {
     const lastFragment = akaraTimeIndicator.querySelector("[data-fragment=end]");
 
     const location = (
-        ( ( evt.clientX / akaraTimeIndicator.parentNode.clientWidth  )*100 )
+        ((evt.clientX / akaraTimeIndicator.parentNode.clientWidth)*100)
     ).toFixed(5);
 
     const createFragment = (startEnd,type) => {
