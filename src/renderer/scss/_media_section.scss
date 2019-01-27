@@ -10,17 +10,16 @@ $akara-load-width: 30% ;//- $akara-media-cover-width;
     width: $akara-media-width;
     height: $akara-media-height;
     color: darken(#fff,20%);
-    
+
     .akara-media-cover {
-        position: relative;
-        border: 2px solid red;
-        left: 0px;
+        margin-right: 0.5%;
         float: right;
         width: 69.8%;
         height: 80%;
         video {
             width: 100% !important;
             height: 100% !important;
+            justify-content: space-around;
             -webkit-filter: unset;
         }
     }
@@ -36,7 +35,7 @@ $akara-load-width: 30% ;//- $akara-media-cover-width;
         justify-content: center;
 
         visibility: hidden;
-        
+
         i {
             font-size: 100px;
             margin-left: 350px;
