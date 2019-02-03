@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -19,6 +19,7 @@
 
 const {
     remote: {
+        screen,
         require: _require
     }
 } = require("electron");
@@ -117,14 +118,15 @@ handleAkaraSettings.buttons = () => {
 };
 
 handleAkaraSettings.shortcutkeys = () => {
+    const { width, height } = screen.getPrimaryDisplay().size;
     const shortcutkeys = {
         title: "ShortCut Keys",
         maximizable: true,
-        resizable: true,
         minimizable: true,
-        width: 500,
-        height: 450,
-        center: true
+        resizable: true,
+        center: true,
+        height,
+        width
     };
     settingsWindow(shortcutkeys, "settings/shortcutkeys.html");
 };

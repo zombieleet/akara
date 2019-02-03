@@ -1,11 +1,13 @@
 "use strict";
 
+const electron = require("electron");
+
 const {
     ipcMain: ipc,
     app,
     BrowserWindow,
     globalShortcut
-} = require("electron");
+} = electron;
 
 const trayMenu = require("./tray.js");
 const handleWinState = require("./window_state.js");
@@ -39,14 +41,21 @@ const createWindow = () => {
     app.on("ready", () => {
 
         let tray = trayMenu();
+
+        const screenSize = electron.screen.getPrimaryDisplay().size;
+
         // the backgroundColor property
         // is modified in the stylesheet
+
         mainWindow = new BrowserWindow({
             backgroundColor: BACKGROUND_COLOR,
             frame: false,
             show: false,
             centre: true,
-            useContentSize: true
+            useContentSize: true,
+            // ...screenSize
+            width: screenSize.width,
+            height: screenSize.height
         });
 
         mainWindow.loadURL(`file://${APP_PATH}/app/renderer/html/index.html`);
@@ -60,7 +69,7 @@ const createWindow = () => {
             tray.destroy();
             app.quit();
         });
-        
+
         handleWebContents(mainWindow);
         handleWinState(mainWindow);
     });

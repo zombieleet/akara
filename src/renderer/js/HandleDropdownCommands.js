@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -148,20 +148,51 @@ const addMediaFolder = () => {
  *
  **/
 
+let togglePlist;
 
-const togglePlist = () => {
-    const akaraLoad = document.querySelector(".akara-load");
-    const akaraMediaCover = document.querySelector(".akara-media-cover");
+try {
 
-    if ( akaraLoad.hasAttribute("style") ) {
-        akaraLoad.removeAttribute("style");
-        akaraMediaCover.removeAttribute("style");
-        return ;
-    }
-    akaraLoad.setAttribute("style", `display: none;`);
-    akaraMediaCover.setAttribute("style", `width: 100%`);
-    return ;
-};
+    togglePlist = (() => {
+
+        const akaraLoad               = document.querySelector(".akara-load");
+        const akaraMediaCover         = document.querySelector(".akara-media-cover");
+        const currentMediaParentWidth = Number.parseFloat(getComputedStyle(akaraMediaCover).width);
+        const currentPlaylistWidth    = Number.parseFloat(getComputedStyle(akaraLoad).width);
+        console.log(currentMediaParentWidth,currentPlaylistWidth);
+        return () => {
+
+            // reset playlist section to its default size, before a toggle was made
+            if ( akaraLoad.hasAttribute("data-plist-toggle") ) {
+
+                akaraLoad.removeAttribute("data-plist-toggle");
+                akaraLoad.style.display = null;
+
+                let mediaResizerStorage;
+
+                if ( ( mediaResizerStorage = localStorage.getItem("media-resizer" ) ) ) {
+                    console.log("wtf");
+                    let { mediaContainer, playlistsContainer } = JSON.parse(mediaResizerStorage);
+                    akaraLoad.style.width = playlistsContainer;
+                    akaraMediaCover.style.width = mediaContainer;
+                    return;
+                }
+
+                akaraLoad.style.width = `${(currentPlaylistWidth/akaraLoad.parentNode.clientWidth) * 100}%`;
+                akaraMediaCover.style.width = `${(currentMediaParentWidth/akaraMediaCover.parentNode.clientWidth) * 100}%`;
+
+                return;
+            }
+
+            // toggling playlist will cause the media to cover that entire region
+            // playlist location will not be visible
+            akaraLoad.style.display = "none";
+            akaraMediaCover.style.width = "100%";
+            akaraLoad.setAttribute("data-plist-toggle", "true");
+            return;
+        };
+    })();
+
+} catch(ex) {};
 
 
 const noMediaPlaying = () => document.querySelector(".cover-on-error-src").hasAttribute("style");
@@ -253,18 +284,18 @@ const incrDecrVolume = direction => {
 
     let volumeElements = document.querySelectorAll("[data-volume-set=true]");
     let currentVolume = volumeElements[volumeElements.length - 1];
-    
+
     if ( direction === "next" && currentVolume.nextElementSibling ) {
-        
+
         let _currentVolume = currentVolume.nextElementSibling;
         _currentVolume.setAttribute("data-volume-set", "true");
         video.volume = _currentVolume.getAttribute("data-volume-controler");
-        
+
     } else if ( direction === "prev" && currentVolume.previousElementSibling ) {
-        
+
         currentVolume.removeAttribute("data-volume-set");
         video.volume = currentVolume.previousElementSibling.getAttribute("data-volume-controler");
-        
+
     } else {
         /**
          *
@@ -280,10 +311,10 @@ const incrDecrVolume = direction => {
 };
 
 const showMediaInfoWindow = () => {
-    
+
     if ( ! noMediaPlaying() )
         return false;
-    
+
     createNewWindow({
         title: "mediainfo",
         height: 773,
@@ -292,7 +323,7 @@ const showMediaInfoWindow = () => {
         minimizable: true,
         resizable: true
     },"mediainfo.html");
-    
+
     return true;
 };
 
@@ -320,7 +351,7 @@ const screenshot = () => createNewWindow({
     maximizable: false,
     resizable: false,
     width: 700,
-    height: 300    
+    height: 300
 }, "screenshot.html");
 
 const saveplaylist = () => {
