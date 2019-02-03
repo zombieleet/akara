@@ -19,9 +19,9 @@
 
     "use strict";
 
-    const akaraVideoContainer = document.querySelector(".akara-media-cover");
+    const akaraMediaContainer = document.querySelector(".akara-media-cover");
 
-    const video      = akaraVideoContainer.querySelector("video");
+    const video      = akaraMediaContainer.querySelector("video");
     const dragger    = document.querySelector(".akara-loaded-dragger");
     const docElement = document.documentElement;
     const akaraLoad  = document.querySelector(".akara-load");
@@ -32,18 +32,21 @@
     const docElementMovement = evt => {
 
         const playlistItemSectionWidth = ((evt.clientX  / akaraLoad.parentNode.clientWidth ) * 100);
-        //const videoContainerLeft       = ((((parseFloat(getComputedStyle(akaraVideoContainer).left) / 1000) + (evt.clientX  / 50)) / 1000) * 100);
-        const videoContainerWidth      = ((((parseFloat(getComputedStyle(akaraVideoContainer).width) / 1000) + ( evt.clientX / 33 ) ) / 1000));
+        const mediaContainerWidth      = ((((parseFloat(getComputedStyle(akaraMediaContainer).width) / 1000) + ( evt.clientX / 32.5 ) ) / 1000));
 
-        const inverse = Math.floor(Math.pow(videoContainerWidth,-1));
+        const inverse = Math.floor(Math.pow(mediaContainerWidth,-1));
 
         if ( ! ( inverse >= 100 ) ) {
-            akaraVideoContainer.style.width = `${inverse}%`;
+            akaraMediaContainer.style.width = `${inverse}%`;
         } else if ( inverse >= 100 )
-            akaraVideoContainer.style.width = "100%";
+            akaraMediaContainer.style.width = "100%";
 
-        //akaraVideoContainer.style.left = `${videoContainerLeft}%`;
         akaraLoad.style.width = `${playlistItemSectionWidth}%`;
+
+        localStorage.setItem("media-resizer", JSON.stringify({
+            mediaContainer: `${inverse}%`,
+            playlistsContainer: `${playlistItemSectionWidth}%`
+        }));
     };
 
     dragger.addEventListener("mousedown", evt => {

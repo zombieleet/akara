@@ -148,20 +148,51 @@ const addMediaFolder = () => {
  *
  **/
 
+let togglePlist;
 
-const togglePlist = () => {
-    const akaraLoad = document.querySelector(".akara-load");
-    const akaraMediaCover = document.querySelector(".akara-media-cover");
+try {
 
-    if ( akaraLoad.hasAttribute("style") ) {
-        akaraLoad.removeAttribute("style");
-        akaraMediaCover.removeAttribute("style");
-        return ;
-    }
-    akaraLoad.setAttribute("style", `display: none;`);
-    akaraMediaCover.setAttribute("style", `width: 100%`);
-    return ;
-};
+    togglePlist = (() => {
+
+        const akaraLoad               = document.querySelector(".akara-load");
+        const akaraMediaCover         = document.querySelector(".akara-media-cover");
+        const currentMediaParentWidth = Number.parseFloat(getComputedStyle(akaraMediaCover).width);
+        const currentPlaylistWidth    = Number.parseFloat(getComputedStyle(akaraLoad).width);
+        console.log(currentMediaParentWidth,currentPlaylistWidth);
+        return () => {
+
+            // reset playlist section to its default size, before a toggle was made
+            if ( akaraLoad.hasAttribute("data-plist-toggle") ) {
+
+                akaraLoad.removeAttribute("data-plist-toggle");
+                akaraLoad.style.display = null;
+
+                let mediaResizerStorage;
+
+                if ( ( mediaResizerStorage = localStorage.getItem("media-resizer" ) ) ) {
+                    console.log("wtf");
+                    let { mediaContainer, playlistsContainer } = JSON.parse(mediaResizerStorage);
+                    akaraLoad.style.width = playlistsContainer;
+                    akaraMediaCover.style.width = mediaContainer;
+                    return;
+                }
+
+                akaraLoad.style.width = `${(currentPlaylistWidth/akaraLoad.parentNode.clientWidth) * 100}%`;
+                akaraMediaCover.style.width = `${(currentMediaParentWidth/akaraMediaCover.parentNode.clientWidth) * 100}%`;
+
+                return;
+            }
+
+            // toggling playlist will cause the media to cover that entire region
+            // playlist location will not be visible
+            akaraLoad.style.display = "none";
+            akaraMediaCover.style.width = "100%";
+            akaraLoad.setAttribute("data-plist-toggle", "true");
+            return;
+        };
+    })();
+
+} catch(ex) {};
 
 
 const noMediaPlaying = () => document.querySelector(".cover-on-error-src").hasAttribute("style");

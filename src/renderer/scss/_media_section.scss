@@ -14,12 +14,16 @@ $akara-load-width: 30% ;//- $akara-media-cover-width;
     .akara-media-cover {
         margin-right: 0.5%;
         float: right;
-        width: 69.8%;
-        height: 80%;
+        width: 68.999%;
+        height: 75.9%;
+        display: flex;
         video {
-            width: 100% !important;
-            height: 100% !important;
-            justify-content: space-around;
+            min-width: 100% !important;
+            align-items: center;
+            min-height: 100% !important;
+            background-size: cover;
+            width: auto !important;
+            height: auto !important;
             -webkit-filter: unset;
         }
     }
