@@ -33,8 +33,10 @@
     - State "DOING"      from              [2019-01-27 Sun 15:28]
 
 
-
+*** TODO fix toggling                                                   :BUG:
+    SCHEDULED: <2019-02-02 Sat>
 *** TODO Reimplement downloading functionality                    :IMPORTANT:
+
 
 * IMPORTANT COMMANDS
 # ffmpeg -i original.mp4 -c:v libvpx -preset slow -s 1024x576 -qmin 0 -qmax 50 -an -b:v 400K -pass 1 homepage.webm
