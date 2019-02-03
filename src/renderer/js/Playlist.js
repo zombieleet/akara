@@ -21,6 +21,9 @@
     const {
         ipcRenderer: ipc,
         remote: {
+            screen: {
+                getPrimaryDisplay
+            },
             dialog,
             BrowserWindow,
             require: _require
@@ -217,13 +220,15 @@
 
             value() {
 
+                const { size: { width , height } } = getPrimaryDisplay();
+
                 const obj = {
-                    width: 671,
-                    height: 385,
                     title: "createplaylist",
                     minimizable: true,
+                    maximizable: true,
                     resizable: true,
-                    maximizable: true
+                    height,
+                    width
                 };
 
                 const playlist = document.querySelectorAll("[data-full-path]");
