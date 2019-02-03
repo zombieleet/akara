@@ -14,7 +14,9 @@
 
 .create-playlist-input {
     @extend %form-input;
-    width: 95%;
+    width: 70%;
+    display: inline;
+    margin-left: 120px;
 }
 
 
@@ -38,7 +40,7 @@
         background: darken(lighten($global-color, 50%), 55%);
         float: left;
         overflow-y: auto;
-        max-height: 650px;
+        max-height: 460px;
         width: 40%;
         margin-bottom: 20px;
     }
@@ -51,7 +53,7 @@
      **/
 
     .add-to-existing-playlist {
-        border: 0.2px solid lighten(black,55%);
+        //border: 0.2px solid lighten(black,55%);
         float: right;
         overflow-y: auto;
         max-height: 500px;
@@ -108,19 +110,15 @@
 
 .create-playlist-item {
 
-    border: 2px solid lighten(gray,50%);
+    box-shadow: 0px 0px 12px darken($global-color,10%);
     border-radius: 5px;
     padding: 15px 15px 25px 15px;
-    margin-top: 12px;
-    transtion: .2s background ease-in, .2s color ease-in;
+    margin-top: 12px;    
+    transition: .2s background ease-in, .2s color ease-in;
 
     &:hover {
-        //background: darken(lightgrey,20%);
         color: white;
         cursor: pointer;
-        /* i {
-           box-shadow: 100px 100px 100px 100px 100px green inset ;
-           } */
     }
 
     i {
@@ -134,6 +132,9 @@
 
 .saved-playlist {
     @extend .create-playlist-item;
+    &:first-of-type {
+        margin-top: -15px;
+    }
 }
 
 [data-saveList="saveList"] {
@@ -142,15 +143,29 @@
 }
 
 
+/* 
 .submit-cancel-button {
-    clear: both;
-    float: right;
-    position: fixed;
-    top: 400px;
-    left: 0;
-    right: 35px;
-    button {
-        @extend %buttons;
-        width: 120px;
+   clear: both;
+   float: right;
+   position: fixed;
+   top: 500px;
+   right: 35px;
+   button {
+     @extend %buttons;
+     width: 120px;
+   }
+}
+*/
+
+.create-playlist-submit {
+    text-shadow: 0px 0px 12px lighten(darken($global-color,15%),5%);
+    color: lighten(darken($global-color,10%),15%);
+    cursor: pointer;
+    font-size: 2.5em !important;
+    margin-left: 12px;
+    vertical-align: middle;
+    transition: .2s color ease-in;
+    &:hover {
+        color: lighten($global-color,30%);
     }
 }

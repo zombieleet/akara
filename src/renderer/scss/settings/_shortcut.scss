@@ -47,7 +47,8 @@
 .shortcut_key_list {
     width: 70%;
     margin-left: 20%;
-    padding: 30px;
+    padding: 61px;
+    padding-top: 20px;
     height: 665px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -63,7 +64,10 @@
             border-color: darken($global-color,15%);
         }
         &:not(:first-of-type) {
-            margin-top: 30px;
+            margin-top: 20px;
+        }
+        &:last-of-type {
+            margin-bottom: 80px;
         }
         .shortcut_key_name {
             float: left;

@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -34,30 +34,31 @@
         handleWindowButtons
     } = require("../../js/Util.js");
 
-    const {
-        file: playlistLocation
-    } = playlist;
 
     const { basename }   = require("path");
     const { iterateDir } = _require("./utils.js");
     const { playlist }   = _require("./configuration.js");
 
+    const {
+        file: playlistLocation
+    } = playlist;
 
-    
+
     const addPlaylist   = document.querySelector(".add-playlist");
     const addToExisting = document.querySelector(".add-to-existing-playlist");
 
 
-    const fs     = require("fs");
-    const list   = require(playlistLocation);
-    const form   = document.forms[0];
-    const input  = form.querySelector("input");
-    const cancel = form.querySelector(".create-playlist-cancel");
-    const min    = document.querySelector("[data-winop=minimize]");
-    const max    = document.querySelector("[data-winop=maximize]");
-    const close  = document.querySelector("[data-winop=close]");
+    const fs       = require("fs");
+    const list     = require(playlistLocation);
+    const form     = document.forms[0];
+    const save     = document.querySelector(".create-playlist-submit");
+    const input    = form.querySelector("input");
+    //const cancel = form.querySelector(".create-playlist-cancel");
+    const min      = document.querySelector("[data-winop=minimize]");
+    const max      = document.querySelector("[data-winop=maximize]");
+    const close    = document.querySelector("[data-winop=close]");
 
-    
+
     let DYNAMICLISTADD = 0;
     let DYNAMICLISTADDREARRANGE = DYNAMICLISTADD;
 
@@ -94,22 +95,22 @@
             li.setAttribute("data-playlist-item", f);
             li.appendChild(p);
             li.appendChild(iFont);
-            
+
             iFont.addEventListener("click", evt => {
-                
+
                 if ( (ul.children.length - 1) === 0 ) {
                     ul.remove();
                     noListMessage();
                     return ;
                 }
-                
+
                 Array.from(ul.querySelectorAll("li"), el => {
                     DYNAMICLISTADDREARRANGE = makeDynamic(el,DYNAMICLISTADDREARRANGE);
                 });
-                
+
                 li.remove();
             });
-            
+
             iFont.setAttribute("class", "fa fa-close pull-right");
             ul.appendChild(li);
         }
@@ -144,7 +145,7 @@
             }
             iterateDir()(file_dir).forEach( f => files.push(f));
         }
-        
+
         if ( p ) {
             p.remove();
             addPlaylist.setAttribute("data-playlist", "playlist");
@@ -286,13 +287,11 @@
         getCurrentWindow().close();
     });
 
-    cancel.addEventListener("click", () =>  {
-        getCurrentWindow().close();
-    });
+    // cancel.addEventListener("click", () =>  {
+    //     getCurrentWindow().close();
+    // });
 
-    form.addEventListener("submit", evt => {
-
-        evt.preventDefault();
+    save.addEventListener("click", evt => {
 
         if ( /^\s+$|^$/.test(input.value) ) {
             return dialog.showErrorBox(
@@ -336,6 +335,8 @@
         );
 
         playlistSave( key , arrayOfFile , true );
+        addToExisting.querySelector("ul").remove();
+        loadSavedList();
 
         return true;
     });
@@ -345,6 +346,9 @@
     });
 
     handleWindowButtons({close, min, max});
-    loadList();
+
+    window.addEventListener("DOMContentLoaded", () => {
+        loadList();
+    });
 
 })();

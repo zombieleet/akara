@@ -56,10 +56,4 @@
         applyButtonConfig(max, "window-buttons", "maximize");
     });
 
-    ipc.on("akara::quiting", () => {
-        localStorage.removeItem("DONT_SHOW_VOLUME_WARNING");
-        localStorage.removeItem("LOOP_CURRENT_VIDEO");
-        localStorage.removeItem("PODCAST::DISABLE_MENU");
-    });
-
 })();

@@ -68,6 +68,9 @@ $settings-value-padding-left: 2;
     .default-settings-list {
         .default-settings-item {
             font-size: 20px;
+            &:last-of-type {
+                padding-bottom: 190px;
+            }
         }
     }
 }
