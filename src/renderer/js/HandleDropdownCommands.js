@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -253,18 +253,18 @@ const incrDecrVolume = direction => {
 
     let volumeElements = document.querySelectorAll("[data-volume-set=true]");
     let currentVolume = volumeElements[volumeElements.length - 1];
-    
+
     if ( direction === "next" && currentVolume.nextElementSibling ) {
-        
+
         let _currentVolume = currentVolume.nextElementSibling;
         _currentVolume.setAttribute("data-volume-set", "true");
         video.volume = _currentVolume.getAttribute("data-volume-controler");
-        
+
     } else if ( direction === "prev" && currentVolume.previousElementSibling ) {
-        
+
         currentVolume.removeAttribute("data-volume-set");
         video.volume = currentVolume.previousElementSibling.getAttribute("data-volume-controler");
-        
+
     } else {
         /**
          *
@@ -280,10 +280,10 @@ const incrDecrVolume = direction => {
 };
 
 const showMediaInfoWindow = () => {
-    
+
     if ( ! noMediaPlaying() )
         return false;
-    
+
     createNewWindow({
         title: "mediainfo",
         height: 773,
@@ -292,7 +292,7 @@ const showMediaInfoWindow = () => {
         minimizable: true,
         resizable: true
     },"mediainfo.html");
-    
+
     return true;
 };
 
@@ -320,7 +320,7 @@ const screenshot = () => createNewWindow({
     maximizable: false,
     resizable: false,
     width: 700,
-    height: 300    
+    height: 300
 }, "screenshot.html");
 
 const saveplaylist = () => {

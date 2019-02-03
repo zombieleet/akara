@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -94,22 +94,22 @@
             li.setAttribute("data-playlist-item", f);
             li.appendChild(p);
             li.appendChild(iFont);
-            
+
             iFont.addEventListener("click", evt => {
-                
+
                 if ( (ul.children.length - 1) === 0 ) {
                     ul.remove();
                     noListMessage();
                     return ;
                 }
-                
+
                 Array.from(ul.querySelectorAll("li"), el => {
                     DYNAMICLISTADDREARRANGE = makeDynamic(el,DYNAMICLISTADDREARRANGE);
                 });
-                
+
                 li.remove();
             });
-            
+
             iFont.setAttribute("class", "fa fa-close pull-right");
             ul.appendChild(li);
         }
@@ -144,7 +144,7 @@
             }
             iterateDir()(file_dir).forEach( f => files.push(f));
         }
-        
+
         if ( p ) {
             p.remove();
             addPlaylist.setAttribute("data-playlist", "playlist");
