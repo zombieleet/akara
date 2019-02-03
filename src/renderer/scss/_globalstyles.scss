@@ -30,7 +30,7 @@ body {
 }
 
 [data-dynamic-style] {
-    background: lightgrey;
+    background: darken(lightgrey,50%);
 }
 
 .toggle-off {
