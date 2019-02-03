@@ -19,6 +19,7 @@
 
 const {
     remote: {
+        screen,
         require: _require
     }
 } = require("electron");
@@ -117,14 +118,15 @@ handleAkaraSettings.buttons = () => {
 };
 
 handleAkaraSettings.shortcutkeys = () => {
+    const { width, height } = screen.getPrimaryDisplay().size;
     const shortcutkeys = {
         title: "ShortCut Keys",
         maximizable: true,
-        resizable: true,
         minimizable: true,
-        width: 500,
-        height: 450,
-        center: true
+        resizable: true,
+        center: true,
+        height,
+        width
     };
     settingsWindow(shortcutkeys, "settings/shortcutkeys.html");
 };
