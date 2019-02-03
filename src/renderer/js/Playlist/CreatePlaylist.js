@@ -34,30 +34,31 @@
         handleWindowButtons
     } = require("../../js/Util.js");
 
-    const {
-        file: playlistLocation
-    } = playlist;
 
     const { basename }   = require("path");
     const { iterateDir } = _require("./utils.js");
     const { playlist }   = _require("./configuration.js");
 
+    const {
+        file: playlistLocation
+    } = playlist;
 
-    
+
     const addPlaylist   = document.querySelector(".add-playlist");
     const addToExisting = document.querySelector(".add-to-existing-playlist");
 
 
-    const fs     = require("fs");
-    const list   = require(playlistLocation);
-    const form   = document.forms[0];
-    const input  = form.querySelector("input");
-    const cancel = form.querySelector(".create-playlist-cancel");
-    const min    = document.querySelector("[data-winop=minimize]");
-    const max    = document.querySelector("[data-winop=maximize]");
-    const close  = document.querySelector("[data-winop=close]");
+    const fs       = require("fs");
+    const list     = require(playlistLocation);
+    const form     = document.forms[0];
+    const save     = document.querySelector(".create-playlist-submit");
+    const input    = form.querySelector("input");
+    //const cancel = form.querySelector(".create-playlist-cancel");
+    const min      = document.querySelector("[data-winop=minimize]");
+    const max      = document.querySelector("[data-winop=maximize]");
+    const close    = document.querySelector("[data-winop=close]");
 
-    
+
     let DYNAMICLISTADD = 0;
     let DYNAMICLISTADDREARRANGE = DYNAMICLISTADD;
 
@@ -286,13 +287,11 @@
         getCurrentWindow().close();
     });
 
-    cancel.addEventListener("click", () =>  {
-        getCurrentWindow().close();
-    });
+    // cancel.addEventListener("click", () =>  {
+    //     getCurrentWindow().close();
+    // });
 
-    form.addEventListener("submit", evt => {
-
-        evt.preventDefault();
+    save.addEventListener("click", evt => {
 
         if ( /^\s+$|^$/.test(input.value) ) {
             return dialog.showErrorBox(
@@ -336,6 +335,8 @@
         );
 
         playlistSave( key , arrayOfFile , true );
+        addToExisting.querySelector("ul").remove();
+        loadSavedList();
 
         return true;
     });
@@ -345,6 +346,9 @@
     });
 
     handleWindowButtons({close, min, max});
-    loadList();
+
+    window.addEventListener("DOMContentLoaded", () => {
+        loadList();
+    });
 
 })();

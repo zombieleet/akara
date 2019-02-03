@@ -21,10 +21,11 @@ block body
 
       form(class="create-playlist-form")
 
-        label(for="create-playlist-name")
-          i Playlist Name:
+        //- label(for="create-playlist-name")
+        //-   i Playlist Name:
 
         input(type="text" placeholder="Playlist Name" id="create-playlist-name" class="create-playlist-input" data-prevent-shortcut="true")
+        i(class="fa fa-check-circle fa-2x create-playlist-submit")
 
         div(class="media-playlist-container")
           div(class="add-playlist")
@@ -32,8 +33,8 @@ block body
           div(class="add-to-existing-playlist")
 
 
-        div(class="submit-cancel-button")
-           button(type="submit" class="create-playlist-submit") Submit
-           button(type="cancel" class="create-playlist-cancel") Cancel
+        //- div(class="submit-cancel-button")
+        //-    button(type="submit" class="create-playlist-submit") Submit
+        //-    button(type="cancel" class="create-playlist-cancel") Cancel
 
     script(src="../../js/Playlist/CreatePlaylist.js")
