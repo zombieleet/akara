@@ -43,10 +43,11 @@
 
     z-index: 5562;
 
-    ul {
-        //position: absolute;
+    > ul {
         @extend %move_droped_span;
-
+        height: 500px;
+        overflow-x: auto;
+        overflow-y: overlay;
         li {
 
             visibility: hidden;

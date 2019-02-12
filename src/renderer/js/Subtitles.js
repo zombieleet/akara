@@ -28,28 +28,26 @@
             require: _require
         }
     }  = require("electron");
-    
+
     const {
         getSubtitle,
         isOnline,
         OS,
-        downloadWindow,
-        downloadFile
+        downloadFile,
+        computeByte
     } = require("../js/Util.js");
 
-    
+
     const fs    = require("fs");
     const url   = require("url");
     const path  = require("path");
 
-
-    const akara_emit =  require("../js/Emitter.js");
-    const movie      = document.querySelector("#movies");
-    const series     = document.querySelector("#series");
-    const button     = document.querySelector("button");
+    const movie      = document.querySelector(".subtitle-movie-checkbox");
+    const series     = document.querySelector(".subtitle-series-checkbox");
+    const search     = document.querySelector(".subtitle-search-net");
     const season     = document.querySelector("#season");
     const episode    = document.querySelector("#episode");
-    const input      = document.querySelector(".subtitle-form-input");
+    const searchBox  = document.querySelector(".subtitle-form-input");
     const loaded     = document.querySelector(".subtitle-info");
     const close      = document.querySelector(".subtitle-close");
     const section    = document.querySelector("section");
@@ -67,14 +65,14 @@
 
         const {
             query,
-            season,
-            episode
+            season: _season,
+            episode: _episode
         } = value;
 
         let result;
 
-        if ( series.checked ) {
-            result = await getSubtitle({query,season,episode});
+        if ( series.hasAttribute("data-checked") ) {
+            result = await getSubtitle({query,_season,_episode});
         } else {
             result = await getSubtitle({query});
         }
@@ -156,15 +154,53 @@
 
         td.addEventListener("click", () => {
 
-            let win = downloadWindow();
-            console.log("send event");
-            ipc.send("download::init", __url, win.webContents.id);
-            //downloadFile(__url,win);
-            akara_emit.once("download::complete", fpath => {
-                console.log("sent");
+            const { webContents } = getCurrentWindow();
+
+            ipc.on("download::started", (evt , item , url ) => {
+
+                let downloadSubtitlePSpinner = td.querySelector(".subitlte-downloading");
+
+                if ( downloadSubtitlePSpinner || url !== __url )
+                    return;
+                else if ( ! downloadSubtitlePSpinner ) {
+                    downloadSubtitlePSpinner = document.createElement("subtitle-downloading");
+                }
+
+                const downloadSubtitleSpinner = document.createElement("i");
+
+                downloadSubtitlePSpinner.setAttribute("class", "subtitle-downloading");
+                downloadSubtitleSpinner.setAttribute("class", "fa fa-2x fa-spinner fa-spin");
+
+                downloadSubtitlePSpinner.appendChild(downloadSubtitleSpinner);
+                td.appendChild(downloadSubtitlePSpinner);
+
+            });
+
+            ipc.on("download::state", ( evt , state ) => {
+                //console.log( state , " download::state " , __url );
+            });
+
+            ipc.on("download::totalbyte", ( evt , tbyte ) => {
+                //console.log( tbyte , " download::totalbyte " , __url );
+            });
+
+            ipc.on("download::gottenByte", ( evt , recievedBytes ) => {
+                currentByte.textContent = computeByte(bytes);
+            });
+
+            ipc.on("download::computePercent", (event,rBytes,tBytes) => {
+                console.log(rBytes, tBytes, "compute%");
+            });
+
+            ipc.once("download::complete", fpath => {
+                console.log("sent -> done");
                 ipc.sendTo(1,"subtitle::load-sub", "net", fpath);
             });
+
+            ipc.send("download::init", __url , webContents.id );
+
         });
+
         return parent.appendChild(subtitle);
     };
 
@@ -221,30 +257,32 @@
     };
 
 
-    const checkValues = ({input,movie,series,season,episode}) => {
+    const checkValues = () => {
 
-        if ( input.value.length === 0 )
+        if ( searchBox.value.length === 0 )
             return "TEXT_LENGTH_GREAT";
 
-        if ( series.checked ) {
+        if ( series.hasAttribute("data-checked") ) {
             if ( isNaN(season.value) || season.value.length === 0 ) {
                 return "SEASON_INVALID";
             }
             if ( isNaN(episode.value) || episode.value.length === 0 )  {
                 return "EPISODE_INVALID";
             }
-            const query = input.value;
-            season = season.value;
-            episode = episode.value;
-            return { query, season, episode };
+
+            const query    = searchBox.value,
+                  season$  = season.value,
+                  episode$ = episode.value;
+
+            return { query, season$, episode$ };
         }
 
-        if ( input.value.length > 0 && ! series.checked && ! movie.checked ) {
+        if ( searchBox.value.length > 0 && ! series.hasAttribute("data-checked") && ! movie.hasAttribute("data-checked") ) {
             return "SERIES_MOVIE_NO_CHECKED";
         }
 
-        if ( movie.checked ) {
-            const query = input.value;
+        if ( movie.hasAttribute("data-checked") ) {
+            const query = searchBox.value;
             return { query };
         }
 
@@ -254,18 +292,42 @@
 
     close.addEventListener("click", () => getCurrentWindow().close());
 
-    movie.addEventListener("change", () => {
-        console.log(movie.checked);
+    movie.parentNode.addEventListener("click", () => {
+
+        let sOption = document.querySelector(".series-option");
+
+        if ( movie.hasAttribute("data-checked") )
+            return;
+
+        series.removeAttribute("data-checked");
+        series.classList.remove("fa-check-circle");
+        series.classList.add("fa-circle");
+
+        sOption.setAttribute("style", "display: none;");
+
+        movie.classList.add("fa-check-circle");
+        movie.classList.remove("fa-circle");
+        movie.setAttribute("data-checked", "checked");
     });
 
-    series.addEventListener("change", () => {
+    series.parentNode.addEventListener("click", () => {
+
         let sOption = document.querySelector(".series-option");
-        if ( series.checked ) {
-            sOption.removeAttribute("hidden");
-            return sOption.setAttribute("style", "display: inline;");
-        }
-        sOption.removeAttribute("style");
-        return sOption.setAttribute("hidden", "true");
+
+        if ( series.hasAttribute("data-checked") )
+            return;
+
+        sOption.removeAttribute("hidden");
+        sOption.setAttribute("style", "display: inline;");
+
+        series.setAttribute("data-checked", "checked");
+        series.classList.add("fa-check-circle");
+        series.classList.remove("fa-circle");
+
+        movie.removeAttribute("data-checked");
+        movie.classList.remove("fa-check-circle");
+        movie.classList.add("fa-circle");
+        return;
     });
 
 
@@ -276,11 +338,11 @@
      *
      **/
 
-    button.addEventListener("click", async (e) => {
+    search.addEventListener("click", async (e) => {
 
         e.preventDefault();
 
-        const value = checkValues({input,movie,series,season,episode});
+        const value = checkValues();
 
         switch ( value ) {
         case "TEXT_LENGTH_GREAT":
@@ -319,12 +381,12 @@
             return ;
         videoPath = url.parse(videoPath);
         videoPath.pathname = decodeURIComponent(videoPath.pathname);
-        input.disabled = false;
-        input.value = path.parse(videoPath.pathname).name;
+        searchBox.disabled = false;
+        searchBox.value = path.parse(videoPath.pathname).name;
         loaded.innerHTML = "Loading...";
         styleResult(await getSubtitle({ hash: await OS.hash(videoPath.pathname).moviehash}));
     });
-    
+
     ipc.sendTo(1, "akara::send:media:file", getCurrentWindow().webContents.id);
 
 })();

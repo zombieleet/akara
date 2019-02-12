@@ -7,7 +7,6 @@
     @extend %new_window_headers;
 }
 
-
 section {
     width: 100%;
     height: 100%;
@@ -20,39 +19,42 @@ section {
 
 .subtitle-form-input {
     @extend %form-input;
+    margin-bottom:12px;
+    display: inline-block;
 }
 
-label[for="series"] {
+.movie {
+    cursor: pointer;
+}
+.series {
+    @extend .movie;
     margin-left: 12px;
 }
 
 label {
     color: white;
 }
-input[type="checkbox"] {
-    display: inline;
-    width: initial;
-}
-input[id="season"],
-input[id="episode"] {
-    display: inline;
-    width: 3%;
-    margin-left: 12px;
-    padding: 5px;
-}
 
 label[for="season"],
 label[for="episode"] {
     margin-left: 15px;
 }
-button[type="search"] {
-    @extend %buttons;
-    
-    position: static;
-    float: right;
+
+.subtitle-search-net {
+
     padding: 12px;
-    margin-top: 10px;
-    margin-right: 64px;
+    margin-top: 1px;
+    margin-left: 10px;
+    border-radius: 100%;
+    cursor: pointer;
+
+    box-shadow: 1px 1px 7px 0px darken($global-color,50%);
+
+    transition: .5s background ease-in-out;
+
+    &:hover {
+        background: darken($global-color, 40%);
+    }
 }
 
 .subtitle-loaded {
@@ -110,4 +112,24 @@ table {
 }
 input[type="text"]:disabled {
     cursor: not-allowed;
+}
+
+.subtitle-movie-checkbox,
+.subtitle-series-checkbox {
+    font-size: 1.5em !important;
+    margin-left: 12px;
+    vertical-align: middle;
+}
+
+.subtitle-series-type {
+    display: inline-block;
+    width: 3%;
+    margin-left: 12px;
+    background: white;
+    padding: 0px;
+}
+
+.series-option {
+    display: none;
+    vertical-align: middle;
 }

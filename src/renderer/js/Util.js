@@ -1213,39 +1213,69 @@ module.exports.downloadWindow = () => {
     return window;
 };
 
-const downloadFile = (url, window ) => {
+const setDownloadPath = downloadFile => {
 
-    window.webContents.downloadURL(url);
+    let downloadFileName = path.join(app.getPath("downloads"), downloadFile);
 
-    window.webContents.session.on("will-download", (event,item,webContents) => {
+    if ( fs.existsSync(downloadFileName) ) {
 
-        item.setSavePath(app.getPath("downloads"));
-
-        // webContents.send("download::filename", item.getFilename());
-        console.log(item);
-        webContents.send("download::started", item);
-
-        item.on("updated", (event,state) => {
-
-            webContents.send("download::state", state);
-
-            if ( state === "interrupted" )
-                resumeDownloading(item,webContents);
-
-            webContents.send("download::gottenByte", item.getReceivedBytes());
-            webContents.send("download::computePercent", item.getReceivedBytes(), item.getTotalBytes());
+        const btn = dialog.showMessageBox({
+            type: "info",
+            message: `${downloadFileName} path already exists, click cancel to choose a different file name or ok to overwrite exisisting file`,
+            buttons: [ "Ok", "Cancel" ]
         });
 
-        item.once("done", (event,state) => {
-            webContents.send("download::state", state);
-            akara_emit.emit("download::complete", item.getSavePath());
-        });
+        if ( btn === 1 )
+            downloadFileName = dialog.showSaveDialog({
+                defaultPath: app.getPath("downloads"),
+                title: "Specify a loation to save subtitle file"
+            });
+    }
 
-        webContents.send("download::totalbyte", item.getTotalBytes());
-    });
+    return downloadFileName;
+
 };
 
-module.exports.downloadFile = downloadFile;
+// const downloadFile = (url, window ) => {
+
+//     window.webContents.downloadURL(url);
+
+//     window.webContents.session.on("will-download", (event,item,webContents) => {
+
+//         const { id } = webContents;
+
+//         item.setSavePath(
+//             setDownloadPath(
+//                 item.getFilename()
+//             )
+//         );
+
+//         console.log(item);
+
+//         ipc.sendTo( id , "download::started", item);
+//         ipc.sendTo( id , "download::totalbyte", item.getTotalBytes());
+
+//         item.on("updated", (event,state) => {
+
+//             window.webContents.send("download::state", state);
+
+//             if ( state === "interrupted" )
+//                 resumeDownloading(item,webContents);
+
+//             ipc.sendTo( id  , "download::gottenByte", item.getReceivedBytes());
+//             ipc.sendTo( id  , "download::computePercent", item.getReceivedBytes(), item.getTotalBytes());
+
+//         });
+
+//         item.on("done", (event,state) => {
+//             //ipc.sendTo( id , "download::state", state);
+//             ipc.sendTo( id , "download::complete", item.getSavePath());
+//         });
+
+//     });
+// };
+
+// module.exports.downloadFile = downloadFile;
 
 module.exports.exportMpegGurl = file => {
 
