@@ -6,12 +6,12 @@
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -135,7 +135,7 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
         target.after(target, window.__draggingElement);
 
         //const el = window.__draggingElement.outerHTML;
-        
+
         //target.insertAdjacentHTML("beforebegin", el);
         //target.insertAdjacentHTML("afterend", el);
 
@@ -390,7 +390,7 @@ module.exports.disableMenuItem = disableMenuItem;
 const setupPlaying = target => {
 
     const loaded = document.querySelector(".akara-loaded");
-        
+
     localStorage.removeItem("MEDIA_FRAGMENT_LAST");
     localStorage.removeItem("MEDIA_FRAGMENT_FIRST");
 
@@ -580,7 +580,9 @@ module.exports.playOnDrop = () => {
 };
 
 const sendNotification = (options) => {
+    
     const notifier = require("node-notifier");
+    
     options.sound = true;
     options.icon = options.icon ? options.icon : "/root/Picture/pics.jpg" ;
 
@@ -710,6 +712,7 @@ module.exports.langDetect = (file) => {
 module.exports.getSubtitle = async (option) => {
     let value;
     try {
+        console.log(option, "down here");
         value = await OS.search(option);
     } catch(ex) {
         value = ex;
@@ -1213,39 +1216,69 @@ module.exports.downloadWindow = () => {
     return window;
 };
 
-const downloadFile = (url, window ) => {
+const setDownloadPath = downloadFile => {
 
-    window.webContents.downloadURL(url);
+    let downloadFileName = path.join(app.getPath("downloads"), downloadFile);
 
-    window.webContents.session.on("will-download", (event,item,webContents) => {
+    if ( fs.existsSync(downloadFileName) ) {
 
-        item.setSavePath(app.getPath("downloads"));
-
-        // webContents.send("download::filename", item.getFilename());
-        console.log(item);
-        webContents.send("download::started", item);
-
-        item.on("updated", (event,state) => {
-
-            webContents.send("download::state", state);
-
-            if ( state === "interrupted" )
-                resumeDownloading(item,webContents);
-
-            webContents.send("download::gottenByte", item.getReceivedBytes());
-            webContents.send("download::computePercent", item.getReceivedBytes(), item.getTotalBytes());
+        const btn = dialog.showMessageBox({
+            type: "info",
+            message: `${downloadFileName} path already exists, click cancel to choose a different file name or ok to overwrite exisisting file`,
+            buttons: [ "Ok", "Cancel" ]
         });
 
-        item.once("done", (event,state) => {
-            webContents.send("download::state", state);
-            akara_emit.emit("download::complete", item.getSavePath());
-        });
+        if ( btn === 1 )
+            downloadFileName = dialog.showSaveDialog({
+                defaultPath: app.getPath("downloads"),
+                title: "Specify a loation to save subtitle file"
+            });
+    }
 
-        webContents.send("download::totalbyte", item.getTotalBytes());
-    });
+    return downloadFileName;
+
 };
 
-module.exports.downloadFile = downloadFile;
+// const downloadFile = (url, window ) => {
+
+//     window.webContents.downloadURL(url);
+
+//     window.webContents.session.on("will-download", (event,item,webContents) => {
+
+//         const { id } = webContents;
+
+//         item.setSavePath(
+//             setDownloadPath(
+//                 item.getFilename()
+//             )
+//         );
+
+//         console.log(item);
+
+//         ipc.sendTo( id , "download::started", item);
+//         ipc.sendTo( id , "download::totalbyte", item.getTotalBytes());
+
+//         item.on("updated", (event,state) => {
+
+//             window.webContents.send("download::state", state);
+
+//             if ( state === "interrupted" )
+//                 resumeDownloading(item,webContents);
+
+//             ipc.sendTo( id  , "download::gottenByte", item.getReceivedBytes());
+//             ipc.sendTo( id  , "download::computePercent", item.getReceivedBytes(), item.getTotalBytes());
+
+//         });
+
+//         item.on("done", (event,state) => {
+//             //ipc.sendTo( id , "download::state", state);
+//             ipc.sendTo( id , "download::complete", item.getSavePath());
+//         });
+
+//     });
+// };
+
+// module.exports.downloadFile = downloadFile;
 
 module.exports.exportMpegGurl = file => {
 
@@ -1555,10 +1588,8 @@ module.exports.processMediaTags = processMediaTags;
 module.exports.downloadAlbumArt = art => {
 
     dialog.showSaveDialog({
-
         defaultPath: app.getPath("downloads"),
         title: "where to save albumart?"
-
     }, location => {
 
         if ( ! location ) {

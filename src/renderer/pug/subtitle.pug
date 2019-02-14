@@ -11,22 +11,24 @@ block body
        span(class="fa fa-window-close subtitle-close")
      section(class="subtitle")
          form(class="subtitle-form")
+         
             label(for="input") Name of Movie/Series
             input(class="subtitle-form-input" type="text" id="input")
+            i(class="fa fa-search subtitle-search-net" type="search")
 
-            label(for="movies") Movies
-            input(class="subtitle-radio subtitle-form-input" type="checkbox" id="movies" checked)
+            span.movies Movies
+              i(class="fa fa-check-circle subtitle-movie-checkbox" data-checked="checked")
 
-            label(for="series") Series
-            input(class="subtitle-radio subtitle-form-input" type="checkbox" id="series")
+            span.series Series
+              i(class="fa fa-circle subtitle-series-checkbox")
+            
             div(class="series-option" hidden)
                 label(for="season") Season
-                input(class="subtitle-series-type subtitle-form-input" type="text" id="season")
+                input(class="subtitle-series-type subtitle-form-input" type="number" id="season")
 
                 label(for="episode") Episode
-                input(class="subtitle-series-type subtitle-form-input" type="text" id="episode")
-           
-            button(class="fa fa-search" type="search") Search
+                input(class="subtitle-series-type subtitle-form-input" type="number" id="episode")
+                
          section(class="subtitle-loaded")
            p(class="subtitle-info")
  

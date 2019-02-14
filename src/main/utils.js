@@ -1,4 +1,6 @@
 
+"use strict";
+
 const fs = require("fs");
 
 const {
@@ -101,50 +103,65 @@ const resumeDownloading = (item,webContents) => {
     }
 };
 
+
+const setDownloadPath = downloadFile => {
+
+    let downloadFileName = join(app.getPath("downloads"), downloadFile);
+
+    if ( fs.existsSync(downloadFileName) ) {
+
+        const btn = dialog.showMessageBox({
+            type: "info",
+            message: `${downloadFileName} path already exists, click cancel to choose a different file name or ok to overwrite exisisting file`,
+            buttons: [ "Ok", "Cancel" ]
+        });
+
+        if ( btn === 1 )
+            downloadFileName = dialog.showSaveDialog({
+                defaultPath: app.getPath("downloads"),
+                title: "Specify a loation to save subtitle file"
+            });
+        else
+            fs.unlinkSync(downloadFileName);
+    }
+    return downloadFileName;
+};
+
 const downloadFile = (url, contentId) => {
 
-    const [ window ] = BrowserWindow.getAllWindows().filter( ({webContents}) => webContents.id === contentId );
+    const [ window ]      = BrowserWindow.getAllWindows().filter( ({webContents}) => webContents.id === contentId );
     const { webContents } = window;
+
     webContents.downloadURL(url);
 
-    webContents.session.on("will-download", async (event,item,webContents) => {
+    webContents.session.once("will-download", async (event,item,webContents) => {
 
-        item.setSavePath(app.getPath("downloads"));
+        item.setSavePath(setDownloadPath(item.getFilename()));
 
-        ipc.on("download::paused", () => {
-            item.pause();
-        });
+        ipc.on("download::restart", () => downloadFile(item.getURL(), contentId) );
+        ipc.on("download::resume",  () => resumeDownloading(item,webContents) );
+        ipc.on("download::paused",  () => item.pause() );
+        ipc.on("download::cancel",  () => item.cancel() );
 
-        ipc.on("download::cancel", () => {
-            item.cancel();
-        });
-
-        ipc.on("download::restart", () => {
-            downloadFile(item.getURL(), contentId);
-        });
-
-        ipc.on("download::resume", () => {
-            resumeDownloading(item,webContents);
-        });
-
-        webContents.send("download::started", webContents.id, item.getFilename());
+        webContents.send( "download::started", item , url );
+        webContents.send( "download::totalbyte", item.getTotalBytes() , url );
 
         item.on("updated", (event,state) => {
 
-            webContents.send("download::state", state);
+            webContents.send("download::state", state , url);
 
-            // if ( state === "interrupted" )
-            //     resumeDownloading(item,webContents);
+            if ( state === "interrupted" )
+                resumeDownloading(item,webContents);
 
-            webContents.send("download::gottenByte", item.getReceivedBytes());
-            webContents.send("download::computePercent", item.getReceivedBytes(), item.getTotalBytes());
+            webContents.send( "download::gottenByte", item.getReceivedBytes() , url);
+            webContents.send( "download::computePercent", item.getReceivedBytes(), item.getTotalBytes() , url);
+
         });
 
-        item.once("done", (event,state) => {
-            webContents.send("download::state", state);
+        item.on("done", (event,state) => {
+            webContents.send( "download::complete", item.getSavePath() , url );
         });
 
-        webContents.send("download::totalbyte", item.getTotalBytes());
     });
 };
 

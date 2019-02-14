@@ -15,226 +15,206 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-;( () => {
 
-    "use strict";
+"use strict";
 
-    const {
-        ipcRenderer: ipc,
-        remote: {
-            BrowserWindow,
-            getCurrentWindow,
-            require: _require
-        }
-    } = require("electron");
+const {
+    ipcRenderer: ipc,
+    remote: {
+        BrowserWindow,
+        getCurrentWindow,
+        require: _require
+    }
+} = require("electron");
 
-    const {
-        downloadFile,
-        computeByte,
-        resumeDownloading
-    } = require("../js/Util.js");
-
-
-    const close         = document.querySelector(".download-close");
-    const filename      = document.querySelector(".akara-download-filename");
-    const downByte      = document.querySelector(".akara-download-meter");
-    const unknownByte   = document.querySelector(".akara-unknown-download-meter");
-
-    const downByPercent = document.querySelector(".akara-downloading-percent");
-    const downloadState = document.querySelector(".akara-download-state");
-
-    const currentByte   = document.querySelector(".akara-currentByte");
-    const totalByte     = document.querySelector(".akara-totalByte");
-
-    const cancel       = document.querySelector(".akara-download-cancel");
-    const pause        = document.querySelector(".akara-download-pause");
-    const resume       = document.querySelector(".akara-download-resume");
-    const restart      = document.querySelector(".akara-download-restart");
+const {
+    downloadFile,
+    computeByte,
+    resumeDownloading
+} = require("../js/Util.js");
 
 
-    /**
-     *
-     *
-     * hide or show pause resume and restart
-     *  buttons
-     *
-     *
-     **/
+// const close         = document.querySelector(".download-close");
+// const filename      = document.querySelector(".akara-download-filename");
+// const downByte      = document.querySelector(".akara-download-meter");
+// const unknownByte   = document.querySelector(".akara-unknown-download-meter");
 
-    const hide = ({_pause,_resume,_restart}) => {
-        pause.hidden = _pause;
-        resume.hidden = _resume;
-        restart.hidden = _restart;
-    };
+// const downByPercent = document.querySelector(".akara-downloading-percent");
+// const downloadState = document.querySelector(".akara-download-state");
 
+// const currentByte   = document.querySelector(".akara-currentByte");
+// const totalByte     = document.querySelector(".akara-totalByte");
 
-
-    /**
-     *
-     *
-     *  download::state event listener will be trigerred
-     *  whenever the state of the download is updated
-     *
-     **/
-
-    ipc.on("download::state", (event,state) => {
-
-        downloadState.textContent = state === "progressing"
-            ? "Downloading"
-            : state;
-
-        switch(state) {
-        case "interrupted":
-            pause.hidden = true;
-            cancel.hidden = true;
-            resume.hidden = true;
-            restart.hidden = false;
-            break;
-        case "progressing":
-            pause.disabled = false;
-            cancel.disabled = false;
-            resume.hidden = true;
-            restart.hidden = true;
-            break;
-        case "completed":
-            pause.disabled = true;
-            cancel.disabled = true;
-            resume.hidden = false;
-            restart.hidden = false;
-            break;
-        case "cancelled":
-            restart.hidden = false;
-            resume.hidden = true;
-            pause.hidden = false;
-            cancel.hidden = true;
-            break;
-        default:
-            // do nothing
-        }
-    });
+// const cancel       = document.querySelector(".akara-download-cancel");
+// const pause        = document.querySelector(".akara-download-pause");
+// const resume       = document.querySelector(".akara-download-resume");
+// const restart      = document.querySelector(".akara-download-restart");
 
 
-    /**
-     *
-     *
-     * download::gottenByte event listener will be trigerred
-     * each time a byte is downloaded
-     *
-     **/
+/**
+ *
+ *
+ * hide or show pause resume and restart
+ *  buttons
+ *
+ *
+ **/
+
+// const hide = ({_pause,_resume,_restart}) => {
+//     pause.hidden = _pause;
+//     resume.hidden = _resume;
+//     restart.hidden = _restart;
+// };
 
 
-    ipc.on("download::gottenByte", (event,bytes) => {
-        currentByte.textContent = computeByte(bytes);
-    });
+
+/**
+ *
+ *
+ *  download::state event listener will be trigerred
+ *  whenever the state of the download is updated
+ *
+ **/
+
+// ipc.on("download::state", (event,state) => {
+
+//     downloadState.textContent = state === "progressing"
+//         ? "Downloading"
+//         : state;
+
+//     switch(state) {
+//     case "interrupted":
+//         pause.hidden = true;
+//         cancel.hidden = true;
+//         resume.hidden = true;
+//         restart.hidden = false;
+//         break;
+//     case "progressing":
+//         pause.disabled = false;
+//         cancel.disabled = false;
+//         resume.hidden = true;
+//         restart.hidden = true;
+//         break;
+//     case "completed":
+//         pause.disabled = true;
+//         cancel.disabled = true;
+//         resume.hidden = false;
+//         restart.hidden = false;
+//         break;
+//     case "cancelled":
+//         restart.hidden = false;
+//         resume.hidden = true;
+//         pause.hidden = false;
+//         cancel.hidden = true;
+//         break;
+//     default:
+//         // do nothing
+//     }
+// });
 
 
-    // /**
-    //  *
-    //  *
-    //  *
-    //  * download::filename event is trigerred whenever
-    //  *  the downloads starts, fname is the name of the file
-    //  *
-    //  **/
-
-    // ipc.on("download::filename", (event,fname) => {
-    //     filename.textContent = fname;
-    // });
+/**
+ *
+ *
+ * download::gottenByte event listener will be trigerred
+ * each time a byte is downloaded
+ *
+ **/
 
 
-    /**
-     *
-     *
-     *
-     * download::totalbyte event is trigerred whenever the download starts
-     *  bytes contains the totalbyte of the file
-     *
-     **/
-
-    ipc.on("download::totalbyte", (event,bytes) => {
-
-        /**
-         * when byte is 0 don't do a percent download
-         * just do an unknown byte download
-         **/
-
-        if ( bytes === 0 ) {
-            totalByte.setAttribute("style", "display: hidden;");
-            return ;
-        }
-
-        totalByte.textContent = computeByte(bytes);
-    });
+ipc.on("download::gottenByte", (event,bytes) => {
+    currentByte.textContent = computeByte(bytes);
+});
 
 
-    // ipc.on("akara::downloadPath", (evt,url,cb) => {
-    //     downloadURL(url,getCurrentWindow(),cb);
-    // });
+// /**
+//  *
+//  *
+//  *
+//  * download::filename event is trigerred whenever
+//  *  the downloads starts, fname is the name of the file
+//  *
+//  **/
+
+// ipc.on("download::filename", (event,fname) => {
+//     filename.textContent = fname;
+// });
+
+
+/**
+ *
+ *
+ *
+ * download::totalbyte event is trigerred whenever the download starts
+ *  bytes contains the totalbyte of the file
+ *
+ **/
+
+ipc.on("download::totalbyte", (event,bytes) => {
 
     /**
-     *
-     * download::computePercent calculates
-     * the percentage of receivedByte to totalByte
-     *
+     * when byte is 0 don't do a percent download
+     * just do an unknown byte download
      **/
 
-    ipc.on("download::computePercent", (event,rByte,tByte) => {
+    if ( bytes === 0 ) {
+        totalByte.setAttribute("style", "display: hidden;");
+        return ;
+    }
 
-        if ( tByte === 0 ) {
-            unknownByte.setAttribute("data-unknown-byte", "true");
-            return ;
-        }
-
-
-        if ( unknownByte.hasAttribute("data-unknown-byte") ) {
-            unknownByte.removeAttribute("data-unknown-byte");
-        }
-
-        const percent = Math.trunc(( ( rByte / tByte ) * 100 ));
-        const percentWidth = percent + "%";
-        downByPercent.textContent = percentWidth;
-        downByte.setAttribute("style", `width: ${percentWidth};display: block`);
-
-    });
-    
-
-    // resume.addEventListener("click", () => {
-    //     ipc.send("download::resume");
-    // });
+    totalByte.textContent = computeByte(bytes);
+});
 
 
-    // cancel.addEventListener("click", () => {
-    //     ipc.send("download::cancel");
-    //     getCurrentWindow().close();
-    // });
+// ipc.on("akara::downloadPath", (evt,url,cb) => {
+//     downloadURL(url,getCurrentWindow(),cb);
+// });
+
+/**
+ *
+ * download::computePercent calculates
+ * the percentage of receivedByte to totalByte
+ *
+ **/
+
+ipc.on("download::computePercent", (event,rByte,tByte) => {
+
+    if ( tByte === 0 ) {
+        unknownByte.setAttribute("data-unknown-byte", "true");
+        return ;
+    }
 
 
-    function downloadDomEvents(item) {
+    if ( unknownByte.hasAttribute("data-unknown-byte") ) {
+        unknownByte.removeAttribute("data-unknown-byte");
+    }
 
+    const percent = Math.trunc(( ( rByte / tByte ) * 100 ));
+    const percentWidth = percent + "%";
+    downByPercent.textContent = percentWidth;
+    downByte.setAttribute("style", `width: ${percentWidth};display: block`);
 
-    };
+});
 
-    ipc.on("download::started", (event,webContentId,fileName) => {
+ipc.on("download::started", (event,webContentId,fileName) => {
 
-        pause.addEventListener("click", () => {
-            ipc.send("download::paused");
-        });
-
-        close.addEventListener("click", () => {
-            ipc.send("download::cancel");
-            getCurrentWindow().close();
-        });
-
-        restart.addEventListener("click", () => {
-            ipc.send("download::restart");
-        });
-
-        resume.addEventListener("click", () => {
-            ipc.send("download::resume");
-        });
-
-        filename.textContent = fileName;
-
+    pause.addEventListener("click", () => {
+        ipc.send("download::paused");
     });
 
-})();
+    close.addEventListener("click", () => {
+        ipc.send("download::cancel");
+        getCurrentWindow().close();
+    });
+
+    restart.addEventListener("click", () => {
+        ipc.send("download::restart");
+    });
+
+    resume.addEventListener("click", () => {
+        ipc.send("download::resume");
+    });
+
+    filename.textContent = fileName;
+
+});

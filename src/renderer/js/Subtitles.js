@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -28,31 +28,68 @@
             require: _require
         }
     }  = require("electron");
-    
+
     const {
         getSubtitle,
         isOnline,
         OS,
-        downloadWindow,
-        downloadFile
+        downloadFile,
+        computeByte,
+        sendNotification
     } = require("../js/Util.js");
 
-    
+
     const fs    = require("fs");
     const url   = require("url");
     const path  = require("path");
 
-
-    const akara_emit =  require("../js/Emitter.js");
-    const movie      = document.querySelector("#movies");
-    const series     = document.querySelector("#series");
-    const button     = document.querySelector("button");
+    const movie      = document.querySelector(".subtitle-movie-checkbox");
+    const series     = document.querySelector(".subtitle-series-checkbox");
+    const search     = document.querySelector(".subtitle-search-net");
     const season     = document.querySelector("#season");
     const episode    = document.querySelector("#episode");
-    const input      = document.querySelector(".subtitle-form-input");
+    const searchBox  = document.querySelector(".subtitle-form-input");
     const loaded     = document.querySelector(".subtitle-info");
     const close      = document.querySelector(".subtitle-close");
     const section    = document.querySelector("section");
+
+
+    const ipcMessageHandlers = Object.defineProperties({}, {
+
+        downloadStarted: {
+
+            value( { td , evt , item , url }) {
+
+                let downloadSubtitlePSpinner = td.querySelector(".subtitle-downloading");
+
+                if ( downloadSubtitlePSpinner )
+                    return;
+                else if ( ! downloadSubtitlePSpinner ) {
+                    downloadSubtitlePSpinner = document.createElement("div");
+                    downloadSubtitlePSpinner.setAttribute("class", "subtitle-downloading");
+                }
+
+                const downloadSubtitleSpinner = document.createElement("i");
+
+                td.classList.add("subtitle_no_click");
+
+                downloadSubtitlePSpinner.setAttribute("class", "subtitle-downloading");
+                downloadSubtitleSpinner.setAttribute("class", "fa fa-2x fa-spinner fa-spin");
+
+                downloadSubtitlePSpinner.appendChild(downloadSubtitleSpinner);
+                td.appendChild(downloadSubtitlePSpinner);
+            }
+        },
+
+        downloadCompleted: {
+            value({ td , evt , fpath }) {
+                td.querySelector(".subtitle-downloading").remove();
+                td.classList.remove("subtitle_no_click");
+                ipc.sendTo(1,"subtitle::load-sub", "net", fpath);
+                sendNotification({ title: "Subtitle" , message: "Done Downloading Subtitle"});
+            }
+        }
+    });
 
 
     /**
@@ -67,14 +104,14 @@
 
         const {
             query,
-            season,
-            episode
+            season$,
+            episode$
         } = value;
 
         let result;
 
-        if ( series.checked ) {
-            result = await getSubtitle({query,season,episode});
+        if ( series.hasAttribute("data-checked") ) {
+            result = await getSubtitle({query,season$,episode$});
         } else {
             result = await getSubtitle({query});
         }
@@ -99,7 +136,7 @@
         const subtitleParent = document.createElement("table");
 
         let idx = 1;
-        
+
         subtitleParent.appendChild(createTableHeaders(value));
 
         for ( let [ key, values ] of Object.entries(value)) {
@@ -141,7 +178,7 @@
             }
 
             td = document.createElement("td");
-            
+
             if ( keys[i] === "url" ) {
                 __url = _value;
                 i++;
@@ -154,17 +191,25 @@
             i++;
         }
 
+        // add click event to the last cell in this row
+
         td.addEventListener("click", () => {
 
-            let win = downloadWindow();
-            console.log("send event");
-            ipc.send("download::init", __url, win.webContents.id);
-            //downloadFile(__url,win);
-            akara_emit.once("download::complete", fpath => {
-                console.log("sent");
-                ipc.sendTo(1,"subtitle::load-sub", "net", fpath);
-            });
+            if ( td.classList.contains("subtitle_no_click") ) return;
+
+            ipc.once("download::started", (evt,item,url) => ipcMessageHandlers.downloadStarted({td,evt,item,url}));
+            ipc.once("download::complete", ( evt , fpath ) => ipcMessageHandlers.downloadCompleted({td,fpath}));
+
+            ipc.on("download::state", ( evt , state ) => {});
+            ipc.on("download::totalbyte", ( evt , tbyte ) => {});
+            ipc.on("download::gottenByte", ( evt , recievedBytes ) => {});
+            ipc.on("download::computePercent", (evt,rBytes,tBytes) => {});
+
+            const { webContents } = getCurrentWindow();
+            ipc.send("download::init", __url , webContents.id );
         });
+
+        subtitle.setAttribute("data-subtitle-url",`sub${__url.replace(/.*\//, "")}`);
         return parent.appendChild(subtitle);
     };
 
@@ -221,30 +266,32 @@
     };
 
 
-    const checkValues = ({input,movie,series,season,episode}) => {
+    const checkValues = () => {
 
-        if ( input.value.length === 0 )
+        if ( searchBox.value.length === 0 )
             return "TEXT_LENGTH_GREAT";
 
-        if ( series.checked ) {
+        if ( series.hasAttribute("data-checked") ) {
             if ( isNaN(season.value) || season.value.length === 0 ) {
                 return "SEASON_INVALID";
             }
             if ( isNaN(episode.value) || episode.value.length === 0 )  {
                 return "EPISODE_INVALID";
             }
-            const query = input.value;
-            season = season.value;
-            episode = episode.value;
-            return { query, season, episode };
+
+            const query    = searchBox.value,
+                  season$  = season.value,
+                  episode$ = episode.value;
+            console.log(season$, episode$);
+            return { query, season$, episode$ };
         }
 
-        if ( input.value.length > 0 && ! series.checked && ! movie.checked ) {
+        if ( searchBox.value.length > 0 && ! series.hasAttribute("data-checked") && ! movie.hasAttribute("data-checked") ) {
             return "SERIES_MOVIE_NO_CHECKED";
         }
 
-        if ( movie.checked ) {
-            const query = input.value;
+        if ( movie.hasAttribute("data-checked") ) {
+            const query = searchBox.value;
             return { query };
         }
 
@@ -254,18 +301,42 @@
 
     close.addEventListener("click", () => getCurrentWindow().close());
 
-    movie.addEventListener("change", () => {
-        console.log(movie.checked);
+    movie.parentNode.addEventListener("click", () => {
+
+        let sOption = document.querySelector(".series-option");
+
+        if ( movie.hasAttribute("data-checked") )
+            return;
+
+        series.removeAttribute("data-checked");
+        series.classList.remove("fa-check-circle");
+        series.classList.add("fa-circle");
+
+        sOption.setAttribute("style", "display: none;");
+
+        movie.classList.add("fa-check-circle");
+        movie.classList.remove("fa-circle");
+        movie.setAttribute("data-checked", "checked");
     });
 
-    series.addEventListener("change", () => {
+    series.parentNode.addEventListener("click", () => {
+
         let sOption = document.querySelector(".series-option");
-        if ( series.checked ) {
-            sOption.removeAttribute("hidden");
-            return sOption.setAttribute("style", "display: inline;");
-        }
-        sOption.removeAttribute("style");
-        return sOption.setAttribute("hidden", "true");
+
+        if ( series.hasAttribute("data-checked") )
+            return;
+
+        sOption.removeAttribute("hidden");
+        sOption.setAttribute("style", "display: inline;");
+
+        series.setAttribute("data-checked", "checked");
+        series.classList.add("fa-check-circle");
+        series.classList.remove("fa-circle");
+
+        movie.removeAttribute("data-checked");
+        movie.classList.remove("fa-check-circle");
+        movie.classList.add("fa-circle");
+        return;
     });
 
 
@@ -276,11 +347,11 @@
      *
      **/
 
-    button.addEventListener("click", async (e) => {
+    search.addEventListener("click", async (e) => {
 
         e.preventDefault();
 
-        const value = checkValues({input,movie,series,season,episode});
+        const value = checkValues();
 
         switch ( value ) {
         case "TEXT_LENGTH_GREAT":
@@ -305,8 +376,9 @@
                     table.remove();
                     loaded.hidden = false;
                 }
+
                 loaded.innerHTML = "Loading...";
-                const {query,season,episode} = value;
+                console.log(value);
                 handleSearch(value);
             }
 
@@ -319,12 +391,12 @@
             return ;
         videoPath = url.parse(videoPath);
         videoPath.pathname = decodeURIComponent(videoPath.pathname);
-        input.disabled = false;
-        input.value = path.parse(videoPath.pathname).name;
+        searchBox.disabled = false;
+        searchBox.value = path.parse(videoPath.pathname).name;
         loaded.innerHTML = "Loading...";
         styleResult(await getSubtitle({ hash: await OS.hash(videoPath.pathname).moviehash}));
     });
-    
+
     ipc.sendTo(1, "akara::send:media:file", getCurrentWindow().webContents.id);
 
 })();
