@@ -580,7 +580,9 @@ module.exports.playOnDrop = () => {
 };
 
 const sendNotification = (options) => {
+    
     const notifier = require("node-notifier");
+    
     options.sound = true;
     options.icon = options.icon ? options.icon : "/root/Picture/pics.jpg" ;
 
@@ -710,6 +712,7 @@ module.exports.langDetect = (file) => {
 module.exports.getSubtitle = async (option) => {
     let value;
     try {
+        console.log(option, "down here");
         value = await OS.search(option);
     } catch(ex) {
         value = ex;

@@ -121,10 +121,10 @@ const setDownloadPath = downloadFile => {
                 defaultPath: app.getPath("downloads"),
                 title: "Specify a loation to save subtitle file"
             });
+        else
+            fs.unlinkSync(downloadFileName);
     }
-
     return downloadFileName;
-
 };
 
 const downloadFile = (url, contentId) => {
@@ -134,7 +134,7 @@ const downloadFile = (url, contentId) => {
 
     webContents.downloadURL(url);
 
-    webContents.session.on("will-download", async (event,item,webContents) => {
+    webContents.session.once("will-download", async (event,item,webContents) => {
 
         item.setSavePath(setDownloadPath(item.getFilename()));
 

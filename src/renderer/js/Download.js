@@ -60,11 +60,11 @@ const {
  *
  **/
 
-const hide = ({_pause,_resume,_restart}) => {
-    pause.hidden = _pause;
-    resume.hidden = _resume;
-    restart.hidden = _restart;
-};
+// const hide = ({_pause,_resume,_restart}) => {
+//     pause.hidden = _pause;
+//     resume.hidden = _resume;
+//     restart.hidden = _restart;
+// };
 
 
 
@@ -76,41 +76,41 @@ const hide = ({_pause,_resume,_restart}) => {
  *
  **/
 
-ipc.on("download::state", (event,state) => {
+// ipc.on("download::state", (event,state) => {
 
-    downloadState.textContent = state === "progressing"
-        ? "Downloading"
-        : state;
+//     downloadState.textContent = state === "progressing"
+//         ? "Downloading"
+//         : state;
 
-    switch(state) {
-    case "interrupted":
-        pause.hidden = true;
-        cancel.hidden = true;
-        resume.hidden = true;
-        restart.hidden = false;
-        break;
-    case "progressing":
-        pause.disabled = false;
-        cancel.disabled = false;
-        resume.hidden = true;
-        restart.hidden = true;
-        break;
-    case "completed":
-        pause.disabled = true;
-        cancel.disabled = true;
-        resume.hidden = false;
-        restart.hidden = false;
-        break;
-    case "cancelled":
-        restart.hidden = false;
-        resume.hidden = true;
-        pause.hidden = false;
-        cancel.hidden = true;
-        break;
-    default:
-        // do nothing
-    }
-});
+//     switch(state) {
+//     case "interrupted":
+//         pause.hidden = true;
+//         cancel.hidden = true;
+//         resume.hidden = true;
+//         restart.hidden = false;
+//         break;
+//     case "progressing":
+//         pause.disabled = false;
+//         cancel.disabled = false;
+//         resume.hidden = true;
+//         restart.hidden = true;
+//         break;
+//     case "completed":
+//         pause.disabled = true;
+//         cancel.disabled = true;
+//         resume.hidden = false;
+//         restart.hidden = false;
+//         break;
+//     case "cancelled":
+//         restart.hidden = false;
+//         resume.hidden = true;
+//         pause.hidden = false;
+//         cancel.hidden = true;
+//         break;
+//     default:
+//         // do nothing
+//     }
+// });
 
 
 /**

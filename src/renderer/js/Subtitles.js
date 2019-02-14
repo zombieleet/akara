@@ -34,7 +34,8 @@
         isOnline,
         OS,
         downloadFile,
-        computeByte
+        computeByte,
+        sendNotification
     } = require("../js/Util.js");
 
 
@@ -53,6 +54,44 @@
     const section    = document.querySelector("section");
 
 
+    const ipcMessageHandlers = Object.defineProperties({}, {
+
+        downloadStarted: {
+
+            value( { td , evt , item , url }) {
+
+                let downloadSubtitlePSpinner = td.querySelector(".subtitle-downloading");
+
+                if ( downloadSubtitlePSpinner )
+                    return;
+                else if ( ! downloadSubtitlePSpinner ) {
+                    downloadSubtitlePSpinner = document.createElement("div");
+                    downloadSubtitlePSpinner.setAttribute("class", "subtitle-downloading");
+                }
+
+                const downloadSubtitleSpinner = document.createElement("i");
+
+                td.classList.add("subtitle_no_click");
+
+                downloadSubtitlePSpinner.setAttribute("class", "subtitle-downloading");
+                downloadSubtitleSpinner.setAttribute("class", "fa fa-2x fa-spinner fa-spin");
+
+                downloadSubtitlePSpinner.appendChild(downloadSubtitleSpinner);
+                td.appendChild(downloadSubtitlePSpinner);
+            }
+        },
+
+        downloadCompleted: {
+            value({ td , evt , fpath }) {
+                td.querySelector(".subtitle-downloading").remove();
+                td.classList.remove("subtitle_no_click");
+                ipc.sendTo(1,"subtitle::load-sub", "net", fpath);
+                sendNotification({ title: "Subtitle" , message: "Done Downloading Subtitle"});
+            }
+        }
+    });
+
+
     /**
      *
      *
@@ -65,14 +104,14 @@
 
         const {
             query,
-            season: _season,
-            episode: _episode
+            season$,
+            episode$
         } = value;
 
         let result;
 
         if ( series.hasAttribute("data-checked") ) {
-            result = await getSubtitle({query,_season,_episode});
+            result = await getSubtitle({query,season$,episode$});
         } else {
             result = await getSubtitle({query});
         }
@@ -152,55 +191,25 @@
             i++;
         }
 
+        // add click event to the last cell in this row
+
         td.addEventListener("click", () => {
 
+            if ( td.classList.contains("subtitle_no_click") ) return;
+
+            ipc.once("download::started", (evt,item,url) => ipcMessageHandlers.downloadStarted({td,evt,item,url}));
+            ipc.once("download::complete", ( evt , fpath ) => ipcMessageHandlers.downloadCompleted({td,fpath}));
+
+            ipc.on("download::state", ( evt , state ) => {});
+            ipc.on("download::totalbyte", ( evt , tbyte ) => {});
+            ipc.on("download::gottenByte", ( evt , recievedBytes ) => {});
+            ipc.on("download::computePercent", (evt,rBytes,tBytes) => {});
+
             const { webContents } = getCurrentWindow();
-
-            ipc.on("download::started", (evt , item , url ) => {
-
-                let downloadSubtitlePSpinner = td.querySelector(".subitlte-downloading");
-
-                if ( downloadSubtitlePSpinner || url !== __url )
-                    return;
-                else if ( ! downloadSubtitlePSpinner ) {
-                    downloadSubtitlePSpinner = document.createElement("subtitle-downloading");
-                }
-
-                const downloadSubtitleSpinner = document.createElement("i");
-
-                downloadSubtitlePSpinner.setAttribute("class", "subtitle-downloading");
-                downloadSubtitleSpinner.setAttribute("class", "fa fa-2x fa-spinner fa-spin");
-
-                downloadSubtitlePSpinner.appendChild(downloadSubtitleSpinner);
-                td.appendChild(downloadSubtitlePSpinner);
-
-            });
-
-            ipc.on("download::state", ( evt , state ) => {
-                //console.log( state , " download::state " , __url );
-            });
-
-            ipc.on("download::totalbyte", ( evt , tbyte ) => {
-                //console.log( tbyte , " download::totalbyte " , __url );
-            });
-
-            ipc.on("download::gottenByte", ( evt , recievedBytes ) => {
-                currentByte.textContent = computeByte(bytes);
-            });
-
-            ipc.on("download::computePercent", (event,rBytes,tBytes) => {
-                console.log(rBytes, tBytes, "compute%");
-            });
-
-            ipc.once("download::complete", fpath => {
-                console.log("sent -> done");
-                ipc.sendTo(1,"subtitle::load-sub", "net", fpath);
-            });
-
             ipc.send("download::init", __url , webContents.id );
-
         });
 
+        subtitle.setAttribute("data-subtitle-url",`sub${__url.replace(/.*\//, "")}`);
         return parent.appendChild(subtitle);
     };
 
@@ -273,7 +282,7 @@
             const query    = searchBox.value,
                   season$  = season.value,
                   episode$ = episode.value;
-
+            console.log(season$, episode$);
             return { query, season$, episode$ };
         }
 
@@ -367,8 +376,9 @@
                     table.remove();
                     loaded.hidden = false;
                 }
+
                 loaded.innerHTML = "Loading...";
-                const {query,season,episode} = value;
+                console.log(value);
                 handleSearch(value);
             }
 
