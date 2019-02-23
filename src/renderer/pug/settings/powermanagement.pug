@@ -42,8 +42,7 @@ block body
             p Brighteen Screen While Charging
             i(class="fa fa-toggle-off toggle-off")
             
-      
-      div(class="power-buttons")
-        button(class="power-save") Save
-        button(class="power-cancel") Cancel
+      include ../mixins.pug
+      +akara__button__save("power")
+
     script(src="../../js/Settings/Powermanagement.js")
