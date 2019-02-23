@@ -147,14 +147,41 @@
 
 
     const loadSettingsPreference = async () => {
+
         const posterJson = await requireSettingsPath("poster.json");
         const posterSettings = require(posterJson);
         appendPostersToDom(await loadPosters());
 
-        checkBox.checked = posterSettings.album_art ? true : false;
+        if ( posterSettings.album_art ) {
+            checkBox.classList.add("fa-check-circle");
+            checkBox.setAttribute("data-checked", true );
+            return;
+        }
+        checkBox.classList.add("fa-circle");
+        checkBox.setAttribute("data-checked", false);
+        return;
     };
 
     window.addEventListener("DOMContentLoaded",loadSettingsPreference);
+
+    checkBox.addEventListener("click", () => {
+
+        if ( checkBox.getAttribute("data-checked") === "true" ) {
+
+            checkBox.classList.remove("fa-check-circle");
+            checkBox.classList.add("fa-circle");
+            checkBox.setAttribute("data-checked", false);
+
+            return;
+
+        }
+
+        checkBox.classList.remove("fa-circle");
+        checkBox.classList.add("fa-check-circle");
+        checkBox.setAttribute("data-checked", true);
+
+        return;
+    });
 
     save.addEventListener("click", async (evt) => {
 
@@ -164,8 +191,8 @@
             const url = el.getAttribute("data-poster-path");
             saveSettings("poster", url);
         });
-
-        if ( checkBox.checked )
+        console.log(checkBox.getAttribute("data-checked"));
+        if ( checkBox.getAttribute("data-checked") === "true" )
             return saveSettings("album_art", true);
 
         return saveSettings("album_art", false);
@@ -213,13 +240,14 @@
     });
 
     reset.addEventListener("click", async () => {
+
         const posterJson = await requireSettingsPath("poster.json");
         const posterSettings = require(posterJson);
 
-        const posterListItem = Array.from(document.querySelectorAll(".poster-list-item")); //el => {
-        
+        const posterListItem = Array.from(document.querySelectorAll(".poster-list-item"));
+
         let posterPath ;
-        
+
         for ( let el of posterListItem ) {
 
             if ( el.hasAttribute("data-current-value") )

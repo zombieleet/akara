@@ -833,7 +833,7 @@ const loadAlbumArt = () => {
     const posterJson = requireSettingsPath("poster.json");
     const posterSettings = require(posterJson);
 
-
+    console.log(posterSettings.album_art, "here there");
     if ( ! posterSettings.album_art )
         return false;
 
@@ -949,6 +949,7 @@ module.exports.videoLoadData = event => {
     loadAlbumArt();
 
     akara_emit.once("akara::audio:albumart",  base64StringAlbum_art => {
+        console.log(base64StringAlbum_art);
         if ( ! base64StringAlbum_art ) {
             video.poster = posterSettings.poster;
             return ;
