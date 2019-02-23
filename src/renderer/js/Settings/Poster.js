@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -47,7 +47,7 @@
     const install  = document.querySelector(".poster-install");
     const reset    = document.querySelector(".poster-reset");
     const remove   = document.querySelector(".poster-remove");
-    
+
     const posterPath = path.join(
         app.getAppPath(),
         "app",
@@ -232,26 +232,30 @@
                 }
             }
         }
-        
-        checkBox.checked = false;
+
+        checkBox.setAttribute("data-checked", false);
+        checkBox.classList.remove("fa-check-circle");
+        checkBox.classList.add("fa-circle");
+
         saveSettings("poster", posterPath);
         saveSettings("album_art", false);
         ipc.sendTo(1, "akara::video:poster:change", posterPath);
+
     });
 
     remove.addEventListener("click", () => {
-        
+
         const posterListItem = Array.from(document.querySelectorAll(".poster-list-item"));
         const pathToUserPosters = user_poster_location;
-        
+
         let found ;
         let _el;
-        
+
         for ( let el of posterListItem ) {
             if ( el.hasAttribute("data-current-value") ) {
-                
+
                 let dataFrom = el.getAttribute("data-poster-path");
-                
+
                 if ( path.dirname(dataFrom) !==  posterPath ) {
                     _el = el;
                     found = 1;
@@ -269,37 +273,37 @@
             );
             return ;
         }
-        
+
         if ( found === 1 ) {
-            
+
             const posterToRemove = _el.getAttribute("data-poster-path");
-            
+
             fs.readdir(pathToUserPosters, (err,info) => {
-                
+
                 if ( err )
                     return err;
-                
+
                 let location ;
-                
+
                 if ( (location = info.indexOf(path.basename(posterToRemove))) >= 0 ) {
-                    
+
                     fs.unlink(path.join(pathToUserPosters,info[location]), err => {
                         if ( err ) {
                             console.log(err);
                             return dialog.showErrorBox("Cannot Remove Poster", "Unable to remove poster");
                         }
-                        
+
                         return _el.remove();
                     });
-                    
+
                 }
 
                 return true;
             });
-            
+
         }
 
         return ;
     });
-    
+
 })();
