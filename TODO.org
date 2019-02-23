@@ -36,6 +36,7 @@
 *** TODO fix toggling                                                   :BUG:
     SCHEDULED: <2019-02-02 Sat>
 *** TODO Reimplement downloading functionality                    :IMPORTANT:
+*** TODO Implement real time update for settings                  :IMPORTANT:
 
 
 * IMPORTANT COMMANDS
