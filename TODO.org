@@ -1,6 +1,5 @@
-
 #+SEQ_TODO: TODO(t) DONE(d@/!) NEXT(d@/!) DOING(o@/!) PAUSED(p@/!) CANCELED(d@/!)
-#+TAGS: IMPORTANT(i) BUG(b) CLARITY(c)
+#+TAGS: IMPORTANT(i) BUG(b) CLARITY(c) CONSIDER(co)
 
 
 * SETTINGS
