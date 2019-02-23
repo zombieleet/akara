@@ -110,8 +110,12 @@ $drop-down-left-pos: 200;
     
     border: none;
     border-radius:500px;
-    background: lighten(black,40%);
-    //box-shadow: 1px 1px 1px 1px darken(lightgrey, 70%);
+    
+    background: darken($global-color,40%);
+    box-shadow: 1px 1px 10px 2px darken($global-color,20%);
+    
+    color: white;
+    
     &:hover {
         background: darken(lightgrey, 70%);
         color: white;

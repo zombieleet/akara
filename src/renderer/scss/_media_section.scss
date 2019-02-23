@@ -83,12 +83,13 @@ $akara-load-width: 30% ;//- $akara-media-cover-width;
         > li {
 
             padding: 5px;
-            width: inherit;
+            width: 100%;
             cursor: pointer;
             font-size: 1.2em;
-            margin-top: 4px;
+            margin-top: 10px;
             white-space: nowrap;
             transition: .2s ease-in-out;
+            box-shadow: 1px 1px 9px 1px black;
 
             &:hover {
                 @extend %loaded_media_hover_li;

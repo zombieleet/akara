@@ -35,8 +35,8 @@ block body
       +progressFilter("opacity", "%", 0, 100)
       +progressFilter("saturate", "%", 0, 100)
       +progressFilter("sepia", "%", 0, 100)
-      
-      div(class="filter-btn")
-        button(class="filter-close") Close
-        button(class="filter-reset") Reset
+
+      include ./mixins.pug
+      +akara__button__save("filter")
+
     script(src="../js/Filter.js")
