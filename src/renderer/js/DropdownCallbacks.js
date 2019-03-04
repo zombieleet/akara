@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -103,11 +103,15 @@ const addMediaCb = (paths,forPlaylist) => {
 
         const mimeType = mime.lookup(path);
 
-        if ( /mpegurl/.test(mimeType) )
-            return loadMpegGurlFormat(path);
+        if ( /mpegurl/.test(mimeType) ) {
+            loadMpegGurlFormat(path);
+            return;
+        }
 
-        if ( /xspf/.test(mimeType) )
-            return loadXspfFormat(path);
+        if ( /xspf/.test(mimeType) ) {
+            loadXspfFormat(path);
+            return;
+        }
 
         const decodedPath = decodeURIComponent(path);
         const _path = basename(decodedPath);
@@ -122,10 +126,10 @@ const addMediaCb = (paths,forPlaylist) => {
             createdElement.querySelector("span").textContent = JSON.parse(localStorage.getItem("podcast-metadata")).episode.title;
             localStorage.removeItem("podcast-metadata");
         }
-
-        return playOnDrop();
-
     });
+
+    playOnDrop();
+
 };
 
 const searchAndAppend = (input,findings) => {

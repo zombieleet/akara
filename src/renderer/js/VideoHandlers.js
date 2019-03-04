@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -150,12 +150,10 @@ module.exports.updateTimeIndicator = () => {
 
     if ( firstFragment ) {
         const lastFragment = localStorage.getItem("MEDIA_FRAGMENT_LAST");
-        console.log(video.duration === video.currentTime );
         if (
             (lastFragment && video.currentTime > Number(lastFragment) )
                 || ( video.currentTime >= video.duration )
         ) {
-            console.log("Shit");
             video.currentTime = parseFloat(firstFragment);
         }
     }
@@ -350,12 +348,14 @@ const __checkPlayStateAndNotify = () => {
         });
     }
 
+    if ( ! video.src )
+        return null;
+
     return sendNotification({
         title: "Playing",
         message: "Now Playing" + decodeURIComponent(path.basename(url.parse(video.src).path)),
         icon: video.poster
     });
-
 };
 
 
@@ -397,8 +397,6 @@ module.exports.videoLoadedEvent = () => {
     const coverOnError = document.querySelector(".cover-on-error-src");
 
     video.volume = currentVolumeSet[currentVolumeSet.length - 1].getAttribute("data-volume-controler");
-
-    console.log("hi");
 
     if ( coverOnError )
         coverOnError.setAttribute("style", "display: none;");
@@ -539,7 +537,6 @@ module.exports.clickedMoveToEvent = event => {
          || target.classList.contains("akara-time-current")
          || target.classList.contains("akara-time-buffered") ) {
         return handleMovement(event, result => {
-            console.log(result);
             video.currentTime = result;
         });
     }
@@ -784,7 +781,6 @@ const handleLoadSubtitle = async (filePath,cb) => {
 
     if ( /x-subrip$/.test(mime.lookup(filePath)) ) {
         filePath = await cb(filePath);
-        console.log(filePath);
     }
 
     const { track, lang } = await setUpTrackElement(filePath);
@@ -833,7 +829,6 @@ const loadAlbumArt = () => {
     const posterJson = requireSettingsPath("poster.json");
     const posterSettings = require(posterJson);
 
-    console.log(posterSettings.album_art, "here there");
     if ( ! posterSettings.album_art )
         return false;
 
@@ -885,7 +880,7 @@ module.exports.videoLoadData = event => {
 
     const currTimeUpdate = document.querySelector(".akara-update-cur-time");
     const currentTime = Number(getRecentPos(video.src).toString());
-
+    console.log(Number(getRecentPos(video.src).toString()), "resume", getRecentPos(video.src).toString());
     if ( currentTime !== 0 ) {
 
         const btn = dialog.showMessageBox({
@@ -949,7 +944,6 @@ module.exports.videoLoadData = event => {
     loadAlbumArt();
 
     akara_emit.once("akara::audio:albumart",  base64StringAlbum_art => {
-        console.log(base64StringAlbum_art);
         if ( ! base64StringAlbum_art ) {
             video.poster = posterSettings.poster;
             return ;
@@ -1321,7 +1315,6 @@ module.exports.videoSetFilter = (evt, { filterType, progressBarWidth, measuremen
 
 
     if ( regex.test(filter) ) {
-        console.log("enter regex");
         filter = filter.replace(regex, `${filterType}(${progressBarWidth}${measurement})`);
         video.style.filter = filter;
         return ;
@@ -1339,11 +1332,9 @@ module.exports.videoSetFilter = (evt, { filterType, progressBarWidth, measuremen
  *
  **/
 module.exports.videoResetFilter = (evt,type) => {
-    console.log("hiasdfasdf");
     let regex = new RegExp(`${type}\\((\\d+|\\d+\\.\\d+)(%|px|deg|)\\)`);
     let filter = video.style.filter;
     if ( regex.test(filter) ) {
-        console.log(regex);
         video.style.filter = filter.replace(regex,"");
     }
     return ;
@@ -1389,7 +1380,6 @@ module.exports.mediaProgress = evt => {
 };
 
 module.exports.mediaWaiting = evt => {
-    console.log(video.readyState, video.networkState);
 
     if ( video.networkState === 2 )
         console.log("network state downloading");
@@ -1424,14 +1414,11 @@ module.exports.videoFragment = evt => {
 
     if ( ! firstFragment ) {
         createFragment("start", "FIRST");
-        console.log(localStorage.getItem("MEDIA_FRAGMENT_FIRST"));
         return;
     }
 
     const firstFrag = parseInt(firstFragment.getAttribute("data-fragment-location"));
     const lastFrag = lastFragment ? parseInt(lastFragment.getAttribute("data-fragment-location")) : null;
-
-    console.log(location, firstFrag, lastFrag);
 
     if ( evt.clientX <  firstFrag ) {
         firstFragment.remove();
@@ -1503,7 +1490,6 @@ if ( require.main !== module ) {
         let outputProcess = document.querySelector(".akara-output-process");
         outputProcess.hidden = false;
         outputProcess.textContent = info;
-        console.log("output");
         if ( fin ) {
             outputProcess.animate({
                 opacity: [ .70, .60, .50, .40, .30, .20, .10, .1 ]

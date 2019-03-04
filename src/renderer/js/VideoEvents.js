@@ -51,6 +51,7 @@
 
     controlElements.addEventListener("click", videoHandler.fireControlButtonEvent);
 
+    
     video.addEventListener("loadeddata", videoHandler.videoLoadData);
     video.addEventListener("dblclick", videoHandler.setFullScreen);
     video.addEventListener("mousemove", videoHandler.mouseMoveOnVideo);
@@ -192,7 +193,7 @@
     });
 
     ipc.on("akara::send:media:file", (evt,id) => {
-        evt.sender.sendTo(id,"akara::media:file", video.getAttribute("src"));
+        evt.sender.sendTo(id,"akara::media:file", video.src);
     });
 
     ipc.on("akara::subtitle:style:change", (evt,cssProps,cssValue) => {

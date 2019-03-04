@@ -53,9 +53,10 @@ const {
     subHandler
 } = require("../../js/VideoHandlers.js");
 
+const { video } = require("../../js/VideoControl.js");
+
 const akara_emit       = require("../../js/Emitter.js");
 const mediaShortCutKey = new (require("../../js/Keyevents.js"));
-const video            = document.querySelector("video");
 const searchResults    = document.querySelector(".findings");
 
 

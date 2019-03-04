@@ -5,21 +5,21 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 ; ( () => {
-    
+
     "use strict";
-    
+
     const ul = document.querySelector(".akara-loaded");
-    
+
     const {
         ipcRenderer: ipc,
         remote: {
@@ -39,13 +39,13 @@
         prevNext,
         updatePlaylistName
     } = require("../js/Util.js");
-    
+
     const {
         controls,
         video
     } = require("../js/VideoControl.js");
 
-    
+
     const { createNewWindow: addPlaylistWindow } = _require("./newwindow.js");
 
     const { addMediaCb }        = require("../js/DropdownCallbacks.js");
@@ -56,21 +56,13 @@
     const akara_emit = require("../js/Emitter.js");
     const fs         = require("fs");
 
-    const {
-        play,
-        pause,
-        stop,
-        getCurrentTime,
-        duration
-    } = controls;
-
     let currentTarget;
 
     const menu = new Menu();
 
     window.addEventListener("DOMContentLoaded", event =>  {
         const coverOnError = document.querySelector(".cover-on-error-src");
-        if ( video.getAttribute("src") )
+        if ( video.src )
             coverOnError.setAttribute("style", "display: none;");
     });
 
@@ -93,6 +85,11 @@
         }
     });
 
+
+    // in the playlist section ( where all media files are loaded )
+    // when a media file is double clicked
+    // the media file is played
+    
     ul.addEventListener("dblclick", event => {
 
         let target = event.target;
@@ -157,7 +154,7 @@
         return ;
     });
 
-    ipc.on("remove-target-hit", () => removeTarget(currentTarget,video));
+    ipc.on("remove-target-hit", () => removeTarget(currentTarget));
 
     ipc.on("play-hit-target", () => {
 
@@ -165,13 +162,13 @@
             setupPlaying(currentTarget);
 
         if ( currentTarget.hasAttribute("data-now-playing") && video.paused )
-            play();
+            controls.play();
 
     });
 
     ipc.on("pause-hit-target", (event) => {
         if ( currentTarget.hasAttribute("data-now-playing") )
-            pause();
+            controls.pause();
     });
 
 

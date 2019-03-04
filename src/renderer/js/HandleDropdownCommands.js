@@ -198,82 +198,60 @@ try {
 const noMediaPlaying = () => document.querySelector(".cover-on-error-src").hasAttribute("style");
 
 const _play = () => {
-
     if ( noMediaPlaying() )
         return controls.play();
-
     return false;
 };
 
 const _pause = () => {
-
     if ( noMediaPlaying() )
         return controls.pause();
-
     return false;
 };
 
 const _mute = () => {
-
     if ( noMediaPlaying() )
         return controls.mute();
-
     return false;
 };
 
 const _unmute = () => {
-
     if ( noMediaPlaying() )
         return controls.unmute();
-
     return false;
 };
 
 const _stop = function () {
-
     if ( noMediaPlaying() )
         return controls.stop();
-
     return false;
 };
 
 const _next = () => {
-
     if ( noMediaPlaying() )
         return controls.next();
-
     return false;
 };
 
 const _previous = () => {
-
     if ( noMediaPlaying())
-
         return controls.previous();
-
     return false;
 };
 const _setPlaybackRate = (rate) => {
-
     if ( noMediaPlaying())
         return controls.setPlaybackRate(rate);
-
     return false;
 };
 
 const _enterfullscreen = () => {
-
     if ( noMediaPlaying())
         return controls.enterfullscreen();
-
     return false;
 };
 const _leavefullscreen = () => {
-
     if ( noMediaPlaying())
-
         return controls.leavefullscreen();
-
     return false;
 };
 

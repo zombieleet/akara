@@ -55,9 +55,7 @@ const {
     video,
     applyButtonConfig,
     getButtonConfig,
-    controls: {
-        play
-    }
+    controls
 } = require("../js/VideoControl.js");
 
 const { createNewWindow } = _require("./newwindow.js");
@@ -89,9 +87,6 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
 
     const playlistItem = document.createElement("li");
     const playlistItemContent = document.createElement("span");
-
-    // nonsence
-    //abs_path = URL.createObjectURL( new File([ dirname(abs_path) ] , basename(abs_path)) );
 
     const { protocol } = url.parse(abs_path);
 
@@ -131,13 +126,7 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
         window.__draggingElement.id = target.id;
         target.id = _tmpId;
 
-        // playlistItemParent.insertBefore(target, window.__draggingElement);
         target.after(target, window.__draggingElement);
-
-        //const el = window.__draggingElement.outerHTML;
-
-        //target.insertAdjacentHTML("beforebegin", el);
-        //target.insertAdjacentHTML("afterend", el);
 
         const videoId = video.getAttribute("data-id");
 
@@ -146,12 +135,7 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
         } else if ( window.__draggingElement.id === videoId ) {
             video.setAttribute("data-id", target.id);
         }
-
-        // window.__draggingElement.remove();
-        // window.__draggingElement = (new DOMParser().parseFromString(el, "text/html")).querySelector("li");
-
         return ;
-
     });
 
     playlistItem.addEventListener("dragleave", evt => {
@@ -171,20 +155,7 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
         if ( HTMLSpanElement[Symbol.hasInstance](target) ) {
             target = target.parentNode;
         }
-
         let playlistItemParent = playlistItem.parentNode;
-
-        //console.log(__draggingElement);
-
-
-        // if ( ! __draggingElement )
-        //     return ;
-
-
-
-
-        //playlistItemParent.insertBefore(__draggingElement,target);
-
     });
     playlistItem.classList.add("playlist");
     playlistItemContent.textContent = rel_path;
@@ -281,7 +252,7 @@ const setCurrentPlaying = target => {
 
 
     video.setAttribute("data-id", target.getAttribute("id"));
-    video.setAttribute("src", decodeURIComponent(target.getAttribute("data-full-path")));
+    video.src = target.getAttribute("data-full-path");
 
     const trackElement = document.querySelector("track");
 
@@ -289,7 +260,6 @@ const setCurrentPlaying = target => {
         trackElement.remove();
 
     getCurrentWindow().webContents.send("video-no-repeat");
-
     return;
 };
 
@@ -303,11 +273,13 @@ module.exports.setCurrentPlaying = setCurrentPlaying;
  *
  **/
 
-const removeTarget = (target,video) => {
+const removeTarget = target => {
 
     target = target.nodeName.toLowerCase() === "li" ? target : target.parentNode;
 
-    if ( decodeURI(video.src) === target.getAttribute("data-full-path") ) {
+    const mediaPath    = target.getAttribute("data-full-path");
+
+    if ( video.src === decodeURIComponent(target.getAttribute("data-full-path")) ) {
 
         let _target = target.nextElementSibling || target.parentNode.firstElementChild;
 
@@ -317,16 +289,16 @@ const removeTarget = (target,video) => {
             const pause = document.querySelector("[data-fire=pause]");
 
             video.src = "";
-
+            console.log(video.src);
             pause.classList.add("akara-display");
             play.classList.remove("akara-display");
 
             document.querySelector(".window-title").textContent = "Akara Media Player";
 
         } else {
-            video.src = decodeURIComponent(_target.getAttribute("data-full-path"));
+            video.src = _target.getAttribute("data-full-path");
             setCurrentPlaying(_target);
-            video.play();
+            controls.play();
         }
     }
 
@@ -397,9 +369,7 @@ const setupPlaying = target => {
     Array.from(document.querySelectorAll(".akara-media-fragment"), el => el.remove());
 
     removeCurrentPlayingStyles(loaded);
-    setCurrentPlaying(target);
-
-    return play();
+    return setCurrentPlaying(target);
 };
 
 module.exports.setupPlaying = setupPlaying;
@@ -574,15 +544,15 @@ const convert = _path => new Promise( async (resolve,reject) => {
 
 module.exports.playOnDrop = () => {
     const firstVideoList = document.querySelector(".playlist");
-    if ( video.getAttribute("src") )
+    if ( video.src )
         return undefined;
     return setupPlaying(firstVideoList);
 };
 
 const sendNotification = (options) => {
-    
+
     const notifier = require("node-notifier");
-    
+
     options.sound = true;
     options.icon = options.icon ? options.icon : "/root/Picture/pics.jpg" ;
 
@@ -627,12 +597,12 @@ module.exports.disableVideoMenuItem = menuInst => {
         return ;
     }
 
-    if ( menuInst.label === "Repeat" && video.hasAttribute("loop") ) {
+    if ( menuInst.label === "Repeat" && video.loop ) {
         menuInst.visible = false;
         return ;
     }
 
-    if ( menuInst.label === "No Repeat" && video.hasAttribute("loop") ) {
+    if ( menuInst.label === "No Repeat" && video.loop ) {
         menuInst.visible = true;
         return ;
     }
@@ -1380,7 +1350,7 @@ const uploadVideo = info => {
 
 
     const youtube = google.youtube("v3");
-    const uploadData = decodeURIComponent(url.parse(video.getAttribute("src")).pathname);
+    const uploadData = decodeURIComponent(url.parse(video.src).pathname);
 
     const fileSize = fs.statSync(uploadData).size;
 

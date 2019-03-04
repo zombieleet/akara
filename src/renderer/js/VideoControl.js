@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -27,17 +27,78 @@ const {
     }
 } = require("electron");
 
+
 const { createNewWindow: filterWindow } = _require("./newwindow.js");
 
 
 const akara_emit = require("../js/Emitter.js");
-const video      = document.querySelector("video");
 const akLoaded   = document.querySelector(".akara-loaded");
 
 
 let _REPEAT_MENU_   = new Menu();
 let _SUBTITLE_MENU_ = new Menu();
 let target;
+
+
+const mediaSourceEnd = e => {
+    console.log(e,"end");
+};
+
+const mediaSourceOpen = e => {
+    console.log(e, "start");
+};
+
+
+const video = new Proxy( document.querySelector("video") || {} , {
+    get(obj,key,value) {
+
+        if ( typeof(obj[key]) === "function" )
+            return obj[key].bind( obj );
+
+        if ( key == "src" ) {
+            return obj.getAttribute("data-media-location");
+        }
+
+        return Reflect.get(obj,key);
+    },
+
+    async set(obj,key,value) {
+
+        if ( key === "src" ) {
+
+            const url           = require("url");
+            const fs            = require("fs");
+            const { getMime }   = require("../js/Util.js");
+            const { promisify } = require("util");
+            const readFileProm  = promisify(fs.readFile);
+
+            try {
+
+                if ( value === "" )
+                    return Reflect.set(obj,key,value);
+
+                let nvalue = value, fileMime , nodeBuffer;
+
+                if ( url.parse(value).protocol === "file:") {
+                    nvalue = value.replace("file://","");
+                    fileMime     = await getMime(nvalue);
+                    nodeBuffer   = await readFileProm(nvalue);
+                }
+
+                const blob    = new Blob( [ nodeBuffer ] , { type: fileMime });
+                const blobURL = window.URL.createObjectURL(blob);
+
+                obj.setAttribute("data-media-location", value);
+                Reflect.set(obj,key,blobURL);
+                return await obj.play();
+            } catch(ex) {
+                return console.log(ex);
+            }
+        }
+        //if ( obj.src === "" && key === "poster" )
+        return Reflect.set(obj,key,value);
+    }
+});
 
 
 const applyButtonConfig = (element,section,type) => {
@@ -134,78 +195,85 @@ const buildRepeatMenu = () => {
     return _REPEAT_MENU_;
 };
 
-const controls = {
+
+const controls = new(class Controls {
 
     play() {
         return video.play();
-    },
-    pause()  {
+    }
+
+    pause() {
         return video.pause();
-    },
+    }
 
     stop() {
-
-        video.currentTime = 0;
-
-        this.pause();
-
         video.__status = undefined;
-
+        video.currentTime = 0;
+        this.pause();
         return ;
-    },
+    }
+
     mute() {
 
         const _mute = document.querySelector("[data-drop=_mute]");
+
         _mute.textContent = _mute.textContent.replace("Mute", " Unmute");
+
         video.muted = true;
         akara_emit.emit("video::volume", video.volume);
-        return _mute.setAttribute("data-drop", "_unmute");
 
-    },
+        return _mute.setAttribute("data-drop", "_unmute");
+    }
+
     unmute() {
-        // unmute video
+
         const _unmute = document.querySelector("[data-drop=_unmute]");
+
         _unmute.textContent = _unmute.textContent.replace("Unmute", " Mute");
+
         video.muted = false;
         akara_emit.emit("video::volume", video.volume);
-        return _unmute.setAttribute("data-drop", "_mute");
-    },
-    next() {
-        akara_emit.emit("video::go-to-next");
-    },
-    previous() {
-        akara_emit.emit("video::go-to-previous");
-    },
-    volume() {
 
+        return _unmute.setAttribute("data-drop", "_mute");
+    }
+
+    volume() {
         if ( video.muted )
             return this.unmute();
-
         return this.mute();
-    },
+    }
+
+    next() {
+        akara_emit.emit("video::go-to-next");
+    }
+
+    previous() {
+        akara_emit.emit("video::go-to-previous");
+    }
+
     enterfullscreen() {
 
         const enterfscreen = document.querySelector("[data-fire=enterfullscreen]");
         const akControl = document.querySelector(".akara-control");
         const expand = akControl.querySelector(".expand");
-        //const unexpand = akControl.querySelector(".unexpand");
 
         enterfscreen.setAttribute("data-fire","leavefullscreen");
+
         video.style.height = "100%";
         video.style.width = "100%";
+
         akControl.setAttribute("data-fullscreenwidth", "true");
         akControl.hidden = true;
 
         expand.setAttribute("style","visibility: visible;");
-
         enterfscreen.removeAttribute("class");
 
         applyButtonConfig(enterfscreen,"control-buttons","leavefullscreen");
 
         this.unexpand({ target: expand});
-
         return video.webkitRequestFullScreen();
-    },
+    }
+
     leavefullscreen() {
 
         const leavefscreen = document.querySelector("[data-fire=leavefullscreen]");
@@ -233,24 +301,28 @@ const controls = {
         }
 
         applyButtonConfig(leavefscreen,"control-buttons","enterfullscreen");
-
         return document.webkitCancelFullScreen();
-    },
+    }
+
     getCurrentTime() {
         return video.currentTime;
-    },
+    }
+
     duration() {
         return video.duration;
-    },
+    }
+
     setPlaybackRate(rate) {
         video.playbackRate = rate;
         return rate;
-    },
+    }
+
     repeat({target: _target}) {
         target = _target;
         _REPEAT_MENU_.clear();
         buildRepeatMenu().popup(getCurrentWindow(), { async: true });
-    },
+    }
+
     subtitle({ target }) {
 
         const textTracks = video.textTracks;
@@ -281,7 +353,8 @@ const controls = {
                 }
             }
         }
-    },
+    }
+
     expand({ target }) {
 
         const akControl = document.querySelector(".akara-control");
@@ -297,15 +370,12 @@ const controls = {
         akControl.removeAttribute("data-fullscreenwidth");
         akControl.removeAttribute("style");
 
-
         target.removeAttribute("class");
         target.classList.add("unexpand");
         target.setAttribute("data-fire", "unexpand");
-
         applyButtonConfig(target,"control-buttons","unexpand");
+    }
 
-
-    },
     unexpand({ target }) {
 
         const akControl = document.querySelector(".akara-control");
@@ -322,22 +392,21 @@ const controls = {
         target.removeAttribute("class");
         target.classList.add("expand");
         target.setAttribute("data-fire", "expand");
-
         applyButtonConfig(target,"control-buttons","expand");
+    }
 
-    },
     random({ target }) {
         const random = target;
         video.setAttribute("data-random", "random");
         random.setAttribute("data-fire", "norandom");
-    },
+    }
+
     norandom({ target }) {
-
         const no_random = target;
-
         video.removeAttribute("data-random");
         no_random.setAttribute("data-fire", "random");
-    },
+    }
+
     filter() {
         const __obj = {
             title: "filter",
@@ -348,7 +417,7 @@ const controls = {
         let html = `${__obj.title}.html`;
         let window = filterWindow(__obj,html);
     }
-};
+});
 
 module.exports = {
     video,

@@ -38,7 +38,7 @@
 
 
     const { lowHighVolume } = require("../js/VideoHandlers.js");
-    const { controls } = require("../js/VideoControl.js");
+    const { controls , video } = require("../js/VideoControl.js");
 
     const id3 = require("id3js");
     const brightness = require("brightness");
@@ -86,7 +86,7 @@
         }
 
         lowHighVolume(volumeInFloat);
-        document.querySelector("video").volume = volumeInFloat;
+        video.volume = volumeInFloat;
 
     };
 
@@ -104,7 +104,6 @@
     const loadPosterSettings = () => {
         const posterJson = requireSettingsPath("poster.json");
         const posterSettings = require(posterJson);
-        const video = document.querySelector("video");
         video.poster = posterSettings.poster;
     };
 

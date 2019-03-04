@@ -36,10 +36,10 @@
     } = require("../js/Util.js");
 
     const { createNewWindow: playListWindow } = _require("./newwindow.js");
+    const { applyButtonConfig , video }       = require("../js/VideoControl.js");
 
     const { playlist }          = _require("./configuration.js");
     const { addMediaCb }        = require("../js/DropdownCallbacks.js");
-    const { applyButtonConfig } = require("../js/VideoControl.js");
     const { playNextOrPrev }    = require("../js/VideoHandlers.js");
 
 
@@ -79,7 +79,7 @@
                 }
 
                 if ( medialist.length === allPlaylist.length || type === "all" ) {
-                    document.querySelector("video").src = "";
+                    video.src = "";
                     document.querySelector(".akara-title").textContent = "Akara Media Player";
                     return ;
                 }
