@@ -38,6 +38,7 @@
 *** TODO Reimplement downloading functionality                    :IMPORTANT:
 *** TODO Implement real time update for settings                  :IMPORTANT:
 
+*** TODO Multi Language support                                   :IMPORTANT:
 
 * CRITICAL
 *** TODO use blob url instead of the real path of the media files :IMPORTANT:
