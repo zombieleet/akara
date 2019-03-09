@@ -120,7 +120,10 @@ const appendPodcastToDOM = (result,podB) => {
 
     ul.setAttribute("class", "podcaster-podcast");
 
+    podcastParent.appendChild(ul);
+
     for ( let episode of episodes ) {
+
         const li = document.createElement("li");
         const span = document.createElement("span");
         const image = new Image();
