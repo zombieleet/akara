@@ -33,7 +33,6 @@
         getSubtitle,
         isOnline,
         OS,
-        downloadFile,
         computeByte,
         sendNotification
     } = require("../js/Util.js");
