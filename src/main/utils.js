@@ -144,16 +144,15 @@ const downloadFile = (url, contentId) => {
         ipc.on("download::cancel",  () => item.cancel() );
 
         webContents.send( "download::started", item , url );
-        webContents.send( "download::totalbyte", item.getTotalBytes() , url );
 
         item.on("updated", (event,state) => {
 
-            webContents.send("download::state", state , url);
+            webContents.send("download::state", state , item,  url);
 
             if ( state === "interrupted" )
                 resumeDownloading(item,webContents);
 
-            webContents.send( "download::gottenByte", item.getReceivedBytes() , url);
+            webContents.send( "download::totalAndGottenBytes", item.getReceivedBytes() , item.getTotalBytes(), url);
             webContents.send( "download::computePercent", item.getReceivedBytes(), item.getTotalBytes() , url);
 
         });

@@ -580,9 +580,9 @@ module.exports.playOnDrop = () => {
 };
 
 const sendNotification = (options) => {
-    
+
     const notifier = require("node-notifier");
-    
+
     options.sound = true;
     options.icon = options.icon ? options.icon : "/root/Picture/pics.jpg" ;
 
