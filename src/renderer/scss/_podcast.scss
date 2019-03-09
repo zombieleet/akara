@@ -276,6 +276,24 @@
                     @extend %grid-widgets;
                     left: -52px;
                 }
+                .podcast-downloading {
+
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+
+                    width: 267px;
+                    margin-left: -195px;
+                    margin-top: -16px;
+                    height: 247px;
+                    background: black;
+                    opacity: 0.8;
+
+                    line-height: 1.5;
+                    text-align: center;
+
+                }
             }
         }
     }
