@@ -434,16 +434,19 @@ const getMime = file => new Promise((resolve,reject) => {
 
 module.exports.getMime = getMime;
 
-const computeByte = bytes => {
+const computeByte = (bytes) => {
 
     if ( bytes === 0 )
-        return `${bytes} byte`;
+        return { measurement: bytes , unit: "byte" };
 
     const idx = Math.floor(
         Math.log(bytes) / Math.log(SIZE)
     );
 
-    return `${( bytes / Math.pow(SIZE,idx)).toPrecision(3)} ${MEASUREMENT[idx]}`;
+    return {
+        measurement: ( bytes / Math.pow(SIZE,idx)).toPrecision(3),
+        unit: MEASUREMENT[idx]
+    };
 };
 
 module.exports.computeByte = computeByte;
