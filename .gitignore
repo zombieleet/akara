@@ -11,3 +11,4 @@ src/renderer/js/index.js
 app/
 testtest.json
 *#*
+src/renderer/js/LoadFAST.js
