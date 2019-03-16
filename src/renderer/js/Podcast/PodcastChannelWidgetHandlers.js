@@ -31,8 +31,12 @@ const {
     podcastRemoveEvent
 } = require("../../js/Podcast/PodcastEventHandlers.js");
 
+const {
+    removepodcast,
+    dataUriToBlobUri
+} = require("../../js/Util.js");
+
 const podcastWindow         = require("../../js/Podcast/PodcastWindowHome.js");
-const { removepodcast }     = require("../../js/Util.js");
 const { applyButtonConfig } = require("../../js/VideoControl.js");
 
 
@@ -111,7 +115,7 @@ const podAudioWidget = () => {
    append all the podcast channel to the DOM
 **/
 
-const appendPodcastToDOM = (result,podB) => {
+const appendPodcastToDOM = async (result,podB) => {
 
     const podcastParent = document.querySelector(".podcastload-podcaster");
     const ul = podcastParent.querySelector(".podcaster-podcast") || document.createElement("ul");
@@ -136,8 +140,6 @@ const appendPodcastToDOM = (result,podB) => {
 
         delete episode.image;
 
-        console.log(episode);
-
         li.setAttribute("class", "podcast-audio");
         li.setAttribute("podcast-duration", duration);
         li.setAttribute("podcast-title", podTitle);
@@ -158,7 +160,7 @@ const appendPodcastToDOM = (result,podB) => {
 
         image.setAttribute("class", "podcast-image");
 
-        image.src =_savedpod.image;
+        image.src = await dataUriToBlobUri(_savedpod.image);
 
         li.appendChild(span);
         li.appendChild(image);

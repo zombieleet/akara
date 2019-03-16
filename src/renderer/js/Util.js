@@ -1552,7 +1552,7 @@ module.exports.downloadAlbumArt = art => {
     dialog.showSaveDialog({
         defaultPath: app.getPath("downloads"),
         title: "where to save albumart?"
-    }, location => {
+    }, async location => {
 
         if ( ! location ) {
             dialog.showErrorBox("cannot get location","specify location again");
@@ -1562,7 +1562,7 @@ module.exports.downloadAlbumArt = art => {
         // const date = new Date();
         // const filename = `akaraplayer-${date.toLocaleDateString()}_${date.toLocaleTimeString()}`;
 
-        base64Img.img( art , path.dirname(location) , path.basename(location) , ( err, filePath ) => {
+        base64Img.img( (await blobToDataUri(art)) , path.dirname(location) , path.basename(location) , ( err, filePath ) => {
 
             if ( err )
                 return dialog.showErrorBox("Cannot Download Art", "An Error was encountered when download album art");
@@ -1744,3 +1744,20 @@ module.exports.handleScreenShot = Object.defineProperties( {} , {
         }
     }
 });
+
+
+module.exports.dataUriToBlobUri = async datauri => window.URL.createObjectURL( await (await fetch(datauri)).blob() );
+
+const blobToDataUri = blob => {
+    const fReader = new FileReader();
+    return new Promise( ( resolve , reject) => {
+        fReader.addEventListener("load", evt => {
+            return resolve(evt.target.result);
+        });
+        fReader.addEventListener("error", evt => {
+            return reject(fReader.error);
+        });
+    });
+};
+
+module.exports.blobToDataUri = blobToDataUri;
