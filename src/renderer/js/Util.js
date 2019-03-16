@@ -1242,47 +1242,6 @@ const setDownloadPath = downloadFile => {
 
 };
 
-// const downloadFile = (url, window ) => {
-
-//     window.webContents.downloadURL(url);
-
-//     window.webContents.session.on("will-download", (event,item,webContents) => {
-
-//         const { id } = webContents;
-
-//         item.setSavePath(
-//             setDownloadPath(
-//                 item.getFilename()
-//             )
-//         );
-
-//         console.log(item);
-
-//         ipc.sendTo( id , "download::started", item);
-//         ipc.sendTo( id , "download::totalbyte", item.getTotalBytes());
-
-//         item.on("updated", (event,state) => {
-
-//             window.webContents.send("download::state", state);
-
-//             if ( state === "interrupted" )
-//                 resumeDownloading(item,webContents);
-
-//             ipc.sendTo( id  , "download::gottenByte", item.getReceivedBytes());
-//             ipc.sendTo( id  , "download::computePercent", item.getReceivedBytes(), item.getTotalBytes());
-
-//         });
-
-//         item.on("done", (event,state) => {
-//             //ipc.sendTo( id , "download::state", state);
-//             ipc.sendTo( id , "download::complete", item.getSavePath());
-//         });
-
-//     });
-// };
-
-// module.exports.downloadFile = downloadFile;
-
 module.exports.exportMpegGurl = file => {
 
     const m3u8 = require("m3u8");

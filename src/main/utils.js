@@ -136,12 +136,32 @@ const downloadFile = (url, contentId) => {
 
     webContents.session.once("will-download", async (event,item,webContents) => {
 
-        item.setSavePath(setDownloadPath(item.getFilename()));
+        if ( item.getState() === "cancelled" )
+            return resumeDownloading(item,webContents);
+
+        if ( item.getState() === "progressing" )
+            item.setSavePath(setDownloadPath(item.getFilename()));
 
         ipc.on("download::restart", () => downloadFile(item.getURL(), contentId) );
         ipc.on("download::resume",  () => resumeDownloading(item,webContents) );
-        ipc.on("download::paused",  () => item.pause() );
-        ipc.on("download::cancel",  () => item.cancel() );
+
+        ipc.on("download::paused",  (evt,urlFromRenderer) => {
+            console.log(url,urlFromRenderer, "paused");
+            if ( url === urlFromRenderer )
+                item.pause();
+        });
+
+        ipc.on("download::play", (evt,urlFromRenderer) => {
+            console.log(url,urlFromRenderer, "play");
+            if ( url === urlFromRenderer )
+                resumeDownloading(item,webContents);
+        });
+
+        ipc.on("download::cancel",  (evt,urlFromRenderer) => {
+            if ( url == urlFromRenderer ) {
+                item.cancel();
+            }
+        });
 
         webContents.send( "download::started", item , url );
 
@@ -158,7 +178,7 @@ const downloadFile = (url, contentId) => {
         });
 
         item.on("done", (event,state) => {
-            webContents.send( "download::complete", item.getSavePath() , url );
+            webContents.send( "download::complete", item.getState() , item.getSavePath() , url );
         });
 
     });

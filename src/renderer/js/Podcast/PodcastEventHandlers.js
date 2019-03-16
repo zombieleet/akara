@@ -39,14 +39,17 @@ const ipcPodcastHandlers = Object.defineProperties( {}, {
 
     podcastDownloadEnded: {
 
-        value(targetPNode,urlFromMain,urlFromRenderer) {
+        value(targetPNode,state,urlFromMain,urlFromRenderer) {
 
             if ( urlFromMain !== urlFromRenderer ) return;
-
+            
             const downloadIndicator        = targetPNode.querySelector(".podcast-downloading");
             const downloadPercentIndicator = downloadIndicator.querySelector(".podcast-downloading-percent");
 
-            downloadPercentIndicator.textContent = "Downloading is complete";
+            if ( state === "cancelled" )
+                downloadPercentIndicator.textContent = "Download is cancelled";
+            else
+                downloadPercentIndicator.textContent = "Downloading is complete";
 
             setTimeout( () => {
                 downloadIndicator.remove();
@@ -58,6 +61,7 @@ const ipcPodcastHandlers = Object.defineProperties( {}, {
 
         value(targetPNode,state,item,urlFromMain,urlFromRenderer) {
             if ( urlFromMain !== urlFromRenderer ) return;
+            console.log(state);
             if ( state === "interrupted" ) {
                 const downloadPercentIndicator = targetPNode.querySelector(".podcast-downloading-percent");
                 downloadPercentIndicator.textContent = "Download was interrupted. This download will be started automatically";
@@ -88,29 +92,61 @@ const ipcPodcastHandlers = Object.defineProperties( {}, {
 });
 
 
-const createDownloadingInidcators = podcastParentNode => {
+const createDownloadingInidcators = (podcastParentNode,urlFromRenderer) => {
 
-    const downloadIndicator      = document.createElement("div");
+    const downloadIndicator  = document.createElement("div");
     const downloadStateIndicator = document.createElement("i");
-    const downloadedPercentage   = document.createElement("p");
+    const downloadedPercentage = document.createElement("p");
+    const downloadCancel = document.createElement("i");
 
-    const downloadBytes          = document.createElement("p");
+    const downloadBytes = document.createElement("p");
+ 
 
     downloadIndicator.setAttribute("class", "podcast-downloading");
-    downloadStateIndicator.setAttribute("class", "fa fa-pause");
-    downloadedPercentage.setAttribute("class", "podcast-downloading-percent");
 
+    downloadStateIndicator.setAttribute("class", "fa fa-pause");
+    downloadStateIndicator.setAttribute("data-download-pause-play-state", "play");
+
+    downloadedPercentage.setAttribute("class", "podcast-downloading-percent");
     downloadBytes.setAttribute("class", "podcast-downloading-totalbytes");
+    downloadCancel.setAttribute("class", "fa fa-times");
 
     downloadedPercentage.textContent = "About to start downloading";
 
+    downloadIndicator.appendChild(downloadCancel);
+    
     downloadIndicator.appendChild(downloadStateIndicator);
     downloadIndicator.appendChild(downloadedPercentage);
 
-    downloadIndicator.appendChild(downloadBytes);
+    
     downloadIndicator.appendChild(downloadBytes);
 
-    podcastParentNode.appendChild(downloadIndicator);
+    podcastParentNode.insertBefore(downloadIndicator,podcastParentNode.firstElementChild);
+
+    downloadStateIndicator.addEventListener("click", evt => {
+
+        const { target } = evt;
+
+        if ( target.getAttribute("data-download-pause-play-state") === "play" ) {
+            ipc.send("download::paused", urlFromRenderer);
+            target.setAttribute("data-download-pause-play-state", "pause");
+            target.classList.remove("fa-pause");
+            target.classList.add("fa-play");
+            return;
+        }
+
+        ipc.send("download::play", urlFromRenderer);
+        target.setAttribute("data-download-pause-play-state", "play");
+        target.classList.remove("fa-play");
+        target.classList.add("fa-pause");
+        return;
+
+    });
+
+    downloadCancel.addEventListener("click", evt => {
+        ipc.send("download::cancel", urlFromRenderer);
+    });
+
 };
 
 
@@ -127,11 +163,10 @@ module.exports.podcastDownloadEvent = ({target}) => {
 
     const podcastToDownload = target.parentNode.parentNode;
 
-    createDownloadingInidcators(podcastToDownload);
-
+    createDownloadingInidcators(podcastToDownload,urlFromRenderer);
 
     ipc.once("download::started",  (evt,item,urlFromMain) => ipcPodcastHandlers.podcastDownloadStarted(podcastToDownload,urlFromMain,urlFromRenderer));
-    ipc.once("download::complete", (evt,fpath,urlFromMain) => ipcPodcastHandlers.podcastDownloadEnded(podcastToDownload,urlFromMain,urlFromRenderer));
+    ipc.once("download::complete", (evt,state,fpath,urlFromMain) => ipcPodcastHandlers.podcastDownloadEnded(podcastToDownload,state,urlFromMain,urlFromRenderer));
 
     ipc.on("download::state", (evt,state,item,urlFromMain) => ipcPodcastHandlers.podcastDownloadingState(podcastToDownload,state,urlFromMain,urlFromRenderer));
     ipc.on("download::computePercent", (evt,rBytes,tBytes,urlFromMain) => ipcPodcastHandlers.podcastPercentBytes(podcastToDownload,rBytes,tBytes,urlFromMain,urlFromRenderer));
