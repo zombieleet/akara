@@ -144,4 +144,17 @@ handleAkaraSettings.subtitle = () => {
     settingsWindow(subtitle, "settings/subtitle.html");
 };
 
+handleAkaraSettings.pluginandthemes = () => {
+    const { width, height } = screen.getPrimaryDisplay().size;
+    const pluginThemes = {
+        title: "Plugin and Themes",
+        maximizable: true,
+        resizable: true,
+        minimizable: true,
+        width,
+        height
+    };
+    settingsWindow(pluginThemes, "settings/plugin_theme.html");
+};
+
 module.exports = handleAkaraSettings;
