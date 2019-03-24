@@ -1,4 +1,4 @@
-#+SEQ_TODO: TODO(t) DONE(d@/!) NEXT(d@/!) DOING(o@/!) PAUSED(p@/!) CANCELED(d@/!)
+#+SEQ_TODO: TODO(t) DONE(d@/!) NEXT(d@/!) DOING(o@/!) PAUSED(p@/!) CANCELED(d@/!) DONEPARTIALY(p@/!)
 #+TAGS: IMPORTANT(i) BUG(b) CLARITY(c) CONSIDER(co)
 
 
@@ -41,7 +41,7 @@
 *** TODO Multi Language support                                   :IMPORTANT:
 
 * CRITICAL
-*** TODO use blob url instead of the real path of the media files :IMPORTANT:
+*** DONEPARTIALY use blob url instead of the real path of the media files :IMPORTANT:
 
 * IMPORTANT COMMANDS
 # ffmpeg -i original.mp4 -c:v libvpx -preset slow -s 1024x576 -qmin 0 -qmax 50 -an -b:v 400K -pass 1 homepage.webm
@@ -89,3 +89,13 @@
   - ffmpeg -i original.mp4 -c:v libvpx -preset slow -s 1024x576 -qmin 0 -qmax 50 -an -b:v 400K -pass 1 homepage.webm
   - ffmpeg -i original.mp4 -c:v libx264 -preset slow -s 1024x576 -an -b:v 370K homepage.mp4
   - ffmpeg -i Videos/gulps/part15/15-01-softbodies-part1-vertexweight-mobile.mp4 -c copy -f rtp_mpegts rtp://localhost:4000 -c copy -f flv - | ffmpeg -f flv -i - -c copy -f mp4 tt.mp4
+
+
+* IMPLEMENTATION DETAILS
+** FOR PLUGINS
+    - plugins.json will contain the follwing
+      * An Array of Objects. The propertis of the objects is as follows
+      * { status } -> enabled | disabled
+      * { metadata: [ { name , version , description , author } ]}
+      * { menu: [ { THE SAME OPTIONS AS ELECTRON JS MENU } ] }
+      * { location: [ { section ,  jsFile , } ] }
