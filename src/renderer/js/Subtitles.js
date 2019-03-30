@@ -84,6 +84,7 @@
             value({ td , evt , fpath }) {
                 td.querySelector(".subtitle-downloading").remove();
                 td.classList.remove("subtitle_no_click");
+                console.log(fpath);
                 ipc.sendTo(1,"subtitle::load-sub", "net", fpath);
                 sendNotification({ title: "Subtitle" , message: "Done Downloading Subtitle"});
             }
@@ -197,7 +198,7 @@
             if ( td.classList.contains("subtitle_no_click") ) return;
 
             ipc.once("download::started", (evt,item,url) => ipcMessageHandlers.downloadStarted({td,evt,item,url}));
-            ipc.once("download::complete", ( evt , fpath ) => ipcMessageHandlers.downloadCompleted({td,fpath}));
+            ipc.once("download::complete", ( evt , state , fpath ) => ipcMessageHandlers.downloadCompleted({td,fpath}));
 
             ipc.on("download::state", ( evt , state ) => {});
             ipc.on("download::totalbyte", ( evt , tbyte ) => {});
