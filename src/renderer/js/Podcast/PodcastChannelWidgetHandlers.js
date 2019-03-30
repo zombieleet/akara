@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -31,8 +31,12 @@ const {
     podcastRemoveEvent
 } = require("../../js/Podcast/PodcastEventHandlers.js");
 
+const {
+    removepodcast,
+    dataUriToBlobUri
+} = require("../../js/Util.js");
+
 const podcastWindow         = require("../../js/Podcast/PodcastWindowHome.js");
-const { removepodcast }     = require("../../js/Util.js");
 const { applyButtonConfig } = require("../../js/VideoControl.js");
 
 
@@ -111,7 +115,7 @@ const podAudioWidget = () => {
    append all the podcast channel to the DOM
 **/
 
-const appendPodcastToDOM = (result,podB) => {
+const appendPodcastToDOM = async (result,podB) => {
 
     const podcastParent = document.querySelector(".podcastload-podcaster");
     const ul = podcastParent.querySelector(".podcaster-podcast") || document.createElement("ul");
@@ -120,7 +124,10 @@ const appendPodcastToDOM = (result,podB) => {
 
     ul.setAttribute("class", "podcaster-podcast");
 
+    podcastParent.appendChild(ul);
+
     for ( let episode of episodes ) {
+
         const li = document.createElement("li");
         const span = document.createElement("span");
         const image = new Image();
@@ -130,11 +137,9 @@ const appendPodcastToDOM = (result,podB) => {
             continue;
 
         const { filesize, url } = enclosure;
-        
+
         delete episode.image;
 
-        console.log(episode);
-        
         li.setAttribute("class", "podcast-audio");
         li.setAttribute("podcast-duration", duration);
         li.setAttribute("podcast-title", podTitle);
@@ -155,14 +160,13 @@ const appendPodcastToDOM = (result,podB) => {
 
         image.setAttribute("class", "podcast-image");
 
-        image.src =_savedpod.image;
+        image.src = await dataUriToBlobUri(_savedpod.image);
 
         li.appendChild(span);
         li.appendChild(image);
         li.appendChild(podAudioWidget());
         ul.appendChild(li);
     }
-    podcastParent.appendChild(ul);
 };
 
 
@@ -221,27 +225,6 @@ const podcastChannelWidgetHandler = Object.defineProperties( {} , {
             if ( appendToDom ) {
                 return appendPodcastToDOM(result, pod);
             }
-
-            // try {
-            //     // incase some properties used in appendPodcastToDOM does
-            //     // not exists on the result object
-            //     if ( appendToDom ) {
-            //         return appendPodcastToDOM(result, pod);
-            //     }
-            // } catch(ex) {
-            //     console.log(result);
-            //     result = ex;
-            // }
-
-            // if ( Error[Symbol.hasInstance](result) ) {
-
-            //     podcastWindow.podcasthome();
-
-            //     return dialog.showErrorBox(
-            //         "Something bad happened",
-            //         "Could not access this podcast, maybe some important properties needed for this to work is not present in the podcast properties"
-            //     );
-            // }
 
             return result;
         }

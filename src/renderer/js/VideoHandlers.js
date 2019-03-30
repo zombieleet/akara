@@ -225,9 +225,11 @@ module.exports.removeHoverTime = removeHoverTime;
  *
  **/
 
-const getHumanTime = result => isNaN(result)
-      ? "00:00"
-      : `${(result/60).toFixed(2)}`.replace(/\./, ":");
+const getHumanTime = result => {
+    const date = new Date(null);
+    date.setSeconds(result);
+    return date.toISOString().substr(11,8);
+};
 
 
 
@@ -734,6 +736,7 @@ module.exports.handleVolumeChange = event => {
  *
  **/
 const setUpTrackElement = async (filePath,fileLang) => {
+    console.log(filePath);
     const __tracks = video.querySelectorAll("track");
     const track = document.createElement("track");
     const subtitle = filePath;
@@ -813,12 +816,22 @@ const handleLoadSubtitle = async (filePath,cb) => {
     });
 
 
+    // in the controls section if toggle is choosed to be turned off
     const toggleSubOnOff = document.querySelector("[data-sub-on=true]");
 
     // start showing the track automatically
     // add this as a config option
-    if ( ! track.previousElementSibling && toggleSubOnOff )
-        video.textTracks[0].mode = "showing";
+    if ( toggleSubOnOff ) {
+
+        if ( ! track.previousElementSibling ) {
+            console.log("i expect ones");
+            video.textTracks[0].mode = "showing";
+        } else {
+            // track.previousElementSibling defined
+            console.log(video.textTracks[video.textTracks.length - 1], "hit", "hit");
+            video.textTracks[video.textTracks.length - 1].mode = "hidden";
+        }
+    }
 
     akara_emit.emit("video::subtitle:shortcut", track);
 };

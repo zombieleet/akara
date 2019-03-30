@@ -404,16 +404,19 @@ const getMime = file => new Promise((resolve,reject) => {
 
 module.exports.getMime = getMime;
 
-const computeByte = bytes => {
+const computeByte = (bytes) => {
 
     if ( bytes === 0 )
-        return `${bytes} byte`;
+        return { measurement: bytes , unit: "byte" };
 
     const idx = Math.floor(
         Math.log(bytes) / Math.log(SIZE)
     );
 
-    return `${( bytes / Math.pow(SIZE,idx)).toPrecision(3)} ${MEASUREMENT[idx]}`;
+    return {
+        measurement: ( bytes / Math.pow(SIZE,idx)).toPrecision(3),
+        unit: MEASUREMENT[idx]
+    };
 };
 
 module.exports.computeByte = computeByte;
@@ -1209,47 +1212,6 @@ const setDownloadPath = downloadFile => {
 
 };
 
-// const downloadFile = (url, window ) => {
-
-//     window.webContents.downloadURL(url);
-
-//     window.webContents.session.on("will-download", (event,item,webContents) => {
-
-//         const { id } = webContents;
-
-//         item.setSavePath(
-//             setDownloadPath(
-//                 item.getFilename()
-//             )
-//         );
-
-//         console.log(item);
-
-//         ipc.sendTo( id , "download::started", item);
-//         ipc.sendTo( id , "download::totalbyte", item.getTotalBytes());
-
-//         item.on("updated", (event,state) => {
-
-//             window.webContents.send("download::state", state);
-
-//             if ( state === "interrupted" )
-//                 resumeDownloading(item,webContents);
-
-//             ipc.sendTo( id  , "download::gottenByte", item.getReceivedBytes());
-//             ipc.sendTo( id  , "download::computePercent", item.getReceivedBytes(), item.getTotalBytes());
-
-//         });
-
-//         item.on("done", (event,state) => {
-//             //ipc.sendTo( id , "download::state", state);
-//             ipc.sendTo( id , "download::complete", item.getSavePath());
-//         });
-
-//     });
-// };
-
-// module.exports.downloadFile = downloadFile;
-
 module.exports.exportMpegGurl = file => {
 
     const m3u8 = require("m3u8");
@@ -1560,7 +1522,7 @@ module.exports.downloadAlbumArt = art => {
     dialog.showSaveDialog({
         defaultPath: app.getPath("downloads"),
         title: "where to save albumart?"
-    }, location => {
+    }, async location => {
 
         if ( ! location ) {
             dialog.showErrorBox("cannot get location","specify location again");
@@ -1570,7 +1532,7 @@ module.exports.downloadAlbumArt = art => {
         // const date = new Date();
         // const filename = `akaraplayer-${date.toLocaleDateString()}_${date.toLocaleTimeString()}`;
 
-        base64Img.img( art , path.dirname(location) , path.basename(location) , ( err, filePath ) => {
+        base64Img.img( (await blobToDataUri(art)) , path.dirname(location) , path.basename(location) , ( err, filePath ) => {
 
             if ( err )
                 return dialog.showErrorBox("Cannot Download Art", "An Error was encountered when download album art");
@@ -1752,3 +1714,20 @@ module.exports.handleScreenShot = Object.defineProperties( {} , {
         }
     }
 });
+
+
+module.exports.dataUriToBlobUri = async datauri => window.URL.createObjectURL( await (await fetch(datauri)).blob() );
+
+const blobToDataUri = blob => {
+    const fReader = new FileReader();
+    return new Promise( ( resolve , reject) => {
+        fReader.addEventListener("load", evt => {
+            return resolve(evt.target.result);
+        });
+        fReader.addEventListener("error", evt => {
+            return reject(fReader.error);
+        });
+    });
+};
+
+module.exports.blobToDataUri = blobToDataUri;

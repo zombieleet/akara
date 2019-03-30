@@ -203,7 +203,7 @@
 %grid-li {
     display: inline-flex;
     justify-content: center;
-    width: 200px;
+    width: 265px;
     height: 200px;
     margin: 20px;
 }
@@ -220,9 +220,10 @@
 
 %grid-image {
     display: block;
-    height: 100px;
+    height: 137px;
+    width: 123px;
     margin: auto;
-    margin-left: -150px;
+    margin-left: -201px;
 }
 
 %grid-widgets {
@@ -231,7 +232,7 @@
     justify-content: center;
     align-self: flex-end;
     position: relative;
-    left: -100px;
+    left: -141px;
 }
 
 %podcastload-main[data-view="grid"] {
@@ -260,9 +261,10 @@
 %podcastload-podcaster[data-view="grid"] {
     .podcastload-podcaster {
         .podcaster-podcast {
-            padding-left: 80px;
+            padding-left: 138px;
             > li {
                 @extend %grid-li;
+                vertical-align: top;
                 .podcast-title {
                     @extend %grid-title;
                     text-overflow: ellipsis;
@@ -274,7 +276,29 @@
                 }
                 .podaudio-widget {
                     @extend %grid-widgets;
-                    left: -52px;
+                    left: -83px !important;
+                }
+                .podcast-downloading {
+
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+
+                    width: 416px;
+                    margin-left: -195px;
+                    margin-top: -16px;
+                    height: 247px;
+                    background: black;
+                    opacity: 0.8;
+
+                    line-height: 1.5;
+                    text-align: center;
+
+                    position: relative;
+                    left: 196px;
+                    z-index: 555555555555;
+
                 }
             }
         }

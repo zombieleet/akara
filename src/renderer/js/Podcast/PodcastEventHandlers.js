@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -18,29 +18,161 @@
 "use strict";
 
 const {
-    ipcRenderer: ipc
+    ipcRenderer: ipc,
+    remote: {
+        getCurrentWindow
+    }
 } = require("electron");
 
 const {
-    downloadWindow,
-    downloadFile,
+    computeByte,
     loadpodcast
 } = require("../../js/Util.js");
 
 const dodo    = require("../../js/Podcast/PodcastUtils.js");
 const podcast = require("../../js/Podcast/PodcastWindowHome.js");
 
+
+const ipcPodcastHandlers = Object.defineProperties( {}, {
+
+    podcastDownloadStarted: {value(target) {}},
+
+    podcastDownloadEnded: {
+
+        value(targetPNode,state,urlFromMain,urlFromRenderer) {
+
+            if ( urlFromMain !== urlFromRenderer ) return;
+            
+            const downloadIndicator        = targetPNode.querySelector(".podcast-downloading");
+            const downloadPercentIndicator = downloadIndicator.querySelector(".podcast-downloading-percent");
+
+            if ( state === "cancelled" )
+                downloadPercentIndicator.textContent = "Download is cancelled";
+            else
+                downloadPercentIndicator.textContent = "Downloading is complete";
+
+            setTimeout( () => {
+                downloadIndicator.remove();
+            },5000);
+        }
+    },
+
+    podcastDownloadingState: {
+
+        value(targetPNode,state,item,urlFromMain,urlFromRenderer) {
+            if ( urlFromMain !== urlFromRenderer ) return;
+            console.log(state);
+            if ( state === "interrupted" ) {
+                const downloadPercentIndicator = targetPNode.querySelector(".podcast-downloading-percent");
+                downloadPercentIndicator.textContent = "Download was interrupted. This download will be started automatically";
+            }
+
+        }
+    },
+
+    podcastBytes: {
+        value(targetPNode,rbyte,tbyte,urlFromMain,urlFromRenderer) {
+            if ( urlFromMain !== urlFromRenderer ) return;
+            const downloadTotalBytes = targetPNode.querySelector(".podcast-downloading-totalbytes");
+            const { measurement: rbyteM , unit: rbyteU } = computeByte(rbyte);
+            const { measurement: tbyteM , unit: tbyteU } = computeByte(tbyte);
+            downloadTotalBytes.textContent = `${rbyteM} ${rbyteU}/${tbyteM} ${tbyteU}`;
+        }
+    },
+
+    podcastPercentBytes: {
+        value(targetPNode,rbyte,tbyte,urlFromMain,urlFromRenderer) {
+            if ( urlFromMain !== urlFromRenderer ) return;
+            const downloadPercentIndicator = targetPNode.querySelector(".podcast-downloading-percent");
+            const { measurement: rbyteM } = computeByte(rbyte);
+            const { measurement: tbyteM } = computeByte(tbyte);
+            downloadPercentIndicator.textContent = `${((rbyteM/tbyteM) * 100).toPrecision(4)}%`;
+        }
+    }
+});
+
+
+const createDownloadingInidcators = (podcastParentNode,urlFromRenderer) => {
+
+    const downloadIndicator  = document.createElement("div");
+    const downloadStateIndicator = document.createElement("i");
+    const downloadedPercentage = document.createElement("p");
+    const downloadCancel = document.createElement("i");
+
+    const downloadBytes = document.createElement("p");
+ 
+
+    downloadIndicator.setAttribute("class", "podcast-downloading");
+
+    downloadStateIndicator.setAttribute("class", "fa fa-pause");
+    downloadStateIndicator.setAttribute("data-download-pause-play-state", "play");
+
+    downloadedPercentage.setAttribute("class", "podcast-downloading-percent");
+    downloadBytes.setAttribute("class", "podcast-downloading-totalbytes");
+    downloadCancel.setAttribute("class", "fa fa-times");
+
+    downloadedPercentage.textContent = "About to start downloading";
+
+    downloadIndicator.appendChild(downloadCancel);
+    
+    downloadIndicator.appendChild(downloadStateIndicator);
+    downloadIndicator.appendChild(downloadedPercentage);
+
+    
+    downloadIndicator.appendChild(downloadBytes);
+
+    podcastParentNode.insertBefore(downloadIndicator,podcastParentNode.firstElementChild);
+
+    downloadStateIndicator.addEventListener("click", evt => {
+
+        const { target } = evt;
+
+        if ( target.getAttribute("data-download-pause-play-state") === "play" ) {
+            ipc.send("download::paused", urlFromRenderer);
+            target.setAttribute("data-download-pause-play-state", "pause");
+            target.classList.remove("fa-pause");
+            target.classList.add("fa-play");
+            return;
+        }
+
+        ipc.send("download::play", urlFromRenderer);
+        target.setAttribute("data-download-pause-play-state", "play");
+        target.classList.remove("fa-play");
+        target.classList.add("fa-pause");
+        return;
+
+    });
+
+    downloadCancel.addEventListener("click", evt => {
+        ipc.send("download::cancel", urlFromRenderer);
+    });
+
+};
+
+
 module.exports.podcastPlayEvent = ({target}) => {
-    //const podcasturl = target.parentNode.parentNode.getAttribute("podcast-url");
     const podcastmetadata = target.parentNode.parentNode.getAttribute("podcast-metadata");
     ipc.sendTo(1, "akara::podcast:play",podcastmetadata, "podder");
 };
 
 module.exports.podcastDownloadEvent = ({target}) => {
+
     const podcastmetadata = target.parentNode.parentNode.getAttribute("podcast-metadata");
-    const { episode: { enclosure: { url } } } = JSON.parse(podcastmetadata);
-    const win = downloadWindow();
-    downloadFile(url, win);
+    const { episode: { enclosure: { url: urlFromRenderer } } } = JSON.parse(podcastmetadata);
+    const { webContents } = getCurrentWindow();
+
+    const podcastToDownload = target.parentNode.parentNode;
+
+    createDownloadingInidcators(podcastToDownload,urlFromRenderer);
+
+    ipc.once("download::started",  (evt,item,urlFromMain) => ipcPodcastHandlers.podcastDownloadStarted(podcastToDownload,urlFromMain,urlFromRenderer));
+    ipc.once("download::complete", (evt,state,fpath,urlFromMain) => ipcPodcastHandlers.podcastDownloadEnded(podcastToDownload,state,urlFromMain,urlFromRenderer));
+
+    ipc.on("download::state", (evt,state,item,urlFromMain) => ipcPodcastHandlers.podcastDownloadingState(podcastToDownload,state,urlFromMain,urlFromRenderer));
+    ipc.on("download::computePercent", (evt,rBytes,tBytes,urlFromMain) => ipcPodcastHandlers.podcastPercentBytes(podcastToDownload,rBytes,tBytes,urlFromMain,urlFromRenderer));
+    ipc.on("download::totalAndGottenBytes", (evt,rBytes,tBytes,urlFromMain) => ipcPodcastHandlers.podcastBytes(podcastToDownload,rBytes,tBytes,urlFromMain,urlFromRenderer));
+
+    ipc.send("download::init", urlFromRenderer , webContents.id );
 };
 
 module.exports.podcastWindowWidgetHandler = evt => {

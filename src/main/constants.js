@@ -17,107 +17,64 @@ const {
 const jsonFileDB = require("./defaultSettings.js");
 
 
-const APP_PATH = app.getAppPath();
 const BACKGROUND_COLOR = "#4B4B4B";
-const USER_DATA = app.getPath("userData");
+const USER_DATA        = app.getPath("userData");
+const APP_PATH         = app.getAppPath();
 
-const PLAYLIST_FILE = () => {
 
-    const playlistfile = join(USER_DATA, "playlist.json");
-
-    if ( existsSync(playlistfile) )
-        return playlistfile;
-
-    writeFileSync(playlistfile, JSON.stringify({}));
-
-    return playlistfile;
-};
-
-const _CONVERTED_MEDIA = () => {
-    const _conv = join(USER_DATA, "converted_media");
-
-    if ( existsSync(_conv) )
-        return _conv;
-
-    mkdirSync(_conv);
-
-    return _conv;
-};
-
-const PODCAST = () => {
-    const pod = join(USER_DATA, "podcast.json");
-    if ( existsSync(pod) )
-        return pod;
-
-    writeFileSync(pod, JSON.stringify({}));
-    return pod;
+const createNonExisting = ({ type , name }) => {
+    const nonExisting = USER_DATA !== name ? join(USER_DATA, name) : USER_DATA;
+    if ( existsSync(nonExisting) ) return nonExisting;
+    switch(type) {
+    case "file":
+        writeFileSync(nonExisting, JSON.stringify({}));
+        break;
+    case "directory":
+        mkdirSync(nonExisting);
+        break;
+    default:
+        throw new Error(`Cannot create ${type} of ${name}`);
+    }
+    return nonExisting;
 };
 
 const requireSettingsPath = type => {
 
-    const settingsPath = SETTINGS();
-    const jsonPath = join(settingsPath, type);
+    const settingsPath = createNonExisting({ type: "directory", name: "settings" });
+    const jsonPath     = join(settingsPath, type);
 
-    if ( existsSync(jsonPath) )
-        return jsonPath;
+    // if a file exists for jsonPath
+    // return the path to that file
+    if ( existsSync(jsonPath) ) return jsonPath;
 
+    // if a file to jsonPath does not exists
+    // check for default settings for that configuration
     let objConfig = jsonFileDB[type.replace(".json","")];
 
-    if ( ! objConfig )
-        objConfig = {};
+    // if there are no default settings specified for the configuration
+    // create a json file for it configuration
+    if ( ! objConfig ) objConfig = {};
 
+    // or save the default settings to the json configuration file
     writeFileSync(jsonPath, JSON.stringify(objConfig));
 
     return jsonPath;
 };
 
-const SETTINGS = () => {
 
-    const settings = join(USER_DATA, "settings");
+( () => createNonExisting( { type: "directory", name: USER_DATA }))();
 
-    if ( existsSync(settings) )
-        return settings;
-
-    mkdirSync(settings);
-    return settings;
-};
-
-const USER_POSTERS_LOCATION = () => {
-    const posters = join(USER_DATA, "posters");
-
-    if ( existsSync(posters) )
-        return posters;
-
-    mkdirSync(posters);
-    return posters;
-};
-
-const _CURRENT_TIME = () => {
-
-    const currenttime = join(USER_DATA, "currenttime");
-
-    if ( existsSync(currenttime) )
-        return currenttime;
-
-    mkdirSync(currenttime);
-
-    return currenttime;
-};
+const DOWNLOADED_SUBTITLE  = createNonExisting({ type: "directory" , name: "subtitle"       });
+const PLUGIN_DIRECTORY     = createNonExisting({ type: "file"      , name: "plugins.json"  });
+const CONVERTED_MEDIA      = createNonExisting({ type: "directory" , name: "converted_media"});
+const CURRENT_TIME         = createNonExisting({ type: "directory" , name: "currenttime"    });
 
 
-( () => {
-    if ( existsSync(USER_DATA) )
-        return ;
-    mkdirSync(USER_DATA);
-})();
-const CONVERTED_MEDIA = _CONVERTED_MEDIA();
-const DOWNLOADED_SUBTITLE = join(USER_DATA, "subtitle");
-const CURRENT_TIME = _CURRENT_TIME();
-const URL_ONLINE = "icanhazip.com/";
-const SIZE = 1000;
-const MEASUREMENT = [ "Bytes", "kB", "MB", "GB", "TB" ];
-const TWITTER_OAUTH = "https://api.twitter.com/oauth/authenticate";
 const FFMPEG_LOCATION = `${APP_PATH}/node_modules/.bin/`;
+const TWITTER_OAUTH   = "https://api.twitter.com/oauth/authenticate";
+const MEASUREMENT     = [ "Bytes", "kB", "MB", "GB", "TB" ];
+const URL_ONLINE      = "icanhazip.com/";
+const SIZE            = 1000;
 
 
 /*const BYTE = 8;
@@ -127,18 +84,19 @@ const TBYTE = 1099511627776;
 */
 
 module.exports = {
-    CONVERTED_MEDIA,
-    CURRENT_TIME,
-    APP_PATH,
-    BACKGROUND_COLOR,
-    URL_ONLINE,
+
     DOWNLOADED_SUBTITLE,
-    SIZE,
-    MEASUREMENT,
-    PLAYLIST_FILE,
-    TWITTER_OAUTH,
-    PODCAST,
+    PLUGIN_DIRECTORY,
+    BACKGROUND_COLOR,
+    CONVERTED_MEDIA,
     FFMPEG_LOCATION,
+    TWITTER_OAUTH,
+    CURRENT_TIME,
+    MEASUREMENT,
+    URL_ONLINE,
+    APP_PATH,
+    SIZE,
+
     requireSettingsPath,
-    USER_POSTERS_LOCATION
+    createNonExisting
 };

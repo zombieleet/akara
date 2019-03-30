@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -32,7 +32,8 @@
     } = _require("./constants.js");
 
     const {
-        handleWindowButtons
+        handleWindowButtons,
+        dataUriToBlobUri
     } = require("../../js/Util.js");
 
     const base64Img = require("base64-img");
@@ -153,7 +154,7 @@
 
                         iconType = iconType.querySelector("[data-icon_type]").getAttribute("data-icon_type");
 
-                        image.src = data;
+                        image.src = await dataUriToBlobUri(data);
                         image.width = 20;
                         image.height = 20;
 
@@ -222,7 +223,7 @@
 
         });
 
-        customUIButtonsSettings[category][fonttype].forEach( datauri => {
+        customUIButtonsSettings[category][fonttype].forEach( async datauri => {
 
             let image = new Image();
             let fntchild = document.createElement("li");
@@ -232,7 +233,7 @@
                 fntchild.setAttribute("data-fnt_active", "true");
             }
 
-            image.src = datauri;
+            image.src = await dataUriToBlobUri(datauri);
             image.width = 20;
             image.height = 20;
 

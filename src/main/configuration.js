@@ -1,14 +1,20 @@
+
+"use strict";
+
 const {
+    USER_POSTERS_LOCATION,
     PLAYLIST_FILE,
     PODCAST,
+
     requireSettingsPath,
-    USER_POSTERS_LOCATION
+    createNonExisting
 } = require("./constants.js");
 
 
-const playlistFile = PLAYLIST_FILE();
-const podcast = PODCAST();
-const posters = USER_POSTERS_LOCATION();
+const playlistFile = createNonExisting({ type: "file"      , name: "playlist.json" });
+const posters      = createNonExisting({ type: "directory" , name: "posters"       });
+const podcast      = createNonExisting({ type: "file"      , name: "podcast.json"  });
+const plugins      = createNonExisting({ type: "file"      , name: "plugins.json"  });
 
 module.exports = {
     playlist: {

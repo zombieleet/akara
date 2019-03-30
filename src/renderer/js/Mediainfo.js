@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -29,8 +29,9 @@
             nativeImage
         }
     } = require("electron");
-    
+
     const {
+        dataUriToBlobUri,
         handleWindowButtons,
         getMetaData,
         processMediaTags,
@@ -271,7 +272,7 @@
         processMediaTags({
             url: decodeURIComponent(url.parse(data).path),
             //url: decodeURIComponent(url.parse(localStorage.getItem("mediatest")).path),
-            onSuccess({ tags }) {
+            async onSuccess({ tags }) {
 
                 if ( ! tags.picture )
                     return ;
@@ -290,7 +291,7 @@
                 albumArtContainer.setAttribute("class", "media-info-album_art_container");
                 albumArt.setAttribute("class", "media-info-album_art");
 
-                albumArt.src = `data:${tags.picture.format};base64,${window.btoa(base64String)}`;
+                albumArt.src = await dataUriToBlobUri(`data:${tags.picture.format};base64,${window.btoa(base64String)}`);
                 albumArt.draggable = false;
 
 

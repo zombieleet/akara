@@ -1,0 +1,118 @@
+.plugins_themes-body {
+    @extend %new_window_body;
+}
+
+.plugins_themes-header {
+    @extend %window-headers;
+}
+
+.plugins_themes {
+    width: 100%;
+}
+
+
+
+.plugins_themes {
+    display: inline-flex;
+    width: 100%;
+}
+
+.plugin_themes-type-section {
+
+    width: 141px;
+    height: 503px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background: darken($global-color,10%);
+
+    .themes-section , .plugins-section {
+
+        margin-top: 12px;
+        margin-bottom: 12px;
+
+        .themes-type, .plugins-type {
+            margin-left: 5px;
+            border-bottom: 2px solid white;
+            width: 50%;
+            padding-bottom: 3px;
+        }
+
+        .themes-list , .plugins-list {
+
+            .themes-item , .plugins-item {
+                padding-left: 15px;
+                padding-right: 15px;
+                margin-top: 10px;
+            }
+        }
+    }
+
+    .plugins-section {
+        margin-top: 24px;
+    }
+}
+
+.plugin_themes-download-install-section {
+
+    margin-left: 38px;
+
+    .plugin_themes-note {
+        line-height: 1.5;
+        margin-top: 10px;
+        width: 1000px;
+        background: darken($global-color,10%);
+        padding: 12px;
+        text-align: justify;
+    }
+
+    .plugin_themes-download-installed {
+
+        margin-top: 70px;
+
+        > button {
+
+            border: none;
+            cursor: pointer;
+
+            background: darken($global-color, 10%);
+            
+            color: white;
+
+            padding: 5px 12px;
+            
+            transition: .2s background ease-in-out;
+
+            &:last-of-type {
+                margin-left: 10px;
+            }
+
+            &:hover {
+                background: darken($global-color, 20%);
+            }
+        }
+        > input {
+            @extend %form-input;
+            display: inline-flex;
+            width: 500px;
+            margin-left: 100px;
+            border-color: darken($global-color, 20%);
+        }
+    }
+
+    .plugin_themes-all-list {
+        margin-top: 13px;
+        background: darken($global-color, 10%);
+        height: 300px;
+        padding: 12px;
+        > select {
+            border: none;
+            background: darken($global-color, 20%);
+            border-radius: 15px;
+            padding: 5px;
+            box-shadow: 1px 1px 1px 1px darken($global-color, 20%);
+            color: white;
+        }
+    }
+}
