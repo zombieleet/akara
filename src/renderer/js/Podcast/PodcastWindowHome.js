@@ -49,21 +49,21 @@ const podcast =  {};
    to any rss feed
 **/
 
-// phat arrow function isa bish when using dis, it lexshically bands to the scalling scope
+// phat arrow function isa bish when using dis, it lexshically bands dish to the scalling scope
 podcast.__addpodcastModal = function() {
 
-    const podcastModal   = this.podcastModal   = document.createElement("div");
-    const podcastMParent = this.podcastMParent = document.createElement("div");
+    const podcastModal     = this.podcastModal   = document.createElement("div");
+    const podcastMParent   = this.podcastMParent = document.createElement("div");
 
-    const info = this.info = document.createElement("p");
+    const info             = this.info = document.createElement("p");
 
-    const addpodcastArea = this.addpodcastArea = document.createElement("input");
-    const podcastBtns    = this.podcastBtns    = document.createElement("div");
+    const addpodcastArea   = this.addpodcastArea = document.createElement("input");
+    const podcastBtns      = this.podcastBtns    = document.createElement("div");
 
     const addpodcastAdd    = this.addpodcastAdd    = document.createElement("button");
     const addpodcastCancel = this.addpodcastCancel = document.createElement("button");
 
-    const coverView = this.coverView = document.createElement("div");
+    const coverView        = this.coverView = document.createElement("div");
 
     podcastModal.setAttribute("class", "podcast-modal");
     podcastMParent.setAttribute("class", "podcast-modal-parent");

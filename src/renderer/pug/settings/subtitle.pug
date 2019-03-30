@@ -172,8 +172,7 @@ block body
         div(class="subtitle-cues-result")
           p(class="cue-test") Akara Media Player
 
-        div(class="subtitle-buttons")
-          button(class="subtitle-save") Save
-          button(class="subtitle-cancel") Cancel
+        include ../mixins.pug
+        +akara__button__save("subtitle")
 
     script(src="../../js/Settings/Subtitle.js")

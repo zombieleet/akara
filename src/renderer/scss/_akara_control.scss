@@ -13,7 +13,7 @@ $akara-control-padding-top: 10;
     bottom: 0;
 
     background: darken($global-color,20%);
-
+    box-shadow: 1px 1px 13px 8px #181818;
 
     /**
      *
@@ -54,7 +54,8 @@ $akara-control-padding-top: 10;
         cursor: pointer;
 
         width: inherit;
-
+        box-shadow: 1px 1px 25px 1px black;
+        
         .akara-time-current {
             width: 0;
             background: darken($global-color,10%);
@@ -221,7 +222,7 @@ $cur-pad-top: 1;
 /*     animation-fill-mode: forwards; */
 /* } */
 
-[data-fullscreenwidth] {
+.akara-control[data-fullscreenwidth] {
     
     height: 99px;
     width: 70%;

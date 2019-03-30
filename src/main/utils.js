@@ -136,30 +136,49 @@ const downloadFile = (url, contentId) => {
 
     webContents.session.once("will-download", async (event,item,webContents) => {
 
-        item.setSavePath(setDownloadPath(item.getFilename()));
+        if ( item.getState() === "cancelled" )
+            return resumeDownloading(item,webContents);
+
+        if ( item.getState() === "progressing" )
+            item.setSavePath(setDownloadPath(item.getFilename()));
 
         ipc.on("download::restart", () => downloadFile(item.getURL(), contentId) );
         ipc.on("download::resume",  () => resumeDownloading(item,webContents) );
-        ipc.on("download::paused",  () => item.pause() );
-        ipc.on("download::cancel",  () => item.cancel() );
+
+        ipc.on("download::paused",  (evt,urlFromRenderer) => {
+            console.log(url,urlFromRenderer, "paused");
+            if ( url === urlFromRenderer )
+                item.pause();
+        });
+
+        ipc.on("download::play", (evt,urlFromRenderer) => {
+            console.log(url,urlFromRenderer, "play");
+            if ( url === urlFromRenderer )
+                resumeDownloading(item,webContents);
+        });
+
+        ipc.on("download::cancel",  (evt,urlFromRenderer) => {
+            if ( url == urlFromRenderer ) {
+                item.cancel();
+            }
+        });
 
         webContents.send( "download::started", item , url );
-        webContents.send( "download::totalbyte", item.getTotalBytes() , url );
 
         item.on("updated", (event,state) => {
 
-            webContents.send("download::state", state , url);
+            webContents.send("download::state", state , item,  url);
 
             if ( state === "interrupted" )
                 resumeDownloading(item,webContents);
 
-            webContents.send( "download::gottenByte", item.getReceivedBytes() , url);
+            webContents.send( "download::totalAndGottenBytes", item.getReceivedBytes() , item.getTotalBytes(), url);
             webContents.send( "download::computePercent", item.getReceivedBytes(), item.getTotalBytes() , url);
 
         });
 
         item.on("done", (event,state) => {
-            webContents.send( "download::complete", item.getSavePath() , url );
+            webContents.send( "download::complete", item.getState() , item.getSavePath() , url );
         });
 
     });

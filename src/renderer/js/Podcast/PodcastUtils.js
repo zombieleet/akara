@@ -21,6 +21,10 @@ const {
     applyButtonConfig
 } = require("../../js/VideoControl.js");
 
+const {
+    dataUriToBlobUri
+} = require("../../js/Util.js");
+
 const podcastChannelWidgetHandler = require("../../js/Podcast/PodcastChannelWidgetHandlers.js");
 
 /**
@@ -53,7 +57,7 @@ const podcastsChannelWidget = () => {
    build all saved podcast channel
 **/
 
-const appendChannelToDom = pod => {
+const appendChannelToDom = async pod => {
 
     const podcastLoadMain = document.querySelector(".podcastload-main");
 
@@ -67,7 +71,7 @@ const appendChannelToDom = pod => {
     let p = document.createElement("p");
     let podcastImage = new Image();
 
-    podcastImage.src = image;
+    podcastImage.src = await dataUriToBlobUri(image);
     podcastImage.setAttribute("class", "podcast-image");
 
     li.setAttribute("data-url", podlink);

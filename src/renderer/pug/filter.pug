@@ -8,7 +8,7 @@ mixin progressFilter(type, msment , min = 0, max = 100)
     div(class="progress-parent")
       div(class="progress-bar" data-bar-value="0" + msment)
     span(class="fa fa-plus-circle pgress-ctrl-incr")
-    
+
     button(class="reset") default
 
 block title
@@ -35,8 +35,8 @@ block body
       +progressFilter("opacity", "%", 0, 100)
       +progressFilter("saturate", "%", 0, 100)
       +progressFilter("sepia", "%", 0, 100)
-      
-      div(class="filter-btn")
-        button(class="filter-close") Close
-        button(class="filter-reset") Reset
+
+      include ./mixins.pug
+      +akara__button__save("filter")
+
     script(src="../js/Filter.js")

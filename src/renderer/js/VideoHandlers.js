@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -227,9 +227,11 @@ module.exports.removeHoverTime = removeHoverTime;
  *
  **/
 
-const getHumanTime = result => isNaN(result)
-      ? "00:00"
-      : `${(result/60).toFixed(2)}`.replace(/\./, ":");
+const getHumanTime = result => {
+    const date = new Date(null);
+    date.setSeconds(result);
+    return date.toISOString().substr(11,8);
+};
 
 
 
@@ -737,6 +739,7 @@ module.exports.handleVolumeChange = event => {
  *
  **/
 const setUpTrackElement = async (filePath,fileLang) => {
+    console.log(filePath);
     const __tracks = video.querySelectorAll("track");
     const track = document.createElement("track");
     const subtitle = filePath;
@@ -817,12 +820,22 @@ const handleLoadSubtitle = async (filePath,cb) => {
     });
 
 
+    // in the controls section if toggle is choosed to be turned off
     const toggleSubOnOff = document.querySelector("[data-sub-on=true]");
 
     // start showing the track automatically
     // add this as a config option
-    if ( ! track.previousElementSibling && toggleSubOnOff )
-        video.textTracks[0].mode = "showing";
+    if ( toggleSubOnOff ) {
+
+        if ( ! track.previousElementSibling ) {
+            console.log("i expect ones");
+            video.textTracks[0].mode = "showing";
+        } else {
+            // track.previousElementSibling defined
+            console.log(video.textTracks[video.textTracks.length - 1], "hit", "hit");
+            video.textTracks[video.textTracks.length - 1].mode = "hidden";
+        }
+    }
 
     akara_emit.emit("video::subtitle:shortcut", track);
 };
@@ -833,7 +846,7 @@ const loadAlbumArt = () => {
     const posterJson = requireSettingsPath("poster.json");
     const posterSettings = require(posterJson);
 
-
+    console.log(posterSettings.album_art, "here there");
     if ( ! posterSettings.album_art )
         return false;
 
@@ -949,6 +962,7 @@ module.exports.videoLoadData = event => {
     loadAlbumArt();
 
     akara_emit.once("akara::audio:albumart",  base64StringAlbum_art => {
+        console.log(base64StringAlbum_art);
         if ( ! base64StringAlbum_art ) {
             video.poster = posterSettings.poster;
             return ;

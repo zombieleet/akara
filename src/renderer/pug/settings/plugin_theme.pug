@@ -1,0 +1,42 @@
+extends ../__layout.pug
+
+block title
+  title Plugins and Themes
+
+block link
+  link(rel="stylesheet", href="../../css/main.css")
+  link(rel="stylesheet", href="../../libs/font-awesome.min.css")
+
+block body
+  body(class="plugins_themes-body")
+    header(class="plugins_themes-header")
+      div(class="window-title") Plugins and Themes
+      div(class="window-state-buttons")
+        ul(class="window-buttons")
+          li(data-winop="minimize")
+          li(data-winop="maximize")
+          li(data-winop="close")
+
+    section(class="plugins_themes")
+
+      aside(class="plugin_themes-type-section")
+        each __sec__ in [ "themes", "plugins" ]
+          div(class=__sec__ + "-section")
+            p(class=__sec__ + "-type") #{__sec__}
+            ul(class=__sec__ + "-list")
+              li(class=__sec__ + "-item") asdfsdfasdf
+              li(class=__sec__ + "-item") asdfsdfasdf
+              li(class=__sec__ + "-item") asdfsdfasdf
+
+      aside(class="plugin_themes-download-install-section")
+        p(class="plugin_themes-note")  Lores ipsum dolor cow ate cow is that cowbalism aksdkjflasd aldsf jlajfdlajdfajd adf;adfajfdlsdfasf asdfjasdklfja sdalsdfj alsdf lasdj adsf a akdsfaslkdfajadsf akdsfaslkdfajadsf akdfalsdfjalksdjfalsdjfasdfalsdfasdfasdfasf Lores ipsum dolor cow ate cow is that cowbalism aksdkjflasd aldsf jlajfdlajdfajd adf;adfajfdlsdfasf asdfjasdklfja sdalsdfj alsdf lasdj adsf a akdsfaslkdfajadsf akdsfaslkdfajadsf akdfalsdfjalksdjfalsdjfasdfalsdfasdfasdfasf
+        div(class="plugin_themes-download-installed")
+          button(type="button") Installed
+          button(type="button") Download
+          input(type="text" class="plugin_themes-search")
+        div(class="plugin_themes-all-list")
+          select
+            option Themes
+            option Plugins
+          ul(class="plugin_themes-all-list-item")
+    script(src="../../js/Settings/PluginThemes.js")
