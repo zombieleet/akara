@@ -92,7 +92,7 @@ const addMediaCb = (paths,forPlaylist) => {
 
     if ( ! paths ) {
         mediaPathParent = undefined;
-        return ;
+        return false;
     }
 
     paths = typeof(paths) === "string"
@@ -110,8 +110,7 @@ const addMediaCb = (paths,forPlaylist) => {
             return loadXspfFormat(path);
 
         const decodedPath = decodeURIComponent(path);
-        const _path = basename(decodedPath);
-        const createdElement = createPlaylistItem({path,_path});
+        const createdElement = createPlaylistItem(path);
 
         createdElement.setAttribute("data-belongsto-playlist", forPlaylist ? forPlaylist.split(" ").join("|") : "general" );
 
@@ -126,6 +125,8 @@ const addMediaCb = (paths,forPlaylist) => {
         return playOnDrop();
 
     });
+
+    return true;
 };
 
 const searchAndAppend = (input,findings) => {
