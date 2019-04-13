@@ -773,7 +773,7 @@ const setUpTrackElement = async (filePath,fileLang) => {
 const handleLoadSubtitle = async (filePath,cb) => {
 
     if ( ! filePath )
-        return ;
+        return false;
 
     /**
      *
@@ -837,9 +837,12 @@ const handleLoadSubtitle = async (filePath,cb) => {
         }
     }
 
-    akara_emit.emit("video::subtitle:shortcut", track);
+    akara_emit.emit("video::subtitle:shortcut:add", track);
+
+    return filePath;
 };
 
+module.exports.handleLoadSubtitle = handleLoadSubtitle;
 
 const loadAlbumArt = () => {
 
