@@ -83,15 +83,12 @@ const OS        = new _OS("TemporaryUserAgent");
 
 module.exports.OS = OS;
 
-const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
+const createPlaylistItem = (abs_path) => {
 
     let lengthOfSib = document.querySelector(".akara-loaded").childElementCount;
 
     const playlistItem = document.createElement("li");
     const playlistItemContent = document.createElement("span");
-
-    // nonsence
-    //abs_path = URL.createObjectURL( new File([ dirname(abs_path) ] , basename(abs_path)) );
 
     const { protocol } = url.parse(abs_path);
 
@@ -111,10 +108,6 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
         window.__draggingElement = evt.target;
     });
 
-    playlistItem.addEventListener("drag", evt => {
-        console.log(" offsetY ", evt);
-    });
-
     playlistItem.addEventListener("dragenter", evt => {
 
         let target = evt.target;
@@ -131,13 +124,7 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
         window.__draggingElement.id = target.id;
         target.id = _tmpId;
 
-        // playlistItemParent.insertBefore(target, window.__draggingElement);
         target.after(target, window.__draggingElement);
-
-        //const el = window.__draggingElement.outerHTML;
-
-        //target.insertAdjacentHTML("beforebegin", el);
-        //target.insertAdjacentHTML("afterend", el);
 
         const videoId = video.getAttribute("data-id");
 
@@ -147,14 +134,12 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
             video.setAttribute("data-id", target.id);
         }
 
-        // window.__draggingElement.remove();
-        // window.__draggingElement = (new DOMParser().parseFromString(el, "text/html")).querySelector("li");
-
         return ;
 
     });
 
     playlistItem.addEventListener("dragleave", evt => {
+
         let target = evt.target;
 
         if ( HTMLSpanElement[Symbol.hasInstance](target) ) {
@@ -164,30 +149,8 @@ const createPlaylistItem = ({path: abs_path, _path: rel_path}) => {
         target.removeAttribute("data-drag", "dragenter");
     });
 
-    playlistItem.addEventListener("dragover", evt => {
-
-        let target = evt.target;
-
-        if ( HTMLSpanElement[Symbol.hasInstance](target) ) {
-            target = target.parentNode;
-        }
-
-        let playlistItemParent = playlistItem.parentNode;
-
-        //console.log(__draggingElement);
-
-
-        // if ( ! __draggingElement )
-        //     return ;
-
-
-
-
-        //playlistItemParent.insertBefore(__draggingElement,target);
-
-    });
     playlistItem.classList.add("playlist");
-    playlistItemContent.textContent = rel_path;
+    playlistItemContent.textContent = path.basename(abs_path);
     playlistItem.appendChild(playlistItemContent);
     return playlistItem;
 };
@@ -303,9 +266,11 @@ module.exports.setCurrentPlaying = setCurrentPlaying;
  *
  **/
 
-const removeTarget = (target,video) => {
+const removeMediaElementList = (target,video) => {
 
-    target = target.nodeName.toLowerCase() === "li" ? target : target.parentNode;
+    target = target.nodeName.toLowerCase() === "li"
+        ? target
+        : target.parentNode;
 
     if ( decodeURI(video.src) === target.getAttribute("data-full-path") ) {
 
@@ -341,7 +306,7 @@ const removeTarget = (target,video) => {
     return ;
 };
 
-module.exports.removeTarget = removeTarget;
+module.exports.removeMediaElementList = removeMediaElementList;
 
 const disableMenuItem = (memItem,target,video) => {
 
