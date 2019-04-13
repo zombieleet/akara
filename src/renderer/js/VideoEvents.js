@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -127,6 +127,7 @@
     ipc.on("video-next",dropDownMenuCommands._next);
     ipc.on("video-previous", dropDownMenuCommands._previous);
 
+
     ipc.on("video-repeat", () =>  {
         video.loop = true;
         localStorage.setItem("LOOP_CURRENT_VIDEO", video.getAttribute("data-id"));
@@ -211,6 +212,22 @@
        `);
     });
 
+    ipc.on("plugin::remove:subtitle:file", (evt,winId,subtitleIds) => {
+
+        const allTracks = document.querySelectorAll("track");
+
+        if ( ! allTracks.length ) {
+            ipc.sendTo( winId , "plugin::subtitle:no:subtitle");
+            return;
+        }
+
+        for ( let subtitle of subtitleIds ) {
+            const trackEl = Array.from(allTracks).find( x => Number(x.getAttribute("id")) === subtitle );
+            if ( trackEl ) trackEl.remove();
+            akara_emit.emit("video::subtitle:shortcut:remove", subtitle);
+            ipc.sendTo( winId , "plugin::subtitle:file:removed", subtitle);
+        }
+    });
 
     akaraControl.addEventListener("mousedown", videoHandler.controlDragFullScreen);
     akaraControl.addEventListener("mouseenter", videoHandler.controlMouseEnter);
