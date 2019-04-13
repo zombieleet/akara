@@ -5,21 +5,21 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 ; ( () => {
-    
+
     "use strict";
-    
+
     const ul = document.querySelector(".akara-loaded");
-    
+
     const {
         ipcRenderer: ipc,
         remote: {
@@ -32,29 +32,30 @@
     } = require("electron");
 
     const {
-        removeTarget,
+        removeMediaElementList,
         setCurrentPlaying,
         disableMenuItem,
         setupPlaying,
         prevNext,
         updatePlaylistName
     } = require("../js/Util.js");
-    
+
     const {
         controls,
         video
     } = require("../js/VideoControl.js");
 
-    
+
     const { createNewWindow: addPlaylistWindow } = _require("./newwindow.js");
 
     const { addMediaCb }        = require("../js/DropdownCallbacks.js");
-    const { videoListMenu }     = _require("./menu.js");
+    const { mediaListMenu }     = _require("./menu.js");
     const { iterateDir }        = _require("./utils.js");
     let { showMediaInfoWindow } = require("../js/HandleDropdownCommands.js")();
 
     const akara_emit = require("../js/Emitter.js");
     const fs         = require("fs");
+    const url        = require("url");
 
     const {
         play,
@@ -132,7 +133,7 @@
 
         let menuInst;
 
-        videoListMenu.forEach( contextMenu => {
+        mediaListMenu.forEach( contextMenu => {
 
             menuInst = new MenuItem(contextMenu);
 
@@ -157,7 +158,56 @@
         return ;
     });
 
-    ipc.on("remove-target-hit", () => removeTarget(currentTarget,video));
+    ipc.on("remove-target-hit", () => removeMediaElementList(currentTarget,video));
+
+    ipc.on("plugin::remove:media:file", (evt,id,mpaths) => {
+
+        const pathsNotInDom = [], pathsInDom = [];
+
+        mpaths.forEach( mpt => {
+
+            let fullPathWithProtocol;
+
+            if ( ! url.parse(mpt).protocol )
+                fullPathWithProtocol = `file://${mpt}`;
+
+            const mediaFullPath = document.querySelector(`[data-full-path="${ fullPathWithProtocol ? decodeURIComponent(fullPathWithProtocol) : mpt }"]`);
+
+            if ( mediaFullPath ) {
+                removeMediaElementList(mediaFullPath,video);
+                pathsInDom.push(mpt);
+                return;
+            }
+
+            pathsNotInDom.push(mpt);
+
+        });
+
+        evt.sender.sendTo(id,"plugin::media:file:not:removed", pathsNotInDom);
+        evt.sender.sendTo(id,"plugin::media:file:removed", pathsInDom);
+    });
+
+    ipc.on("plugin::get:media:dom:element", ( evt , id , mediaPaths ) => {
+
+        const pathsInDom = [];
+
+        mediaPaths.forEach( mpt => {
+
+            let fullPathWithProtocol;
+
+            if ( ! url.parse(mpt).protocol )
+                fullPathWithProtocol = `file://${mpt}`;
+
+            const mediaFullPath = document.querySelector(`[data-full-path="${ fullPathWithProtocol ? decodeURIComponent(fullPathWithProtocol) : mpt }"]`);
+
+            if ( mediaFullPath ) pathsInDom.push(mediaFullPath);
+            evt.sender.sendTo(id,"plugin::media:dom:element", mediaFullPath);
+
+        });
+        console.log(pathsInDom, Array.from(pathsInDom));
+        evt.sender.sendTo(id,"plugin::media:dom:element", pathsInDom);
+
+    });
 
     ipc.on("play-hit-target", () => {
 
