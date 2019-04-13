@@ -4,7 +4,7 @@
     "author": "Victory Osikwemhe",
     "email": "zombieleetnca@gmail.com",
     "scripts": {
-        "start": "electron .",
+        "start": "./node_modules/.bin/electron .",
         "test": "jasmine test/*",
         "pug": "gulp pug",
         "eslint": "gulp eslint",
