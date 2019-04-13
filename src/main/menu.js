@@ -42,7 +42,7 @@ const share = {
     ]
 };
 
-const videoListMenu = [
+const mediaListMenu = [
     {
         label: "Remove From Playlist",
         accelerator: shortcut.remove_from_playlist,
@@ -108,7 +108,7 @@ const videoListMenu = [
 ];
 
 
-//const VideoContextMenu = Array.from(videoListMenu);
+//const VideoContextMenu = Array.from(mediaListMenu);
 
 const videoContextMenu = [
     {
@@ -364,6 +364,6 @@ const videoContextMenu = [
 
 
 module.exports = {
-    videoListMenu,
+    mediaListMenu,
     videoContextMenu
 };
