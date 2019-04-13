@@ -5,12 +5,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -426,7 +426,7 @@ mediaShortCutKey.register({
     handler: entireScreen
 });
 
-akara_emit.on("video::subtitle:shortcut", track => {
+akara_emit.on("video::subtitle:shortcut:add", track => {
 
     mediaShortCutKey.register({
         name: `subtitle track ${track.id}`,
@@ -441,13 +441,13 @@ akara_emit.on("video::subtitle:shortcut", track => {
             } = textTracks;
 
             for ( let i = 0; i < _trackLength; i++ ) {
-                
+
                 if ( textTracks[i].id != track.id ) {
                     textTracks[i].mode = "hidden";
                     akara_emit.emit("video::state:track", textTracks[i].id, "disable");
                     continue ;
                 }
-                
+
                 textTracks[i].mode = "showing";
                 akara_emit.emit("video::state:track", textTracks[i].id, "enable");
             }
@@ -455,8 +455,8 @@ akara_emit.on("video::subtitle:shortcut", track => {
     });
 });
 
-akara_emit.on("video::subtitle:remove", id => {
-    mediaShortCutKey.remove({
+akara_emit.on("video::subtitle:shortcut:remove", id => {
+    mediaShortCutKey.unregister({
         key: id,
         modifier: [ "ctrlKey"]
     });
