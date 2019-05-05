@@ -12,7 +12,8 @@ const electron = require("electron");
 const fs       = require("fs");
 const path     = require("path");
 
-const SubtitlePlugin = require("../js/Plugin/Subtitle.js");
+const subtitlePlugin = require("../js/Plugin/Subtitle.js");
+const playlistPlugin = require("../js/Plugin/Playlist.js");
 
 
 class Akara {
@@ -21,7 +22,8 @@ class Akara {
         this.electron     = electron;
         this.menus        = this.electron.remote.require("./menu.js");
         this.loadedMedia  = [];
-        this.subtitle     = new SubtitlePlugin();
+        this.subtitle     = subtitlePlugin;
+        this.playlist     = playlistPlugin;
         this.subtitle.electron = this.electron;
     }
 
