@@ -739,8 +739,8 @@ module.exports.handleVolumeChange = event => {
  * setup track element with necessary attributes
  *
  **/
-const setUpTrackElement = async (filePath,fileLang) => {
-    console.log(filePath);
+const setupTrackElement = async (filePath,fileLang) => {
+
     const __tracks = video.querySelectorAll("track");
     const track = document.createElement("track");
     const subtitle = filePath;
@@ -755,7 +755,8 @@ const setUpTrackElement = async (filePath,fileLang) => {
     track.setAttribute("kind", "subtitles");
 
     // set the id of tracks from 0 1 2 3 ... n
-    track.setAttribute("id", __tracks.length === 0 ? __tracks.length : (__tracks.length - 1) + 1);
+    track.setAttribute("id", __tracks.length // === 0 ? 0 : __tracks.length //
+                      );
 
     return { track, lang };
 };
@@ -786,12 +787,10 @@ const handleLoadSubtitle = async (filePath,cb) => {
     [ filePath ] = Array.isArray(filePath) ? filePath : [ filePath ];
 
 
-    if ( /x-subrip$/.test(mime.lookup(filePath)) ) {
+    if ( /x-subrip$/.test(mime.lookup(filePath)) )
         filePath = await cb(filePath);
-        console.log(filePath);
-    }
 
-    const { track, lang } = await setUpTrackElement(filePath);
+    const { track, lang } = await setupTrackElement(filePath);
 
     sendNotification({
         title: "Subtitle",
@@ -1143,7 +1142,9 @@ module.exports.showSubtitle = (mItem,id) => {
 
     for ( let i = 0; i < _textTrackLength; i++ ) {
 
-        if ( mItem.id === textTracks[i].id ) {
+        if (
+            (mItem && mItem.id === textTracks[i].id) || (Number(textTracks[i].id) === id)
+        ) {
             textTracks[i].mode = "showing";
             continue;
         }

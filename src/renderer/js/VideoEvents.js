@@ -215,6 +215,7 @@
     ipc.on("plugin::remove:subtitle:file", (evt,winId,subtitleIds) => {
 
         const allTracks = document.querySelectorAll("track");
+        const removedTracks = [];
 
         if ( ! allTracks.length ) {
             ipc.sendTo( winId , "plugin::subtitle:no:subtitle");
@@ -222,11 +223,16 @@
         }
 
         for ( let subtitle of subtitleIds ) {
+
             const trackEl = Array.from(allTracks).find( x => Number(x.getAttribute("id")) === subtitle );
+
+            if ( ! trackEl ) continue;
             if ( trackEl ) trackEl.remove();
+
             akara_emit.emit("video::subtitle:shortcut:remove", subtitle);
-            ipc.sendTo( winId , "plugin::subtitle:file:removed", subtitle);
+            removedTracks.push(subtitle);
         }
+        ipc.sendTo( winId , "plugin::subtitle:file:removed", removedTracks);
     });
 
     akaraControl.addEventListener("mousedown", videoHandler.controlDragFullScreen);
