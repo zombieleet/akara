@@ -44,10 +44,11 @@ const {
     processMediaTags,
     validateMime,
     setupPlaying,
-    playlistLoad,
     langDetect,
     getMime
 } = require("../js/Util.js");
+
+const { playlistLoad } = require("../js/Playlist/PlaylistUtil.js");
 
 
 const { requireSettingsPath , CURRENT_TIME } = _require("./constants.js");

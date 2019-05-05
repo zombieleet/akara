@@ -35,7 +35,7 @@
     const {
         playlistSave,
         renderPlayList
-    } = require("../../js/Util.js");
+    } = require("../../js/Playlist/PlaylistUtil.js");
 
     const list        = require(playlistLocation);
     const addplaylist = document.querySelector(".addplaylist");

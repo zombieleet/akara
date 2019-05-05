@@ -30,7 +30,7 @@
     const {
         playlistLoad,
         renderPlayList
-    } = require("../../js/Util.js");
+    } = require("../../js/Playlist/PlaylistUtil.js");
 
     const loadBtn = document.querySelector(".load-btn");
     const close   = document.querySelector("[data-winop=close]");

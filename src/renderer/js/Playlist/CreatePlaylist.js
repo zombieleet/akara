@@ -29,11 +29,11 @@
     } = require("electron");
 
     const {
-        playlistSave,
         makeDynamic,
         handleWindowButtons
     } = require("../../js/Util.js");
 
+    const { playlistSave } = require("../../js/Playlist/PlaylistUtil.js");
 
     const { basename }   = require("path");
     const { iterateDir } = _require("./utils.js");
