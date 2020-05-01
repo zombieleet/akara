@@ -1,0 +1,24 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - podson > lodash:
+        patched: '2020-05-01T04:49:33.865Z'
+    - fluent-ffmpeg > async > lodash:
+        patched: '2020-05-01T04:49:33.865Z'
+    - facebook-api-video-upload > request-promise > lodash:
+        patched: '2020-05-01T04:49:33.865Z'
+    - googleapis > async > lodash:
+        patched: '2020-05-01T04:49:33.865Z'
+    - html5-media-converter > fluent-ffmpeg > async > lodash:
+        patched: '2020-05-01T04:49:33.865Z'
+    - brightness > wmi-client > getos > async > lodash:
+        patched: '2020-05-01T04:49:33.865Z'
+    - pug > pug-code-gen > constantinople > babel-types > lodash:
+        patched: '2020-05-01T04:49:33.865Z'
+    - pug > pug-filters > constantinople > babel-types > lodash:
+        patched: '2020-05-01T04:49:33.865Z'
+    - pug > pug-code-gen > pug-attrs > constantinople > babel-types > lodash:
+        patched: '2020-05-01T04:49:33.865Z'
