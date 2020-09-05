@@ -55,7 +55,10 @@ const createWindow = () => {
             useContentSize: true,
             // ...screenSize
             width: screenSize.width,
-            height: screenSize.height
+            height: screenSize.height,
+	    webPreferences: {
+		nodeIntegration: true
+	    }
         });
 
         mainWindow.loadURL(`file://${APP_PATH}/app/renderer/html/index.html`);

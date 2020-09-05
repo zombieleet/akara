@@ -20,7 +20,10 @@ const createNewWindow = (obj,html) => {
         minimizable: obj.minimizable ? true : false,
         resizable: obj.resizable ? true : false,
         center: true,
-        backgroundColor: BACKGROUND_COLOR
+        backgroundColor: BACKGROUND_COLOR,
+	webPreferences: {
+	    nodeIntegration: true
+	}
     });
 
     let newWindow = new BrowserWindow(obj);
