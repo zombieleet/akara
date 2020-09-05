@@ -78,7 +78,7 @@
     "homepage": "https://github.com/zombieleet/akara#readme",
     "devDependencies": {
         "babel-eslint": "^8.2.6",
-        "electron": "^7.1.7",
+        "electron": "^7.2.4",
         "electron-rebuild": "^1.8.8",
         "eslint": "^4.1.1",
         "ffbinaries": "^1.1.4",
