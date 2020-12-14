@@ -39,7 +39,7 @@
         "mime": "^1.3.6",
         "mmmagic": "^0.5.3",
         "node-abi": "^2.13.0",
-        "node-notifier": "^5.4.3",
+        "node-notifier": "^9.0.0",
         "opensubtitles-api": "^4.1.0",
         "playlist-parser": "0.0.12",
         "podcast-feed": "^1.0.6",
