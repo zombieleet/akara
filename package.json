@@ -21,7 +21,7 @@
         "datauri": "^1.0.5",
         "dotenv": "^5.0.1",
         "electron-reload": "^1.5.0",
-        "extract-zip": "^1.6.6",
+        "extract-zip": "^2.0.0",
         "facebook-api-video-upload": "^1.4.1",
         "ffmetadata": "^1.6.0",
         "ffmpeg": "0.0.4",
